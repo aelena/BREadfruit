@@ -1,0 +1,51 @@
+﻿Entity 'XYZ' is <TYPE>
+	with defaults
+		max_length 10,
+		min_length 10,
+		mandatory true
+		enabled true	; consider not having to indicate defaults that are true, either say just enabled or not say anything
+		visible true	; actually this rule is implicit by the previous one
+
+	with rules
+		text starts_with 0 then put 'Hello WOrld' in 'lblErrorMessages'		;	if XYZ's value starts with 0 then show the message in the field indicated
+	
+; ----------------------------------------------------------------------------	
+	
+Entity 'GD_Ctr_VendorClassification' is DropDownList
+	with defaults
+		value 'NG'
+		enabled			; as opposed to disabled
+		visible			; as opposed to not_visible or hidden
+		mandatory 		; as opposed to optional
+	
+	with rules
+		role RCO then enabled
+		VendorCountry is 'ES' then 
+			TaxCode1 starts_with '{P;Q;S}' then value 'G', set 'GD_Ctr_IsNaturalPerson' unchecked
+			TaxCode1 starts_with 'G' then value 'NG'
+	
+	with triggers
+		TaxCode1 changes then apply rules	
+		; this clear
+		; this disabled
+
+; ----------------------------------------------------------------------------	
+		
+Entity 'GD_Ctr_IsNaturalPerson' is Checkbox
+	with defaults
+		value false	;meaning unchecked
+		enabled
+		
+	with rules
+		AccountGroup in '{YVT4,YVT5}' and this is true then show 'div natural person data', set 'field1' mandatory, set 'field2' mandatory
+		AccountGroup is YVT3 and this is true then set 'CC_AM_WithholdingTaxCode' mandatory, set 'CC_AM_WithholdingTaxCode' true
+	
+	with triggers
+		VendorCountry is 'ES' then 
+			TaxCode1 starts_with '{P;Q;S}' then set 'GD_Ctr_IsNaturalPerson' unchecked
+			TaxCode1 starts_with 'X' then set 'GD_Ctr_IsNaturalPerson' checked
+		
+; ----------------------------------------------------------------------------	
+; - ANOTHER IDEA Something like this?
+		
+On(xxxx).ApplyDefault('').ApplyDefault('').DefineRule("if () starts_with '' then setValue 'G'").SetTrigger("XXX.onchanged then this disabled");
