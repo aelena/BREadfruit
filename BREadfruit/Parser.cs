@@ -31,10 +31,7 @@ namespace BREadfruit
                     if ( !( String.IsNullOrWhiteSpace ( line ) ) )
                     {
 
-                        if ( line.StartsWith ( "Entity"))
-                        {
-                            ParseEntityLine ( line );
-                        }
+                        ParseLine ( line );
 
                     }
                 }
@@ -45,7 +42,7 @@ namespace BREadfruit
 
         }
 
-        protected internal void ParseEntityLine ( string line )
+        protected internal void ParseLine ( string line )
         {
             throw new NotImplementedException ();
         }
