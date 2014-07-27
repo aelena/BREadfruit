@@ -46,21 +46,35 @@ namespace BREadfruit
         /// <summary>
         /// Internal list of tokens.
         /// </summary>
-        private readonly IEnumerable<Token> _tokens;
+        private readonly IEnumerable<Symbol> _tokens;
 
         /// <summary>
         /// Enumerable list of the tokens found in this instance.
         /// </summary>
-        internal IEnumerable<Token> Tokens
+        internal IEnumerable<Symbol> Tokens
         {
             get { return _tokens; }
         }
 
+        private readonly string _representation;
+
+        public string Representation
+        {
+            get { return _representation; }
+        } 
+
+
         private LineInfo () { }
 
-        public LineInfo ( int indentLevel, IEnumerable<Token> tokens )
+        public LineInfo ( string representation)
         {
+            this._representation = representation;
 
+        }
+
+        public LineInfo ( string representation, int indentLevel, IEnumerable<Symbol> tokens )
+        {
+            this._representation = representation;
             this._indentLevel = indentLevel;
             this._tokens = tokens;
             if ( tokens != null )

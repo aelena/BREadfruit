@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grammar.cs" />
     <Compile Include="LineInfo.cs" />
     <Compile Include="LineParser.cs" />
     <Compile Include="Parser.cs" />

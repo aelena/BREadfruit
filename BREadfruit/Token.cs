@@ -5,7 +5,13 @@ using System.Text;
 
 namespace BREadfruit
 {
-    class Token
+    public class Symbol
     {
+        public string Token { get; private set; }
+
+        public Symbol(string Symbol)
+        {
+            this.Token = Symbol;
+        }
     }
 }
