@@ -85,6 +85,7 @@ namespace BREadfruit
             this._tokens = tokens;
             if ( tokens != null )
                 this._numberOfTokens = tokens.Count ();
+            this._isValid = LineParser.IsAValidSentence ( this );
 
         }
 
