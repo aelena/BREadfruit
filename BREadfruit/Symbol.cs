@@ -13,7 +13,13 @@ namespace BREadfruit
 
 
         private IList<Symbol> _validChildren = new List<Symbol> ();
-        public IEnumerable<Symbol> ValidChildren { get; private set; }
+        public IEnumerable<Symbol> ValidChildren
+        {
+            get
+            {
+                return this._validChildren;
+            }
+        }
 
         public Symbol ( string symbol )
         {
