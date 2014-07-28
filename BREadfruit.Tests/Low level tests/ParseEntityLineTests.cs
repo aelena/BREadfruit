@@ -17,8 +17,8 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "\t\t\tEntity", 3 )]
         public void ShouldFindIndentLevelCorrectly ( string line, int indentCount )
         {
-            var p = new LineParser ();
-            var li = p.ParseLine ( line );
+            //var p = new LineParser ();
+            var li = LineParser.ParseLine ( line );
             Assert.That ( li.IndentLevel == indentCount );
         }
 
@@ -28,17 +28,23 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "\t\t", 0 )]
         public void ShouldFindCorrectTokenCount ( string line, int tokenCount )
         {
-            var p = new LineParser ();
-            var li = p.ParseLine ( line );
+            //var p = new LineParser ();
+            var li = LineParser.ParseLine ( line );
             Assert.That ( li.Tokens.Count () == tokenCount );
         }
 
-        [Test]
-        public void ShouldValidateCorrectLineInfoInstances ()
+
+        [TestCase ( "Entity ABC IS TextBoxt", true )]
+        [TestCase ( "Entity ABC Is TextBoxt", true )]
+        [TestCase ( "Entity ABC", false )]
+        [TestCase ( "Entity ABC Are TextBoxt", false )]
+        [TestCase ( "Entity ABC Are TextBoxt A", false )]
+        public void ShouldDetectValidAndInvalidLineInfoSentences(string lineInfo, bool result)
         {
             var p = new LineParser ();
-            var lineInfo = p.ParseLine ( "Entity ABC Is TextBoxt" );
-            Assert.That ( p.IsAValidSentence ( lineInfo ) == true );
+            var _li = new LineInfo ( lineInfo );
+            Assert.That ( p.IsAValidSentence ( _li ) == result );
+
         }
     }
 }
