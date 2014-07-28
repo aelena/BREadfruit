@@ -53,9 +53,10 @@ namespace BREadfruit
         /// <param name="symbol">string representation of the token, for example
         /// 'Entity' or 'with'.
         /// </param>
-        public Symbol ( string symbol )
+        public Symbol ( string symbol, int indentLevel )
         {
             this.Token = symbol;
+            this.IndentLevel = indentLevel;
             this.IsTerminal = true;
         }
 
@@ -68,9 +69,10 @@ namespace BREadfruit
         /// </param>
         /// <param name="isTerminal">Pass false to create a nonterminal symbol, otherwise
         /// pass true to create a terminal.</param>
-        public Symbol ( string symbol, bool isTerminal)
+        public Symbol ( string symbol, int indentLevel, bool isTerminal)
         {
             this.Token = symbol;
+            this.IndentLevel = indentLevel;
             this.IsTerminal = isTerminal;
         }
 
@@ -85,9 +87,10 @@ namespace BREadfruit
         /// <param name="validChildren">
         /// List of valid children for this Symbol instance.
         /// </param>
-        public Symbol ( string symbol, IList<Symbol> validChildren)
+        public Symbol ( string symbol, int indentLevel, IList<Symbol> validChildren)
         {
             this.Token = symbol;
+            this.IndentLevel = indentLevel;
             this.IsTerminal = false;
             this._validChildren = validChildren;
         }
@@ -108,6 +111,12 @@ namespace BREadfruit
             this.IsTerminal = false;
         }
 
+
+        public IEnumerable<String> ValidChildTokens()
+        {
+            return from c in this._validChildren
+                          select c.Token;
+        }
       
     }
 }
