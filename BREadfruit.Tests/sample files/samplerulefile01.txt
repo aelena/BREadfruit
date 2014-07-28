@@ -1,4 +1,4 @@
-﻿Entity XYZ is <TYPE>
+﻿Entity XYZ is TYPE
 	with defaults
 		max_length 10,
 		min_length 10,
@@ -44,8 +44,5 @@ Entity 'GD_Ctr_IsNaturalPerson' is Checkbox
 		VendorCountry is 'ES' then 
 			TaxCode1 starts_with '{P;Q;S}' then set 'GD_Ctr_IsNaturalPerson' unchecked
 			TaxCode1 starts_with 'X' then set 'GD_Ctr_IsNaturalPerson' checked
-		
-; ----------------------------------------------------------------------------	
-; - ANOTHER IDEA Something like this?
-		
-On(xxxx).ApplyDefault('').ApplyDefault('').DefineRule("if () starts_with '' then setValue 'G'").SetTrigger("XXX.onchanged then this disabled");
+
+

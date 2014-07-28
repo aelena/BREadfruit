@@ -41,9 +41,9 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "Entity ABC Are TextBoxt A", false )]
         public void ShouldDetectValidAndInvalidLineInfoSentences(string lineInfo, bool result)
         {
-            var p = new LineParser ();
+            //var p = new LineParser ();
             var _li = new LineInfo ( lineInfo );
-            Assert.That ( p.IsAValidSentence ( _li ) == result );
+            Assert.That ( LineParser.IsAValidSentence ( _li ) == result );
 
         }
     }

@@ -59,7 +59,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="High Level tests.cs" />
+    <Compile Include="Low level tests\GrammarTests.cs" />
     <Compile Include="Low level tests\ParseEntityLineTests.cs" />
+    <Compile Include="Low level tests\SymbolTests.cs" />
+    <Compile Include="Low level tests\WithLineTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
