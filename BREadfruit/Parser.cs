@@ -10,6 +10,18 @@ namespace BREadfruit
     public class Parser
     {
 
+        private LineParser _lineParser = new LineParser ();
+        private List<LineInfo> _parsedLines = new List<LineInfo> ();
+
+
+        public IEnumerable<LineInfo> ParsedLines
+        {
+            get
+            { return this._parsedLines; }
+        }
+
+
+
         public void ParseRuleFile ( string filePath )
         {
 
@@ -21,10 +33,10 @@ namespace BREadfruit
 
 
 
-            using ( var sr = new StreamReader(filePath) )
+            using ( var sr = new StreamReader ( filePath ) )
             {
                 var line = String.Empty;
-                while ( line != null)
+                while ( line != null )
                 {
 
                     line = sr.ReadLine ();
@@ -44,7 +56,7 @@ namespace BREadfruit
 
         protected internal void ParseLine ( string line )
         {
-            throw new NotImplementedException ();
+            _parsedLines.Add ( LineParser.ParseLine ( line ) );
         }
     }
 }

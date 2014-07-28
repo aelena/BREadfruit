@@ -8,7 +8,7 @@ namespace BREadfruit
     /// <summary>
     /// Represents information about a parsed line.
     /// </summary>
-    internal class LineInfo
+    public class LineInfo
     {
 
         /// <summary>
@@ -16,12 +16,17 @@ namespace BREadfruit
         /// this instance represents.
         /// </summary>
         private readonly int _indentLevel;
-
+        /// <summary>
+        /// Gets the indent level of the current line instance.
+        /// </summary>
         public int IndentLevel
         {
             get { return _indentLevel; }
         }
 
+        /// <summary>
+        /// Number of tokens found in this line
+        /// </summary>
         private readonly int _numberOfTokens;
 
         /// <summary>
@@ -69,7 +74,8 @@ namespace BREadfruit
         public LineInfo ( string representation)
         {
             this._representation = representation;
-
+            this._indentLevel = LineParser.GetIndentCount ( this._representation );
+            this._tokens = LineParser.ExtractTokens ( this._representation );
         }
 
         public LineInfo ( string representation, int indentLevel, IEnumerable<Symbol> tokens )

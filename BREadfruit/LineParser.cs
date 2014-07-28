@@ -10,10 +10,10 @@ namespace BREadfruit
     internal class LineParser
     {
 
-        public LineInfo ParseLine ( string line )
+        public static LineInfo ParseLine ( string line )
         {
 
-            var indentLevel = this.GetIndentCount ( line );
+            var indentLevel = GetIndentCount ( line );
             // split the line in spaces; replace any tabs just in case the user
             // put tabs in between tokens
             var _tokens = ExtractTokens ( line );
@@ -23,14 +23,14 @@ namespace BREadfruit
 
         }
 
-        private int GetIndentCount ( string line )
+        protected internal static int GetIndentCount ( string line )
         {
             if ( line != null )
                 return line.ToCharArray ().Where ( x => x == '\t' ).Count ();
             return 0;
         }
 
-        private IEnumerable<Symbol> ExtractTokens ( string line )
+        protected internal static IEnumerable<Symbol> ExtractTokens ( string line )
         {
             if ( line != null )
             {

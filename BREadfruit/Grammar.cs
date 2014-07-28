@@ -23,7 +23,23 @@ namespace BREadfruit
 
         #region " --- symbols --- "
 
-        
+        #region " --- terminals --- "
+
+
+        public static Symbol DefaultsSymbol = new Symbol ( "defaults", true );
+        public static Symbol ConstraintsSymbol = new Symbol ( "constraints", true );
+        public static Symbol TriggersSymbol = new Symbol ( "triggers", true );
+
+        #endregion
+
+
+        #region " --- nonterminals --- "
+
+        public static Symbol EntitySymbol = new Symbol ( "Entity", false );
+        public static Symbol WithSymbol = new Symbol ( "With", new List<Symbol> () { DefaultsSymbol, ConstraintsSymbol, TriggersSymbol } );
+
+        #endregion
+
 
         #endregion
 
