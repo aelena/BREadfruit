@@ -37,19 +37,21 @@ namespace BREadfruit
                 var _tokens = from t in line.Replace ( "\t", " " ).Split ( new [] { " " },
                               StringSplitOptions.RemoveEmptyEntries )
                               select
-                              new Symbol ( t );
+                              new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count () );
                 return _tokens;
             }
             return null;
         }
 
-        public bool IsAValidSentence ( LineInfo line )
+        public static bool IsAValidSentence ( LineInfo line )
         {
             // considering the opening token of a line info
             switch ( line.Tokens.First ().Token.ToUpperInvariant () )
             {
                 case "ENTITY":
-                    return this.ValidateEntityLine ( line );
+                    return LineParser.ValidateEntityStatement ( line );
+                case "WITH":
+                    return LineParser.ValidateWithStatement ( line );
 
             }
 
@@ -57,12 +59,32 @@ namespace BREadfruit
         }
 
 
+        #region " --- specific line validations --- "
 
-        private bool ValidateEntityLine ( LineInfo line )
+
+        private static bool ValidateEntityStatement ( LineInfo line )
         {
             var _entityLineRegex = new Regex ( Grammar.EntityLineRegex );
             return _entityLineRegex.IsMatch ( line.Representation.ToUpperInvariant () );
         }
+
+
+        private static bool ValidateWithStatement ( LineInfo line )
+        {
+            var _withLineRegex = new Regex ( Grammar.WithLineRegex );
+            if ( !_withLineRegex.IsMatch ( line.Representation.ToUpperInvariant () ) )
+                return false;
+            if ( line.IndentLevel != Grammar.WithSymbol.IndentLevel )
+                return false;
+            // verify the only child token in a 'with' statement is correct
+            if ( !Grammar.WithSymbol.Children.Contains ( line.Tokens.ElementAt ( 1 ) ) )
+                return false;
+
+            return true;
+        }
+
+
+        #endregion
 
     }
 }
