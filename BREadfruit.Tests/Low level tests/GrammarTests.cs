@@ -20,6 +20,11 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( s.Children.Count () == childCount );
         }
 
+        [Test]
+        public void ShouldHaveEntityRegex ()
+        {
+            Assert.That ( Grammar.EntityLineRegex.Contains ( "Dynamic" ) );
+        }
 
     }
 }
