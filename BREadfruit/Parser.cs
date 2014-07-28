@@ -21,6 +21,8 @@ namespace BREadfruit
         }
 
 
+        // ---------------------------------------------------------------------------------
+
 
         public void ParseRuleFile ( string filePath )
         {
@@ -50,13 +52,21 @@ namespace BREadfruit
 
             }
 
-
-
         }
+        
 
-        protected internal void ParseLine ( string line )
+        // ---------------------------------------------------------------------------------
+
+
+        protected internal LineInfo ParseLine ( string line )
         {
-            _parsedLines.Add ( LineParser.ParseLine ( line ) );
+            var lineInfo = LineParser.ParseLine ( line );
+            _parsedLines.Add ( lineInfo );
+            return lineInfo;
         }
+
+
+        // ---------------------------------------------------------------------------------
+
     }
 }
