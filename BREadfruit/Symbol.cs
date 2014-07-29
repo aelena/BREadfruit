@@ -81,7 +81,7 @@ namespace BREadfruit
         /// </param>
         /// <param name="isTerminal">Pass false to create a nonterminal symbol, otherwise
         /// pass true to create a terminal.</param>
-        public Symbol ( string symbol, int indentLevel, bool isTerminal)
+        public Symbol ( string symbol, int indentLevel, bool isTerminal )
         {
             this.Token = symbol;
             this.IndentLevel = indentLevel;
@@ -103,7 +103,7 @@ namespace BREadfruit
         /// <param name="validChildren">
         /// List of valid children for this Symbol instance.
         /// </param>
-        public Symbol ( string symbol, int indentLevel, IList<Symbol> validChildren)
+        public Symbol ( string symbol, int indentLevel, IList<Symbol> validChildren )
         {
             this.Token = symbol;
             this.IndentLevel = indentLevel;
@@ -134,14 +134,74 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
-        public IEnumerable<String> ValidChildTokens()
+        public IEnumerable<String> ChildTokens
         {
-            return from c in this._validChildren
-                          select c.Token;
+            get
+            {
+                return from c in this._validChildren
+                       select c.Token;
+            }
         }
 
 
         // ---------------------------------------------------------------------------------
+
+
+        // override object.Equals
+        public override bool Equals ( object obj )
+        {
+            
+            if ( obj == null || this.GetType () != obj.GetType () )
+            {
+                return false;
+            }
+
+            Symbol _s = ( Symbol ) obj;
+
+            if ( this.Token != _s.Token )
+                return false;
+
+            if ( this.IsTerminal != _s.IsTerminal )
+                return false;
+
+            if ( this.IndentLevel != _s.IndentLevel )
+                return false;
+
+            if ( this.Children.Count () != _s.Children.Count () )
+                return false;
+
+            var diffSet = this.Children.Except ( _s.Children );
+            if ( diffSet != null && diffSet.Count () > 0 )
+                return false;
+
+            return true;
+        }
+
+        // override object.GetHashCode
+        public override int GetHashCode ()
+        {
+
+            /*
+             * Domain-Driven Design makes the distinction between Entities and Value Objects. 
+             * This is a good distinction to observe since it guides how you implement Equals.
+             * Entities are equal if their IDs equal each other.
+             * Value Objects are equal if all their (important) constituent elements are equal to each other.
+             * In any case, the implementation of GetHashCode should base itself on the same values 
+             * that are used to determine equality. In other words, for Entities, 
+             * the hash code should be calculated directly from the ID, 
+             * whereas for Value Objects it should be calculated from all the constituent values. 
+             */
+
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + this.Token.GetHashCode ();
+                hash = hash * 23 + this.IndentLevel.GetHashCode ();
+                hash = hash * 23 + this.IsTerminal.GetHashCode ();
+                return hash;
+            }
+        }
 
     }
 }
