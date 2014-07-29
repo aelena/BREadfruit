@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="High Level tests.cs" />
+    <Compile Include="Low level tests\DefaultClauseTests.cs" />
     <Compile Include="Low level tests\GrammarTests.cs" />
     <Compile Include="Low level tests\ParseEntityLineTests.cs" />
     <Compile Include="Low level tests\SymbolTests.cs" />

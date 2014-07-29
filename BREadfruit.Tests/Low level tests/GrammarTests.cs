@@ -24,7 +24,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [Test]
         public void ShouldHaveEntityRegex ()
         {
-            Assert.That ( Grammar.EntityLineRegex.Contains ( "Dynamic" ) );
+            Assert.That ( Grammar.EntityLineRegex.Contains ( "DYNAMIC" ) );
         }
 
 
@@ -43,9 +43,12 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( Grammar.FloatRegex, 288d, Result = true )]
         [TestCase ( Grammar.FloatRegex, -0.001d, Result = true )]
         [TestCase ( Grammar.FloatRegex, 0.0001d, Result = true )]
+        [TestCase ( Grammar.BooleanRegex, true, Result = true )]
+        [TestCase ( Grammar.BooleanRegex, false, Result = true )]
+        [TestCase ( Grammar.BooleanRegex, 1, Result = false )]
         public bool GrammarRegexsShouldWork(string regex, ValueType value)
         {
-            return Regex.IsMatch ( value.ToString(), regex );
+            return Regex.IsMatch ( value.ToString(), regex, RegexOptions.IgnoreCase );
         }
 
     }
