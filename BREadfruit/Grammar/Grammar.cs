@@ -159,7 +159,7 @@ namespace BREadfruit
         /// Regular expression that validates the correct format of a with statement
         /// within the document format.
         /// </summary>
-        public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS)?[' ']*$";
+        public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS){1}[' ']*$";
         public const string MaxLengthLineRegex = "^MAX_LENGTH [0-9]*[' ']*$";
         public const string MinLengthLineRegex = "^MIN_LENGTH [0-9]*[' ']*$";
         public const string MandatoryLineRegex = @"^MANDATORY[' ']*((TRUE)?|FALSE)?[' ']*$";
