@@ -13,11 +13,20 @@ namespace BREadfruit
         private LineParser _lineParser = new LineParser ();
         private List<LineInfo> _parsedLines = new List<LineInfo> ();
 
+        private IList<Entity> _entities = new List<Entity> ();
 
         public IEnumerable<LineInfo> ParsedLines
         {
             get
             { return this._parsedLines; }
+        }
+
+        public IEnumerable<Entity> Entities
+        {
+            get
+            {
+                return this._entities;
+            }
         }
 
 
