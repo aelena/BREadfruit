@@ -47,7 +47,7 @@ namespace BREadfruit
         /// considered to be the same value.
         /// 
         /// </summary>
-        private static List<String> _entityTypes = new List<string> ();
+        private static List<Symbol> _entityTypes = new List<Symbol> ();
 
 
         // ---------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ namespace BREadfruit
             }
         }
 
-        public static IEnumerable<string> EntityTypes
+        public static IEnumerable<Symbol> EntityTypes
         {
             get
             {
@@ -159,7 +159,7 @@ namespace BREadfruit
         /// Regular expression that validates the correct format of a with statement
         /// within the document format.
         /// </summary>
-        public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS){1}[' ']*$";
+        public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS|RULES){1}[' ']*$";
         public const string MaxLengthLineRegex = "^MAX_LENGTH [0-9]*[' ']*$";
         public const string MinLengthLineRegex = "^MIN_LENGTH [0-9]*[' ']*$";
         public const string MandatoryLineRegex = @"^MANDATORY[' ']*((TRUE)?|FALSE)?[' ']*$";
@@ -181,9 +181,25 @@ namespace BREadfruit
         #region " --- terminals --- "
 
 
+        /* 
+         * when adding a new Symbol here, do not forget
+         * to update the WithSymbol definition below 
+         */
         public static Symbol DefaultsSymbol = new Symbol ( "defaults", 1, true );
         public static Symbol ConstraintsSymbol = new Symbol ( "constraints", 1, true );
         public static Symbol TriggersSymbol = new Symbol ( "triggers", 1, true );
+        public static Symbol RulesSymbol = new Symbol ( "rules", 1, true );
+
+        public static Symbol TextBoxSymbol = new Symbol ( "TextBox", 0, true );
+        public static Symbol CheckBoxSymbol = new Symbol ( "CheckBox", 0, true );
+        public static Symbol DropDownListSymbol = new Symbol ( "DropDownList", 0, true );
+        public static Symbol RadioButtonSymbol = new Symbol ( "RadioButton", 0, true );
+        public static Symbol LabelSymbol = new Symbol ( "Label", 0, true );
+        public static Symbol ButtonSymbol = new Symbol ( "Button", 0, true );
+        public static Symbol DivSymbol = new Symbol ( "Div", 0, true );
+        public static Symbol MultilineSymbol = new Symbol ( "Multiline", 0, true );
+        public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
+        public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
         #endregion
 
@@ -191,7 +207,12 @@ namespace BREadfruit
         #region " --- nonterminals --- "
 
         public static Symbol EntitySymbol = new Symbol ( "Entity", 0, false );
-        public static Symbol WithSymbol = new Symbol ( "With", 1, new List<Symbol> () { DefaultsSymbol, ConstraintsSymbol, TriggersSymbol } );
+        public static Symbol WithSymbol = new Symbol ( "With", 1,
+            new List<Symbol> () { DefaultsSymbol, 
+                ConstraintsSymbol, 
+                TriggersSymbol,
+                RulesSymbol
+            } );
 
 
 
@@ -212,7 +233,7 @@ namespace BREadfruit
 
             // add valid entity types
             PopulateEntityTypes ();
-      
+
             //_operators.Add ( "starts_with" );
             //_operators.Add ( "does_not_start_with" );
             //_operators.Add ( "ends_with" );
@@ -229,10 +250,20 @@ namespace BREadfruit
             Grammar._symbols.Add ( DefaultsSymbol );
             Grammar._symbols.Add ( ConstraintsSymbol );
             Grammar._symbols.Add ( TriggersSymbol );
-
+            Grammar._symbols.Add ( RulesSymbol );
+            Grammar._symbols.Add ( TextBoxSymbol );
+            Grammar._symbols.Add ( CheckBoxSymbol );
+            Grammar._symbols.Add ( DropDownListSymbol );
+            Grammar._symbols.Add ( RadioButtonSymbol );
+            Grammar._symbols.Add ( LabelSymbol );
+            Grammar._symbols.Add ( ButtonSymbol );
+            Grammar._symbols.Add ( DivSymbol );
+            Grammar._symbols.Add ( MultilineSymbol );
+            Grammar._symbols.Add ( ObjectSymbol );
+            Grammar._symbols.Add ( DynamicSymbol );
 
             _entityLineRegex = _entityLineRegex.Replace ( "###", String.Format ( "({0})",
-                String.Join ( "|", Grammar.EntityTypes ) ) ).ToUpperInvariant ();
+                String.Join ( "|", Grammar.EntityTypes.Select ( x => x.Token ) ) ) ).ToUpperInvariant ();
 
 
         }
@@ -286,16 +317,16 @@ namespace BREadfruit
 
         private static void PopulateEntityTypes ()
         {
-            Grammar._entityTypes.Add ( "Textbox" );
-            Grammar._entityTypes.Add ( "Checkbox" );
-            Grammar._entityTypes.Add ( "DropDownList" );
-            Grammar._entityTypes.Add ( "RadioButton" );
-            Grammar._entityTypes.Add ( "Label" );
-            Grammar._entityTypes.Add ( "Button" );
-            Grammar._entityTypes.Add ( "Div" );
-            Grammar._entityTypes.Add ( "Multiline" );
-            Grammar._entityTypes.Add ( "Object" );
-            Grammar._entityTypes.Add ( "Dynamic" );
+            Grammar._entityTypes.Add ( TextBoxSymbol );
+            Grammar._entityTypes.Add ( CheckBoxSymbol );
+            Grammar._entityTypes.Add ( DropDownListSymbol );
+            Grammar._entityTypes.Add ( RadioButtonSymbol );
+            Grammar._entityTypes.Add ( LabelSymbol );
+            Grammar._entityTypes.Add ( ButtonSymbol );
+            Grammar._entityTypes.Add ( DivSymbol );
+            Grammar._entityTypes.Add ( MultilineSymbol );
+            Grammar._entityTypes.Add ( ObjectSymbol);
+            Grammar._entityTypes.Add ( DynamicSymbol);
         }
 
 
