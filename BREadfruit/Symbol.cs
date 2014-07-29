@@ -34,6 +34,10 @@ namespace BREadfruit
         /// </summary>
         private IList<Symbol> _validChildren = new List<Symbol> ();
 
+
+        // ---------------------------------------------------------------------------------
+
+
         /// <summary>
         /// Enumerable list of children for callers or validators to consume.
         /// </summary>
@@ -44,6 +48,10 @@ namespace BREadfruit
                 return this._validChildren;
             }
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         /// <summary>
         /// Basic constructors. Assumes that the Symbol will be terminal,
@@ -60,6 +68,10 @@ namespace BREadfruit
             this.IsTerminal = true;
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         /// <summary>
         /// Constructors that allows the caller to create a symbol and also
         /// to specify if this will be a terminal or a nonterminal.
@@ -75,6 +87,10 @@ namespace BREadfruit
             this.IndentLevel = indentLevel;
             this.IsTerminal = isTerminal;
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         /// <summary>
         /// Constructors that allows the caller to create a symbol and also
@@ -95,6 +111,10 @@ namespace BREadfruit
             this._validChildren = validChildren;
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         /// <summary>
         /// Allows a caller to add child Symbols to a nonterminal Symbol.
         /// </summary>
@@ -112,11 +132,16 @@ namespace BREadfruit
         }
 
 
+        // ---------------------------------------------------------------------------------
+
         public IEnumerable<String> ValidChildTokens()
         {
             return from c in this._validChildren
                           select c.Token;
         }
-      
+
+
+        // ---------------------------------------------------------------------------------
+
     }
 }

@@ -66,7 +66,10 @@ namespace BREadfruit
         public string Representation
         {
             get { return _representation; }
-        } 
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         private LineInfo () { }
@@ -77,6 +80,10 @@ namespace BREadfruit
             this._indentLevel = LineParser.GetIndentCount ( this._representation );
             this._tokens = LineParser.ExtractTokens ( this._representation );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         public LineInfo ( string representation, int indentLevel, IEnumerable<Symbol> tokens )
         {
@@ -89,6 +96,8 @@ namespace BREadfruit
 
         }
 
+
+        // ---------------------------------------------------------------------------------
 
 
     }

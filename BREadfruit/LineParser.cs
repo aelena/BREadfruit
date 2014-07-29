@@ -23,12 +23,20 @@ namespace BREadfruit
 
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         protected internal static int GetIndentCount ( string line )
         {
             if ( line != null )
                 return line.ToCharArray ().Where ( x => x == '\t' ).Count ();
             return 0;
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         protected internal static IEnumerable<Symbol> ExtractTokens ( string line )
         {
@@ -43,23 +51,35 @@ namespace BREadfruit
             return null;
         }
 
+
+        // ---------------------------------------------------------------------------------
+
         public static bool IsAValidSentence ( LineInfo line )
         {
-            // considering the opening token of a line info
-            switch ( line.Tokens.First ().Token.ToUpperInvariant () )
+            if ( line.Tokens != null && line.Tokens.Count () > 0 )
             {
-                case "ENTITY":
-                    return LineParser.ValidateEntityStatement ( line );
-                case "WITH":
-                    return LineParser.ValidateWithStatement ( line );
+                // considering the opening token of a line info
+                switch ( line.Tokens.First ().Token.ToUpperInvariant () )
+                {
+                    case "ENTITY":
+                        return LineParser.ValidateEntityStatement ( line );
+                    case "WITH":
+                        return LineParser.ValidateWithStatement ( line );
 
+                }
             }
 
             return false;
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
         #region " --- specific line validations --- "
+
+
+        // ---------------------------------------------------------------------------------
 
 
         private static bool ValidateEntityStatement ( LineInfo line )
@@ -67,6 +87,9 @@ namespace BREadfruit
             var _entityLineRegex = new Regex ( Grammar.EntityLineRegex );
             return _entityLineRegex.IsMatch ( line.Representation.ToUpperInvariant () );
         }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         private static bool ValidateWithStatement ( LineInfo line )
@@ -82,6 +105,9 @@ namespace BREadfruit
 
             return true;
         }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         #endregion

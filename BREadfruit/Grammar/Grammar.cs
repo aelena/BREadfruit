@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BREadfruit.Clauses;
 
 namespace BREadfruit
 {
@@ -48,6 +49,10 @@ namespace BREadfruit
         /// </summary>
         private static List<String> _entityTypes = new List<string> ();
 
+
+        // ---------------------------------------------------------------------------------
+
+
         /// <summary>
         /// This string list contains all the valid operators for conditions,
         /// meaning that in a statement such as
@@ -74,7 +79,16 @@ namespace BREadfruit
         private static List<String> _operators = new List<string> ();
 
 
+        private static List<DefaultClause> _defaultsTokens = new List<DefaultClause> ();
+
+
+        // ---------------------------------------------------------------------------------
+
         #endregion
+
+
+        // ---------------------------------------------------------------------------------
+
 
 
         #region " --- public members --- "
@@ -106,19 +120,40 @@ namespace BREadfruit
             }
         }
 
+        public static IEnumerable<DefaultClause> DefaultTokens
+        {
+            get
+            {
+                return _defaultsTokens;
+            }
+        }
+
         #endregion
+
+
+        // ---------------------------------------------------------------------------------
 
 
         #region " --- regexs for line validation --- "
 
+        public const string PositiveIntegerRegex = "^[0-9]*$";
+        public const string IntegerRegex = "^[-]?[0-9]*$";
+        public const string FloatRegex = "^[-]?[0-9]*[(.|,)]?[0-9]*$";
+        public const string BooleanRegex = "^(true|false){1}$";
+
+
         /// <summary>
         /// Regular expression that validates the correct format of an 'entity' line.
         /// </summary>
-        private static string _entityLineRegex = "^ENTITY [A-Za-z0-9_]* (IS|is|Is|iS)? ({0}){1}$";
+        private static string _entityLineRegex = "^ENTITY [A-Za-z0-9_]* (IS|is|Is|iS)? (###){1}$";
         public static string EntityLineRegex
         {
             get { return _entityLineRegex; }
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         /// <summary>
         /// Regular expression that validates the correct format of a with statement
@@ -132,9 +167,13 @@ namespace BREadfruit
         public const string VisibleLineRegex = @"^VISIBLE[' ']*((TRUE)?|FALSE)?[' ']*$";
 
 
+        // ---------------------------------------------------------------------------------
 
 
         #endregion
+
+
+        // ---------------------------------------------------------------------------------
 
 
         #region " --- symbols --- "
@@ -159,15 +198,21 @@ namespace BREadfruit
         #endregion
 
 
+        // ---------------------------------------------------------------------------------
+
+
         #endregion
+
+
+        // ---------------------------------------------------------------------------------
+
 
         static Grammar ()
         {
 
             // add valid entity types
             PopulateEntityTypes ();
-            _entityLineRegex = String.Format ( _entityLineRegex, String.Join ( "|", Grammar.EntityTypes ) );
-
+      
             //_operators.Add ( "starts_with" );
             //_operators.Add ( "does_not_start_with" );
             //_operators.Add ( "ends_with" );
@@ -177,6 +222,7 @@ namespace BREadfruit
             //_operators.Add ( "equals" );
             //_operators.Add ( "does_not_equal" );
 
+            PopulateDefaultTokens ();
 
             Grammar._symbols.Add ( EntitySymbol );
             Grammar._symbols.Add ( WithSymbol );
@@ -185,10 +231,17 @@ namespace BREadfruit
             Grammar._symbols.Add ( TriggersSymbol );
 
 
+            _entityLineRegex = _entityLineRegex.Replace ( "###", String.Format ( "({0})",
+                String.Join ( "|", Grammar.EntityTypes ) ) ).ToUpperInvariant ();
 
 
         }
 
+
+
+
+
+        // ---------------------------------------------------------------------------------
 
 
         #region " --- utility methods --- "
@@ -219,8 +272,13 @@ namespace BREadfruit
             return null;
         }
 
+        // ---------------------------------------------------------------------------------
+
 
         #endregion
+
+
+        // ---------------------------------------------------------------------------------
 
 
         #region " --- private methods --- "
@@ -240,8 +298,28 @@ namespace BREadfruit
             Grammar._entityTypes.Add ( "Dynamic" );
         }
 
+
+
+        private static void PopulateDefaultTokens ()
+        {
+            var maxlengthdefault = new DefaultClause ( "max_length", PositiveIntegerRegex,
+                new List<String> () { "max", "length", "maximum_length" } );
+            var minlengthdefault = new DefaultClause ( "min_length", PositiveIntegerRegex,
+                new List<String> () { "min", "minimum_length" } );
+            var mandatorydefault = new DefaultClause ( "mandatory", BooleanRegex );
+            var enableddefault = new DefaultClause ( "enabled", BooleanRegex );
+            var visibledefault = new DefaultClause ( "visible", BooleanRegex );
+            _defaultsTokens.Add ( maxlengthdefault );
+            _defaultsTokens.Add ( minlengthdefault );
+            _defaultsTokens.Add ( mandatorydefault );
+            _defaultsTokens.Add ( enableddefault );
+            _defaultsTokens.Add ( visibledefault );
+        }
+
         #endregion
 
+
+        // ---------------------------------------------------------------------------------
 
     }
 }
