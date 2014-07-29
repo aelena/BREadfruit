@@ -14,6 +14,7 @@ namespace BREadfruit
         private List<LineInfo> _parsedLines = new List<LineInfo> ();
 
         private IList<Entity> _entities = new List<Entity> ();
+        internal CurrentScope _currentScope { get; private set; }
 
         public IEnumerable<LineInfo> ParsedLines
         {
@@ -46,6 +47,7 @@ namespace BREadfruit
 
             using ( var sr = new StreamReader ( filePath ) )
             {
+                var _currLine = 0;
                 var line = String.Empty;
                 while ( line != null )
                 {
@@ -54,15 +56,36 @@ namespace BREadfruit
                     if ( !( String.IsNullOrWhiteSpace ( line ) ) )
                     {
 
-                        ParseLine ( line );
+                        var lineInfo = ParseLine ( line );
+
+                        if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
+                        {
+                            this._currentScope = CurrentScope.NEW_ENTITY;
+                            this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
+                                lineInfo.Tokens.ElementAt ( 3 ).Token ) );
+                        }
+                        if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.WithSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
+                        {
+                            if ( LineParser.IsAValidSentence ( lineInfo ) )
+                            {
+
+                            }
+                            else
+                                throw new ArgumentException ( String.Format (
+                                    "Invalid with clause found in line {0} in rule file {1}",
+                                    _currLine, filePath ) );
+                        }
 
                     }
-                }
+
+                    _currLine++;
+
+                }   // close of while loop
 
             }
 
         }
-        
+
 
         // ---------------------------------------------------------------------------------
 
@@ -77,5 +100,19 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+
+
     }
+
+
+
+    enum CurrentScope
+    {
+        NEW_ENTITY,
+        DEFAULTS_BLOCK,
+        CONSTRAINTS_BLOCK,
+        TRIGGERS_BLOCK,
+        RULES_BLOCK
+    }
+
 }

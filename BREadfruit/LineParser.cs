@@ -94,14 +94,16 @@ namespace BREadfruit
 
         private static bool ValidateWithStatement ( LineInfo line )
         {
-            var _withLineRegex = new Regex ( Grammar.WithLineRegex );
-            if ( !_withLineRegex.IsMatch ( line.Representation.ToUpperInvariant () ) )
+            var r = new Regex ( Grammar.WithLineRegex, RegexOptions.IgnoreCase );
+            if ( !r.IsMatch ( line.Representation ) )
                 return false;
             if ( line.IndentLevel != Grammar.WithSymbol.IndentLevel )
                 return false;
             // verify the only child token in a 'with' statement is correct
             if ( !Grammar.WithSymbol.Children.Contains ( line.Tokens.ElementAt ( 1 ) ) )
                 return false;
+
+
 
             return true;
         }
