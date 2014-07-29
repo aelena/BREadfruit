@@ -79,6 +79,7 @@ namespace BREadfruit
             this._representation = representation;
             this._indentLevel = LineParser.GetIndentCount ( this._representation );
             this._tokens = LineParser.ExtractTokens ( this._representation );
+            this._isValid = LineParser.IsAValidSentence ( this );
         }
 
 
