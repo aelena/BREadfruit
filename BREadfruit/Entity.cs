@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BREadfruit.Clauses;
 
 namespace BREadfruit
 {
@@ -44,6 +45,8 @@ namespace BREadfruit
         }
 
 
+        private IList<DefaultClause> _defaults;
+
         // ---------------------------------------------------------------------------------
         
 
@@ -52,6 +55,7 @@ namespace BREadfruit
             this._name = name;
             this._typeDescription = typeDescription;
             this._businessProcessCode = bpCode;
+            this._defaults = new List<DefaultClause> ();
         }
 
 
@@ -59,6 +63,11 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        public bool AddDefaultClause(DefaultClause defaultClause)
+        {
+            this._defaults.Add ( defaultClause );
+            return true;
+        }
 
 
         // ---------------------------------------------------------------------------------
