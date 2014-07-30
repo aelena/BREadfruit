@@ -277,6 +277,36 @@ namespace BREadfruit
 
         #region " --- utility methods --- "
 
+        public static DefaultClause GetDefaultClauseByToken ( string token, bool strictComparison = true)
+        {
+            if ( String.IsNullOrWhiteSpace ( token ) )
+                throw new ArgumentNullException ( token );
+
+            IEnumerable<DefaultClause> _s;
+
+            if ( strictComparison )
+            {
+                _s = from s in Grammar.DefaultTokens
+                     where s.Token == token
+                     select s;
+            }
+            else
+            {
+                _s = from s in Grammar.DefaultTokens
+                     where s.Token.Trim ().ToUpperInvariant () == token.Trim ().ToUpperInvariant ()
+                     select s;
+            }
+            if ( _s != null && _s.Count () > 0 )
+                return _s.First ();
+
+            return null;
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
         public static Symbol GetSymbolByToken ( string token, bool strictComparison = true )
         {
             if ( String.IsNullOrWhiteSpace ( token ) )

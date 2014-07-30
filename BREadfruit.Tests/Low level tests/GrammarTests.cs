@@ -21,6 +21,20 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( s.Children.Count () == childCount );
         }
 
+        [TestCase ( "max_length" )]
+        public void ShouldFindDefaultClause ( string token )
+        {
+            var dt = Grammar.GetDefaultClauseByToken ( token, true );
+            Assert.That ( dt.RegexPattern == Grammar.PositiveIntegerRegex );
+        }
+
+        [TestCase ( "Max_Length", Result = null )]
+        [TestCase ( "non existing", Result = null )]
+        public object ShouldNotFindWrongDefaultClause ( string token )
+        {
+            return Grammar.GetDefaultClauseByToken ( token, true );
+        }
+
         [Test]
         public void ShouldHaveEntityRegex ()
         {
@@ -46,9 +60,9 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( Grammar.BooleanRegex, true, Result = true )]
         [TestCase ( Grammar.BooleanRegex, false, Result = true )]
         [TestCase ( Grammar.BooleanRegex, 1, Result = false )]
-        public bool GrammarRegexsShouldWork(string regex, ValueType value)
+        public bool GrammarRegexsShouldWork ( string regex, ValueType value )
         {
-            return Regex.IsMatch ( value.ToString(), regex, RegexOptions.IgnoreCase );
+            return Regex.IsMatch ( value.ToString (), regex, RegexOptions.IgnoreCase );
         }
 
     }

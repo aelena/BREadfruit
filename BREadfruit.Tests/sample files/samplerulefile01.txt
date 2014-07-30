@@ -1,10 +1,12 @@
-﻿Entity XYZ is TYPE
+﻿Entity XYZ is TextBox
 	with defaults
-		max_length 10,
-		min_length 10,
+		max_length 10
+		min_length 10
 		mandatory true
 		enabled true	; consider not having to indicate defaults that are true, either say just enabled or not say anything
-		visible true	; actually this rule is implicit by the previous one
+		visible		; actually this rule is implicit by the previous one
+		visible
+		invalid
 
 	with rules
 		text starts_with 0 then put 'Hello WOrld' in 'lblErrorMessages'		;	if XYZ's value starts with 0 then show the message in the field indicated

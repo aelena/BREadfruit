@@ -35,7 +35,6 @@ namespace BREadfruit.Clauses
         /// Value of the default clause.
         /// </summary>
         private Object _value;
-
         /// <summary>
         /// Main identifier for the Default clause
         /// </summary>

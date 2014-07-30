@@ -46,7 +46,8 @@ namespace BREadfruit
                               StringSplitOptions.RemoveEmptyEntries )
                               select
                               new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count () );
-                return _tokens;
+                var _tokens2 = _tokens.TakeWhile ( z => !z.Token.StartsWith ( ";" ) );
+                return _tokens2;
             }
             return null;
         }
@@ -54,6 +55,12 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+
+        /// <summary>
+        /// Takes care of validating lines found in the file for business rules.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         public static bool IsAValidSentence ( LineInfo line )
         {
             if ( line.Tokens != null && line.Tokens.Count () > 0 )
