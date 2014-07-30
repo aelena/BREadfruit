@@ -102,6 +102,13 @@ namespace BREadfruit.Clauses
                     this._value = value;
                     return true;
                 }
+                else
+                {
+                    // TODO: Pending some testing here...
+                    throw new Exception ( String.Format (
+                        "Attempting to set invalid value {0} for Default Clause {1}. Ensure the value passes the Regex filter {2}",
+                        value, this.Token, this.RegexPattern ) );
+                }
             }
             return false;
         }
