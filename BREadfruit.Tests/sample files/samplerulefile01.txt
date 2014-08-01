@@ -10,18 +10,22 @@
 
 	with rules
 		text starts_with 0 then put 'Hello WOrld' in 'lblErrorMessages'		;	if XYZ's value starts with 0 then show the message in the field indicated
-	
+		role is ENQ then enabled
+
 ; ----------------------------------------------------------------------------	
 	
 Entity 'GD_Ctr_VendorClassification' is DropDownList
 	with defaults
 		value 'NG'
-		enabled			; as opposed to disabled
+		;enabled			; as opposed to disabled
 		visible			; as opposed to not_visible or hidden
 		mandatory 		; as opposed to optional
 	
 	with rules
-		role RCO then enabled
+		role is ENQ then enabled
+		role is UPM then not enabled
+		role is RCO then enabled
+		role is CPM then disabled
 		VendorCountry is 'ES' then 
 			TaxCode1 starts_with '{P;Q;S}' then value 'G', set 'GD_Ctr_IsNaturalPerson' unchecked
 			TaxCode1 starts_with 'G' then value 'NG'
