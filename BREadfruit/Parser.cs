@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BREadfruit.Clauses;
+using BREadfruit.Conditions;
 
 namespace BREadfruit
 {
@@ -114,6 +115,16 @@ namespace BREadfruit
 
                                 this._entities.Last ().AddDefaultClause ( clause );
                             }
+                        }
+                        if ( this._currentScope == CurrentScope.RULES_BLOCK )
+                        {
+                            var _rule = new Rule ();
+                            var _cond = new Condition ( lineInfo.Tokens.First ().Token,
+                                                        Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( 1 ).Token ),
+                                                        lineInfo.Tokens.ElementAt ( 2 ).Token );
+                            _rule.AddCondition ( _cond );
+
+
                         }
 
                     }

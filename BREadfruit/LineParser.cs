@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BREadfruit.Helpers;
 
 namespace BREadfruit
 {
@@ -46,8 +47,51 @@ namespace BREadfruit
                               StringSplitOptions.RemoveEmptyEntries )
                               select
                               new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count () );
-                var _tokens2 = _tokens.TakeWhile ( z => !z.Token.StartsWith ( ";" ) );
-                return _tokens2;
+
+                // parse comments out
+                _tokens = _tokens.TakeWhile ( z => !z.Token.StartsWith ( ";" ) );
+
+                // now we need to detect and unify any tokens in between single or double quotes as one token
+                // so first let's just see if there are any sort of quotes in the line itself
+                // no quote should actually be fount at 0...
+                if ( line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
+                {
+                    // if so, then find all the opening quotes
+                    //var _t1 = _tokens.Where ( x => x.Token.StartsWith ( "'" ) || x.Token.StartsWith ( "\"" ) );
+                    //// there could be several quoted items in the entire line
+                    //// find all the closing
+                    //var _t2 = _tokens.Where ( x => x.Token.EndsWith ( "'" ) || x.Token.EndsWith ( "\"" ) );
+
+                    var _t1 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
+                    var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.EndsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
+
+                    // count should be the same
+                    if ( _t1.Count () == _t2.Count () )
+                    {
+                        var _fusedSymbols = new List<Symbol> ();
+                        // now "fuse" the symbols that are within quotes
+                        // TODO: as this is valid for strings (user strings) any keywords here are considered just string
+                        for ( var i = 0; i < _t1.Count (); i++ )
+                            _fusedSymbols.Add ( _tokens.ToList ().GetRange ( _t1.ElementAt ( i ), ( _t2.ElementAt ( i ) - _t1.ElementAt ( i ) ) + 1 ).JoinTogether () );
+                        //
+                        List<Symbol> replacedLineInfo = new List<Symbol> ();
+                        for ( int i = 0, j = 0; i < _tokens.Count (); i++ )
+                        {
+                            if ( _t1.Contains ( i ) )
+                            {
+                                replacedLineInfo.Add ( _fusedSymbols.ElementAt ( j ) );
+                                i = _t2.ElementAt ( j );    // move the index
+                                j++;
+                            }
+                            else
+                                replacedLineInfo.Add ( _tokens.ElementAt ( i ) );
+                        }
+
+                        return replacedLineInfo;
+                    }
+                }
+
+                return _tokens;
             }
             return null;
         }
