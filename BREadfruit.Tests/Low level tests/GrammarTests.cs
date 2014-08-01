@@ -21,12 +21,20 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( s.Children.Count () == childCount );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         [TestCase ( "max_length" )]
         public void ShouldFindDefaultClause ( string token )
         {
             var dt = Grammar.GetDefaultClauseByToken ( token, true );
             Assert.That ( dt.RegexPattern == Grammar.PositiveIntegerRegex );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         [TestCase ( "Max_Length", Result = null )]
         [TestCase ( "non existing", Result = null )]
@@ -35,6 +43,10 @@ namespace BREadfruit.Tests.Low_level_tests
             return Grammar.GetDefaultClauseByToken ( token, true );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
         public void ShouldHaveEntityRegex ()
         {
@@ -42,6 +54,16 @@ namespace BREadfruit.Tests.Low_level_tests
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// This series of tests validates the Regular Expressions
+        /// that are part of the Grammar.
+        /// </summary>
+        /// <param name="regex"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [TestCase ( Grammar.PositiveIntegerRegex, 0, Result = true )]
         [TestCase ( Grammar.PositiveIntegerRegex, 24, Result = true )]
         [TestCase ( Grammar.PositiveIntegerRegex, -24, Result = false )]
@@ -63,6 +85,33 @@ namespace BREadfruit.Tests.Low_level_tests
         public bool GrammarRegexsShouldWork ( string regex, ValueType value )
         {
             return Regex.IsMatch ( value.ToString (), regex, RegexOptions.IgnoreCase );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "is", "is" )]
+        [TestCase ( "is empty", "is_empty" )]
+        [TestCase ( "not starts", "does_not_start_with" )]
+        [TestCase ( "not starts with", "does_not_start_with" )]
+        [TestCase ( "does not contain", "does_not_contain" )]
+        public void ShouldFindOperator ( string token, string mainAlias )
+        {
+            var _op = Grammar.GetOperator ( token );
+            Assert.That ( _op != null );
+            Assert.That ( _op.Aliases.Contains ( token ) );
+            Assert.That ( _op.Identifier == mainAlias );
+        }
+
+        [TestCase ( "i s", "is" )]
+        [TestCase ( " is empty", "is_empty" )]
+        [TestCase ( "not start", "does_not_start_with" )]
+        [TestCase ( "not starts woth", "does_not_start_with" )]
+        public void ShouldNotFindOperatorOnWrongToken ( string token, string mainAlias )
+        {
+            var _op = Grammar.GetOperator ( token );
+            Assert.That ( _op == null );
         }
 
     }
