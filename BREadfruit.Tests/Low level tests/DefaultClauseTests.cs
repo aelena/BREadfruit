@@ -12,7 +12,7 @@ namespace BREadfruit.Tests.Low_level_tests
     public class DefaultClauseTests
     {
 
-        /// <summary>
+        /// <summary> 
         /// This test ensures that when setting a value to an instance
         /// of DefaultClause the regular expression that validates
         /// the value assigned works.
