@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BREadfruit.Clauses;
+using BREadfruit.Conditions;
 
 namespace BREadfruit
 {
@@ -76,7 +77,7 @@ namespace BREadfruit
         /// considered to denote the same operator.
         /// 
         /// </summary>
-        private static List<String> _operators = new List<string> ();
+        private static List<Operator> _operators = new List<Operator> ();
 
 
         private static List<DefaultClause> _defaultsTokens = new List<DefaultClause> ();
@@ -112,7 +113,7 @@ namespace BREadfruit
             }
         }
 
-        public static IEnumerable<string> Operators
+        public static IEnumerable<Operator> Operators
         {
             get
             {
@@ -200,11 +201,13 @@ namespace BREadfruit
         public static Symbol MultilineSymbol = new Symbol ( "Multiline", 0, true );
         public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
         public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
+        public static Symbol ThenSymbol = new Symbol ( "Then", 2, false );
 
         #endregion
 
 
         #region " --- nonterminals --- "
+
 
         public static Symbol EntitySymbol = new Symbol ( "Entity", 0, false );
         public static Symbol WithSymbol = new Symbol ( "With", 1,
@@ -228,39 +231,39 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        #region " --- operators --- "
+
+
+        public static Operator IsOperator = new Operator ( "is" );
+        public static Operator IsNotOperator = new Operator ( "is_not", new [] { "is not", "isn't" } );
+        public static Operator IsEmptyOperator = new Operator ( "is_empty", new [] { "is empty" } );
+        public static Operator IsNotEmptyOperator = new Operator ( "is_not_empty", new [] { "is not empty" } );
+        public static Operator IsMandatoryOperator = new Operator ( "is_mandatory", new [] { "is mandatory" } );
+        public static Operator IsNotMandatoryOperator = new Operator ( "is_not_mandatory", new [] { "is not mandatory" } );
+        public static Operator IsVisibleOperator = new Operator ( "is_visible", new [] { "is visible" } );
+        public static Operator IsNotVisibleOperator = new Operator ( "is_not_visible", new [] { "is not visible" } );
+        public static Operator StartsWithOperator = new Operator ( "starts_with", new [] { "starts with", "starts" } );
+        public static Operator NotStartsWithOperator = new Operator ( "does_not_start_with", new [] { "not starts with", "not starts", "does not start with" } );
+        public static Operator EndsWithOperator = new Operator ( "ends_with", new [] { "ends", "ends with" } );
+        public static Operator NotEndsWithOperator = new Operator ( "does_not_end_with", new [] { "not ends", "not ends with", "does not end with" } );
+        public static Operator ContainsOperator = new Operator ( "contains" );
+        public static Operator NotContainsOperator = new Operator ( "does_not_contain", new [] { "does not contain", "not contains" } );
+
+
+        #endregion
+
+
+        // ---------------------------------------------------------------------------------
+
+
         static Grammar ()
         {
 
             // add valid entity types
             PopulateEntityTypes ();
-
-            //_operators.Add ( "starts_with" );
-            //_operators.Add ( "does_not_start_with" );
-            //_operators.Add ( "ends_with" );
-            //_operators.Add ( "does_not_end_with" );
-            //_operators.Add ( "contains" );
-            //_operators.Add ( "does_not_contain" );
-            //_operators.Add ( "equals" );
-            //_operators.Add ( "does_not_equal" );
-
             PopulateDefaultTokens ();
-
-            Grammar._symbols.Add ( EntitySymbol );
-            Grammar._symbols.Add ( WithSymbol );
-            Grammar._symbols.Add ( DefaultsSymbol );
-            Grammar._symbols.Add ( ConstraintsSymbol );
-            Grammar._symbols.Add ( TriggersSymbol );
-            Grammar._symbols.Add ( RulesSymbol );
-            Grammar._symbols.Add ( TextBoxSymbol );
-            Grammar._symbols.Add ( CheckBoxSymbol );
-            Grammar._symbols.Add ( DropDownListSymbol );
-            Grammar._symbols.Add ( RadioButtonSymbol );
-            Grammar._symbols.Add ( LabelSymbol );
-            Grammar._symbols.Add ( ButtonSymbol );
-            Grammar._symbols.Add ( DivSymbol );
-            Grammar._symbols.Add ( MultilineSymbol );
-            Grammar._symbols.Add ( ObjectSymbol );
-            Grammar._symbols.Add ( DynamicSymbol );
+            AddSymbols ();
+            AddOperators ();
 
             _entityLineRegex = _entityLineRegex.Replace ( "###", String.Format ( "({0})",
                 String.Join ( "|", Grammar.EntityTypes.Select ( x => x.Token ) ) ) ).ToUpperInvariant ();
@@ -269,15 +272,12 @@ namespace BREadfruit
         }
 
 
-
-
-
         // ---------------------------------------------------------------------------------
 
 
         #region " --- utility methods --- "
 
-        public static DefaultClause GetDefaultClauseByToken ( string token, bool strictComparison = true)
+        public static DefaultClause GetDefaultClauseByToken ( string token, bool strictComparison = true )
         {
             if ( String.IsNullOrWhiteSpace ( token ) )
                 throw new ArgumentNullException ( token );
@@ -333,8 +333,25 @@ namespace BREadfruit
             return null;
         }
 
+
         // ---------------------------------------------------------------------------------
 
+
+        public static Operator GetOperator ( string token )
+        {
+            if ( String.IsNullOrWhiteSpace ( token ) )
+                throw new ArgumentNullException ( token );
+
+            IEnumerable<Operator> _s;
+            _s = from s in Operators
+                 where s.MatchesToken ( token )
+                 select s;
+            
+            if ( _s != null && _s.Count () > 0 )
+                return _s.First ();
+
+            return null;
+        }
 
         #endregion
 
@@ -355,10 +372,59 @@ namespace BREadfruit
             Grammar._entityTypes.Add ( ButtonSymbol );
             Grammar._entityTypes.Add ( DivSymbol );
             Grammar._entityTypes.Add ( MultilineSymbol );
-            Grammar._entityTypes.Add ( ObjectSymbol);
-            Grammar._entityTypes.Add ( DynamicSymbol);
+            Grammar._entityTypes.Add ( ObjectSymbol );
+            Grammar._entityTypes.Add ( DynamicSymbol );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        private static void AddOperators ()
+        {
+            Grammar._operators.Add ( IsOperator );
+            Grammar._operators.Add ( IsNotOperator );
+            Grammar._operators.Add ( IsEmptyOperator );
+            Grammar._operators.Add ( IsNotEmptyOperator );
+            Grammar._operators.Add ( IsMandatoryOperator );
+            Grammar._operators.Add ( IsNotMandatoryOperator );
+            Grammar._operators.Add ( IsVisibleOperator );
+            Grammar._operators.Add ( IsNotVisibleOperator );
+            Grammar._operators.Add ( StartsWithOperator );
+            Grammar._operators.Add ( NotStartsWithOperator );
+            Grammar._operators.Add ( EndsWithOperator );
+            Grammar._operators.Add ( NotEndsWithOperator );
+            Grammar._operators.Add ( ContainsOperator );
+            Grammar._operators.Add ( NotContainsOperator );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        private static void AddSymbols ()
+        {
+            Grammar._symbols.Add ( EntitySymbol );
+            Grammar._symbols.Add ( WithSymbol );
+            Grammar._symbols.Add ( DefaultsSymbol );
+            Grammar._symbols.Add ( ConstraintsSymbol );
+            Grammar._symbols.Add ( TriggersSymbol );
+            Grammar._symbols.Add ( RulesSymbol );
+            Grammar._symbols.Add ( TextBoxSymbol );
+            Grammar._symbols.Add ( CheckBoxSymbol );
+            Grammar._symbols.Add ( DropDownListSymbol );
+            Grammar._symbols.Add ( RadioButtonSymbol );
+            Grammar._symbols.Add ( LabelSymbol );
+            Grammar._symbols.Add ( ButtonSymbol );
+            Grammar._symbols.Add ( DivSymbol );
+            Grammar._symbols.Add ( MultilineSymbol );
+            Grammar._symbols.Add ( ObjectSymbol );
+            Grammar._symbols.Add ( DynamicSymbol );
+            Grammar._symbols.Add ( ThenSymbol );
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         private static void PopulateDefaultTokens ()
@@ -376,6 +442,10 @@ namespace BREadfruit
             _defaultsTokens.Add ( enableddefault );
             _defaultsTokens.Add ( visibledefault );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         #endregion
 
