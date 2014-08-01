@@ -12,6 +12,15 @@ namespace BREadfruit.Tests.Low_level_tests
     public class DefaultClauseTests
     {
 
+        /// <summary>
+        /// This test ensures that when setting a value to an instance
+        /// of DefaultClause the regular expression that validates
+        /// the value assigned works.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="regex"></param>
+        /// <param name="o"></param>
+        /// <returns></returns>
         [TestCase ( "anyname", Grammar.PositiveIntegerRegex, 26, Result = true )]
         [TestCase ( "anyname", Grammar.PositiveIntegerRegex, "u", Result = false )]
         [TestCase ( "anyname", Grammar.IntegerRegex, "u", Result = false )]
