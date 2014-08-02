@@ -88,11 +88,41 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "that is my string yeah", Result = false )]
         [TestCase ( "well, yeah, about that...", Result = true )]
         [TestCase ( "", Result = false )]
-        public bool ContainsAnyForStringTests ( string teststring)
+        public bool ContainsAnyForStringTests ( string teststring )
         {
             return teststring.ContainsAny ( new List<String> () { "no", "I", "don't", "know", "about", "this" } );
         }
 
+
+        [TestCase ( "this is my string yeah", "this", Result = true )]
+        [TestCase ( "that is my string yeah", "", Result = false )]
+        [TestCase ( "well, yeah, about that...", "about", Result = true )]
+        [TestCase ( "", "", Result = false )]
+        public bool ContainsAny2ForStringTests ( string teststring, string item )
+        {
+            var t = teststring.ContainsAny2 ( new List<String> () { "no", "I", "don't", "know", "about", "this" } );
+            Assert.That ( t.Item2 == item );
+            return t.Item1;
+        }
+
+        [Test]
+        public void ContainsAny2Tests ()
+        {
+            var _l = new List<string> () { "a", "b", "c", "d", "e", "f" };
+            var _s = new List<string> () { "c", "r" };
+            Assert.That ( _l.ContainsAny2 ( _s ).Item1 );
+            Assert.That ( _l.ContainsAny2 ( _s ).Item2.ToString () == "c" );
+        }
+
+        [Test]
+        public void ContainsAny2Tests_1 ()
+        {
+            var _l = new List<string> () { "a", "b", "c", "d", "e", "f" };
+            var _s = new List<string> () { "aa", "r" };
+            Assert.That ( !_l.ContainsAny2 ( _s ).Item1 );
+            Assert.That ( _l.ContainsAny2 ( _s ).Item2 == null );
+
+        }
 
     }
 }

@@ -103,8 +103,36 @@ namespace BREadfruit.Helpers
                         return true;
 
             return false;
-
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Extension method to see if any of the 'searches' elements
+        /// is contained in the list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="searches"></param>
+        /// <returns>
+        /// Returns a Tuple<bool,object> indicating true or false if an item was found or not
+        /// and if it was, then the second item in the tuple, the object, will contain that value.
+        /// </returns>
+        public static Tuple<bool, object> ContainsAny2<T> ( this IEnumerable<T> list, IEnumerable<T> searches )
+        {
+            if ( list == null )
+                throw new ArgumentNullException ( "list", "the list cannot be null." );
+
+            if ( searches != null )
+                foreach ( var s in searches )
+                    if ( list.Contains ( s ) )
+                        return new Tuple<bool, object> ( true, s );
+            return new Tuple<bool, object> ( false, null );
+        }
+
+        // ---------------------------------------------------------------------------------
 
 
         /// <summary>
@@ -115,7 +143,7 @@ namespace BREadfruit.Helpers
         /// <param name="list"></param>
         /// <param name="searches"></param>
         /// <returns></returns>
-        public static bool ContainsAny(this string searchee, IEnumerable<string> searches )
+        public static bool ContainsAny ( this string searchee, IEnumerable<string> searches )
         {
             if ( searchee == null )
                 throw new ArgumentNullException ( "searchee", "the string cannot be null." );
@@ -126,6 +154,31 @@ namespace BREadfruit.Helpers
                         return true;
 
             return false;
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Extension method to see if any of the 'searches' elements
+        /// is contained in the list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="searches"></param>
+        /// <returns></returns>
+        public static Tuple<bool, string> ContainsAny2 ( this string searchee, IEnumerable<string> searches )
+        {
+            if ( searchee == null )
+                throw new ArgumentNullException ( "searchee", "the string cannot be null." );
+
+            if ( searches != null )
+                foreach ( var s in searches )
+                    if ( searchee.Contains ( s ) )
+                        return new Tuple<bool, string> ( true, s );
+
+            return new Tuple<bool,string>(false, String.Empty);
 
         }
     }
