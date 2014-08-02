@@ -84,6 +84,15 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( _l.ContainsAny ( _s ) );
         }
 
+        [TestCase ( "this is my string yeah", Result = true )]
+        [TestCase ( "that is my string yeah", Result = false )]
+        [TestCase ( "well, yeah, about that...", Result = true )]
+        [TestCase ( "", Result = false )]
+        public bool ContainsAnyForStringTests ( string teststring)
+        {
+            return teststring.ContainsAny ( new List<String> () { "no", "I", "don't", "know", "about", "this" } );
+        }
+
 
     }
 }
