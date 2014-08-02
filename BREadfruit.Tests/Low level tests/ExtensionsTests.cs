@@ -16,7 +16,7 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             IEnumerable<string> _data = new List<string> () { "a", "kl", "do", "d", "cm", "y", "u", "··", "·t" };
             var _sub = _data.Take ( 2, 4 );
-            Assert.That ( _sub.First () == "do" ); 
+            Assert.That ( _sub.First () == "do" );
             Assert.That ( _sub.Last () == "cm" );
             Assert.That ( _sub.Count () == 3 );
         }
@@ -50,5 +50,40 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( _sub.Last () == 2 );
             Assert.That ( _sub.Count () == 4 );
         }
+
+
+        [Test]
+        public void ContainsAnyTests ()
+        {
+            var _l = new List<string> () { "a", "b", "c", "d", "e", "f" };
+            var _s = new List<string> () { "c", "r" };
+            Assert.That ( _l.ContainsAny ( _s ) );
+        }
+
+        [Test]
+        public void ContainsAnyTests_1 ()
+        {
+            var _l = new List<string> () { "a", "b", "c", "d", "e", "f" };
+            var _s = new List<string> () { "aa", "r" };
+            Assert.That ( !_l.ContainsAny ( _s ) );
+        }
+
+        [Test]
+        public void ContainsAnyTests_2 ()
+        {
+            var _l = new List<Int32> () { 34, 45, 3, 425, 63, 3, 52, 354, 23, 4 };
+            var _s = new List<Int32> () { 57, 128 };
+            Assert.That ( !_l.ContainsAny ( _s ) );
+        }
+
+        [Test]
+        public void ContainsAnyTests_3 ()
+        {
+            var _l = new List<Int32> () { 34, 45, 3, 425, 63, 3, 52, 354, 23, 4 };
+            var _s = new List<Int32> () { 128, 99, 23 };
+            Assert.That ( _l.ContainsAny ( _s ) );
+        }
+
+
     }
 }

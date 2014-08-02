@@ -84,6 +84,28 @@ namespace BREadfruit.Helpers
 
         // ---------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Extension method to see if any of the 'searches' elements
+        /// is contained in the list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="searches"></param>
+        /// <returns></returns>
+        public static bool ContainsAny<T> ( this IEnumerable<T> list, IEnumerable<T> searches)
+        {
+            if ( list == null )
+                throw new ArgumentNullException ( "list", "the list cannot be null." );
 
+            if ( searches != null)
+            {
+                foreach ( var s in searches )
+                    if ( list.Contains ( s ) )
+                        return true;
+            }
+
+            return false;
+
+        }
     }
 }
