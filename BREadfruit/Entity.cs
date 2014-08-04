@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BREadfruit.Clauses;
+using BREadfruit.Conditions;
 
 namespace BREadfruit
 {
@@ -46,6 +47,7 @@ namespace BREadfruit
 
 
         private IList<DefaultClause> _defaults;
+        private IList<Rule> _rules;
 
         // ---------------------------------------------------------------------------------
         
@@ -71,6 +73,16 @@ namespace BREadfruit
 
 
         // ---------------------------------------------------------------------------------
+
+
+        public bool AddRule ( Rule rule )
+        {
+            this._rules.Add ( rule );
+            return true;
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
 
     }
