@@ -27,8 +27,8 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
-        private List<ResultAction> _results = new List<ResultAction> ();
-        public IEnumerable<ResultAction> Results
+        private List<UnaryAction> _results = new List<UnaryAction> ();
+        public IEnumerable<UnaryAction> Results
         {
             get
             {
@@ -53,7 +53,7 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
-        public Rule AddResultAction ( ResultAction result )
+        public Rule AddResultAction ( UnaryAction result )
         {
             if ( result == null )
                 throw new ArgumentNullException ( "result" );

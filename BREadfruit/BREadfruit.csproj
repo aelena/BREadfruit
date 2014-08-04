@@ -42,7 +42,7 @@
     <Compile Include="AliasedSymbol.cs" />
     <Compile Include="Conditions\Condition.cs" />
     <Compile Include="Conditions\Operator.cs" />
-    <Compile Include="Conditions\Result.cs" />
+    <Compile Include="Conditions\UnaryAction.cs" />
     <Compile Include="Conditions\Rule.cs" />
     <Compile Include="Grammar\DefaultClause.cs" />
     <Compile Include="Entity.cs" />

@@ -204,6 +204,13 @@ namespace BREadfruit
         public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
 
+        public static UnaryAction EnableUnaryActionSymbol = new UnaryAction ( "enable", 2, true, new [] { "set enabled", "make enabled", "enabled" } );
+        public static UnaryAction DisableUnaryActionSymbol = new UnaryAction ( "disable", 2, true, new [] { "set disabled", "make disabled", "disabled" } );
+        public static UnaryAction VisibleUnaryActionSymbol = new UnaryAction ( "visible", 2, true, new [] { "set visible", "make visible" } );
+        public static UnaryAction HideUnaryActionSymbol = new UnaryAction ( "hide", 2, true, new [] { "set hidden", "make hidden", "hidden" } );
+        public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory" } );
+        public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
+       
         #endregion
 
 
@@ -251,7 +258,7 @@ namespace BREadfruit
         public static Operator NotEndsWithOperator = new Operator ( "does_not_end_with", 2, false, new [] { "does not end with", "not ends with", "not ends" } );
         public static Operator ContainsOperator = new Operator ( "contains", 2, false );
         public static Operator NotContainsOperator = new Operator ( "does_not_contain", 2, false, new [] { "does not contain", "not contains" } );
-
+        
 
         #endregion
 
@@ -440,9 +447,15 @@ namespace BREadfruit
             Grammar._symbols.Add ( NotEndsWithOperator );
             Grammar._symbols.Add ( ContainsOperator );
             Grammar._symbols.Add ( NotContainsOperator );
+            // add unary actions
+            Grammar._symbols.Add ( EnableUnaryActionSymbol );
+            Grammar._symbols.Add ( DisableUnaryActionSymbol );
+            Grammar._symbols.Add ( VisibleUnaryActionSymbol );
+            Grammar._symbols.Add ( HideUnaryActionSymbol );
+            Grammar._symbols.Add ( MakeMandatoryUnaryActionSymbol );
+            Grammar._symbols.Add ( MakeNonMandatoryUnaryActionSymbol );
 
 
-            
         }
 
 
