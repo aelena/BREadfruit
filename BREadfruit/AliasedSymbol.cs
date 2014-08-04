@@ -56,12 +56,16 @@ namespace BREadfruit
 
         public AliasedSymbol ( string symbol, int indentLevel )
             : base ( symbol, indentLevel )
-        { }
+        {
+            this._aliases = new List<string> ();
+        }
 
 
         public AliasedSymbol ( string symbol, int indentLevel, bool isTerminal )
             : base ( symbol, indentLevel, isTerminal )
-        { }
+        {
+            this._aliases = new List<string> ();
+        }
 
     }
 }
