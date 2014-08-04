@@ -178,8 +178,25 @@ namespace BREadfruit.Helpers
                     if ( searchee.Contains ( s ) )
                         return new Tuple<bool, string> ( true, s );
 
-            return new Tuple<bool,string>(false, String.Empty);
+            return new Tuple<bool, string> ( false, String.Empty );
 
+        }
+
+
+        public static string Prepend ( this string s, string prependValue, int repetitions = 1 )
+        {
+            if ( s == null )
+                s = "";
+            if ( prependValue == null )
+                prependValue = "";
+
+            if ( repetitions <= 0 )
+                repetitions = 1;
+
+            for ( int i = 0; i < repetitions; i++ )
+                s = prependValue + s;
+
+            return s;
         }
     }
 }
