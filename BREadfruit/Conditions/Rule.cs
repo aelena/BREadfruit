@@ -40,6 +40,18 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
+        private List<ResultAction> _resultActions = new List<ResultAction> ();
+        public IEnumerable<ResultAction> ResultActions
+        {
+            get
+            {
+                return this._resultActions;
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
         protected internal Rule AddCondition ( Condition condition )
         {
             if ( condition == null )
@@ -53,12 +65,24 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
-        protected internal Rule AddResultAction ( UnaryAction result )
+        protected internal Rule AddUnaryAction ( UnaryAction result )
         {
             if ( result == null )
                 throw new ArgumentNullException ( "result" );
 
             this._results.Add ( result );
+            return this;
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        protected internal Rule AddResultAction ( ResultAction result )
+        {
+            if ( result == null )
+                throw new ArgumentNullException ( "result" );
+
+            this._resultActions.Add ( result );
             return this;
         }
 
