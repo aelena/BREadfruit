@@ -141,5 +141,14 @@ namespace BREadfruit.Tests.Low_level_tests
             return s.Prepend ( prepended, reps );
         }
 
+
+        [Test]
+        public void PenultimateTests ()
+        {
+
+            var strings = new List<String> () { "cd", "ef", "po", "tu", "tt" };
+            Assert.That ( strings.Penultimate () == "tu" );
+
+        }
     }
 }

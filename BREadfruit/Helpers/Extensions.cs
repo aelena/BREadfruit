@@ -183,6 +183,9 @@ namespace BREadfruit.Helpers
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
         public static string Prepend ( this string s, string prependValue, int repetitions = 1 )
         {
             if ( s == null )
@@ -198,5 +201,25 @@ namespace BREadfruit.Helpers
 
             return s;
         }
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static T Penultimate<T> ( this List<T> list ) where T : class
+        {
+
+            if ( list != null )
+            {
+                return list.ElementAt ( list.Count () - 2);
+            }
+
+            return null;
+
+        }
+
+
+
+        // ---------------------------------------------------------------------------------
+
     }
 }
