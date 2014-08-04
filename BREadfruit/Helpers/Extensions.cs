@@ -205,7 +205,7 @@ namespace BREadfruit.Helpers
         // ---------------------------------------------------------------------------------
 
 
-        public static T Penultimate<T> ( this List<T> list ) where T : class
+        public static T Penultimate<T> ( this IEnumerable<T> list ) where T : class
         {
 
             if ( list != null )
