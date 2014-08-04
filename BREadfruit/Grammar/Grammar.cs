@@ -210,7 +210,12 @@ namespace BREadfruit
         public static UnaryAction HideUnaryActionSymbol = new UnaryAction ( "hide", 2, true, new [] { "set hidden", "make hidden", "hidden" } );
         public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory" } );
         public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
-       
+        public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show_element", 2, true, new [] { "show element", "show" } );
+        public static UnaryAction HideElementUnaryActionSymbol = new UnaryAction ( "hide_element", 2, true, new [] { "hide element", "hide" } );
+        public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
+
+        public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value", "set" } );
+
         #endregion
 
 
@@ -258,7 +263,7 @@ namespace BREadfruit
         public static Operator NotEndsWithOperator = new Operator ( "does_not_end_with", 2, false, new [] { "does not end with", "not ends with", "not ends" } );
         public static Operator ContainsOperator = new Operator ( "contains", 2, false );
         public static Operator NotContainsOperator = new Operator ( "does_not_contain", 2, false, new [] { "does not contain", "not contains" } );
-        
+
 
         #endregion
 
@@ -454,7 +459,11 @@ namespace BREadfruit
             Grammar._symbols.Add ( HideUnaryActionSymbol );
             Grammar._symbols.Add ( MakeMandatoryUnaryActionSymbol );
             Grammar._symbols.Add ( MakeNonMandatoryUnaryActionSymbol );
-
+            Grammar._symbols.Add ( ShowElementUnaryActionSymbol );
+            Grammar._symbols.Add ( HideElementUnaryActionSymbol );
+            Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
+            // result actions
+            Grammar._symbols.Add ( SetValueActionSymbol );
 
         }
 

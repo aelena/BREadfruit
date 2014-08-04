@@ -60,6 +60,8 @@ namespace BREadfruit
                     {
 
                         var lineInfo = ParseLine ( line );
+                        if ( lineInfo.Tokens.Count () == 0 )
+                            continue;
 
                         if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                         {
@@ -144,12 +146,22 @@ namespace BREadfruit
                                         var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
                                         _rule.AddResultAction ( _ua );
                                     }
-                                    else
+                                    // then it's a long result action line
+                                    if ( lineInfo.Tokens.ElementAtFromLast ( 3 ) == Grammar.ThenSymbol )
                                     {
-                                        // then it's a long result action line
+                                        var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
+                                            lineInfo.Tokens.Last ().Token );
+                                        _rule.AddResultAction ( _ua );
                                     }
+                                    if ( lineInfo.Tokens.ElementAtFromLast ( 4 ) == Grammar.ThenSymbol )
+                                    {
+                                        var thenClause = LineInfo.AfterThen ( lineInfo );
+
+                                    }
+
                                 }
 
+                                this._entities.Last ().AddRule ( _rule );
                             }
                             else
                                 throw new Exception (

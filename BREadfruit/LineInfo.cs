@@ -75,7 +75,7 @@ namespace BREadfruit
 
         private LineInfo () { }
 
-        public LineInfo ( string representation)
+        public LineInfo ( string representation )
         {
             this._representation = representation;
             this._indentLevel = LineParser.GetIndentCount ( this._representation );
@@ -106,7 +106,7 @@ namespace BREadfruit
         /// Returns a value that indicates if a certain instance of LineInfo correspond to a 
         /// condition with the following pattern:
         /// 
-		/// this starts with 0 then disable
+        /// this starts with 0 then disable
         /// 
         /// Basically, the check is that 'then' is the penultimate item
         /// and that the last item is a valid unary result.
@@ -118,6 +118,21 @@ namespace BREadfruit
             return lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol;
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static IEnumerable<Symbol> AfterThen ( LineInfo lineInfo )
+        {
+            if ( lineInfo != null )
+            {
+                var thenClause = lineInfo.Tokens.SkipWhile ( x => x != Grammar.ThenSymbol );
+                thenClause.ToList ().RemoveAt ( 0 );
+                return thenClause;
+
+            }
+            return null;
+        }
 
         // ---------------------------------------------------------------------------------
 

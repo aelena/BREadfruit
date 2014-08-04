@@ -143,6 +143,7 @@ namespace BREadfruit
             // now check for occurrence
             var _x = from op in Grammar.Symbols
                      where op is AliasedSymbol
+                     || op is ResultAction
                      let t = _fused.ContainsAny2 ( ( ( AliasedSymbol ) op ).Aliases )
                      where t.Item1
                      select new

@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AliasedSymbol.cs" />
+    <Compile Include="Conditions\ActionResult.cs" />
     <Compile Include="Conditions\Condition.cs" />
     <Compile Include="Conditions\Operator.cs" />
     <Compile Include="Conditions\UnaryAction.cs" />

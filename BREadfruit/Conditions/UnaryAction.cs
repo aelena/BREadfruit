@@ -9,15 +9,28 @@ namespace BREadfruit.Conditions
     {
 
         /// <summary>
+        /// Contains the name of the object / entity this unary action
+        /// refers to. 
+        /// If it is not specified then a value of this is assumed
+        /// </summary>
+        public string Reference { get; protected set; }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="s"></param>
-        public UnaryAction ( Symbol s ) :
+        public UnaryAction ( Symbol s, string reference = "this" ) :
             base ( s.Token, s.IndentLevel, s.IsTerminal )
         {
             if ( s.Children != null )
                 foreach ( var c in s.Children )
                     base.AddValidChild ( c );
+
+            this.Reference = reference;
         }
 
 
@@ -31,13 +44,14 @@ namespace BREadfruit.Conditions
         /// <param name="indentLevel"></param>
         /// <param name="isTerminal"></param>
         /// <param name="aliases"></param>
-        public UnaryAction ( string identifier, int indentLevel, bool isTerminal, IEnumerable<string> aliases = null )
+        public UnaryAction ( string identifier, int indentLevel, bool isTerminal, IEnumerable<string> aliases = null, string reference = "this" )
             : base ( identifier, indentLevel, isTerminal )
         {
             if ( String.IsNullOrWhiteSpace ( identifier ) )
                 throw new ArgumentNullException ( "identifier", "The identifier for a ResultAction instance cannot be null" );
 
             this.Token = identifier;
+            this.Reference = "this";
 
             if ( aliases != null )
                 this._aliases.AddRange ( aliases );
