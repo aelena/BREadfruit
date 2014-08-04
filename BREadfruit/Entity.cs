@@ -58,6 +58,7 @@ namespace BREadfruit
             this._typeDescription = typeDescription;
             this._businessProcessCode = bpCode;
             this._defaults = new List<DefaultClause> ();
+            this._rules = new List<Rule> ();
         }
 
 
