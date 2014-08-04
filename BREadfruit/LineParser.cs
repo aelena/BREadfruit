@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BREadfruit.Conditions;
 using BREadfruit.Helpers;
 
 namespace BREadfruit
@@ -18,8 +19,6 @@ namespace BREadfruit
             // split the line in spaces; replace any tabs just in case the user
             // put tabs in between tokens
             var _tokens = ExtractTokens ( line );
-
-
             return new LineInfo ( line, indentLevel, _tokens );
 
         }
@@ -43,11 +42,20 @@ namespace BREadfruit
         {
             if ( line != null )
             {
+                // get tokens from string 
+                // if the token exists in the grammar, then add the grammar-declared token
+                // otherwise, as in teh case of literals or other symbols
+                // instantiate a new Symbol and add it to the collection
+                // this poses the details of the last token being really the nontermoinal or not....
+                // maybe this need some more careful thinking
                 var _tokens = from t in line.Replace ( "\t", " " ).Split ( new [] { " " },
                               StringSplitOptions.RemoveEmptyEntries )
+                              let grammarToken = Grammar.GetSymbolByToken ( t, false )
                               select
-                              new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count () );
-
+                              grammarToken == null ?
+                              new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count (), false )
+                              : grammarToken;
+            
                 // parse comments out
                 _tokens = _tokens.TakeWhile ( z => !z.Token.StartsWith ( ";" ) );
 
@@ -127,6 +135,36 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        public static string TokenizeMultiplePartOperators ( LineInfo li /*IEnumerable<Symbol> tokens, string line*/ )
+        {
+
+            // take a repreeentation of the entire list of tokens as a simple string
+            var _fused = li.Tokens.JoinTogether ().Token;
+            // now check for occurrence
+            var _x = from op in Grammar.Operators
+                     let t = _fused.ContainsAny2 ( op.Aliases )
+                     where t.Item1
+                     select new
+                     {
+                         Operator = op,
+                         Ocurrence = t.Item2,
+                         Index = _fused.IndexOf ( op.Token )
+                     };
+
+            if ( _x != null && _x.Count () > 0 )
+            {
+                var _replacedString = _fused;
+                _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.Operator.Token ) );
+                // restore original tabs
+                _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
+                return _replacedString;
+            }
+            return _fused;
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
         #region " --- specific line validations --- "
 
 
@@ -153,8 +191,6 @@ namespace BREadfruit
             // verify the only child token in a 'with' statement is correct
             if ( !Grammar.WithSymbol.Children.Contains ( line.Tokens.ElementAt ( 1 ) ) )
                 return false;
-
-
 
             return true;
         }
