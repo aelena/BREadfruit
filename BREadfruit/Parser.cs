@@ -143,19 +143,25 @@ namespace BREadfruit
                                     // check if it's a valid action
                                     if ( lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol )
                                     {
-                                        var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
-                                        _rule.AddResultAction ( _ua );
+                                        var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
+                                        _rule.AddUnaryAction ( _unaryAction );
                                     }
                                     // then it's a long result action line
                                     if ( lineInfo.Tokens.ElementAtFromLast ( 3 ) == Grammar.ThenSymbol )
                                     {
-                                        var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
+                                        var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
                                             lineInfo.Tokens.Last ().Token );
-                                        _rule.AddResultAction ( _ua );
+                                        _rule.AddUnaryAction ( _unaryAction );
                                     }
-                                    if ( lineInfo.Tokens.ElementAtFromLast ( 4 ) == Grammar.ThenSymbol )
+                                    if ( lineInfo.Tokens.ElementAtFromLast ( 5 ) == Grammar.ThenSymbol )
                                     {
+                                        if ( lineInfo.Tokens.Penultimate () != Grammar.InSymbol )
+                                            throw new Exception ( String.Format ( "Line {0} seems to be missing token 'in'", line ) );
                                         var thenClause = LineInfo.AfterThen ( lineInfo );
+                                        var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
+                                            thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
+                                        _rule.AddResultAction ( _ra );
+
 
                                     }
 

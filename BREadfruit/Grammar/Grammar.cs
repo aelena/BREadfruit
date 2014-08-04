@@ -203,6 +203,7 @@ namespace BREadfruit
         public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
         public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
+        public static Symbol InSymbol = new Symbol ( "in", 2, false );
 
         public static UnaryAction EnableUnaryActionSymbol = new UnaryAction ( "enable", 2, true, new [] { "set enabled", "make enabled", "enabled" } );
         public static UnaryAction DisableUnaryActionSymbol = new UnaryAction ( "disable", 2, true, new [] { "set disabled", "make disabled", "disabled" } );
@@ -437,8 +438,9 @@ namespace BREadfruit
             Grammar._symbols.Add ( DynamicSymbol );
             Grammar._symbols.Add ( ThenSymbol );
             Grammar._symbols.Add ( ThisSymbol );
-            Grammar._symbols.Add ( IsOperator );
+            Grammar._symbols.Add ( InSymbol );
             // add operator symbols
+            Grammar._symbols.Add ( IsOperator );
             Grammar._symbols.Add ( IsNotOperator );
             Grammar._symbols.Add ( IsEmptyOperator );
             Grammar._symbols.Add ( IsNotEmptyOperator );

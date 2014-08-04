@@ -127,8 +127,7 @@ namespace BREadfruit
             if ( lineInfo != null )
             {
                 var thenClause = lineInfo.Tokens.SkipWhile ( x => x != Grammar.ThenSymbol );
-                thenClause.ToList ().RemoveAt ( 0 );
-                return thenClause;
+                return thenClause.ToList ().Skip ( 1 );
 
             }
             return null;

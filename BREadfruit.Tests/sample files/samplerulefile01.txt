@@ -9,10 +9,11 @@
 		invalid
 
 	with rules
+		text starts_with 0 then show element ErrorMessageDiv		;	if XYZ's value starts with 0 then show the message in the field indicated
+		text starts with 0 then set value 'Hello WOrld' in lblErrorMessages		;	if XYZ's value starts with 0 then show the message in the field indicated
+		text starts with 'High Risk - ' then set value 'HR' in GD_Ctr_VendorRisk			;   high risk for RCO
 		this starts with 0 then disable
 		this ends with 1 then set visible
-		text starts_with 0 then show message 'Hello WOrld' in 'lblErrorMessages'		;	if XYZ's value starts with 0 then show the message in the field indicated
-		text starts with 'High Risk - ' then put 'HR' in GD_Ctr_VendorRisk  ;   high risk for RCO
 		role is ENQ then enabled
 
 ; ----------------------------------------------------------------------------	
@@ -30,7 +31,7 @@ Entity 'GD_Ctr_VendorClassification' is DropDownList
 		role is RCO then enabled
 		role is CPM then disabled
 		VendorCountry is 'ES' then 
-			TaxCode1 starts_with '{P;Q;S}' then value 'G', set 'GD_Ctr_IsNaturalPerson' unchecked
+			TaxCode1 starts_with '{P;Q;S}' then select 'G', set 'GD_Ctr_IsNaturalPerson' unchecked
 			TaxCode1 starts_with 'G' then value 'NG'
 	
 	with triggers
