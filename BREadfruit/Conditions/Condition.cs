@@ -66,7 +66,7 @@ namespace BREadfruit.Conditions
         public override string ToString ()
         {
             return String.Format ( "{0} {1} {2}", 
-                this.Operand, this.Operator.Identifier, this.Value.ToString() );
+                this.Operand, this.Operator.Token, this.Value.ToString() );
         }
 
 

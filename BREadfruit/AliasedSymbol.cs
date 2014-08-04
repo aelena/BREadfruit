@@ -4,19 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BREadfruit.Conditions
+namespace BREadfruit
 {
-    public abstract class AliasedToken
+    public class AliasedSymbol : Symbol
     {
-        protected string _name;
-        public string Identifier
-        {
-            get { return _name; }
-        }
-
-
-        // ---------------------------------------------------------------------------------
-
 
         /// <summary>
         /// Stores other syntax that might be available for this same operator.
@@ -31,6 +22,9 @@ namespace BREadfruit.Conditions
                 return this._aliases;
             }
         }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         /// <summary>
@@ -59,6 +53,15 @@ namespace BREadfruit.Conditions
 
 
         // ---------------------------------------------------------------------------------
+
+        public AliasedSymbol ( string symbol, int indentLevel )
+            : base ( symbol, indentLevel )
+        { }
+
+
+        public AliasedSymbol ( string symbol, int indentLevel, bool isTerminal )
+            : base ( symbol, indentLevel, isTerminal )
+        { }
 
     }
 }
