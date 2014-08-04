@@ -139,5 +139,21 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
+        [TestCase ( "this starts with 0 then disabled", Result = "this starts_with 0 then disabled" )]
+        [TestCase ( "this starts with 0 and that ends with 0 then disabled", Result = "this starts_with 0 and that ends_with 0 then disabled" )]
+        [TestCase ( "enabled true", Result = "enabled true" )]
+        [TestCase ( "max_length 10", Result = "max_length 10" )]
+        public string TokenizeMultiplePartOperatorTests ( string line )
+        {
+            var li = LineParser.ParseLine ( line );
+            var resolved = LineParser.TokenizeMultiplePartOperators ( li );
+            return resolved;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+
     }
 }

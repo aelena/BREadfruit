@@ -101,7 +101,7 @@ namespace BREadfruit.Tests.Low_level_tests
             var _op = Grammar.GetOperator ( token );
             Assert.That ( _op != null );
             Assert.That ( _op.Aliases.Contains ( token ) );
-            Assert.That ( _op.Identifier == mainAlias );
+            Assert.That ( _op.Token == mainAlias );
         }
 
         [TestCase ( "i s", "is" )]

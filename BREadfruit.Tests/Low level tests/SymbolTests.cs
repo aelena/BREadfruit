@@ -15,7 +15,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "test", 1, true )]
         public void SymbolShouldConstructCorrectly ( string token, int indentlevel, bool isTerminal )
         {
-            var s = new Symbol ( token, indentlevel );
+            var s = new Symbol ( token, indentlevel, isTerminal );
             Assert.That ( s.IndentLevel == indentlevel );
             Assert.That ( s.IsTerminal == isTerminal );
             Assert.That ( s.Token == token );

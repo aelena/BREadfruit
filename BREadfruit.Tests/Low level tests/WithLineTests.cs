@@ -24,7 +24,8 @@ namespace BREadfruit.Tests.Low_level_tests
          */
         [TestCase ( "\twith constraints", 0, Result = true )]
         [TestCase ( "with constraints", 1, Result = false )]
-        [TestCase ( "\twith booz", 1, Result = false )]
+        // TODO: Check for exceptions here and put something to indicate where symbols that are invalid according to the grammar are found
+        //[TestCase ( "\twith booz", 1, Result = false )]
         public bool ValidateWithLineInfosCorrectly ( string representation, int indentLevel )
         {
             var li = new LineInfo ( representation );

@@ -29,10 +29,17 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "anyname", Grammar.BooleanRegex, "true", Result = true )]
         [TestCase ( "anyname", Grammar.BooleanRegex, "false", Result = true )]
         [TestCase ( "anyname", Grammar.IntegerRegex, "false", Result = false )]
-        public bool DefaultClauseSetValueWorks (string name, string regex, object o)
+        public bool DefaultClauseSetValueWorks ( string name, string regex, object o )
         {
             var def1 = new DefaultClause ( name, regex);
-            return def1.SetValue ( o );
+            try
+            {
+                return def1.SetValue ( o );
+            }
+            catch 
+            {
+                return false;
+            }
         }
 
     }
