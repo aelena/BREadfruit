@@ -9,7 +9,8 @@
 		invalid
 
 	with rules
-		this starts with 0 then disabled
+		this starts with 0 then disable
+		this ends with 1 then set visible
 		text starts_with 0 then show message 'Hello WOrld' in 'lblErrorMessages'		;	if XYZ's value starts with 0 then show the message in the field indicated
 		text starts with 'High Risk - ' then put 'HR' in GD_Ctr_VendorRisk  ;   high risk for RCO
 		role is ENQ then enabled
