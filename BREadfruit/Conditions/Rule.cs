@@ -40,7 +40,7 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
-        public Rule AddCondition ( Condition condition )
+        protected internal Rule AddCondition ( Condition condition )
         {
             if ( condition == null )
                 throw new ArgumentNullException ( "condition" );
@@ -53,7 +53,7 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
-        public Rule AddResultAction ( UnaryAction result )
+        protected internal Rule AddResultAction ( UnaryAction result )
         {
             if ( result == null )
                 throw new ArgumentNullException ( "result" );
