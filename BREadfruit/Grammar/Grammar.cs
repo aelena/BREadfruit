@@ -201,7 +201,8 @@ namespace BREadfruit
         public static Symbol MultilineSymbol = new Symbol ( "Multiline", 0, true );
         public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
         public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
-        public static Symbol ThenSymbol = new Symbol ( "Then", 2, false );
+        public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
+        public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
 
         #endregion
 
@@ -210,7 +211,7 @@ namespace BREadfruit
 
 
         public static Symbol EntitySymbol = new Symbol ( "Entity", 0, false );
-        public static Symbol WithSymbol = new Symbol ( "With", 1,
+        public static Symbol WithSymbol = new Symbol ( "with", 1,
             new List<Symbol> () { DefaultsSymbol, 
                 ConstraintsSymbol, 
                 TriggersSymbol,
@@ -234,20 +235,22 @@ namespace BREadfruit
         #region " --- operators --- "
 
 
-        public static Operator IsOperator = new Operator ( "is" );
-        public static Operator IsNotOperator = new Operator ( "is_not", new [] { "is not", "isn't" } );
-        public static Operator IsEmptyOperator = new Operator ( "is_empty", new [] { "is empty" } );
-        public static Operator IsNotEmptyOperator = new Operator ( "is_not_empty", new [] { "is not empty" } );
-        public static Operator IsMandatoryOperator = new Operator ( "is_mandatory", new [] { "is mandatory" } );
-        public static Operator IsNotMandatoryOperator = new Operator ( "is_not_mandatory", new [] { "is not mandatory" } );
-        public static Operator IsVisibleOperator = new Operator ( "is_visible", new [] { "is visible" } );
-        public static Operator IsNotVisibleOperator = new Operator ( "is_not_visible", new [] { "is not visible" } );
-        public static Operator StartsWithOperator = new Operator ( "starts_with", new [] { "starts with", "starts" } );
-        public static Operator NotStartsWithOperator = new Operator ( "does_not_start_with", new [] { "not starts with", "not starts", "does not start with" } );
-        public static Operator EndsWithOperator = new Operator ( "ends_with", new [] { "ends", "ends with" } );
-        public static Operator NotEndsWithOperator = new Operator ( "does_not_end_with", new [] { "not ends", "not ends with", "does not end with" } );
-        public static Operator ContainsOperator = new Operator ( "contains" );
-        public static Operator NotContainsOperator = new Operator ( "does_not_contain", new [] { "does not contain", "not contains" } );
+        public static Operator IsOperator = new Operator ( "is", 2, false );
+        public static Operator IsNotOperator = new Operator ( "is_not", 2, false, new [] { "is not", "isn't" } );
+        public static Operator IsEmptyOperator = new Operator ( "is_empty", 2, false, new [] { "is empty" } );
+        public static Operator IsNotEmptyOperator = new Operator ( "is_not_empty", 2, false, new [] { "is not empty" } );
+        public static Operator IsMandatoryOperator = new Operator ( "is_mandatory", 2, false, new [] { "is mandatory" } );
+        public static Operator IsNotMandatoryOperator = new Operator ( "is_not_mandatory", 2, false, new [] { "is not mandatory" } );
+        public static Operator IsVisibleOperator = new Operator ( "is_visible", 2, false, new [] { "is visible" } );
+        public static Operator IsNotVisibleOperator = new Operator ( "is_not_visible", 2, false, new [] { "is not visible" } );
+        public static Operator StartsWithOperator = new Operator ( "starts_with", 2, false, new [] { "starts with", "starts" } );
+        // in cases like this one, put longer identifier first
+        public static Operator NotStartsWithOperator = new Operator ( "does_not_start_with", 2, false, new [] { "does not start with", "not starts with", "not starts" } );
+        public static Operator EndsWithOperator = new Operator ( "ends_with", 2, false, new [] { "ends with", "ends" } );
+        // in cases like this one, put longer identifier first
+        public static Operator NotEndsWithOperator = new Operator ( "does_not_end_with", 2, false, new [] { "does not end with", "not ends with", "not ends" } );
+        public static Operator ContainsOperator = new Operator ( "contains", 2, false );
+        public static Operator NotContainsOperator = new Operator ( "does_not_contain", 2, false, new [] { "does not contain", "not contains" } );
 
 
         #endregion
@@ -312,7 +315,6 @@ namespace BREadfruit
             if ( String.IsNullOrWhiteSpace ( token ) )
                 throw new ArgumentNullException ( token );
 
-
             IEnumerable<Symbol> _s;
 
             if ( strictComparison )
@@ -346,7 +348,7 @@ namespace BREadfruit
             _s = from s in Operators
                  where s.MatchesToken ( token )
                  select s;
-            
+
             if ( _s != null && _s.Count () > 0 )
                 return _s.First ();
 
@@ -383,6 +385,7 @@ namespace BREadfruit
         private static void AddOperators ()
         {
             Grammar._operators.Add ( IsOperator );
+            //IsOperator.Aliases.ToList ().ForEach ( x => Grammar._operators.Add ( new Operator ( x ) ) );
             Grammar._operators.Add ( IsNotOperator );
             Grammar._operators.Add ( IsEmptyOperator );
             Grammar._operators.Add ( IsNotEmptyOperator );
@@ -421,6 +424,25 @@ namespace BREadfruit
             Grammar._symbols.Add ( ObjectSymbol );
             Grammar._symbols.Add ( DynamicSymbol );
             Grammar._symbols.Add ( ThenSymbol );
+            Grammar._symbols.Add ( ThisSymbol );
+            Grammar._symbols.Add ( IsOperator );
+            // add operator symbols
+            Grammar._symbols.Add ( IsNotOperator );
+            Grammar._symbols.Add ( IsEmptyOperator );
+            Grammar._symbols.Add ( IsNotEmptyOperator );
+            Grammar._symbols.Add ( IsMandatoryOperator );
+            Grammar._symbols.Add ( IsNotMandatoryOperator );
+            Grammar._symbols.Add ( IsVisibleOperator );
+            Grammar._symbols.Add ( IsNotVisibleOperator );
+            Grammar._symbols.Add ( StartsWithOperator );
+            Grammar._symbols.Add ( NotStartsWithOperator );
+            Grammar._symbols.Add ( EndsWithOperator );
+            Grammar._symbols.Add ( NotEndsWithOperator );
+            Grammar._symbols.Add ( ContainsOperator );
+            Grammar._symbols.Add ( NotContainsOperator );
+
+
+            
         }
 
 
