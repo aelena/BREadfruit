@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BREadfruit.Helpers;
 
 namespace BREadfruit
 {
@@ -95,6 +96,26 @@ namespace BREadfruit
                 this._numberOfTokens = tokens.Count ();
             this._isValid = LineParser.IsAValidSentence ( this );
 
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Returns a value that indicates if a certain instance of LineInfo correspond to a 
+        /// condition with the following pattern:
+        /// 
+		/// this starts with 0 then disable
+        /// 
+        /// Basically, the check is that 'then' is the penultimate item
+        /// and that the last item is a valid unary result.
+        /// </summary>
+        /// <param name="lineInfo"></param>
+        /// <returns></returns>
+        public static bool RepresentsUnaryResultCondition ( LineInfo lineInfo )
+        {
+            return lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol;
         }
 
 
