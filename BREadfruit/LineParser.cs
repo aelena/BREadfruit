@@ -30,7 +30,7 @@ namespace BREadfruit
         protected internal static int GetIndentCount ( string line )
         {
             if ( line != null )
-                return line.ToCharArray ().Where ( x => x == '\t' ).Count ();
+                return line.Where ( x => x == '\t' ).Count ();
             return 0;
         }
 
@@ -55,7 +55,7 @@ namespace BREadfruit
                               grammarToken == null ?
                               new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count (), false )
                               : grammarToken;
-            
+
                 // parse comments out
                 _tokens = _tokens.TakeWhile ( z => !z.Token.StartsWith ( ";" ) );
 
@@ -141,12 +141,13 @@ namespace BREadfruit
             // take a repreeentation of the entire list of tokens as a simple string
             var _fused = li.Tokens.JoinTogether ().Token;
             // now check for occurrence
-            var _x = from op in Grammar.Operators
-                     let t = _fused.ContainsAny2 ( op.Aliases )
+            var _x = from op in Grammar.Symbols
+                     where op is AliasedSymbol
+                     let t = _fused.ContainsAny2 ( ( ( AliasedSymbol ) op ).Aliases )
                      where t.Item1
                      select new
                      {
-                         Operator = op,
+                         symbol = op,
                          Ocurrence = t.Item2,
                          Index = _fused.IndexOf ( op.Token )
                      };
@@ -154,7 +155,7 @@ namespace BREadfruit
             if ( _x != null && _x.Count () > 0 )
             {
                 var _replacedString = _fused;
-                _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.Operator.Token ) );
+                _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
                 // restore original tabs
                 _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
                 return _replacedString;
