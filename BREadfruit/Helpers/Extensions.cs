@@ -190,7 +190,7 @@ namespace BREadfruit.Helpers
             if ( prependValue == null )
                 prependValue = "";
 
-            if ( repetitions <= 0 )
+            if ( repetitions < 0 )
                 repetitions = 1;
 
             for ( int i = 0; i < repetitions; i++ )

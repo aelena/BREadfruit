@@ -129,11 +129,13 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "A", null, 1, Result = "A" )]
         [TestCase ( "A", null, 3, Result = "A" )]
         [TestCase ( "", "A", 1, Result = "A" )]
+        [TestCase ( "", "A", 0, Result = "" )]
         [TestCase ( "", "A", 4, Result = "AAAA" )]
         [TestCase ( null, "A", 4, Result = "AAAA" )]
         [TestCase ( "test string", "\t", 3, Result = "\t\t\ttest string" )]
         [TestCase ( "test string", "\t", -13, Result = "\ttest string" )]
-        [TestCase ( "test string", "\t", 0, Result = "\ttest string" )]
+        [TestCase ( "test string", "\t", 1, Result = "\ttest string" )]
+        [TestCase ( "test string", "\t", 0, Result = "test string" )]
         public string PrependTests ( string s, string prepended, int reps )
         {
             return s.Prepend ( prepended, reps );
