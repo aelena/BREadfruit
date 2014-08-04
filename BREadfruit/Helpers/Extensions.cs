@@ -209,15 +209,31 @@ namespace BREadfruit.Helpers
         {
 
             if ( list != null )
-            {
-                return list.ElementAt ( list.Count () - 2);
-            }
+                return list.ElementAt ( list.Count () - 2 );
 
             return null;
 
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Returns the element that sits in the indicated position,
+        /// starting from 1 and starting from the back of the collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static T ElementAtFromLast<T> ( this IEnumerable<T> list, int index ) where T : class
+        {
+            if ( list != null )
+                return list.Reverse ().ElementAt ( index - 1 );
+            return null;
+
+        }
 
         // ---------------------------------------------------------------------------------
 

@@ -150,5 +150,13 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( strings.Penultimate () == "tu" );
 
         }
+
+        [Test]
+        public void ElementAtFromLastTests ()
+        {
+            var strings = new List<String> () { "cd", "ef", "po", "tu", "tt" };
+            Assert.That ( strings.ElementAtFromLast (2) == "tu" );
+
+        }
     }
 }
