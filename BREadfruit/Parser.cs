@@ -102,7 +102,7 @@ namespace BREadfruit
                                 // in that case we assumed the instruction to always be true
                                 // TODO: further validation to be added here to ensure we accept only boolean values here
                                 if ( lineInfo.Tokens.Count () == 1 )
-                                    clause.SetValue ( true );
+                                    clause.SetValue ( "true" );
                                 // if there are two tokens, it means there are no comments, and we're dealing with a default instruction+
                                 // such as width 100 or enabled true, and then we assume the last token is the value
                                 if ( lineInfo.Tokens.Count () == 2 )
@@ -118,12 +118,32 @@ namespace BREadfruit
                         }
                         if ( this._currentScope == CurrentScope.RULES_BLOCK )
                         {
+                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo) );
+
                             var _rule = new Rule ();
                             var _cond = new Condition ( lineInfo.Tokens.First ().Token,
                                                         Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( 1 ).Token ),
                                                         lineInfo.Tokens.ElementAt ( 2 ).Token );
                             _rule.AddCondition ( _cond );
+                            // check presence of token 'then'
+                            if ( lineInfo.Tokens.Contains ( Grammar.ThenSymbol ) )
+                            {
+                                // and check too if after then, tehre is some action or more nested conditions
+                                if ( lineInfo.Tokens.Last ().Equals ( Grammar.ThenSymbol ) )
+                                {
+                                    // then there are nested conditions, so
+                                    continue;
+                                }
+                                else
+                                {
+                                    // if it's not the last then we have the action right after the token
+                                }
 
+                            }
+                            else
+                                throw new Exception (
+                                    String.Format ( "Found Invalid Condition Syntax - symbol 'then' missing in line '{0}'",
+                                        lineInfo.Representation ) );
 
                         }
 
