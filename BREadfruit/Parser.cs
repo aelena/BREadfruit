@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BREadfruit.Clauses;
 using BREadfruit.Conditions;
+using BREadfruit.Helpers;
 
 namespace BREadfruit
 {
@@ -118,7 +119,7 @@ namespace BREadfruit
                         }
                         if ( this._currentScope == CurrentScope.RULES_BLOCK )
                         {
-                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo) );
+                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
 
                             var _rule = new Rule ();
                             var _cond = new Condition ( lineInfo.Tokens.First ().Token,
@@ -137,6 +138,16 @@ namespace BREadfruit
                                 else
                                 {
                                     // if it's not the last then we have the action right after the token
+                                    // check if it's a valid action
+                                    if ( lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol )
+                                    {
+                                        var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
+                                        _rule.AddResultAction ( _ua );
+                                    }
+                                    else
+                                    {
+                                        // then it's a long result action line
+                                    }
                                 }
 
                             }
