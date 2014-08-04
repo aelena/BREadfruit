@@ -12,20 +12,20 @@ namespace BREadfruit
         /// Gets the string representation of the token, for example
         /// 'Entity' or 'with'.
         /// </summary>
-        public string Token { get; private set; }
+        public string Token { get; protected set; }
 
         /// <summary>
         /// Gets the indentation level where the token can live.
         /// For example, a symbol with IndentLevel = 1 cannot appear 
         /// at the beginning of a line or at a second level of indentation (2 tabs).
         /// </summary>
-        public int IndentLevel { get; private set; }
+        public int IndentLevel { get; protected set; }
 
         /// <summary>
         /// Gets a boolean value that indicates whether this is
         /// a terminal or nonterminal.
         /// </summary>
-        public bool IsTerminal { get; private set; }
+        public bool IsTerminal { get; protected set; }
 
         /// <summary>
         /// Private list of other Symbols that can be considered children
