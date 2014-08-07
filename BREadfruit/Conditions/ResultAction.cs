@@ -21,6 +21,7 @@ namespace BREadfruit.Conditions
             base ( s.Token, s.IndentLevel, s.IsTerminal )
         {
             this.Value = value;
+            this.Reference = reference;
         }
 
         public ResultAction ( string identifier,
@@ -31,6 +32,11 @@ namespace BREadfruit.Conditions
             : base ( identifier, indentLevel, isTerminal, aliases, reference )
         {
 
+        }
+
+        public override string ToString ()
+        {
+            return String.Format ( "{0} {1} {2}", this.Token, this.Value.ToString (), this.Reference );
         }
 
     }
