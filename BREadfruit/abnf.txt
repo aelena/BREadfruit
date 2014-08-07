@@ -1,4 +1,47 @@
-﻿logical-constant = "false" / "true"
+﻿new-line:
+    Carriage return character (U+000D)
+    Line feed character (U+000A)
+    Carriage return character (U+000D) followed by line feed character (U+000A)
+    Next line character (U+0085)
+    Line separator character (U+2028)
+    Paragraph separator character (U+2029)
+
+whitespace:
+    whitespace-character+
+
+whitespace-character:
+    Any character with Unicode class Zs
+    Horizontal tab character (U+0009)
+    Vertical tab character (U+000B)
+    Form feed character (U+000C)
+
+comment:
+    single-line-comment
+
+single-line-comment:
+    ";" input-character*
+
+input-character:
+    Any Unicode character except a new-line-character
+
+new-line-character:
+    Carriage return character (U+000D)
+    Line feed character (U+000A)
+    Next line character (U+0085)
+    Line separator character (U+2028)
+    Paragraph separator character (U+2029)
+
+keyword:
+	""
+
+
+boolean-literal:
+    "true"
+    "false"
+
+
+
+logical-constant = "false" / "true"
 
 with-statement = with "defaults" / "rules" / "constraints" / "triggers"
 

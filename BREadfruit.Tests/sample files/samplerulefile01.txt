@@ -6,12 +6,11 @@
 		mandatory true
 		enabled true	; consider not having to indicate defaults that are true, either say just enabled or not say anything
 		visible		; actually this rule is implicit by the previous one
-		visible
 		invalid		; invalid entries are simply ignored
 
 	with rules
-		role is ENQ then enabled
-		role is UPM,CPM then not enabled
+		role is 'ENQ' then enabled
+		role is {UPM,CPM} then not enabled
 		role is CPM then disabled
 		VendorCountry is ES then 
 			TaxCode1 starts_with {P,Q,S} then set value 'G', set value 'GD_Ctr_IsNaturalPerson' unchecked
@@ -24,6 +23,15 @@
 		;this ends with 1 then set visible
 		;role is ENQ then enabled
 
+	with triggers
+		TaxCode1 change
+		TaxCode1 lose focus
+		TaxCode2 becomes mandatory
+
+
+	with constraints
+		only ascii
+		only numbers
 ; ----------------------------------------------------------------------------	
 	
 Entity GD_Ctr_VendorClassification is DropDownList
@@ -42,9 +50,15 @@ Entity GD_Ctr_VendorClassification is DropDownList
 			TaxCode1 starts_with 'G' then value 'NG'
 	
 	with triggers
-		TaxCode1 changes then apply rules	
-		; this clear
-		; this disabled
+		TaxCode1 change
+		TaxCode1 lose focus
+		TaxCode2 becomes mandatory
+
+
+	with constraints
+		only ascii
+		only numbers
+	
 
 ; ----------------------------------------------------------------------------	
 		

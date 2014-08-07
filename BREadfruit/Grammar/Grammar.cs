@@ -141,7 +141,7 @@ namespace BREadfruit
         public const string IntegerRegex = "^[-]?[0-9]*$";
         public const string FloatRegex = "^[-]?[0-9]*[(.|,)]?[0-9]*$";
         public const string BooleanRegex = "^(true|false){1}$";
-
+        public const string FreeValueRegex = "^(\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
 
         /// <summary>
         /// Regular expression that validates the correct format of an 'entity' line.
@@ -166,6 +166,7 @@ namespace BREadfruit
         public const string MandatoryLineRegex = @"^MANDATORY[' ']*((TRUE)?|FALSE)?[' ']*$";
         public const string EnabledLineRegex = @"^ENABLED[' ']*((TRUE)?|FALSE)?[' ']*$";
         public const string VisibleLineRegex = @"^VISIBLE[' ']*((TRUE)?|FALSE)?[' ']*$";
+        public const string FreeValueLineRegex = "^value (\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
 
 
         // ---------------------------------------------------------------------------------
@@ -186,10 +187,14 @@ namespace BREadfruit
          * when adding a new Symbol here, do not forget
          * to update the WithSymbol definition below 
          */
+
+        #region " --- symbols for scopes --- "
         public static Symbol DefaultsSymbol = new Symbol ( "defaults", 1, true );
         public static Symbol ConstraintsSymbol = new Symbol ( "constraints", 1, true );
         public static Symbol TriggersSymbol = new Symbol ( "triggers", 1, true );
         public static Symbol RulesSymbol = new Symbol ( "rules", 1, true );
+        #endregion
+
 
         public static Symbol TextBoxSymbol = new Symbol ( "TextBox", 0, true );
         public static Symbol CheckBoxSymbol = new Symbol ( "CheckBox", 0, true );
@@ -204,6 +209,8 @@ namespace BREadfruit
         public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
         public static Symbol InSymbol = new Symbol ( "in", 2, false );
+
+        public static Symbol ValueSymbol = new Symbol ( "value", 1, false );
 
         public static UnaryAction EnableUnaryActionSymbol = new UnaryAction ( "enable", 2, true, new [] { "set enabled", "make enabled", "enabled" } );
         public static UnaryAction DisableUnaryActionSymbol = new UnaryAction ( "disable", 2, true, new [] { "set disabled", "make disabled", "disabled" } );
@@ -420,12 +427,14 @@ namespace BREadfruit
 
         private static void AddSymbols ()
         {
+            // add scope symbols
             Grammar._symbols.Add ( EntitySymbol );
             Grammar._symbols.Add ( WithSymbol );
             Grammar._symbols.Add ( DefaultsSymbol );
             Grammar._symbols.Add ( ConstraintsSymbol );
             Grammar._symbols.Add ( TriggersSymbol );
             Grammar._symbols.Add ( RulesSymbol );
+            // add entity types symbols
             Grammar._symbols.Add ( TextBoxSymbol );
             Grammar._symbols.Add ( CheckBoxSymbol );
             Grammar._symbols.Add ( DropDownListSymbol );
@@ -439,6 +448,8 @@ namespace BREadfruit
             Grammar._symbols.Add ( ThenSymbol );
             Grammar._symbols.Add ( ThisSymbol );
             Grammar._symbols.Add ( InSymbol );
+            // add default symbols
+            Grammar._symbols.Add ( ValueSymbol );
             // add operator symbols
             Grammar._symbols.Add ( IsOperator );
             Grammar._symbols.Add ( IsNotOperator );
@@ -482,11 +493,13 @@ namespace BREadfruit
             var mandatorydefault = new DefaultClause ( "mandatory", BooleanRegex );
             var enableddefault = new DefaultClause ( "enabled", BooleanRegex );
             var visibledefault = new DefaultClause ( "visible", BooleanRegex );
+            var valuedefault = new DefaultClause ( "value",  FreeValueRegex, new List<string> () { "set value" } );
             _defaultsTokens.Add ( maxlengthdefault );
             _defaultsTokens.Add ( minlengthdefault );
             _defaultsTokens.Add ( mandatorydefault );
             _defaultsTokens.Add ( enableddefault );
             _defaultsTokens.Add ( visibledefault );
+            _defaultsTokens.Add ( valuedefault );
         }
 
 
