@@ -163,6 +163,7 @@ namespace BREadfruit.Tests.Low_level_tests
             lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
             var _conds = LineParser.ExtractConditions ( lineInfo );
             Assert.That ( _conds.First ().ToString ().Equals ( expected ) );
+            Assert.That ( _conds.First ().SuffixLogicalOperator == null );
             return _conds.Count ();
         }
 
@@ -174,7 +175,10 @@ namespace BREadfruit.Tests.Low_level_tests
             lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
             var _conds = LineParser.ExtractConditions ( lineInfo );
             Assert.That ( _conds.First ().ToString ().Equals ( expected1 ) );
+            Assert.That ( _conds.First ().SuffixLogicalOperator == "and" );
             Assert.That ( _conds.Last ().ToString ().Equals ( expected2 ) );
+            Assert.That ( _conds.Last ().SuffixLogicalOperator == null );
+
             return _conds.Count ();
         }
 
@@ -188,8 +192,11 @@ namespace BREadfruit.Tests.Low_level_tests
             lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
             var _conds = LineParser.ExtractConditions ( lineInfo );
             Assert.That ( _conds.First ().ToString ().Equals ( expected1 ) );
+            Assert.That ( _conds.First ().SuffixLogicalOperator == "and" );
             Assert.That ( _conds.ElementAt ( 1 ).ToString ().Equals ( expected2 ) );
+            Assert.That ( _conds.ElementAt ( 1 ).SuffixLogicalOperator == "or" );
             Assert.That ( _conds.Last ().ToString ().Equals ( expected3 ) );
+            Assert.That ( _conds.Last ().SuffixLogicalOperator == null );
             return _conds.Count ();
         }
     }

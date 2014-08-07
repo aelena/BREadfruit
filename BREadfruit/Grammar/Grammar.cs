@@ -83,6 +83,10 @@ namespace BREadfruit
         private static List<DefaultClause> _defaultsTokens = new List<DefaultClause> ();
 
 
+        private static List<LogicalOperatorSymbol> _logicalOperators = new List<LogicalOperatorSymbol> ();
+
+
+
         // ---------------------------------------------------------------------------------
 
         #endregion
@@ -128,6 +132,15 @@ namespace BREadfruit
                 return _defaultsTokens;
             }
         }
+
+        public static IEnumerable<LogicalOperatorSymbol> LogicalOperators
+        {
+            get
+            {
+                return _logicalOperators;
+            }
+        }
+
 
         #endregion
 
@@ -209,6 +222,9 @@ namespace BREadfruit
         public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
         public static Symbol InSymbol = new Symbol ( "in", 2, false );
+
+        public static LogicalOperatorSymbol ANDSymbol = new LogicalOperatorSymbol ( "and", 2, false );
+        public static LogicalOperatorSymbol ORSymbol = new LogicalOperatorSymbol ( "or", 2, false );
 
         public static Symbol ValueSymbol = new Symbol ( "value", 1, false );
 
@@ -477,6 +493,10 @@ namespace BREadfruit
             Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
             // result actions
             Grammar._symbols.Add ( SetValueActionSymbol );
+
+            Grammar._symbols.Add ( ANDSymbol );
+            Grammar._symbols.Add ( ORSymbol );
+
 
         }
 

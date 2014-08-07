@@ -224,7 +224,16 @@ namespace BREadfruit
                                                    Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
                                                    lineInfo.Tokens.ElementAt ( ++i ).Token );
                 _conds.Add ( _c );
-                i += 2;
+
+                var _logical = lineInfo.Tokens.ElementAtOrDefault ( ++i );
+                if ( _logical != null )
+                {
+                    if ( new List<string> () { Grammar.ANDSymbol.Token, Grammar.ORSymbol.Token }.Contains ( _logical.Token ) )
+                    {
+                        _conds.Last().SetLogicalOperator ( _logical.Token );
+                    }
+                }
+                i += 1;
             }
 
 
