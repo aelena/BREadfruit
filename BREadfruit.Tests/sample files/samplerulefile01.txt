@@ -1,24 +1,32 @@
 ﻿Entity XYZ is TextBox
 	with defaults
+		value 'NG'
 		max_length 10
 		min_length 10
 		mandatory true
 		enabled true	; consider not having to indicate defaults that are true, either say just enabled or not say anything
 		visible		; actually this rule is implicit by the previous one
 		visible
-		invalid
+		invalid		; invalid entries are simply ignored
 
 	with rules
-		text starts_with 0 then show element ErrorMessageDiv		;	if XYZ's value starts with 0 then show the message in the field indicated
-		text starts with 0 then set value 'Hello WOrld' in lblErrorMessages		;	if XYZ's value starts with 0 then show the message in the field indicated
-		text starts with 'High Risk - ' then set value 'HR' in GD_Ctr_VendorRisk			;   high risk for RCO
-		this starts with 0 then disable
-		this ends with 1 then set visible
 		role is ENQ then enabled
+		role is UPM,CPM then not enabled
+		role is CPM then disabled
+		VendorCountry is ES then 
+			TaxCode1 starts_with {P,Q,S} then set value 'G', set value 'GD_Ctr_IsNaturalPerson' unchecked
+			TaxCode1 starts_with 'G' then value 'NG'
+
+		;text starts_with 0 then show element ErrorMessageDiv		;	if XYZ's value starts with 0 then show the message in the field indicated
+		;text starts with 0 then set value 'Hello WOrld' in lblErrorMessages		;	if XYZ's value starts with 0 then show the message in the field indicated
+		;text starts with 'High Risk - ' then set value 'HR' in GD_Ctr_VendorRisk			;   high risk for RCO
+		;this starts with 0 then disable
+		;this ends with 1 then set visible
+		;role is ENQ then enabled
 
 ; ----------------------------------------------------------------------------	
 	
-Entity 'GD_Ctr_VendorClassification' is DropDownList
+Entity GD_Ctr_VendorClassification is DropDownList
 	with defaults
 		value 'NG'
 		;enabled			; as opposed to disabled
@@ -27,11 +35,10 @@ Entity 'GD_Ctr_VendorClassification' is DropDownList
 	
 	with rules
 		role is ENQ then enabled
-		role is UPM then not enabled
-		role is RCO then enabled
+		role is UPM,CPM then not enabled
 		role is CPM then disabled
-		VendorCountry is 'ES' then 
-			TaxCode1 starts_with '{P;Q;S}' then select 'G', set 'GD_Ctr_IsNaturalPerson' unchecked
+		VendorCountry is ES then 
+			TaxCode1 starts_with {P,Q,S} then set value 'G', set value 'GD_Ctr_IsNaturalPerson' unchecked
 			TaxCode1 starts_with 'G' then value 'NG'
 	
 	with triggers
