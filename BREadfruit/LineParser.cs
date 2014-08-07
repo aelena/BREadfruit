@@ -140,28 +140,30 @@ namespace BREadfruit
 
             // take a repreeentation of the entire list of tokens as a simple string
             var _fused = li.Tokens.JoinTogether ().Token;
-            // now check for occurrence
-            var _x = from op in Grammar.Symbols
-                     where op is AliasedSymbol
-                     || op is ResultAction
-                     let t = _fused.ContainsAny2 ( ( ( AliasedSymbol ) op ).Aliases )
-                     where t.Item1
-                     select new
-                     {
-                         symbol = op,
-                         Ocurrence = t.Item2,
-                         Index = _fused.IndexOf ( op.Token )
-                     };
-
-            if ( _x != null && _x.Count () > 0 )
+            var _replacedString = _fused;
+            foreach ( var i in new List<int> { 1, 2 } )
             {
-                var _replacedString = _fused;
-                _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
-                // restore original tabs
-                _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
-                return _replacedString;
+
+                // now check for occurrence
+                var _x = from op in Grammar.Symbols
+                         where op is AliasedSymbol
+                         || op is ResultAction
+                         let t = _fused.ContainsAny2 ( ( ( AliasedSymbol ) op ).Aliases )
+                         where t.Item1
+                         select new
+                         {
+                             symbol = op,
+                             Ocurrence = t.Item2,
+                             Index = _fused.IndexOf ( op.Token )
+                         };
+
+                if ( _x != null && _x.Count () > 0 )
+                    _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
+                _fused = _replacedString;
             }
-            return _fused;
+            // restore original tabs
+            _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
+            return _replacedString;
         }
 
         // ---------------------------------------------------------------------------------
