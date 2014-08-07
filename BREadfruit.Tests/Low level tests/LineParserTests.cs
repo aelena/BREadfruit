@@ -155,6 +155,42 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
+        [TestCase ( "role is 'ENQ' then enabled", "role is 'ENQ'", Result = 1 )]
+        [TestCase ( "role is {UPM,CPM} then not enabled", "role is {UPM,CPM}", Result = 1 )]
+        public int ExtractConditionsTests_1 ( string line, string expected )
+        {
+            var lineInfo = LineParser.ParseLine ( line );
+            lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            var _conds = LineParser.ExtractConditions ( lineInfo );
+            Assert.That ( _conds.First ().ToString ().Equals ( expected ) );
+            return _conds.Count ();
+        }
 
+        [TestCase ( "role is 'ENQ' and role is {UPM,CPM} then enabled", "role is 'ENQ'", "role is {UPM,CPM}", Result = 2 )]
+        [TestCase ( "VendorCountry is ES and TaxCode1 starts with {P,Q,S} then", "VendorCountry is ES", "TaxCode1 starts_with {P,Q,S}", Result = 2 )]
+        public int ExtractConditionsTests_2 ( string line, string expected1, string expected2 )
+        {
+            var lineInfo = LineParser.ParseLine ( line );
+            lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            var _conds = LineParser.ExtractConditions ( lineInfo );
+            Assert.That ( _conds.First ().ToString ().Equals ( expected1 ) );
+            Assert.That ( _conds.Last ().ToString ().Equals ( expected2 ) );
+            return _conds.Count ();
+        }
+
+        [TestCase ( "role is 'ENQ' and role is {UPM,CPM} or field is disabled then enabled",
+            "role is 'ENQ'", "role is {UPM,CPM}", "field is disable", Result = 3 )]
+        [TestCase ( "VendorCountry is ES and TaxCode1 starts with {P,Q,S} or he is hungry then",
+            "VendorCountry is ES", "TaxCode1 starts_with {P,Q,S}", "he is hungry", Result = 3 )]
+        public int ExtractConditionsTests_3 ( string line, string expected1, string expected2, string expected3 )
+        {
+            var lineInfo = LineParser.ParseLine ( line );
+            lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            var _conds = LineParser.ExtractConditions ( lineInfo );
+            Assert.That ( _conds.First ().ToString ().Equals ( expected1 ) );
+            Assert.That ( _conds.ElementAt ( 1 ).ToString ().Equals ( expected2 ) );
+            Assert.That ( _conds.Last ().ToString ().Equals ( expected3 ) );
+            return _conds.Count ();
+        }
     }
 }

@@ -205,5 +205,33 @@ namespace BREadfruit
 
         #endregion
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static IEnumerable<Condition> ExtractConditions ( LineInfo lineInfo )
+        {
+            var _conds = new List<Condition> ();
+            int __ands = 0, __ors = 0;
+            if ( lineInfo.Tokens.Contains ( Grammar.ANDSymbol ) )
+                __ands = lineInfo.Tokens.Count ( x => x == Grammar.ANDSymbol );
+            if ( lineInfo.Tokens.Contains ( Grammar.ORSymbol ) )
+                __ors = lineInfo.Tokens.Count ( x => x == Grammar.ORSymbol );
+            __ands += __ors;
+            for ( int i = 0; i < 3 * ( __ands + 1 ); )
+            {
+                var _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+                                                   Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
+                                                   lineInfo.Tokens.ElementAt ( ++i ).Token );
+                _conds.Add ( _c );
+                i += 2;
+            }
+
+
+            return _conds;
+        }
+
+        // ---------------------------------------------------------------------------------
+
     }
 }
