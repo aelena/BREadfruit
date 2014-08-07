@@ -66,6 +66,11 @@ namespace BREadfruit
                         if ( lineInfo.Tokens.Count () == 0 )
                             continue;
 
+                        // we need to check the indent level to make sure we set the right scope
+                        // this is for conditions with several action lines
+                        if ( _currentScope == CurrentScope.ACTIONS_BLOCK && lineInfo.IndentLevel == 2 )
+                            _currentScope = CurrentScope.RULES_BLOCK;
+
                         #region " --- entity block --- "
                         if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                         {
@@ -172,7 +177,7 @@ namespace BREadfruit
                         if ( this._currentScope == CurrentScope.ACTIONS_BLOCK )
                         {
                             lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-                            if ( lineInfo.Tokens.Count () == 3 )
+                            if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
                             {
                                 var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
                                             lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );

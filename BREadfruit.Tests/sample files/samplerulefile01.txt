@@ -13,8 +13,11 @@
 		role is {UPM,CPM} then not enabled
 		role is CPM then disabled
 		VendorCountry is ES and TaxCode1 starts with {P,Q,S} then
-			set value 'GD_Ctr_VendorClassification' 'G'
-			set value 'GD_Ctr_IsNaturalPerson' unchecked
+			set value 'G' in GD_Ctr_VendorClassification
+			set value unchecked in GD_Ctr_IsNaturalPerson
+		VendorCountry is PT and TaxCode1 starts with {N,F} then
+			set value 'G' in GD_Ctr_VendorClassification
+			set value unchecked in GD_Ctr_IsNaturalPerson
 
 		;VendorCountry is ES then 
 		;	TaxCode1 starts with {P,Q,S} then set value 'GD_Ctr_VendorClassification' 'G', set value 'GD_Ctr_IsNaturalPerson' unchecked
