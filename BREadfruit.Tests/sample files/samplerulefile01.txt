@@ -12,16 +12,20 @@
 		role is 'ENQ' then enabled
 		role is {UPM,CPM} then not enabled
 		role is CPM then disabled
-		VendorCountry is ES then 
-			TaxCode1 starts_with {P,Q,S} then set value 'G', set value 'GD_Ctr_IsNaturalPerson' unchecked
-			TaxCode1 starts_with 'G' then value 'NG'
+		VendorCountry is ES and TaxCode1 starts with {P,Q,S} then
+			set value 'GD_Ctr_VendorClassification' 'G'
+			set value 'GD_Ctr_IsNaturalPerson' unchecked
+
+		;VendorCountry is ES then 
+		;	TaxCode1 starts with {P,Q,S} then set value 'GD_Ctr_VendorClassification' 'G', set value 'GD_Ctr_IsNaturalPerson' unchecked
+		;	TaxCode1 starts_with 'G' then value 'NG'
 
 		;text starts_with 0 then show element ErrorMessageDiv		;	if XYZ's value starts with 0 then show the message in the field indicated
 		;text starts with 0 then set value 'Hello WOrld' in lblErrorMessages		;	if XYZ's value starts with 0 then show the message in the field indicated
 		;text starts with 'High Risk - ' then set value 'HR' in GD_Ctr_VendorRisk			;   high risk for RCO
-		;this starts with 0 then disable
-		;this ends with 1 then set visible
-		;role is ENQ then enabled
+		this starts with 0 then disable
+		this ends with 1 then set visible
+		role is ENQ then enabled
 
 	with triggers
 		TaxCode1 change

@@ -238,7 +238,7 @@ namespace BREadfruit
         public static UnaryAction HideElementUnaryActionSymbol = new UnaryAction ( "hide_element", 2, true, new [] { "hide element", "hide" } );
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
 
-        public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value", "set" } );
+        public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
 
         #endregion
 

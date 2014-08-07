@@ -121,7 +121,6 @@ namespace BREadfruit.Tests.Low_level_tests
             var _s = new List<string> () { "aa", "r" };
             Assert.That ( !_l.ContainsAny2 ( _s ).Item1 );
             Assert.That ( _l.ContainsAny2 ( _s ).Item2 == null );
-
         }
 
 
@@ -145,10 +144,8 @@ namespace BREadfruit.Tests.Low_level_tests
         [Test]
         public void PenultimateTests ()
         {
-
             var strings = new List<String> () { "cd", "ef", "po", "tu", "tt" };
             Assert.That ( strings.Penultimate () == "tu" );
-
         }
 
         [Test]
@@ -156,7 +153,8 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             var strings = new List<String> () { "cd", "ef", "po", "tu", "tt" };
             Assert.That ( strings.ElementAtFromLast (2) == "tu" );
-
         }
+
+       
     }
 }

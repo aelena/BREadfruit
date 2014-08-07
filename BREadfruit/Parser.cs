@@ -50,8 +50,11 @@ namespace BREadfruit
 
             using ( var sr = new StreamReader ( filePath ) )
             {
+                // current line counter
                 var _currLine = 0;
+                // current line in the text file
                 var line = String.Empty;
+
                 while ( line != null )
                 {
 
@@ -63,12 +66,16 @@ namespace BREadfruit
                         if ( lineInfo.Tokens.Count () == 0 )
                             continue;
 
+                        #region " --- entity block --- "
                         if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                         {
                             this._currentScope = CurrentScope.NEW_ENTITY;
                             this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
                                 lineInfo.Tokens.ElementAt ( 3 ).Token ) );
                         }
+                        #endregion
+
+                        #region " --- with block --- "
                         if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.WithSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                         {
                             // Clear the scope state
@@ -94,47 +101,33 @@ namespace BREadfruit
                             if ( this._currentScope != CurrentScope.NO_SCOPE )
                                 continue;   // ugly... but for the moment...
                         }
+
                         // now, if we're in the scope of the defaults block
                         if ( this._currentScope == CurrentScope.DEFAULTS_BLOCK )
                         {
                             // then try and parse a default clause
-                            var clause = Grammar.GetDefaultClauseByToken ( lineInfo.Tokens.First ().Token, false );
-                            if ( clause != null )
-                            {
-                                // if we only have one token, it means we are dealing with a single-element instruction such as 'enabled'
-                                // in that case we assumed the instruction to always be true
-                                // TODO: further validation to be added here to ensure we accept only boolean values here
-                                if ( lineInfo.Tokens.Count () == 1 )
-                                    clause.SetValue ( "true" );
-                                // if there are two tokens, it means there are no comments, and we're dealing with a default instruction+
-                                // such as width 100 or enabled true, and then we assume the last token is the value
-                                if ( lineInfo.Tokens.Count () == 2 )
-                                    clause.SetValue ( lineInfo.Tokens.Last ().Token );
-                                // if there are more tokens, it's comments most likely, but let's keep this separate for the time being
-                                // altough it could be the same for this and the previous case just by using ElementAt(1)
-                                if ( lineInfo.Tokens.Count () > 2 )
-                                    clause.SetValue ( lineInfo.Tokens.ElementAt ( 1 ).Token );
-
-
-                                this._entities.Last ().AddDefaultClause ( clause );
-                            }
+                            this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
                         }
+                        #endregion
+
+                        #region " --- rules block --- "
                         if ( this._currentScope == CurrentScope.RULES_BLOCK )
                         {
+
                             lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
 
                             var _rule = new Rule ();
-                            var _cond = new Condition ( lineInfo.Tokens.First ().Token,
-                                                        Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( 1 ).Token ),
-                                                        lineInfo.Tokens.ElementAt ( 2 ).Token );
-                            _rule.AddCondition ( _cond );
+                            var _conds = LineParser.ExtractConditions ( lineInfo );
+                            foreach ( var c in _conds )
+                                _rule.AddCondition ( c );
+
                             // check presence of token 'then'
                             if ( lineInfo.Tokens.Contains ( Grammar.ThenSymbol ) )
                             {
-                                // and check too if after then, tehre is some action or more nested conditions
+                                // if then is the last token, then there are actions
                                 if ( lineInfo.Tokens.Last ().Equals ( Grammar.ThenSymbol ) )
                                 {
-                                    // then there are nested conditions, so
+                                    _currentScope = CurrentScope.ACTIONS_BLOCK;
                                     continue;
                                 }
                                 else
@@ -144,14 +137,14 @@ namespace BREadfruit
                                     if ( lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol )
                                     {
                                         var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
-                                        _rule.AddUnaryAction ( _unaryAction );
+                                        _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
                                     }
                                     // then it's a long result action line
                                     if ( lineInfo.Tokens.ElementAtFromLast ( 3 ) == Grammar.ThenSymbol )
                                     {
                                         var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
                                             lineInfo.Tokens.Last ().Token );
-                                        _rule.AddUnaryAction ( _unaryAction );
+                                        _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
                                     }
                                     if ( lineInfo.Tokens.ElementAtFromLast ( 5 ) == Grammar.ThenSymbol )
                                     {
@@ -160,9 +153,7 @@ namespace BREadfruit
                                         var thenClause = LineInfo.AfterThen ( lineInfo );
                                         var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
                                             thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
-                                        _rule.AddResultAction ( _ra );
-
-
+                                        _rule.Conditions.Last ().AddResultAction ( _ra );
                                     }
 
                                 }
@@ -175,6 +166,31 @@ namespace BREadfruit
                                         lineInfo.Representation ) );
 
                         }
+                        #endregion
+
+                        #region " --- actions block --- "
+                        if ( this._currentScope == CurrentScope.ACTIONS_BLOCK )
+                        {
+                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                            if ( lineInfo.Tokens.Count () == 3 )
+                            {
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                            lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
+                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                            }
+                        }
+                        #endregion
+
+                        if ( this._currentScope == CurrentScope.TRIGGERS_BLOCK )
+                        {
+
+                        }
+
+                        if ( this._currentScope == CurrentScope.CONSTRAINTS_BLOCK )
+                        {
+
+                        }
+
 
                     }
 
@@ -184,6 +200,30 @@ namespace BREadfruit
 
             }
 
+        }
+
+        private DefaultClause ConfigureDefaultClause ( LineInfo lineInfo )
+        {
+            var clause = Grammar.GetDefaultClauseByToken ( lineInfo.Tokens.First ().Token, false );
+            if ( clause != null )
+            {
+                // if we only have one token, it means we are dealing with a single-element instruction such as 'enabled'
+                // in that case we assumed the instruction to always be true
+                // TODO: further validation to be added here to ensure we accept only boolean values here
+                if ( lineInfo.Tokens.Count () == 1 )
+                    clause.SetValue ( "true" );
+                // if there are two tokens, it means there are no comments, and we're dealing with a default instruction+
+                // such as width 100 or enabled true, and then we assume the last token is the value
+                if ( lineInfo.Tokens.Count () == 2 )
+                    clause.SetValue ( lineInfo.Tokens.Last ().Token );
+                // if there are more tokens, it's comments most likely, but let's keep this separate for the time being
+                // altough it could be the same for this and the previous case just by using ElementAt(1)
+                if ( lineInfo.Tokens.Count () > 2 )
+                    clause.SetValue ( lineInfo.Tokens.ElementAt ( 1 ).Token );
+
+
+            }
+            return clause;
         }
 
 
@@ -217,15 +257,25 @@ namespace BREadfruit
         /// </summary>
         NEW_ENTITY,
         /// <summary>
-        /// Signals we're in the defaults block for a business rule
+        /// Signals we're in the defaults block for a business rule definition
         /// </summary>
         DEFAULTS_BLOCK,
         /// <summary>
-        /// Signals we're in the constraints block for a business rule
+        /// Signals we're in the constraints block for a business rule definition
         /// </summary>
         CONSTRAINTS_BLOCK,
+        /// <summary>
+        /// Indicates we are in the constraints block of a business rule definition
+        /// </summary>
         TRIGGERS_BLOCK,
-        RULES_BLOCK
+        /// <summary>
+        /// Indicates we are in the rules block of a business rule definition
+        /// </summary>
+        RULES_BLOCK,
+        /// <summary>
+        /// Indicates we are in the actions block of a business rule definition
+        /// </summary>
+        ACTIONS_BLOCK
     }
 
 }

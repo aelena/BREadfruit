@@ -31,7 +31,7 @@ namespace BREadfruit
         public string BusinessProcessCode
         {
             get { return _businessProcessCode; }
-        } 
+        }
 
         public Type Type { get; set; }
         /// <summary>
@@ -40,19 +40,42 @@ namespace BREadfruit
         /// or assemblies loaded later.
         /// </summary>
         /// <param name="t"></param>
-        public void SetType(Type t)
+        public void SetType ( Type t )
         {
             this.Type = t;
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
         private IList<DefaultClause> _defaults;
         private IList<Rule> _rules;
 
-        // ---------------------------------------------------------------------------------
-        
 
-        public Entity ( string name, string typeDescription, string bpCode = "")
+        public IEnumerable<Rule> Rules
+        {
+            get
+            {
+                return this._rules;
+            }
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        public IEnumerable<DefaultClause> Defaults
+        {
+            get
+            {
+                return this._defaults;
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+        public Entity ( string name, string typeDescription, string bpCode = "" )
         {
             this._name = name;
             this._typeDescription = typeDescription;
@@ -66,7 +89,7 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        public bool AddDefaultClause(DefaultClause defaultClause)
+        public bool AddDefaultClause ( DefaultClause defaultClause )
         {
             this._defaults.Add ( defaultClause );
             return true;

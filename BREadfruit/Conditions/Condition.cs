@@ -58,10 +58,37 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
+        private List<UnaryAction> _results = new List<UnaryAction> ();
+        public IEnumerable<UnaryAction> Results
+        {
+            get
+            {
+                return this._results;
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        private List<ResultAction> _resultActions = new List<ResultAction> ();
+        public IEnumerable<ResultAction> ResultActions
+        {
+            get
+            {
+                return this._resultActions;
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
         protected internal void SetLogicalOperator (string symbol)
         {
             this._suffixLogicalOperator = symbol;
         }
+
 
         // ---------------------------------------------------------------------------------
 
@@ -102,6 +129,29 @@ namespace BREadfruit.Conditions
         //        throw new ArgumentException ( "Cannot add a nested condition that is null" );
         //    _conditions.Add ( condition );
         //}
+
+        // ---------------------------------------------------------------------------------
+
+        protected internal Condition AddUnaryAction ( UnaryAction result )
+        {
+            if ( result == null )
+                throw new ArgumentNullException ( "result" );
+
+            this._results.Add ( result );
+            return this;
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        protected internal Condition AddResultAction ( ResultAction result )
+        {
+            if ( result == null )
+                throw new ArgumentNullException ( "result" );
+
+            this._resultActions.Add ( result );
+            return this;
+        }
 
         // ---------------------------------------------------------------------------------
 

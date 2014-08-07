@@ -150,7 +150,7 @@ namespace BREadfruit
         // override object.Equals
         public override bool Equals ( object obj )
         {
-            
+
             if ( obj == null || this.GetType () != obj.GetType () )
             {
                 return false;
@@ -176,6 +176,10 @@ namespace BREadfruit
 
             return true;
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         // override object.GetHashCode
         public override int GetHashCode ()
@@ -203,5 +207,25 @@ namespace BREadfruit
             }
         }
 
+    }
+
+
+    // ---------------------------------------------------------------------------------
+
+
+    public class LogicalOperatorSymbol : Symbol
+    {
+
+        public LogicalOperatorSymbol ( string symbol, int indentLevel )
+            : base ( symbol, indentLevel )
+        { }
+
+        public LogicalOperatorSymbol ( string symbol, int indentLevel, bool isTerminal )
+            : base ( symbol, indentLevel, isTerminal )
+        { }
+
+        public LogicalOperatorSymbol ( string symbol, int indentLevel, IList<Symbol> validChildren )
+            : base ( symbol, indentLevel, validChildren )
+        { }
     }
 }
