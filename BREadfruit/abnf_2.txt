@@ -1,0 +1,338 @@
+﻿Literals:
+
+entity = "Entity"
+textbox = "textbox"
+checkbox = "checkbox"
+dropdownlist = "dropdownlist"
+multiline = "multiline"
+radiobutton = "radiobutton"
+label = "label"
+div = "div"
+calendar = "calendar"
+button = "button"
+object = "object"
+dynamic = "dynamic"
+servicecall = "servicecall"								; calls to services
+lookup = "lookup"										; for looking up values in external tables	
+
+
+clear = "clear"
+role = "role"
+then = "then"
+in = "in"
+this = "this"
+
+
+; for with statements separating the scopes of each entity in the file
+with = "with"
+defaults = "defaults"
+rules = "rules"
+triggers = "triggers"
+constraints = "constraints"
+
+
+value = "value"											; default clause for value
+boolean = 1(true / false)								
+
+
+Default-Literals:
+
+; the following are used in default clauses - see 'with defaults' section in sample business rule file
+max-length = 1("max_length" / "max length")
+min-length = 1("min_length" / "min length")
+mandatory = "mandatory"
+not-mandatory = "not mandatory"
+enabled = "enabled"
+disabled = "disabled"
+visible = "visible"
+not-visible = 1("not visible" / "hidden")
+checked = "checked"
+unchecked = "unchecked"
+
+
+
+; ---------------------------------------------------------------------------
+
+Operators: 
+
+; operator literals, for comparison of values, constants etc...
+and = "and"
+or = "or"
+is = "is"
+not = "not"
+is-not = is not
+empty = "empty"
+starts-with = "starts with"
+not-starts-with = not "starts with"
+ends-with = "ends with"
+not-ends-with = not "ends with"
+contains = "contains"					; should work on strings and lists alike
+not-contains = not "contains"					; should work on strings and lists alike
+bigger-than = 1("bigger than" / ">")
+lower-than = 1("lower than" / "<")
+bigger-equal-than = 1("bigger or equal than" / "<=")
+lower-equal-than = 1("lower or equal than" / ">=")
+
+
+; ---------------------------------------------------------------------------
+
+Action-Tokens:
+
+; action tokens
+show-element = 1("show element" / "show")
+hide-element = 1("hide element" / "hide")
+clear = "clear"
+; denotes a change in a DOM element - used in the action part of conditions (after the 'then' token)
+element-state-change = 1(enabled / disabled / visible / not-visible / mandatory / not-mandatory / clear / checked / unchecked)
+
+set-value = "set value"
+
+
+; ---------------------------------------------------------------------------
+
+
+Madam-Specific:
+
+valid-role = 1*("ENQ" / "UPM" / "CPM" / "SUS" / "RCO" / "CLERK")
+regional-country = "RegionalCountry"
+vendor-country = "VendorCountry"
+customer-country = "CustomerCountry"
+company-code = 1("CC" / "Company Code" / "CompanyCode" / "CoCd")
+purchase-org = 1("Purchase Org" / "P.Org" / "P. Org" / "PO")
+sales-org = 1("Sales Org" / "S.Org" / "S. Org" / "SO")
+dist-channel = 1("Dist Chanell" / "DC" / "Distribution channel")
+division = "division"
+country = 1("ES" / "PT" / "FR" / "IT" / "GR" / "BE" / "LU")
+any-country = 2ALPHA
+vendor-account-group = 1("YVT1" / "YVT2" / "YVT3" / "YVT4" / "YVT5" / "YVT6" / "YVT7" / "YVT9")
+customer-account-group = 1("YCT1" / "YCT2" / "YCT3" / "YCT4" / "YCT5" / "YCT6" / "YCT7" / "YCT9")
+
+; ---------------------------------------------------------------------------
+
+Quotables:
+
+squote = "'"
+quote = 1(DQUOTE / squote)								; valid like this?
+statement = 0*VCHAR										; not sure this covers for example greek characters...
+quoted-statement = 1quote statement 1quote				
+
+
+; ---------------------------------------------------------------------------
+
+
+Scopes:
+
+; defines a valid identifier for an element, like an entity's name - should be at least 3 characters long
+valid-identifier = 3*[ALPHA DIGIT "_"] 
+
+entity-type = 1(textbox / checkbox / dropdownlist / multiline / radiobutton / label / div / button / object / servicecall)
+entity-line = entity valid-identifier is entity-type
+
+with-line = with 1(defaults / rules / triggers / constraints)
+
+
+; ---------------------------------------------------------------------------
+
+Default-Clauses:
+
+; valid default clauses for entities
+value-default = value quoted-statement
+mandatory-default = mandatory boolean
+enabled-default = enabled boolean
+disabled-default = disabled boolean
+visible-default = visible boolean
+checked-default = checked boolean
+unchecked-default = unchecked boolean
+max-length-default = max_length 1*DIGIT
+min-length-default = min_length 1*DIGIT
+
+; ---------------------------------------------------------------------------
+
+
+Conditions:
+
+
+; for a then with a single action
+then-clause = then valid-identifier element-state-change
+
+; for a then with several actions
+multiple-then-clause = then-clause 0*["," then-clause]
+
+; basic stems for conditions
+role-condition = role is valid-role		
+vendor-country-condition  = vendor-country is 1(country / any-country) 
+customer-country-condition  = customer-country is 1(country / any-country) 
+country-condition = 1(vendor-country-condition / customer-country-condition)
+
+
+; 1* is to state that these operators should work as "starts with any of the following values" 
+; or "ends with any of the following values" sort of linq functionality
+starts-with-condition = 1(valid-identifier / entity-value) starts-with quoted-statement 0*("," quoted-statement)
+not-starts-with-condition = 1(valid-identifier / entity-value) not-starts-with quoted-statement 0*("," quoted-statement)
+ends-with-condition = 1(valid-identifier / entity-value) ends-with quoted-statement 0*("," quoted-statement)
+not-ends-with-condition = 1(valid-identifier / entity-value) not-ends-with quoted-statement 0*("," quoted-statement)
+
+; 1* is to state that contains should work as "contains any of the following values" sort of linq functionality
+contains-condition = 1(valid-identifier / entity-value) contains quoted-statement 0*("," quoted-statement)
+not-contains-condition = 1(valid-identifier / entity-value) not-contains quoted-statement 0*("," quoted-statement)
+
+
+; TODO: Check if this is right and if we should add markers for numbers like d, x, m etc.
+_digit = [-]1*DIGIT["."][1*DIGIT][("d" / "m" / "x")]
+bigger-than-condition = 1(valid-identifier / entity-value) bigger-than 1(_digit /  date-time)
+not-bigger-than-condition = 1(valid-identifier / entity-value) not-bigger-than 1(_digit /  date-time)
+lower-than-condition = 1(valid-identifier / entity-value) lower-than 1(_digit /  date-time)
+not-lower-than-condition = 1(valid-identifier / entity-value) not-lower-than 1(_digit /  date-time)
+
+
+bigger-equal-than-condition = 1(valid-identifier / entity-value) bigger-equal-than 1(_digit /  date-time)
+not-bigger-equal-than-condition = 1(valid-identifier / entity-value) not-bigger-equal-than 1(_digit /  date-time)
+lower-equal-than-condition = 1(valid-identifier / entity-value) lower-equal-than 1(_digit /  date-time)
+not-lower-equal-than-condition = 1(valid-identifier / entity-value) not-lower-equal-than 1(_digit /  date-time)
+
+
+; multiple conditions
+condition-clause = role-condition / country-condition / starts-with-condition / not-starts-with-condition
+condition-clause =/	ends-with-condition / not-ends-with-condition / contains-condition / not-contains-condition /
+condition-clause =/	bigger-than-condition / not-bigger-than-condition / lower-than-condition / not-lower-than-condition / 
+condition-clause =/	bigger-equal-than-condition / not-bigger-equal-than-condition / lower-equal-than-condition / not-lower-equal-than-condition
+
+; TODO: add the rest here.... 
+
+
+full-condition = 1condition-clause 0*(1(and / or) 1condition-clause) multiple-then-clause
+
+
+; for defining accessors like GD_Adr_Name1.Text or MyClass.Name
+; the second part could be optional if we want to define default properties
+entity-value = valid-identifier ["." valid-identifier]
+
+
+
+
+; ---------------------------------------------------------------------------
+
+Actions:
+
+; actions
+; for example set  GD_Ctr_IsNaturalPerson unchecked
+set-action = "set" valid-identifier 1(mandatory / not-mandatory / enabled / disabled / visible / not-visible  / checked / unchecked)
+
+; for example -> set value 'G' in GD_Ctr_VendorClassification
+set-value-action = set-value 1quoted-statement in 1(valid-identifier / entity-value)
+
+
+; TODO: pending to define formalisms such as loading data, calling services, lookup tables
+
+
+
+; ---------------------------------------------------------------------------
+
+Triggers:
+
+change-value = "changes value"
+become-mandatory = "becomes mandatory"
+become-non-mandatory = "becomes non mandatory"
+lose-focus = "loses focus"
+get-focus = "gets focus"
+become-visible = "becomes visible"
+become-hidden = "becomes not visible"
+row-inserted = "row inserted"
+row-deleted = "row deleted"
+row-updated = "row updated"
+
+valid-trigger = 1(change-value / become-mandatory / become-non-mandatory / lose-focus / get-focus / become-visible / become-hidden / row-inserted / row-deleted / row-updated )
+trigger-clause = valid-identifier valid-trigger
+
+
+; ---------------------------------------------------------------------------
+
+Constraints:
+
+; constraints, sort of masks for textboxes basically
+only-ascii = "only ascii"
+only-numbers = "only numbers"
+all-capitals = "all capitals"
+
+
+; ---------------------------------------------------------------------------
+
+
+
+
+
+; THIS DATE GRAMMAR WAS OBTAINED FROM http://www.imc.org/ietf-calendar/archive1/msg00512.html - ISO 8601
+
+ date-century      = 2DIGIT  ; 00-99
+ date-decade       =  DIGIT  ; 0-9
+ date-subdecade    =  DIGIT  ; 0-9
+ date-year         = date-decade date-subdecade
+ date-fullyear     = date-century date-year
+ date-month        = 2DIGIT  ; 01-12
+ date-wday         =  DIGIT  ; 1-7
+ date-mday         = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on month/year
+ date-yday         = 3DIGIT  ; 001-365, 001-366 based on year
+ date-week         = 2DIGIT  ; 01-52
+ 
+ datepart-fullyear = [date-century] date-year ["-"]
+ datepart-ptyear   = "-" [date-subdecade ["-"]]
+ datepart-wkyear   = datepart-ptyear / datepart-fullyear
+ 
+ dateopt-century   = "-" / date-century
+ dateopt-fullyear  = "-" / datepart-fullyear
+ dateopt-year      = "-" / (date-year ["-"])
+ dateopt-month     = "-" / (date-month ["-"])
+ dateopt-week      = "-" / (date-week ["-"])
+ 
+ datespec-full     = datepart-fullyear date-month ["-"] date-mday
+ datespec-year     = date-century / dateopt-century date-year
+ datespec-month    = "-" dateopt-year date-month [["-"] date-mday]
+ datespec-mday     = "--" dateopt-month date-mday
+ datespec-week     = datepart-wkyear "W" (date-week / dateopt-week date-wday)
+ datespec-wday     = "---" date-wday
+ datespec-yday     = dateopt-fullyear date-yday
+ 
+ date              = datespec-full / datespec-year / datespec-month / datespec-mday / datespec-week / datespec-wday / datespec-yday
+ 
+ Times:
+ 
+ time-hour         = 2DIGIT ; 00-24
+ time-minute       = 2DIGIT ; 00-59
+ time-second       = 2DIGIT ; 00-60
+ time-fraction     = ("," / ".") 1*DIGIT
+ time-numzone      = ("+" / "-") time-hour [[":"] time-minute]
+ time-zone         = "Z" / time-numzone
+ 
+ timeopt-hour      = "-" / (time-hour [":"])
+ timeopt-minute    = "-" / (time-minute [":"])
+ 
+ timespec-hour     = time-hour [[":"] time-minute [[":"] time-second]]
+ timespec-minute   = timeopt-hour time-minute [[":"] time-second]
+ timespec-second   = "-" timeopt-minute time-second
+ timespec-base     = timespec-hour / timespec-minute / timespec-second
+ 
+ time              = timespec-base [time-fraction] [time-zone]
+ 
+ date-time         = date ["T"] time
+ 
+ Durations (periods):
+ 
+ dur-second        = 1*DIGIT "S"
+ dur-minute        = 1*DIGIT "M" [dur-second]
+ dur-hour          = 1*DIGIT "H" [dur-minute]
+ dur-time          = "T" (dur-hour / dur-minute / dur-second)
+ dur-day           = 1*DIGIT "D"
+ dur-week          = 1*DIGIT "W"
+ dur-month         = 1*DIGIT "M" [dur-day]
+ dur-year          = 1*DIGIT "Y" [dur-month]
+ dur-date          = (dur-day / dur-month / dur-year) [dur-time]
+ 
+ duration          = "P" (dur-date / dur-time / dur-week)
+ 
+ Periods:
+ 
+ period-explicit   = date-time "/" date-time
+ period-start      = date-time "/" duration
+ period-end        = duration "/" date-time
+ 
+ period            = period-explicit / period-start / period-e

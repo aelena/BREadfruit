@@ -31,11 +31,13 @@
 		role is ENQ then enabled
 
 	with triggers
-		TaxCode1 change
-		TaxCode1 lose focus
+		TaxCode1 changes value
+		TaxCode1 loses focus
 		TaxCode2 becomes mandatory
 
 
+	; constraints always apply to current entity in scope, XYZ in this case, so it is not 
+	; necessary to indicate the entity name specifically
 	with constraints
 		only ascii
 		only numbers
