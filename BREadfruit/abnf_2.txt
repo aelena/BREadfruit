@@ -46,6 +46,7 @@ unchecked = "unchecked"
 
 2TAB = 2HTAB
 3TAB = 3HTAB 
+new-digit = [-]1*DIGIT["."][1*DIGIT][("d" / "m" / "x")]
 
 ; ---------------------------------------------------------------------------
 
@@ -90,7 +91,7 @@ sales-org = "Sales Org" / "S.Org" / "S. Org" / "SO"
 dist-channel ="Dist Channel" / "DC" / "Distribution channel"
 division = "division"
 country = "ES" / "PT" / "FR" / "IT" / "GR" / "BE" / "LU"
-any-country = 2ALPHA / 3ALPHA								; check there are some countries with 3 letter code?
+any-country = 2%d65-%d90 / 3%d65-%d90								; check there are some countries with 3 letter code?
 country-list = "{" any-country SP ["," [SP] any-country] "}"
 vendor-account-group = "YVT1" / "YVT2" / "YVT3" / "YVT4" / "YVT5" / "YVT6" / "YVT7" / "YVT9"
 customer-account-group = "YCT1" / "YCT2" / "YCT3" / "YCT4" / "YCT5" / "YCT6" / "YCT7" / "YCT9"
@@ -149,18 +150,26 @@ multiple-then-clause = then-clause 1*("," [SP] then-clause)
 
 
 ; basic stems for conditions
+base-condition = entity-value SP is
+base-not-condition = entity-value SP is-not
+is-condition = base-condition SP (quoted-statement / entity-value)
+is-not-condition = base-not-condition SP (quoted-statement / entity-value)
+is-empty-condition = base-condition SP empty
+is-not-empty-condition = base-not-condition SP empty
+is-visible-condition = base-condition SP visible
+is-not-visible-condition = base-condition SP not-visible
+is-enabled-condition = base-condition SP enabled
+is-disabled-condition = base-condition SP disabled
+is-mandatory-condition = base-condition SP mandatory
+is-not-mandatory-condition = base-condition SP not-mandatory
+
+; madam conditions
 mdm-role-condition = role SP is SP mdm-valid-role 
 mdmc-role-condition = role SP is SP mdmc-valid-role		
 vendor-country-condition  = vendor-country SP is SP ((country / any-country) / country-list)
 customer-country-condition  = customer-country SP is SP ((country / any-country) / country-list)
 country-condition = (vendor-country-condition / customer-country-condition)
-is-empty-condition = entity-value SP is SP empty
-is-visible-condition = entity-value SP is SP visible
-is-not-visible-condition = entity-value SP is SP not-visible
-is-enabled-condition = entity-value SP is SP enabled
-is-disabled-condition = entity-value SP is SP disabled
-is-mandatory-condition = entity-value SP is SP mandatory
-is-not-mandatory-condition = entity-value SP is SP not-mandatory
+
 
 multiple-quoted-statement = "{" [SP] quoted-statement *("," [SP] quoted-statement) [SP] "}"
 
@@ -175,25 +184,27 @@ not-in-condition = (valid-identifier / entity-value) not in (quoted-statement / 
 
 
 ; TODO: Check if this is right and if we should add markers for numbers like d, x, m etc.
-new-digit = [-]1*DIGIT["."][1*DIGIT][("d" / "m" / "x")]
-bigger-than-condition = (valid-identifier / entity-value) SP bigger-than SP (new-digit / date-time)
-not-bigger-than-condition = (valid-identifier / entity-value) SP not-bigger-than SP (new-digit / date-time)
-lower-than-condition = (valid-identifier / entity-value) SP lower-than SP (new-digit / date-time)
-not-lower-than-condition = (valid-identifier / entity-value) SP not-lower-than SP (new-digit / date-time)
-bigger-equal-than-condition = (valid-identifier / entity-value) SP bigger-equal-than SP (new-digit / date-time)
-not-bigger-equal-than-condition = (valid-identifier / entity-value) SP not-bigger-equal-than SP (new-digit / date-time)
-lower-equal-than-condition = (valid-identifier / entity-value) SP lower-equal-than SP (new-digit / date-time)
-not-lower-equal-than-condition = (valid-identifier / entity-value) SP not-lower-equal-than SP (new-digit / date-time)
+
+bigger-than-condition = (valid-identifier / entity-value) SP bigger-than SP (new-digit / ( date-time [date-add-time]) )
+not-bigger-than-condition = (valid-identifier / entity-value) SP not-bigger-than SP (new-digit / ( date-time [date-add-time]) )
+lower-than-condition = (valid-identifier / entity-value) SP lower-than SP (new-digit / ( date-time [date-add-time]) )
+not-lower-than-condition = (valid-identifier / entity-value) SP not-lower-than SP (new-digit /( date-time [date-add-time]) )
+bigger-equal-than-condition = (valid-identifier / entity-value) SP bigger-equal-than SP (new-digit / ( date-time [date-add-time]) )
+not-bigger-equal-than-condition = (valid-identifier / entity-value) SP not-bigger-equal-than SP (new-digit / ( date-time [date-add-time]) )
+lower-equal-than-condition = (valid-identifier / entity-value) SP lower-equal-than SP (new-digit / ( date-time [date-add-time]) )
+not-lower-equal-than-condition = (valid-identifier / entity-value) SP not-lower-equal-than SP (new-digit / ( date-time [date-add-time]) )
 
 
 ; multiple conditions
-condition-clause = mdm-role-condition / mdmc-role-condition / country-condition / starts-with-condition / not-starts-with-condition
+condition-clause = is-condition / is-not-condition / is-empty-condition / is-not-empty-condition / 
+condition-clause =/	starts-with-condition / not-starts-with-condition
 condition-clause =/	ends-with-condition / not-ends-with-condition / contains-condition / not-contains-condition /
 condition-clause =/	bigger-than-condition / not-bigger-than-condition / lower-than-condition / not-lower-than-condition / 
 condition-clause =/	bigger-equal-than-condition / not-bigger-equal-than-condition / lower-equal-than-condition / not-lower-equal-than-condition
-condition-clause =/ is-empty-condition is-visible-condition / is-not-visible-condition / is-enabled-condition
+condition-clause =/ is-empty-condition / is-visible-condition / is-not-visible-condition / is-enabled-condition
 condition-clause =/ is-disabled-condition / is-mandatory-condition / is-not-mandatory-condition
 condition-clause =/ in-condition / not-in-condition
+condition-clause =/ mdm-role-condition / mdmc-role-condition / country-condition 
 
 
 full-condition = 2TAB 1condition-clause SP *((and / or) condition-clause) ( (SP then SP) / (then CRLF 3TAB) ) (then-clause / multiple-then-clause)
@@ -216,6 +227,7 @@ set-action = "set" SP valid-identifier SP (mandatory / not-mandatory / enabled /
 
 ; for example -> set value 'G' in GD_Ctr_VendorClassification
 set-value-action = set-value SP quoted-statement SP in SP (valid-identifier / entity-value)
+set-date-action = (valid-identifier / entity-value) date-add-time
 
 show-element = ("show element" / "show") SP valid-identifier
 hide-element = ("hide element" / "hide") SP valid-identifier
@@ -369,3 +381,12 @@ email-send = "send-email" SP "subject:" [SP] valid-func-input ("," / SP) "body:"
  period-end        = duration "/" date-time
  
  period            = period-explicit / period-start / period-end
+
+
+; ---------------------------------------------------------------------------
+
+; date extensions
+
+; indicate a date add operation, allowing to add from years to seconds or subtracting by indicating -
+date-add-time = [(date / date-time)] SP "add" SP [-]1*DIGIT ( "Y" / "M" / "D" / "HH" / "MM" / "SS" )
+; today = "today"
