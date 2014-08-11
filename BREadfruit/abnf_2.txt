@@ -14,15 +14,11 @@ calendar = "calendar"
 button = "button"
 object = "object"
 dynamic = "dynamic"
-servicecall = "servicecall"								; calls to services
-lookup = "lookup"										; for looking up values in external tables	
-
 
 clear = "clear"
 role = "role"
 then = "then"
 in = "in"
-this = "this"
 
 
 ; for with statements separating the scopes of each entity in the file
@@ -41,14 +37,14 @@ boolean = "true" / "false"
 ; Default-Literals:
 
 ; the following are used in default clauses - see 'with defaults' section in sample business rule file
-max-length = 1("max_length" / "max length")
-min-length = 1("min_length" / "min length")
+max-length = "max_length" / "max length"
+min-length = "min_length" / "min length"
 mandatory = "mandatory"
 not-mandatory = "not mandatory"
 enabled = "enabled"
 disabled = "disabled"
 visible = "visible"
-not-visible = 1("not visible" / "hidden")
+not-visible = "not visible" / "hidden"
 checked = "checked"
 unchecked = "unchecked"
 
@@ -63,34 +59,34 @@ and = "and"
 or = "or"
 is = "is"
 not = "not"
-is-not = is not
+is-not = "is not"
 empty = "empty"
 starts-with = "starts with"
-not-starts-with = not "starts with"
+not-starts-with = "not starts with"
 ends-with = "ends with"
-not-ends-with = not "ends with"
-contains = "contains"					; should work on strings and lists alike
-not-contains = not "contains"					; should work on strings and lists alike
+not-ends-with = "not ends with"
+contains = "contains"							
+not-contains = "not contains"					
 bigger-than = "bigger than" / ">"
 not-bigger-than = "not bigger than" / "!>"
 lower-than = "lower than" / "<"
 not-lower-than = "not lower than" / "!<"
-bigger-equal-than = 1("bigger or equal than" / "<=")
-not-bigger-equal-than = 1("not bigger or equal than" / "!<=")
-lower-equal-than = 1("lower or equal than" / ">=")
-not-lower-equal-than = 1("not lower or equal than" / "!>=")
+bigger-equal-than = "bigger or equal than" / "<="
+not-bigger-equal-than = "not bigger or equal than" / "!<="
+lower-equal-than = "lower or equal than" / ">="
+not-lower-equal-than = "not lower or equal than" / "!>="
 
 
 ; ---------------------------------------------------------------------------
 
 ; Action-Tokens:
 
-; action tokens
-show-element = 1("show element" / "show")
-hide-element = 1("hide element" / "hide")
+; action token
+show-element = "show element" / "show"
+hide-element = "hide element" / "hide"
 clear = "clear"
 ; denotes a change in a DOM element - used in the action part of conditions (after the 'then' token)
-element-state-change = 1(enabled / disabled / visible / not-visible / mandatory / not-mandatory / clear / checked / unchecked)
+element-state-change = enabled / disabled / visible / not-visible / mandatory / not-mandatory / clear / checked / unchecked
 
 set-value = "set value"
 
@@ -100,27 +96,29 @@ set-value = "set value"
 
 ; Madam-Specific:
 
-valid-role = 1*("ENQ" / "UPM" / "CPM" / "SUS" / "RCO" / "CLERK")
+valid-role = "ENQ" / "UPM" / "CPM" / "SUS" / "RCO" / "CLERK"
 regional-country = "RegionalCountry"
 vendor-country = "VendorCountry"
 customer-country = "CustomerCountry"
-company-code = 1("CC" / "Company Code" / "CompanyCode" / "CoCd")
-purchase-org = 1("Purchase Org" / "P.Org" / "P. Org" / "PO")
-sales-org = 1("Sales Org" / "S.Org" / "S. Org" / "SO")
-dist-channel = 1("Dist Chanell" / "DC" / "Distribution channel")
+company-code = "CC" / "Company Code" / "CompanyCode" / "CoCd"
+purchase-org = "Purchase Org" / "P.Org" / "P. Org" / "PO"
+sales-org = "Sales Org" / "S.Org" / "S. Org" / "SO"
+dist-channel ="Dist Channel" / "DC" / "Distribution channel"
 division = "division"
-country = 1("ES" / "PT" / "FR" / "IT" / "GR" / "BE" / "LU")
+country = "ES" / "PT" / "FR" / "IT" / "GR" / "BE" / "LU"
 any-country = 2ALPHA
-vendor-account-group = 1("YVT1" / "YVT2" / "YVT3" / "YVT4" / "YVT5" / "YVT6" / "YVT7" / "YVT9")
-customer-account-group = 1("YCT1" / "YCT2" / "YCT3" / "YCT4" / "YCT5" / "YCT6" / "YCT7" / "YCT9")
+vendor-account-group = "YVT1" / "YVT2" / "YVT3" / "YVT4" / "YVT5" / "YVT6" / "YVT7" / "YVT9"
+customer-account-group = "YCT1" / "YCT2" / "YCT3" / "YCT4" / "YCT5" / "YCT6" / "YCT7" / "YCT9"
+multiple-vendor-account-group = "{" vendor-account-group SP [1*("," [SP] vendor-account-group)] "}"
+multiple-customer-account-group = "{" customer-account-group SP [1*("," [SP]customer-account-group)] "}"
 
 ; ---------------------------------------------------------------------------
 
 ; Quotables:
 
 squote = "'"
-quote = 1(DQUOTE / squote)								; valid like this?
-statement = 0*VCHAR										; not sure this covers for example greek characters...
+quote = DQUOTE / squote									
+statement = *VCHAR										; not sure this covers for example greek characters...
 quoted-statement = 1quote statement 1quote				
 
 
@@ -132,10 +130,10 @@ quoted-statement = 1quote statement 1quote
 ; defines a valid identifier for an element, like an entity's name - should be at least 3 characters long
 valid-identifier = 3*(ALPHA / DIGIT / "_") 
 
-entity-type = 1(textbox / checkbox / dropdownlist / multiline / radiobutton / label / div / button / object / servicecall)
-entity-line = entity valid-identifier is entity-type
+entity-type = textbox / checkbox / dropdownlist / multiline / radiobutton / label / div / button / object
+entity-line = entity SP valid-identifier SP is SP entity-type
 
-with-line = with 1(defaults / rules / triggers / constraints)
+with-line = with SP (defaults / rules / triggers / constraints)
 
 
 ; ---------------------------------------------------------------------------
@@ -143,15 +141,15 @@ with-line = with 1(defaults / rules / triggers / constraints)
 ; Default-Clauses:
 
 ; valid default clauses for entities
-value-default = value quoted-statement
-mandatory-default = mandatory boolean
-enabled-default = enabled boolean
-disabled-default = disabled boolean
-visible-default = visible boolean
-checked-default = checked boolean
-unchecked-default = unchecked boolean
-max-length-default = max-length 1*DIGIT
-min-length-default = min-length 1*DIGIT
+value-default = value SP quoted-statement
+mandatory-default = mandatory SP boolean
+enabled-default = enabled SP boolean
+disabled-default = disabled SP boolean
+visible-default = visible SP boolean
+checked-default = checked SP boolean
+unchecked-default = unchecked SP boolean
+max-length-default = max-length SP 1*DIGIT
+min-length-default = min-length SP 1*DIGIT
 
 ; ---------------------------------------------------------------------------
 
@@ -160,47 +158,47 @@ min-length-default = min-length 1*DIGIT
 
 
 ; for a then with a single action
-then-clause = then valid-identifier element-state-change
+then-clause = then SP valid-identifier SP element-state-change
 
 ; for a then with several actions
-multiple-then-clause = then-clause 0*["," then-clause]
+multiple-then-clause = then-clause SP [*("," then-clause)]
 
 ; basic stems for conditions
-role-condition = role is valid-role		
-vendor-country-condition  = vendor-country is 1(country / any-country) 
-customer-country-condition  = customer-country is 1(country / any-country) 
-country-condition = 1(vendor-country-condition / customer-country-condition)
+role-condition = role SP is SP valid-role		
+vendor-country-condition  = vendor-country SP is SP (country / any-country) 
+customer-country-condition  = customer-country SP is SP (country / any-country) 
+country-condition = (vendor-country-condition / customer-country-condition)
 
 
 ; 1* is to state that these operators should work as "starts with any of the following values" 
 ; or "ends with any of the following values" sort of linq functionality
-starts-with-condition = 1(valid-identifier / entity-value) starts-with quoted-statement 0*("," quoted-statement)
-not-starts-with-condition = 1(valid-identifier / entity-value) not-starts-with quoted-statement 0*("," quoted-statement)
-ends-with-condition = 1(valid-identifier / entity-value) ends-with quoted-statement 0*("," quoted-statement)
-not-ends-with-condition = 1(valid-identifier / entity-value) not-ends-with quoted-statement 0*("," quoted-statement)
+starts-with-condition = 1(valid-identifier / entity-value) SP starts-with SP quoted-statement *("," quoted-statement)
+not-starts-with-condition = 1(valid-identifier / entity-value) SP not-starts-with SP quoted-statement *("," quoted-statement)
+ends-with-condition = 1(valid-identifier / entity-value) SP ends-with SP quoted-statement *("," quoted-statement)
+not-ends-with-condition = 1(valid-identifier / entity-value) SP not-ends-with SP quoted-statement *("," quoted-statement)
 
 ; 1* is to state that contains should work as "contains any of the following values" sort of linq functionality
-; contains-condition = 1(valid-identifier / entity-value) contains quoted-statement 0*("," quoted-statement)
-;not-contains-condition = 1(valid-identifier / entity-value) not-contains quoted-statement 0*("," quoted-statement)
+; contains-condition = 1(valid-identifier / entity-value) contains quoted-statement *("," quoted-statement)
+;not-contains-condition = 1(valid-identifier / entity-value) not-contains quoted-statement *("," quoted-statement)
 ; this format should be better, for allowing single-item format or list format
 ; only, check if this nested format at the end of the line is actually valid
-contains-condition = 1(valid-identifier / entity-value) contains (quoted-statement / ("{" quoted-statement 0*("," quoted-statement) "}"))
-not-contains-condition = 1(valid-identifier / entity-value) contains (quoted-statement / ("{" quoted-statement 0*("," quoted-statement) "}"))
+contains-condition = 1(valid-identifier / entity-value) contains (quoted-statement / ("{" quoted-statement *("," quoted-statement) "}"))
+not-contains-condition = 1(valid-identifier / entity-value) contains (quoted-statement / ("{" quoted-statement *("," quoted-statement) "}"))
 
 
 
 ; TODO: Check if this is right and if we should add markers for numbers like d, x, m etc.
 new-digit = [-]1*DIGIT["."][1*DIGIT][("d" / "m" / "x")]
-bigger-than-condition = 1(valid-identifier / entity-value) bigger-than 1(new-digit /  date-time)
-not-bigger-than-condition = 1(valid-identifier / entity-value) not-bigger-than 1(new-digit /  date-time)
-lower-than-condition = 1(valid-identifier / entity-value) lower-than 1(new-digit /  date-time)
-not-lower-than-condition = 1(valid-identifier / entity-value) not-lower-than 1(new-digit /  date-time)
+bigger-than-condition = 1(valid-identifier / entity-value) SP bigger-than SP 1(new-digit /  date-time)
+not-bigger-than-condition = 1(valid-identifier / entity-value) SP not-bigger-than SP 1(new-digit /  date-time)
+lower-than-condition = 1(valid-identifier / entity-value) SP lower-than SP 1(new-digit /  date-time)
+not-lower-than-condition = 1(valid-identifier / entity-value) SP not-lower-than SP 1(new-digit /  date-time)
 
 
-bigger-equal-than-condition = 1(valid-identifier / entity-value) bigger-equal-than 1(new-digit /  date-time)
-not-bigger-equal-than-condition = 1(valid-identifier / entity-value) not-bigger-equal-than 1(new-digit /  date-time)
-lower-equal-than-condition = 1(valid-identifier / entity-value) lower-equal-than 1(new-digit /  date-time)
-not-lower-equal-than-condition = 1(valid-identifier / entity-value) not-lower-equal-than 1(new-digit /  date-time)
+bigger-equal-than-condition = 1(valid-identifier / entity-value) SP bigger-equal-than SP 1(new-digit /  date-time)
+not-bigger-equal-than-condition = 1(valid-identifier / entity-value) SP not-bigger-equal-than SP 1(new-digit /  date-time)
+lower-equal-than-condition = 1(valid-identifier / entity-value) SP lower-equal-than SP 1(new-digit /  date-time)
+not-lower-equal-than-condition = 1(valid-identifier / entity-value) SP not-lower-equal-than SP 1(new-digit /  date-time)
 
 
 ; multiple conditions
@@ -209,10 +207,8 @@ condition-clause =/	ends-with-condition / not-ends-with-condition / contains-con
 condition-clause =/	bigger-than-condition / not-bigger-than-condition / lower-than-condition / not-lower-than-condition / 
 condition-clause =/	bigger-equal-than-condition / not-bigger-equal-than-condition / lower-equal-than-condition / not-lower-equal-than-condition
 
-; TODO: add the rest here.... 
 
-
-full-condition = 1condition-clause 0*(1(and / or) 1condition-clause) multiple-then-clause
+full-condition = 1condition-clause SP *((and / or) condition-clause) SP multiple-then-clause
 
 
 ; for defining accessors like GD_Adr_Name1.Text or MyClass.Name
@@ -228,10 +224,10 @@ entity-value = valid-identifier ["." valid-identifier]
 
 ; actions
 ; for example set  GD_Ctr_IsNaturalPerson unchecked
-set-action = "set" valid-identifier 1(mandatory / not-mandatory / enabled / disabled / visible / not-visible  / checked / unchecked)
+set-action = "set" SP valid-identifier SP (mandatory / not-mandatory / enabled / disabled / visible / not-visible  / checked / unchecked)
 
 ; for example -> set value 'G' in GD_Ctr_VendorClassification
-set-value-action = set-value 1quoted-statement in 1(valid-identifier / entity-value)
+set-value-action = set-value SP quoted-statement SP in SP (valid-identifier / entity-value)
 
 
 
@@ -250,8 +246,8 @@ row-inserted = "row inserted"
 row-deleted = "row deleted"
 row-updated = "row updated"
 
-valid-trigger = 1(change-value / become-mandatory / become-non-mandatory / lose-focus / get-focus / become-visible / become-hidden / row-inserted / row-deleted / row-updated )
-trigger-clause = valid-identifier valid-trigger
+valid-trigger = (change-value / become-mandatory / become-non-mandatory / lose-focus / get-focus / become-visible / become-hidden / row-inserted / row-deleted / row-updated )
+trigger-clause = valid-identifier SP valid-trigger
 
 
 ; ---------------------------------------------------------------------------
@@ -259,9 +255,7 @@ trigger-clause = valid-identifier valid-trigger
 ; Constraints:
 
 ; constraints, sort of masks for textboxes basically
-only-ascii = "only ascii"
-only-numbers = "only numbers"
-all-capitals = "all capitals"
+only-constraint = "only" SP ( "ascii" / "numbers" / "capitals" )
 
 
 ; ---------------------------------------------------------------------------
@@ -282,7 +276,7 @@ valid-func-input = entity-value / quoted-statement
 
 ; output is more tricky, for the moment we assume we want to pass only quoted-statements
 ; to allow business rule to specify output column/field name only
-table-lookup = "table-lookup" ( "name" quoted-statement "," "I:" valid-func-input 0*("," "I:" valid-func-input) "," "O:" quoted-statement 0*("," "O:" quoted-statement) )
+table-lookup = "table-lookup" SP ( "name" SP quoted-statement [SP] "," [SP] "I:" [SP] valid-func-input *([SP] "," [SP] "I:" [SP] valid-func-input) [SP] "," [SP] "O:" [SP] quoted-statement *( [SP] "," [SP] "O:" quoted-statement) )
 
 
 ; represents external call to web service or similar
@@ -290,13 +284,13 @@ table-lookup = "table-lookup" ( "name" quoted-statement "," "I:" valid-func-inpu
 ; however, there are many factors, here like URL, auth etc...
 ; these concerns should not be part of rule itself
 ; in the case of service calls output params could be full objects of fields thereof
-service-call = "service-call" ( "name" quoted-statement "," "I:" valid-func-input 0*("," "I:" valid-func-input) "," "O:" valid-func-input 0*("," "O:" valid-func-input) )
+service-call = "service-call" ( "name" quoted-statement "," "I:" valid-func-input *("," "I:" valid-func-input) "," "O:" valid-func-input *("," "O:" valid-func-input) )
 
 
 ; represents a business rule to send email
 ; we assume email-send params can be also literals or object values,
 ; for example, objects containing the data or functions returning said email data
-email-send = "send-email" "subject:" valid-func-input "body:" valid-func-input "to:" valid-func-input ["cc" valid-func-input] ["bcc:" valid-func-input]
+email-send = "send-email" SP "subject:" [SP] valid-func-input ("," / SP) "body:" [SP] valid-func-input ("," / SP) "from:" [SP] valid-func-input ("," / SP) "to:" [SP] valid-func-input [("," / SP) "cc:" [SP] valid-func-input] [("," / SP) "bcc:" [SP] valid-func-input] [("," / SP) "attachments:" [SP] valid-func-input]
 
 
 ; ---------------------------------------------------------------------------
