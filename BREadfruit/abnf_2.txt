@@ -35,6 +35,7 @@ value = "value"											; default clause for value
 boolean = 1(true / false)								
 
 
+
 Default-Literals:
 
 ; the following are used in default clauses - see 'with defaults' section in sample business rule file
@@ -123,7 +124,7 @@ quoted-statement = 1quote statement 1quote
 Scopes:
 
 ; defines a valid identifier for an element, like an entity's name - should be at least 3 characters long
-valid-identifier = 3*[ALPHA DIGIT "_"] 
+valid-identifier = 3*(ALPHA / DIGIT / "_") 
 
 entity-type = 1(textbox / checkbox / dropdownlist / multiline / radiobutton / label / div / button / object / servicecall)
 entity-line = entity valid-identifier is entity-type
@@ -173,8 +174,13 @@ ends-with-condition = 1(valid-identifier / entity-value) ends-with quoted-statem
 not-ends-with-condition = 1(valid-identifier / entity-value) not-ends-with quoted-statement 0*("," quoted-statement)
 
 ; 1* is to state that contains should work as "contains any of the following values" sort of linq functionality
-contains-condition = 1(valid-identifier / entity-value) contains quoted-statement 0*("," quoted-statement)
-not-contains-condition = 1(valid-identifier / entity-value) not-contains quoted-statement 0*("," quoted-statement)
+; contains-condition = 1(valid-identifier / entity-value) contains quoted-statement 0*("," quoted-statement)
+;not-contains-condition = 1(valid-identifier / entity-value) not-contains quoted-statement 0*("," quoted-statement)
+; this format should be better, for allowing single-item format or list format
+; only, check if this nested format at the end of the line is actually valid
+contains-condition = 1(valid-identifier / entity-value) contains (quoted-statement / ("{" quoted-statement 0*("," quoted-statement) "}"))
+not-contains-condition = 1(valid-identifier / entity-value) contains (quoted-statement / ("{" quoted-statement 0*("," quoted-statement) "}"))
+
 
 
 ; TODO: Check if this is right and if we should add markers for numbers like d, x, m etc.
@@ -258,8 +264,41 @@ all-capitals = "all capitals"
 ; ---------------------------------------------------------------------------
 
 
+; this section is for defining how to denote a table lookup
+; proposed format can be something like this identifying Input and Output cols
+; table-lookup ( I:{'Col_1', 'Col_2'}, O:{'Col_3', 'Col_6'} )
+; or
+; table-lookup ( I:'Col_1', I:'Col_2', O:'Col_3', O:'Col_6' )
+Lookups:
+
+; this means we can either send an object / dom element name, a full field or prop name or any arbitrary value
+; entity-value is entity-value = valid-identifier ["." valid-identifier]
+; so we can send either EntityName or EntityName.FieldName
+; quoted-statement cover sending up something like 'My Name Is John' or any other data (serialized json for example)
+valid-func-input = entity-value / quoted-statement
+
+; output is more tricky, for the moment we assume we want to pass only quoted-statements
+; to allow business rule to specify output column/field name only
+table-lookup = "table-lookup" ( "name" quoted-statement, "I:" valid-func-input 0*("," "I:" valid-func-input), "O:" quoted-statement 0*("," "O:" quoted-statement) )
 
 
+; represents external call to web service or similar
+; service-call ( I:'Col_1', I:'Col_2', O:'Col_3', O:'Col_6' )
+; however, there are many factors, here like URL, auth etc...
+; these concerns should not be part of rule itself
+; in the case of service calls output params could be full objects of fields thereof
+service-call = "service-call" ( "name" quoted-statement, "I:" valid-func-input 0*("," "I:" valid-func-input), "O:" valid-func-input 0*("," "O:" valid-func-input) )
+
+
+; represents a business rule to send email
+; we assume email-send params can be also literals or object values,
+; for example, objects containing the data or functions returning said email data
+email-send = "send-email" "subject:" valid-func-input "body:" valid-func-input "to:" valid-func-input ["cc" valid-func-input] ["bcc:" valid-func-input]
+
+
+; ---------------------------------------------------------------------------
+
+Dates:
 
 ; THIS DATE GRAMMAR WAS OBTAINED FROM http://www.imc.org/ietf-calendar/archive1/msg00512.html - ISO 8601
 
@@ -335,4 +374,4 @@ all-capitals = "all capitals"
  period-start      = date-time "/" duration
  period-end        = duration "/" date-time
  
- period            = period-explicit / period-start / period-e
+ period            = period-explicit / period-start / period-end
