@@ -28,13 +28,8 @@ rules = "rules"
 triggers = "triggers"
 constraints = "constraints"
 
-
 value = "value"	
 boolean = "true" / "false"							
-
-
-
-; Default-Literals:
 
 ; the following are used in default clauses - see 'with defaults' section in sample business rule file
 max-length = "max_length" / "max length"
@@ -96,7 +91,8 @@ set-value = "set value"
 
 ; Madam-Specific:
 
-valid-role = "ENQ" / "UPM" / "CPM" / "SUS" / "RCO" / "CLERK"
+mdm-valid-role = "ENQ" / "UPM" / "CPM" / "RCO" / "CLERK"
+mdmc-valid-role = "ENQ" / "SUS" / "RCO" / "CLERK"
 regional-country = "RegionalCountry"
 vendor-country = "VendorCountry"
 customer-country = "CustomerCountry"
@@ -109,8 +105,8 @@ country = "ES" / "PT" / "FR" / "IT" / "GR" / "BE" / "LU"
 any-country = 2ALPHA
 vendor-account-group = "YVT1" / "YVT2" / "YVT3" / "YVT4" / "YVT5" / "YVT6" / "YVT7" / "YVT9"
 customer-account-group = "YCT1" / "YCT2" / "YCT3" / "YCT4" / "YCT5" / "YCT6" / "YCT7" / "YCT9"
-multiple-vendor-account-group = "{" vendor-account-group SP [1*("," [SP] vendor-account-group)] "}"
-multiple-customer-account-group = "{" customer-account-group SP [1*("," [SP]customer-account-group)] "}"
+multiple-vendor-account-group = "{" [SP] vendor-account-group [SP] [1*("," [SP] vendor-account-group)] [SP] "}"
+multiple-customer-account-group = "{" [SP] customer-account-group [SP] [1*("," [SP]customer-account-group)] [SP] "}"
 
 ; ---------------------------------------------------------------------------
 
@@ -161,54 +157,63 @@ min-length-default = min-length SP 1*DIGIT
 then-clause = then SP valid-identifier SP element-state-change
 
 ; for a then with several actions
-multiple-then-clause = then-clause SP [*("," then-clause)]
+multiple-then-clause = then-clause 1*("," [SP] then-clause)
 
 ; basic stems for conditions
-role-condition = role SP is SP valid-role		
+mdm-role-condition = role SP is SP mdm-valid-role		
+mdmc-role-condition = role SP is SP mdmc-valid-role		
 vendor-country-condition  = vendor-country SP is SP (country / any-country) 
 customer-country-condition  = customer-country SP is SP (country / any-country) 
 country-condition = (vendor-country-condition / customer-country-condition)
+is-empty-condition = entity-value SP is SP empty
+is-visible-condition = entity-value SP is SP visible
+is-not-visible-condition = entity-value SP is SP not-visible
+is-enabled-condition = entity-value SP is SP enabled
+is-disabled-condition = entity-value SP is SP disabled
+is-mandatory-condition = entity-value SP is SP mandatory
+is-not-mandatory-condition = entity-value SP is SP not-mandatory
 
+multiple-quoted-statement = "{" [SP] quoted-statement *("," [SP] quoted-statement) [SP] "}"
 
 ; 1* is to state that these operators should work as "starts with any of the following values" 
 ; or "ends with any of the following values" sort of linq functionality
-starts-with-condition = 1(valid-identifier / entity-value) SP starts-with SP quoted-statement *("," quoted-statement)
-not-starts-with-condition = 1(valid-identifier / entity-value) SP not-starts-with SP quoted-statement *("," quoted-statement)
-ends-with-condition = 1(valid-identifier / entity-value) SP ends-with SP quoted-statement *("," quoted-statement)
-not-ends-with-condition = 1(valid-identifier / entity-value) SP not-ends-with SP quoted-statement *("," quoted-statement)
+starts-with-condition = (valid-identifier / entity-value) SP starts-with SP (quoted-statement / multiple-quoted-statement)
+not-starts-with-condition = (valid-identifier / entity-value) SP not-starts-with SP (quoted-statement / multiple-quoted-statement)
+ends-with-condition = (valid-identifier / entity-value) SP ends-with SP (quoted-statement / multiple-quoted-statement)
+not-ends-with-condition = (valid-identifier / entity-value) SP not-ends-with SP (quoted-statement / multiple-quoted-statement)
 
 ; 1* is to state that contains should work as "contains any of the following values" sort of linq functionality
-; contains-condition = 1(valid-identifier / entity-value) contains quoted-statement *("," quoted-statement)
-;not-contains-condition = 1(valid-identifier / entity-value) not-contains quoted-statement *("," quoted-statement)
-; this format should be better, for allowing single-item format or list format
-; only, check if this nested format at the end of the line is actually valid
-contains-condition = 1(valid-identifier / entity-value) contains (quoted-statement / ("{" quoted-statement *("," quoted-statement) "}"))
-not-contains-condition = 1(valid-identifier / entity-value) contains (quoted-statement / ("{" quoted-statement *("," quoted-statement) "}"))
+; check if this nested format at the end of the line is actually valid
+contains-condition = (valid-identifier / entity-value) contains (quoted-statement / multiple-quoted-statement)
+not-contains-condition = (valid-identifier / entity-value) not-contains (quoted-statement / multiple-quoted-statement)
 
 
 
 ; TODO: Check if this is right and if we should add markers for numbers like d, x, m etc.
 new-digit = [-]1*DIGIT["."][1*DIGIT][("d" / "m" / "x")]
-bigger-than-condition = 1(valid-identifier / entity-value) SP bigger-than SP 1(new-digit /  date-time)
-not-bigger-than-condition = 1(valid-identifier / entity-value) SP not-bigger-than SP 1(new-digit /  date-time)
-lower-than-condition = 1(valid-identifier / entity-value) SP lower-than SP 1(new-digit /  date-time)
-not-lower-than-condition = 1(valid-identifier / entity-value) SP not-lower-than SP 1(new-digit /  date-time)
+bigger-than-condition = (valid-identifier / entity-value) SP bigger-than SP (new-digit / date-time)
+not-bigger-than-condition = (valid-identifier / entity-value) SP not-bigger-than SP (new-digit / date-time)
+lower-than-condition = (valid-identifier / entity-value) SP lower-than SP (new-digit / date-time)
+not-lower-than-condition = (valid-identifier / entity-value) SP not-lower-than SP (new-digit / date-time)
 
 
-bigger-equal-than-condition = 1(valid-identifier / entity-value) SP bigger-equal-than SP 1(new-digit /  date-time)
-not-bigger-equal-than-condition = 1(valid-identifier / entity-value) SP not-bigger-equal-than SP 1(new-digit /  date-time)
-lower-equal-than-condition = 1(valid-identifier / entity-value) SP lower-equal-than SP 1(new-digit /  date-time)
-not-lower-equal-than-condition = 1(valid-identifier / entity-value) SP not-lower-equal-than SP 1(new-digit /  date-time)
+bigger-equal-than-condition = (valid-identifier / entity-value) SP bigger-equal-than SP (new-digit /  date-time)
+not-bigger-equal-than-condition = (valid-identifier / entity-value) SP not-bigger-equal-than SP (new-digit /  date-time)
+lower-equal-than-condition = (valid-identifier / entity-value) SP lower-equal-than SP (new-digit /  date-time)
+not-lower-equal-than-condition = (valid-identifier / entity-value) SP not-lower-equal-than SP (new-digit /  date-time)
 
 
 ; multiple conditions
-condition-clause = role-condition / country-condition / starts-with-condition / not-starts-with-condition
+condition-clause = mdm-role-condition / mdmc-role-condition / country-condition / starts-with-condition / not-starts-with-condition
 condition-clause =/	ends-with-condition / not-ends-with-condition / contains-condition / not-contains-condition /
 condition-clause =/	bigger-than-condition / not-bigger-than-condition / lower-than-condition / not-lower-than-condition / 
 condition-clause =/	bigger-equal-than-condition / not-bigger-equal-than-condition / lower-equal-than-condition / not-lower-equal-than-condition
+condition-clause =/ is-empty-condition is-visible-condition / is-not-visible-condition / is-enabled-condition
+condition-clause =/ is-disabled-condition / is-mandatory-condition / is-not-mandatory-condition
 
 
-full-condition = 1condition-clause SP *((and / or) condition-clause) SP multiple-then-clause
+
+full-condition = 1condition-clause SP *((and / or) condition-clause) SP (then-clause / multiple-then-clause)
 
 
 ; for defining accessors like GD_Adr_Name1.Text or MyClass.Name
