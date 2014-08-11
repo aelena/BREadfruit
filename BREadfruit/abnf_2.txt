@@ -44,7 +44,8 @@ not-visible = "not visible" / "hidden"
 checked = "checked"
 unchecked = "unchecked"
 
-
+2TAB = 2HTAB
+3TAB = 3HTAB 
 
 ; ---------------------------------------------------------------------------
 
@@ -71,20 +72,6 @@ bigger-equal-than = "bigger or equal than" / "<="
 not-bigger-equal-than = "not bigger or equal than" / "!<="
 lower-equal-than = "lower or equal than" / ">="
 not-lower-equal-than = "not lower or equal than" / "!>="
-
-
-; ---------------------------------------------------------------------------
-
-; Action-Tokens:
-
-; action token
-show-element = "show element" / "show"
-hide-element = "hide element" / "hide"
-clear = "clear"
-; denotes a change in a DOM element - used in the action part of conditions (after the 'then' token)
-element-state-change = enabled / disabled / visible / not-visible / mandatory / not-mandatory / clear / checked / unchecked
-
-set-value = "set value"
 
 
 ; ---------------------------------------------------------------------------
@@ -131,7 +118,7 @@ valid-identifier = 3*(ALPHA / DIGIT / "_")
 entity-type = textbox / checkbox / dropdownlist / multiline / radiobutton / label / div / button / object
 entity-line = entity SP valid-identifier SP is SP entity-type
 
-with-line = with SP (defaults / rules / triggers / constraints)
+with-line = HTAB with SP (defaults / rules / triggers / constraints)
 
 
 ; ---------------------------------------------------------------------------
@@ -139,15 +126,15 @@ with-line = with SP (defaults / rules / triggers / constraints)
 ; Default-Clauses:
 
 ; valid default clauses for entities
-value-default = value SP quoted-statement
-mandatory-default = mandatory SP boolean
-enabled-default = enabled SP boolean
-disabled-default = disabled SP boolean
-visible-default = visible SP boolean
-checked-default = checked SP boolean
-unchecked-default = unchecked SP boolean
-max-length-default = max-length SP 1*DIGIT
-min-length-default = min-length SP 1*DIGIT
+value-default = 2TAB value SP quoted-statement
+mandatory-default = 2TAB mandatory SP boolean
+enabled-default = 2TAB enabled SP boolean
+disabled-default = 2TAB disabled SP boolean
+visible-default = 2TAB visible SP boolean
+checked-default = 2TAB checked SP boolean
+unchecked-default = 2TAB unchecked SP boolean
+max-length-default = 2TAB max-length SP 1*DIGIT
+min-length-default = 2TAB min-length SP 1*DIGIT
 
 ; ---------------------------------------------------------------------------
 
@@ -156,13 +143,13 @@ min-length-default = min-length SP 1*DIGIT
 
 
 ; for a then with a single action
-then-clause = then SP valid-identifier SP element-state-change
-
+then-clause = valid-identifier SP ( element-state-change / set-value-action / set-action / show-element / hide-element / clear-action / load-action )
 ; for a then with several actions
 multiple-then-clause = then-clause 1*("," [SP] then-clause)
 
+
 ; basic stems for conditions
-mdm-role-condition = role SP is SP mdm-valid-role		
+mdm-role-condition = role SP is SP mdm-valid-role 
 mdmc-role-condition = role SP is SP mdmc-valid-role		
 vendor-country-condition  = vendor-country SP is SP ((country / any-country) / country-list)
 customer-country-condition  = customer-country SP is SP ((country / any-country) / country-list)
@@ -209,7 +196,7 @@ condition-clause =/ is-disabled-condition / is-mandatory-condition / is-not-mand
 condition-clause =/ in-condition / not-in-condition
 
 
-full-condition = 1condition-clause SP *((and / or) condition-clause) SP (then-clause / multiple-then-clause)
+full-condition = 2TAB 1condition-clause SP *((and / or) condition-clause) ( (SP then SP) / (then CRLF 3TAB) ) (then-clause / multiple-then-clause)
 
 
 ; for defining accessors like GD_Adr_Name1.Text or MyClass.Name
@@ -230,6 +217,15 @@ set-action = "set" SP valid-identifier SP (mandatory / not-mandatory / enabled /
 ; for example -> set value 'G' in GD_Ctr_VendorClassification
 set-value-action = set-value SP quoted-statement SP in SP (valid-identifier / entity-value)
 
+show-element = ("show element" / "show") SP valid-identifier
+hide-element = ("hide element" / "hide") SP valid-identifier
+clear-action = "clear" SP valid-identifier
+load-action = "load" SP valid-identifier SP "from" SP valid-identifier
+
+; denotes a change in a DOM element - used in the action part of conditions (after the 'then' token)
+element-state-change = enabled / disabled / visible / not-visible / mandatory / not-mandatory / clear / checked / unchecked
+
+set-value = "set value"
 
 
 ; ---------------------------------------------------------------------------
