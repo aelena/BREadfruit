@@ -250,8 +250,8 @@ namespace BREadfruit
 
         #region " --- event symbols ( for use in triggers block ) --- "
 
-        public static AliasedSymbol ChangedEventSymbol = new AliasedSymbol ( "changed", 2, true, new List<string> { "changes", "change", "on change" } );
-        public static AliasedSymbol FocusEventSymbol = new AliasedSymbol ( "entered", 2, true, new List<string> { "enter", "enters", "on enter", "on focus", "focus" } );
+        public static AliasedSymbol ChangedEventSymbol = new AliasedSymbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes", "change" } );
+        public static AliasedSymbol FocusEventSymbol = new AliasedSymbol ( "entered", 2, true, new List<string> { "on entered", "on enter", "enters", "on focus", "focus" } );
         public static AliasedSymbol BlurredEventSymbol = new AliasedSymbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
 
         #endregion
@@ -414,6 +414,21 @@ namespace BREadfruit
 
 
         // ---------------------------------------------------------------------------------
+
+
+        public static bool TokenIsAlias ( string token )
+        {
+            var _ = from s in Grammar.Symbols
+                    where s is AliasedSymbol
+                    where ( ( AliasedSymbol ) s ).Aliases.Contains ( token )
+                    select s;
+
+            return ( _ != null && _.Count () > 0 );
+
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
 
         #region " --- private methods --- "
