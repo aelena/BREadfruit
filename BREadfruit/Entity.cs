@@ -51,6 +51,8 @@ namespace BREadfruit
 
         private IList<DefaultClause> _defaults;
         private IList<Rule> _rules;
+        private IList<ResultAction> _actions;
+        private IList<UnaryAction> _unaryactions;
 
 
         public IEnumerable<Rule> Rules
@@ -72,8 +74,28 @@ namespace BREadfruit
             }
         }
 
+        // ---------------------------------------------------------------------------------
+
+        public IEnumerable<ResultAction> Actions
+        {
+            get
+            {
+                return this._actions;
+            }
+        }
 
         // ---------------------------------------------------------------------------------
+
+        public IEnumerable<UnaryAction> ConditionlessActions
+        {
+            get
+            {
+                return this._unaryactions;
+            }
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
         public Entity ( string name, string typeDescription, string bpCode = "" )
         {
@@ -82,6 +104,8 @@ namespace BREadfruit
             this._businessProcessCode = bpCode;
             this._defaults = new List<DefaultClause> ();
             this._rules = new List<Rule> ();
+            this._actions = new List<ResultAction> ();
+            this._unaryactions = new List<UnaryAction> ();
         }
 
 
@@ -107,7 +131,21 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+        public bool AddResultAction ( ResultAction action )
+        {
+            this._actions.Add ( action );
+            return true;
+        }
 
+        // ---------------------------------------------------------------------------------
+
+        public bool AddUnaryAction ( UnaryAction action )
+        {
+            this._unaryactions.Add ( action );
+            return true;
+        }
+
+        // ---------------------------------------------------------------------------------
 
     }
 }
