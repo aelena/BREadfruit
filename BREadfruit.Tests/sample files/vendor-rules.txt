@@ -23,8 +23,12 @@ Entity TBVendorCity is TextBox
 		value ""
 		label LABELS.VENDOR.CITY
 
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+
 	with triggers
-		this.value changes then set btnCreateVendor not visible, set vendorSearchResultGrid not visible
+		this.value on change
 
 ; ----------------------------------------------------------------------------	
 
@@ -35,6 +39,10 @@ Entity TBVendorNumber is TextBox
 		max length 10
 		min length 10
 		label LABELS.VENDOR.NUMBER
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
 
 	with rules
 		TBVendorNumber.text starts with '0' then

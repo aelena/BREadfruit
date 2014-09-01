@@ -45,6 +45,7 @@
     <Compile Include="Conditions\Operator.cs" />
     <Compile Include="Conditions\UnaryAction.cs" />
     <Compile Include="Conditions\Rule.cs" />
+    <Compile Include="Constraint.cs" />
     <Compile Include="Grammar\DefaultClause.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Grammar\Grammar.cs" />

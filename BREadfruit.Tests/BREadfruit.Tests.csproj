@@ -77,6 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="sample files\samplerulefile01.txt" />
+    <Content Include="sample files\single entity tests\File002.txt" />
+    <Content Include="sample files\single entity tests\File001.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

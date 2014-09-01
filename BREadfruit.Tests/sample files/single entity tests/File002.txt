@@ -1,0 +1,14 @@
+﻿Entity TBVendorCity is TextBox
+	with defaults
+		visible true
+		value ""
+		label LABELS.VENDOR.CITY
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+
+	with triggers
+		this.value on change
+
+; ----------------------------------------------------------------------------	
