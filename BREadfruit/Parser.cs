@@ -68,7 +68,7 @@ namespace BREadfruit
 
                         // we need to check the indent level to make sure we set the right scope
                         // this is for conditions with several action lines
-                        if ( _currentScope == CurrentScope.ACTIONS_BLOCK && lineInfo.IndentLevel == 2 )
+                        if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK && lineInfo.IndentLevel == 2 )
                             _currentScope = CurrentScope.RULES_BLOCK;
 
                         #region " --- entity block --- "
@@ -91,6 +91,8 @@ namespace BREadfruit
                                 var _withScope = lineInfo.Tokens.Last ().Token;
                                 if ( _withScope.Equals ( Grammar.DefaultsSymbol.Token ) )
                                     this._currentScope = CurrentScope.DEFAULTS_BLOCK;
+                                if ( _withScope.Equals ( Grammar.ActionsSymbol.Token ) )
+                                    this._currentScope = CurrentScope.ACTIONS_BLOCK;
                                 if ( _withScope.Equals ( Grammar.RulesSymbol.Token ) )
                                     this._currentScope = CurrentScope.RULES_BLOCK;
                                 if ( _withScope.Equals ( Grammar.ConstraintsSymbol.Token ) )
@@ -132,7 +134,7 @@ namespace BREadfruit
                                 // if then is the last token, then there are actions
                                 if ( lineInfo.Tokens.Last ().Equals ( Grammar.ThenSymbol ) )
                                 {
-                                    _currentScope = CurrentScope.ACTIONS_BLOCK;
+                                    _currentScope = CurrentScope.CONDITION_ACTIONS_BLOCK;
                                     continue;
                                 }
                                 else
@@ -173,8 +175,29 @@ namespace BREadfruit
                         }
                         #endregion
 
-                        #region " --- actions block --- "
+                        #region " --- condition-less actions block --- "
                         if ( this._currentScope == CurrentScope.ACTIONS_BLOCK )
+                        {
+                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                            // see if this is resultaction
+                            if ( lineInfo.Tokens.Count () == 4 )
+                            {
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                            lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
+                                this._entities.Last ().AddResultAction ( _ra );
+                            }
+                            // or unary action
+                            if ( lineInfo.Tokens.Count () == 2 )
+                            {
+                                var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                    lineInfo.Tokens.ElementAt ( 1 ).Token );
+                                this._entities.Last ().AddUnaryAction ( _ua );
+                            }
+                        }
+                        #endregion
+
+                        #region " --- condition  actions block --- "
+                        if ( this._currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
                         {
                             lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
                             if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
@@ -278,9 +301,13 @@ namespace BREadfruit
         /// </summary>
         RULES_BLOCK,
         /// <summary>
+        /// Indicates we are in the block that indicates condition-less actions
+        /// </summary>
+        ACTIONS_BLOCK,
+        /// <summary>
         /// Indicates we are in the actions block of a business rule definition
         /// </summary>
-        ACTIONS_BLOCK
+        CONDITION_ACTIONS_BLOCK
     }
 
 }

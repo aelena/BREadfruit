@@ -6,13 +6,12 @@ Entity TBVendorName is TextBox
 		value   ''
 		label LABELS.VENDOR.NAME
 
-	with conditions
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
 
 	with rules
-		set btnCreateVendor not visible
-		set vendorSearchResultGrid not visible
-
-	; should this be "triggers" or "rules"?
+		
 	with triggers
 		TBVendorName.value changes
 

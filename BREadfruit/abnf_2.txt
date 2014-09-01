@@ -2,35 +2,36 @@
 
 ; Literals
 
-entity = "Entity"
-textbox = "textbox"
-checkbox = "checkbox"
-dropdownlist = "dropdownlist"
-multiline = "multiline"
-radiobutton = "radiobutton"
-label = "label"
-div = "div"
-calendar = "calendar"
-button = "button"
-object = "object"
-dynamic = "dynamic"
+entity			= "Entity"
+textbox			= "textbox"
+checkbox		= "checkbox"
+dropdownlist	= "dropdownlist"
+multiline		= "multiline"
+radiobutton		= "radiobutton"
+label			= "label"
+div				= "div"
+calendar		= "calendar"
+button			= "button"
+object			= "object"
+dynamic			= "dynamic"
+grid			= "grid"
 
-clear = "clear"
-role = "role"
-then = "then"
-in = "in"
-not-in = not in
+clear			= "clear"
+role			= "role"
+then			= "then"
+in				= "in"
+not-in			= not in
 
 
 ; for with statements separating the scopes of each entity in the file
-with = "with"
-defaults = "defaults"
-rules = "rules"
-triggers = "triggers"
-constraints = "constraints"
+with			= "with"
+defaults		= "defaults"
+rules			= "rules"
+triggers		= "triggers"
+constraints		= "constraints"
 
-value = "value"	
-boolean = "true" / "false"							
+value			= "value"	
+boolean			= "true" / "false"							
 
 ; the following are used in default clauses - see 'with defaults' section in sample business rule file
 max-length = "max_length" / "max length"
@@ -47,6 +48,11 @@ unchecked = "unchecked"
 2TAB = 2HTAB
 3TAB = 3HTAB 
 new-digit = [-]1*DIGIT["."][1*DIGIT][("d" / "m" / "x")]
+
+; a comment line is 0 or more tabs, a ";" saying this is a comment and whatever might come after that
+comment-line = *[HTAB] ";" *[VCHAR] *[DIGIT]
+; a comment at the end of a line with real content
+comment-in-line =  *[HTAB] *[VCHAR] ";" *[VCHAR] *[DIGIT]
 
 ; ---------------------------------------------------------------------------
 
@@ -116,7 +122,7 @@ quoted-statement = 1quote statement 1quote
 ; defines a valid identifier for an element, like an entity's name - should be at least 3 characters long
 valid-identifier = 3*(ALPHA / DIGIT / "_") 
 
-entity-type = textbox / checkbox / dropdownlist / multiline / radiobutton / label / div / button / object
+entity-type = textbox / checkbox / dropdownlist / multiline / radiobutton / label / div / grid / button / object 
 entity-line = entity SP valid-identifier SP is SP entity-type
 
 with-line = HTAB with SP (defaults / rules / triggers / constraints)
@@ -155,7 +161,7 @@ base-not-condition = entity-value SP is-not
 is-condition = base-condition SP (quoted-statement / entity-value)
 is-not-condition = base-not-condition SP (quoted-statement / entity-value)
 is-empty-condition = base-condition SP empty
-is-not-empty-condition = base-not-condition SP empty
+is-not-empty-condition = base-not-condition SP not empty
 is-visible-condition = base-condition SP visible
 is-not-visible-condition = base-condition SP not-visible
 is-enabled-condition = base-condition SP enabled
@@ -232,7 +238,10 @@ set-date-action = (valid-identifier / entity-value) date-add-time
 show-element = ("show element" / "show") SP valid-identifier
 hide-element = ("hide element" / "hide") SP valid-identifier
 clear-action = "clear" SP valid-identifier
-load-action = "load" SP valid-identifier SP "from" SP valid-identifier
+; this loads data into current control
+load-data = "load data from" SP valid-identifier
+; this allows to load data into another control
+load-action = "load data in" SP valid-identifier SP "from" SP valid-identifier
 
 ; denotes a change in a DOM element - used in the action part of conditions (after the 'then' token)
 element-state-change = enabled / disabled / visible / not-visible / mandatory / not-mandatory / clear / checked / unchecked

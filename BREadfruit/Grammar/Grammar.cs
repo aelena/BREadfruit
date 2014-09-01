@@ -174,7 +174,7 @@ namespace BREadfruit
         /// Regular expression that validates the correct format of a with statement
         /// within the document format.
         /// </summary>
-        public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS|RULES){1}[' ']*$";
+        public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS|RULES|ACTIONS){1}[' ']*$";
         public const string MaxLengthLineRegex = "^MAX_LENGTH [0-9]*[' ']*$";
         public const string MinLengthLineRegex = "^MIN_LENGTH [0-9]*[' ']*$";
         public const string MandatoryLineRegex = @"^MANDATORY[' ']*((TRUE)?|FALSE)?[' ']*$";
@@ -209,6 +209,7 @@ namespace BREadfruit
         public static Symbol ConstraintsSymbol = new Symbol ( "constraints", 1, true );
         public static Symbol TriggersSymbol = new Symbol ( "triggers", 1, true );
         public static Symbol RulesSymbol = new Symbol ( "rules", 1, true );
+        public static Symbol ActionsSymbol = new Symbol ( "actions", 1, true );
         #endregion
 
 
@@ -238,7 +239,7 @@ namespace BREadfruit
         public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory" } );
         public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
         public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show_element", 2, true, new [] { "show element", "show" } );
-        public static UnaryAction HideElementUnaryActionSymbol = new UnaryAction ( "hide_element", 2, true, new [] { "hide element", "hide" } );
+        //public static UnaryAction HideElementUnaryActionSymbol = new UnaryAction ( "hide_element", 2, true, new [] { "hide element", "hide" } );
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
 
         public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
@@ -250,11 +251,16 @@ namespace BREadfruit
 
 
         public static Symbol EntitySymbol = new Symbol ( "Entity", 0, false );
+
+        /// <summary>
+        /// Add valid children to the "with" symbol
+        /// </summary>
         public static Symbol WithSymbol = new Symbol ( "with", 1,
             new List<Symbol> () { DefaultsSymbol, 
                 ConstraintsSymbol, 
                 TriggersSymbol,
-                RulesSymbol
+                RulesSymbol,
+                ActionsSymbol
             } );
 
 
@@ -453,6 +459,7 @@ namespace BREadfruit
             Grammar._symbols.Add ( ConstraintsSymbol );
             Grammar._symbols.Add ( TriggersSymbol );
             Grammar._symbols.Add ( RulesSymbol );
+            Grammar._symbols.Add ( ActionsSymbol );
             // add entity types symbols
             Grammar._symbols.Add ( TextBoxSymbol );
             Grammar._symbols.Add ( CheckBoxSymbol );
@@ -492,7 +499,7 @@ namespace BREadfruit
             Grammar._symbols.Add ( MakeMandatoryUnaryActionSymbol );
             Grammar._symbols.Add ( MakeNonMandatoryUnaryActionSymbol );
             Grammar._symbols.Add ( ShowElementUnaryActionSymbol );
-            Grammar._symbols.Add ( HideElementUnaryActionSymbol );
+            //Grammar._symbols.Add ( HideElementUnaryActionSymbol );
             Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
             // result actions
             Grammar._symbols.Add ( SetValueActionSymbol );

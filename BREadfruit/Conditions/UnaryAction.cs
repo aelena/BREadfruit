@@ -16,6 +16,16 @@ namespace BREadfruit.Conditions
         public string Reference { get; protected set; }
 
 
+        public string Action
+        {
+            get
+            {
+                return this.Token;
+            }
+        }
+
+
+
         // ---------------------------------------------------------------------------------
 
 
@@ -60,6 +70,12 @@ namespace BREadfruit.Conditions
 
 
         // ---------------------------------------------------------------------------------
+
+
+        public override string ToString ()
+        {
+            return String.Format ( "{0} {1}", this.Token, this.Reference );
+        }
 
     }
 }
