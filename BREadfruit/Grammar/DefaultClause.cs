@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BREadfruit.Helpers;
+
 
 namespace BREadfruit.Clauses
 {
@@ -99,7 +101,7 @@ namespace BREadfruit.Clauses
             {
                 if ( Regex.IsMatch ( value.ToString (), this.RegexPattern ) )
                 {
-                    this._value = value;
+                    this._value = value.In ( Grammar.EmptyStringMarkers ) ? "" : value;
                     return true;
                 }
                 else
