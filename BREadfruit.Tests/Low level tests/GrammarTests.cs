@@ -12,8 +12,8 @@ namespace BREadfruit.Tests.Low_level_tests
     public class GrammarTests
     {
 
-        [TestCase ( " WItH ", false, 4, false )]
-        [TestCase ( "with", false, 4, true )]
+        [TestCase ( " WItH ", false, 5, false )]
+        [TestCase ( "with", false, 5, true )]
         [TestCase ("enable", true, 2, true)]
         public void ShouldFindSymbol ( string token, bool isTerminal, int childCount, bool strictMatch )
         {
@@ -114,6 +114,21 @@ namespace BREadfruit.Tests.Low_level_tests
             var _op = Grammar.GetOperator ( token );
             Assert.That ( _op == null );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "on changed", Result = true )]
+        [TestCase ( "changed", Result = false )]
+        [TestCase ( "make enabled", Result = true )]
+        [TestCase ( "visible", Result = false )]
+        public bool ShouldKnowIfTokenIsAlias(string alias )
+        {
+            return Grammar.TokenIsAlias ( alias );
+        }
+
+        // ---------------------------------------------------------------------------------
 
     }
 }
