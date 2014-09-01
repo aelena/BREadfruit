@@ -155,6 +155,7 @@ namespace BREadfruit
         public const string FloatRegex = "^[-]?[0-9]*[(.|,)]?[0-9]*$";
         public const string BooleanRegex = "^(true|false){1}$";
         public const string FreeValueRegex = "^(\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
+        public const string LabelDefaultValueRegex = "^((\"|')(.*?)(\"|')|[A-Z\".\"]*)$";
 
         /// <summary>
         /// Regular expression that validates the correct format of an 'entity' line.
@@ -179,11 +180,13 @@ namespace BREadfruit
         public const string MandatoryLineRegex = @"^MANDATORY[' ']*((TRUE)?|FALSE)?[' ']*$";
         public const string EnabledLineRegex = @"^ENABLED[' ']*((TRUE)?|FALSE)?[' ']*$";
         public const string VisibleLineRegex = @"^VISIBLE[' ']*((TRUE)?|FALSE)?[' ']*$";
-        public const string FreeValueLineRegex = "^value (\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
+        public const string FreeValueLineRegex = "^value\\s*(\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
+        public const string LabelDefaultLineRegex = "^label\\s*((\"|')(.*?)(\"|')|[A-Z\".\"]*)$";
 
 
         // ---------------------------------------------------------------------------------
 
+        public static IEnumerable<String> EmptyStringMarkers = new List<string> { "''", "\"\"" };
 
         #endregion
 
@@ -504,6 +507,10 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// THese are the symbols used in the 'with defaults' section of the entity block 
+        /// in the intermediate format
+        /// </summary>
         private static void PopulateDefaultTokens ()
         {
             var maxlengthdefault = new DefaultClause ( "max_length", PositiveIntegerRegex,
@@ -513,13 +520,15 @@ namespace BREadfruit
             var mandatorydefault = new DefaultClause ( "mandatory", BooleanRegex );
             var enableddefault = new DefaultClause ( "enabled", BooleanRegex );
             var visibledefault = new DefaultClause ( "visible", BooleanRegex );
-            var valuedefault = new DefaultClause ( "value",  FreeValueRegex, new List<string> () { "set value" } );
+            var valuedefault = new DefaultClause ( "value", FreeValueRegex, new List<string> () { "set value" } );
+            var labeldefault = new DefaultClause ( "label", LabelDefaultValueRegex );
             _defaultsTokens.Add ( maxlengthdefault );
             _defaultsTokens.Add ( minlengthdefault );
             _defaultsTokens.Add ( mandatorydefault );
             _defaultsTokens.Add ( enableddefault );
             _defaultsTokens.Add ( visibledefault );
             _defaultsTokens.Add ( valuedefault );
+            _defaultsTokens.Add ( labeldefault );
         }
 
 
