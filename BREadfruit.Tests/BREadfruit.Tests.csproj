@@ -64,6 +64,7 @@
     <Compile Include="Low level tests\GrammarTests.cs" />
     <Compile Include="Low level tests\LineParserTests.cs" />
     <Compile Include="Low level tests\ParseEntityLineTests.cs" />
+    <Compile Include="Low level tests\RegexTests.cs" />
     <Compile Include="Low level tests\SymbolTests.cs" />
     <Compile Include="Low level tests\WithLineTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="sample files\samplerulefile01.txt" />
+    <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BREadfruit\BREadfruit.csproj">

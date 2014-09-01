@@ -16,7 +16,7 @@ namespace BREadfruit.Tests
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\samplerulefile01.txt" );
+            parser.ParseRuleFile ( @"..\..\sample files\vendor-rules.txt" );
         }
 
     }

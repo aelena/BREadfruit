@@ -1,0 +1,291 @@
+﻿; -- RULES FOR VENDOR SEARCH FORM 
+
+Entity TBVendorName is TextBox
+	with defaults
+		visible true
+		value   ''
+		label LABELS.VENDOR.NAME
+
+	with conditions
+
+	with rules
+		set btnCreateVendor not visible
+		set vendorSearchResultGrid not visible
+
+	; should this be "triggers" or "rules"?
+	with triggers
+		TBVendorName.value changes
+
+; ----------------------------------------------------------------------------	
+
+Entity TBVendorCity is TextBox
+	with defaults
+		visible true
+		value ""
+		label LABELS.VENDOR.CITY
+
+	with triggers
+		this.value changes then set btnCreateVendor not visible, set vendorSearchResultGrid not visible
+
+; ----------------------------------------------------------------------------	
+
+Entity TBVendorNumber is TextBox
+	with defaults
+		visible true
+		value ''
+		max length 10
+		min length 10
+		label LABELS.VENDOR.NUMBER
+
+	with rules
+		TBVendorNumber.text starts with '0' then
+			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in ErrorMessage
+		TBVendorNumber.text not starts with '0' then
+			set value '' in ErrorMessage					; o clear ErrorMessage
+
+	with triggers
+		this.value changes then set btnCreateVendor not visible, set vendorSearchResultGrid not visible
+
+	with constraints
+		only numbers
+			
+; ----------------------------------------------------------------------------	
+
+Entity TBVendorIFA is TextBox
+	with defaults
+		visible true
+		value ''
+		label LABELS.VENDOR.TAXCODE4
+
+	with triggers
+		this.value changes then set btnCreateVendor not visible, set vendorSearchResultGrid not visible
+		
+; ----------------------------------------------------------------------------	
+
+Entity DDLVDCountry is DropDownList
+	with defaults
+		visible true
+		value User.Country		; preselect user country if there is data in SCD for this user
+		mandatory true
+		; load data has to be a default
+		; need to define a formalism for this in a more precise manner
+		load data from Enterprise.WorldCountries
+		label LABELS.GENERIC.COUNTRY
+
+	with rules
+		DDLVDCountry.value in {"FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
+		DDLVDCountry.value in {"PT","ES"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.NIF in TBVendorVAT
+		DDLVDCountry.value in "IT" then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
+		DDLVDCountry.value not in {"PT","ES","IT","FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value "VAT" in TBVendorVAT
+	
+	with triggers
+		this.value changes then 
+			set value '' in ErrorMessage				; or if preferred "clear ErrorMessage"
+			set vendorSearchResultGrid not visible		; or just "set"
+			set btnCreateVendor not visible	
+			; what to do with default labels?
+
+
+; ----------------------------------------------------------------------------	
+
+Entity TBVendorVAT is TextBox
+	with defaults
+		visible true
+		value ''
+		label LABELS.GENERIC.VAT
+
+	with triggers
+		this.value changes then set btnCreateVendor not visible, set vendorSearchResultGrid not visible
+		
+; ----------------------------------------------------------------------------	
+
+
+Entity DDLCDCountry is DropDownList
+	with defaults
+		visible true
+		; we need to define these things too, let's calle them "data constants" for now...
+		value User.Country
+		load data from ACTIVE_COUNTRIES
+		label LABELS.GENERIC.COUNTRY
+
+	with rules
+		this.value changes then
+			; load active companies for this country
+			load data in DDLCDCompany from ACTIVE_CCs this.value
+			; purge the data in this dropdownlist
+			clear DDLCDPurchOrg
+	
+
+; ----------------------------------------------------------------------------	
+
+
+Entity DDLCDCompany is DropDownList
+	with defaults
+		visible true
+		; or prefer value null?
+		value USER_COST_LOCATION_UNIT			; another data constant
+		label LABELS.GENERIC.COMPANY
+
+	with rules
+		this.value changes then
+			; load active companies for this country
+			load data in DDLCDPurchOrg from ACTIVE_POs this.value
+
+; ----------------------------------------------------------------------------	
+
+
+Entity DDLCDPurchOrg is DropDownList
+	with defaults
+		visible true
+		value ''
+		label LABELS.GENERIC.PURCHASEORG
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity btnSearch is Button
+	with defaults
+		visible true
+		label LABELS.BUTTONS.SEARCH
+
+	with rules
+
+		DDLVDCountry is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+		
+		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
+		TBVendorName is empty and TBVendorCity is empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in ErrorMessage
+		
+		TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
+		DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in ErrorMessage
+		
+		TBVendorName is not empty and DDLVDCountry is empty
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+		TBVendorIFA.text is not empty then DDLVDCountry not mandatory
+		TBVendorIFA.value is not empty then DDLVDCountry mandatory
+
+		; this has to be defined better
+		USER_HAS_NO_PERMISSIONS then
+			set value MESSAGES.VALIDATIONS.SEARCH.NOAUTH in ErrorMessage
+			
+
+	with triggers
+
+		this onclick SEARCH_VENDORS with mappings
+			 ABCDE.FGHIJ = TBVendorName
+			 ... and so on
+
+
+; ----------------------------------------------------------------------------	
+
+Entity btnCreateVendor is Button
+	with defaults
+		visible false
+		label LABELS.BUTTONS.CREATEVENDOR
+
+	with rules
+		; how to specify all that happens server side here?
+
+	with triggers
+
+
+; ----------------------------------------------------------------------------	
+
+Entity vendorSearchResultGrid is Grid
+	with defaults
+		visible false
+	
+
+	TODO: DEFINE CONVENTIONS FOR GRID BETTER
+
+; ----------------------------------------------------------------------------	
+
+; -- RULES FOR VENDOR MAIN FORM (MDM.ASPX)
+
+
+Entity GD_Ctr_RiskClassification is DropDownList
+	with defaults
+		enabled true
+		visible true
+		value "00"
+		load data from RISK_CLASSIFICATIONS
+
+	with rules
+		role not in {"RCO","ENQ","CLERK"} then enabled false
+
+	with triggers
+		; TODO FIND A BETTER WAY TO EXPRESS THIS....
+		BANK_INSERTED EVALUATE -----
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Adr_Country is DropDownList
+	with defaults
+		visible true
+		enabled false					; this control is always disabled
+		value LOCALSTORAGE.COUNTRY		; -- depends on country selected in search form, so this data has to be passed
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Ctr_VendorClassification is DropDownList
+	with defaults
+		visible true
+		enabled true
+		value "NG"
+		load data from VENDOR_CLASSIFICATIONS
+
+	with rules
+		role in {"UPM","CPM"} then enabled false
+		; MEANING WHAT? For customer country France the value is set due to legal form selection.
+		if Vendor. Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P", "Q", "S"} then set value GD_Ctr_VendorClassification.Value "G"
+		if Vendor. Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value GD_Ctr_VendorClassification.Value "NG"
+
+; ----------------------------------------------------------------------------	
+
+Entity CC_AM_BPClassification is DropDownList
+	with defaults
+		visible true
+		enabled true
+		value "NORM"
+		load data from BP_CLASSIFICATIONS
+
+	with rules
+		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then AttachManager mandatory 
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Damex is DropDownList
+	with defaults
+		visible true
+		enabled true
+		value ''
+		load data from YES_NO
+		mandatory true
+
+	with rules
+		Request.FlowType not in {"VC", "VC_CC"} GD_Damex not mandatory, GD_Damex not visible
+; ----------------------------------------------------------------------------	
+
+Entity GD_Ctr_IsNaturalPerson is DropDownList
+	with defaults
+		visible true
+		enabled true
+		value ''
+
+	with rules
+		Vendor.AccountGroup in {"YVT4", "YVT5"} then
+			set DIV_ADDITIONAL_INFO_NATURAL_PERSON visible	
+			ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
+			; MEANING WHAT? For customer country France the value is set due to legal form selection.
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P", "Q", "S"} then set value GD_Ctr_IsNaturalPerson.Checked false
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value GD_Ctr_IsNaturalPerson.Checked true
+
+		// CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
+
