@@ -54,7 +54,7 @@ namespace BREadfruit
         private IList<ResultAction> _actions;
         private IList<UnaryAction> _unaryactions;
         private IList<Trigger> _triggers;
-        //private IList<Constraint> _constraints;
+        private IList<Constraint> _constraints;
 
 
         public IEnumerable<Rule> Rules
@@ -98,6 +98,26 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+        public IEnumerable<Trigger> Triggers
+        {
+            get
+            {
+                return this._triggers;
+            }
+        }
+
+        // ---------------------------------------------------------------------------------
+
+        public IEnumerable<Constraint> Constraints
+        {
+            get
+            {
+                return this._constraints;
+            }
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
         public Entity ( string name, string typeDescription, string bpCode = "" )
         {
@@ -109,6 +129,7 @@ namespace BREadfruit
             this._actions = new List<ResultAction> ();
             this._unaryactions = new List<UnaryAction> ();
             this._triggers = new List<Trigger> ();
+            this._constraints = new List<Constraint> ();
         }
 
 
