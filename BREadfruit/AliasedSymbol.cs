@@ -60,6 +60,7 @@ namespace BREadfruit
             this._aliases = new List<string> ();
         }
 
+        // ---------------------------------------------------------------------------------
 
         public AliasedSymbol ( string symbol, int indentLevel, bool isTerminal )
             : base ( symbol, indentLevel, isTerminal )
@@ -67,5 +68,12 @@ namespace BREadfruit
             this._aliases = new List<string> ();
         }
 
+        // ---------------------------------------------------------------------------------
+
+        public AliasedSymbol ( string symbol, int indentLevel, bool isTerminal, IEnumerable<string> aliases )
+            : base ( symbol, indentLevel, isTerminal )
+        {
+            this._aliases = aliases.ToList();
+        }
     }
 }

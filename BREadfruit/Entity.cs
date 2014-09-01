@@ -53,6 +53,8 @@ namespace BREadfruit
         private IList<Rule> _rules;
         private IList<ResultAction> _actions;
         private IList<UnaryAction> _unaryactions;
+        private IList<Trigger> _triggers;
+        //private IList<Constraint> _constraints;
 
 
         public IEnumerable<Rule> Rules
@@ -106,6 +108,7 @@ namespace BREadfruit
             this._rules = new List<Rule> ();
             this._actions = new List<ResultAction> ();
             this._unaryactions = new List<UnaryAction> ();
+            this._triggers = new List<Trigger> ();
         }
 
 
@@ -142,6 +145,14 @@ namespace BREadfruit
         public bool AddUnaryAction ( UnaryAction action )
         {
             this._unaryactions.Add ( action );
+            return true;
+        }
+
+        // ---------------------------------------------------------------------------------
+
+        public bool AddTrigger ( Trigger trigger )
+        {
+            this._triggers.Add ( trigger );
             return true;
         }
 

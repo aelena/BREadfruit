@@ -141,8 +141,8 @@ namespace BREadfruit
             // take a repreeentation of the entire list of tokens as a simple string
             var _fused = li.Tokens.JoinTogether ().Token;
             var _replacedString = _fused;
-            foreach ( var i in new List<int> { 1, 2 } )
-            {
+            //foreach ( var i in new List<int> { 1, 2 } )
+            //{
 
                 // now check for occurrence
                 var _x = from op in Grammar.Symbols
@@ -160,7 +160,7 @@ namespace BREadfruit
                 if ( _x != null && _x.Count () > 0 )
                     _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
                 _fused = _replacedString;
-            }
+            //}
             // restore original tabs
             _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
             return _replacedString;

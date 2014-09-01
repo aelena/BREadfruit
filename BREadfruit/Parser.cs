@@ -211,7 +211,14 @@ namespace BREadfruit
 
                         if ( this._currentScope == CurrentScope.TRIGGERS_BLOCK )
                         {
-
+                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                            {
+                                if ( lineInfo.Tokens.Count () == 2 )
+                                {
+                                    var _trigger = new Trigger ( lineInfo.Tokens.First ().Token, lineInfo.Tokens.ElementAt ( 1 ).Token );
+                                    this._entities.Last ().AddTrigger ( _trigger );
+                                }
+                            }
                         }
 
                         if ( this._currentScope == CurrentScope.CONSTRAINTS_BLOCK )
@@ -229,6 +236,10 @@ namespace BREadfruit
             }
 
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         private DefaultClause ConfigureDefaultClause ( LineInfo lineInfo )
         {

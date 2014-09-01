@@ -244,6 +244,16 @@ namespace BREadfruit
 
         public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
 
+
+
+        #endregion
+
+        #region " --- event symbols ( for use in triggers block ) --- "
+
+        public static AliasedSymbol ChangedEventSymbol = new AliasedSymbol ( "changed", 2, true, new List<string> { "changes", "change", "on change" } );
+        public static AliasedSymbol FocusEventSymbol = new AliasedSymbol ( "entered", 2, true, new List<string> { "enter", "enters", "on enter", "on focus", "focus" } );
+        public static AliasedSymbol BlurredEventSymbol = new AliasedSymbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
+
         #endregion
 
 
@@ -507,7 +517,9 @@ namespace BREadfruit
             Grammar._symbols.Add ( ANDSymbol );
             Grammar._symbols.Add ( ORSymbol );
 
-
+            Grammar._symbols.Add ( ChangedEventSymbol );
+            Grammar._symbols.Add ( FocusEventSymbol );
+            Grammar._symbols.Add ( BlurredEventSymbol );
         }
 
 
