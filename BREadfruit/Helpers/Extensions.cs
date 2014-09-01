@@ -238,5 +238,16 @@ namespace BREadfruit.Helpers
         // ---------------------------------------------------------------------------------
 
 
+        public static bool In<T> ( this T value, IEnumerable<T> list)
+        {
+            if ( list == null )
+                return false;
+            return list.Contains ( value );
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+
     }
 }
