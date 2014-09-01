@@ -115,5 +115,10 @@ namespace BREadfruit.Clauses
             return false;
         }
 
+
+        public override string ToString ()
+        {
+            return String.Format ( "{0} {1}", this.Token, this.Value );
+        }
     }
 }
