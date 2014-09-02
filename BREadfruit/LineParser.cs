@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BREadfruit.Clauses;
 using BREadfruit.Conditions;
 using BREadfruit.Helpers;
 
@@ -141,34 +142,31 @@ namespace BREadfruit
             // take a repreeentation of the entire list of tokens as a simple string
             var _fused = li.Tokens.JoinTogether ().Token;
             var _replacedString = _fused;
-            //foreach ( var i in new List<int> { 1, 2 } )
-            //{
 
-                // now check for occurrence
-                var _x = from op in Grammar.Symbols
-                         where op is AliasedSymbol
-                         || op is ResultAction
-                         let t = _fused.ContainsAny2 ( ( ( AliasedSymbol ) op ).Aliases )
-                         where t.Item1
-                         select new
-                         {
-                             symbol = op,
-                             Ocurrence = t.Item2,
-                             Index = _fused.IndexOf ( op.Token )
-                         };
+            // now check for occurrence
+            var _x = from op in Grammar.Symbols
+                     where op is Symbol
+                     || op is ResultAction
+                     || op is DefaultClause
+                     let t = _fused.ContainsAny2 ( op.Aliases )
+                     where t.Item1
+                     select new
+                     {
+                         symbol = op,
+                         Ocurrence = t.Item2,
+                         Index = _fused.IndexOf ( op.Token )
+                     };
 
-                if ( _x != null && _x.Count () > 0 )
-                    _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
-                _fused = _replacedString;
-            //}
-            // restore original tabs
+            if ( _x != null && _x.Count () > 0 )
+                _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
+            _fused = _replacedString;
+
+
             _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
             return _replacedString;
         }
 
         // ---------------------------------------------------------------------------------
-
-
 
 
         #region " --- specific line validations --- "
@@ -232,7 +230,7 @@ namespace BREadfruit
                 {
                     if ( new List<string> () { Grammar.ANDSymbol.Token, Grammar.ORSymbol.Token }.Contains ( _logical.Token ) )
                     {
-                        _conds.Last().SetLogicalOperator ( _logical.Token );
+                        _conds.Last ().SetLogicalOperator ( _logical.Token );
                     }
                 }
                 i += 1;

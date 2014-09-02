@@ -289,9 +289,9 @@ namespace BREadfruit
 
         #region " --- event symbols ( for use in triggers block ) --- "
 
-        public static AliasedSymbol ChangedEventSymbol = new AliasedSymbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes", "change" } );
-        public static AliasedSymbol FocusEventSymbol = new AliasedSymbol ( "entered", 2, true, new List<string> { "on entered", "on enter", "enters", "on focus", "focus" } );
-        public static AliasedSymbol BlurredEventSymbol = new AliasedSymbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
+        public static Symbol ChangedEventSymbol = new Symbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes", "change" } );
+        public static Symbol FocusEventSymbol = new Symbol ( "entered", 2, true, new List<string> { "on entered", "on enter", "enters", "on focus", "focus" } );
+        public static Symbol BlurredEventSymbol = new Symbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
 
         #endregion
 
@@ -458,8 +458,8 @@ namespace BREadfruit
         public static bool TokenIsAlias ( string token )
         {
             var _ = from s in Grammar.Symbols
-                    where s is AliasedSymbol
-                    where ( ( AliasedSymbol ) s ).Aliases.Contains ( token )
+                    where s is Symbol
+                    where s.Aliases.Contains ( token )
                     select s;
 
             return ( _ != null && _.Count () > 0 );
@@ -595,7 +595,7 @@ namespace BREadfruit
             var visibledefault = new DefaultClause ( "visible", BooleanValueRegex );
             var valuedefault = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
             var labeldefault = new DefaultClause ( "label", LabelDefaultValueRegex );
-            var loaddatadefault = new DefaultClause ( "load data from", LoadDataFromLineRegex );
+            var loaddatadefault = new DefaultClause ( "load", LoadDataFromLineRegex, new List<string> () { "load data from" } );
             _defaultsTokens.Add ( maxlengthdefault );
             _defaultsTokens.Add ( minlengthdefault );
             _defaultsTokens.Add ( mandatorydefault );

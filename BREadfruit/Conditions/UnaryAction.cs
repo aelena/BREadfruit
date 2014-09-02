@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BREadfruit.Conditions
 {
-    public class UnaryAction : AliasedSymbol
+    public class UnaryAction : Symbol
     {
 
         /// <summary>

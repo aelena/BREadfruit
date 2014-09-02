@@ -247,6 +247,7 @@ namespace BREadfruit
 
         private DefaultClause ConfigureDefaultClause ( LineInfo lineInfo )
         {
+
             var clause = Grammar.GetDefaultClauseByToken ( lineInfo.Tokens.First ().Token, false );
             if ( clause != null )
             {

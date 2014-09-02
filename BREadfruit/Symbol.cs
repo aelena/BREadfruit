@@ -39,6 +39,52 @@ namespace BREadfruit
 
 
         /// <summary>
+        /// Stores other syntax that might be available for this same operator.
+        /// For example, we can accept 'bigger or equals than' or '>=' as well 
+        /// within the valid file syntax
+        /// </summary>
+        protected List<String> _aliases = new List<string> ();
+        public IEnumerable<String> Aliases
+        {
+            get
+            {
+                return this._aliases;
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Clients call pass a specified token ( any arbitrary string actually )
+        /// and get a value that indicates whether that token is an valid and 
+        /// known alias for this Operator.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public bool MatchesToken ( string token )
+        {
+            if ( !String.IsNullOrWhiteSpace ( token ) )
+            {
+                if ( this._aliases != null )
+                {
+                    var matched = from x in _aliases
+                                  where x == token
+                                  select x;
+
+                    return ( matched != null && matched.Count () > 0 );
+                }
+            }
+            return false;
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
         /// Enumerable list of children for callers or validators to consume.
         /// </summary>
         public IEnumerable<Symbol> Children
@@ -73,6 +119,28 @@ namespace BREadfruit
 
 
         /// <summary>
+        /// Basic constructors. Assumes that the Symbol will be terminal,
+        /// meaning no Children can be added afterwards. If you want to add
+        /// children use the other constructor.
+        /// </summary>
+        /// <param name="symbol">string representation of the token, for example
+        /// 'Entity' or 'with'.
+        /// </param>
+        public Symbol ( string symbol, int indentLevel, IEnumerable<string> aliases )
+        {
+            this.Token = symbol;
+            this.IndentLevel = indentLevel;
+            this.IsTerminal = true;
+            if ( aliases != null )
+                this._aliases = aliases.ToList ();
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
         /// Constructors that allows the caller to create a symbol and also
         /// to specify if this will be a terminal or a nonterminal.
         /// </summary>
@@ -86,6 +154,53 @@ namespace BREadfruit
             this.Token = symbol;
             this.IndentLevel = indentLevel;
             this.IsTerminal = isTerminal;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Constructors that allows the caller to create a symbol and also
+        /// to specify if this will be a terminal or a nonterminal.
+        /// </summary>
+        /// <param name="symbol">string representation of the token, for example
+        /// 'Entity' or 'with'.
+        /// </param>
+        /// <param name="isTerminal">Pass false to create a nonterminal symbol, otherwise
+        /// pass true to create a terminal.</param>
+        public Symbol ( string symbol, int indentLevel, bool isTerminal, IEnumerable<string> aliases )
+        {
+            this.Token = symbol;
+            this.IndentLevel = indentLevel;
+            this.IsTerminal = isTerminal;
+            if ( aliases != null )
+                this._aliases = aliases.ToList ();
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Constructors that allows the caller to create a symbol and also
+        /// a list of valid children. By allowing the caller to pass a list of 
+        /// valid children, the Symbol is assumed to be a nonterminal.
+        /// </summary>
+        /// <param name="symbol">string representation of the token, for example
+        /// 'Entity' or 'with'.
+        /// </param>
+        /// <param name="validChildren">
+        /// List of valid children for this Symbol instance.
+        /// </param>
+        public Symbol ( string symbol, int indentLevel, IEnumerable<string> aliases, IList<Symbol> validChildren )
+        {
+            this.Token = symbol;
+            this.IndentLevel = indentLevel;
+            this.IsTerminal = false;
+            this._validChildren = validChildren;
+            if ( aliases != null )
+                this._aliases = aliases.ToList ();
+
         }
 
 

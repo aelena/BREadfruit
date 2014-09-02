@@ -16,18 +16,18 @@ namespace BREadfruit.Clauses
     ///	mandatory true
     ///	
     /// </summary>
-    public class DefaultClause
+    public class DefaultClause : Symbol
     {
 
         /// <summary>
         /// Main token of the default clause, for example 'max_length'.
         /// </summary>
-        private readonly string _token;
+        // private readonly string _token;
         /// <summary>
         /// Allowed aliases for the default clauses, for example 'max_length'
         /// could be expressed also as 'max', 'length' or 'maximum_length'.
         /// </summary>
-        private readonly List<string> _aliases;
+        // private readonly List<string> _aliases;
         /// <summary>
         /// Regular expression that will validate the value that can be
         /// taken by an instance of DefaultClause.
@@ -40,18 +40,18 @@ namespace BREadfruit.Clauses
         /// <summary>
         /// Main identifier for the Default clause
         /// </summary>
-        public string Token
-        {
-            get { return _token; }
-        }
+        //public string Token
+        //{
+        //    get { return _token; }
+        //}
 
         /// <summary>
         /// Other valid identifiers for this default clause
         /// </summary>
-        public List<string> Aliases
-        {
-            get { return _aliases; }
-        }
+        //public List<string> Aliases
+        //{
+        //    get { return _aliases; }
+        //}
 
         /// <summary>
         /// Pattern for the regular expression (as string,
@@ -77,9 +77,10 @@ namespace BREadfruit.Clauses
         /// <param name="token"></param>
         /// <param name="regexPattern"></param>
         /// <param name="aliases"></param>
-        public DefaultClause ( string token, string regexPattern, IEnumerable<String> aliases = null )
+        public DefaultClause ( string token, string regexPattern, IEnumerable<String> aliases = null ) : 
+            base ( token, 0 /*indentLevel*/)
         {
-            this._token = token;
+            //this._token = token;
             if ( aliases != null )
                 this._aliases = aliases.ToList ();
             this._regexPattern = regexPattern;

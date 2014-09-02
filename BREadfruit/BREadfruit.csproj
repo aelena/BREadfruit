@@ -39,7 +39,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AliasedSymbol.cs" />
     <Compile Include="Conditions\ResultAction.cs" />
     <Compile Include="Conditions\Condition.cs" />
     <Compile Include="Conditions\Operator.cs" />

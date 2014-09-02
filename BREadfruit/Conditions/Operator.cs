@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BREadfruit.Conditions
 {
-    public class Operator : AliasedSymbol
+    public class Operator : Symbol
     {
 
 
