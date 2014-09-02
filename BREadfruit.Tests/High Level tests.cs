@@ -79,6 +79,33 @@ namespace BREadfruit.Tests
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile003 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File003.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Defaults.Count () == 5 );
+            Assert.That ( e.Defaults.First ().ToString () == "visible true" );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Trim () == "value USER.COUNTRY" );
+            Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Trim () == "mandatory true" );
+            Assert.That ( e.Defaults.ElementAt ( 4 ).ToString () == "label LABELS.GENERIC.COUNTRY" );
+            Assert.That ( e.ConditionlessActions.Count () == 3 );
+            Assert.That ( e.Rules.Count () == 4 );
+            Assert.That ( e.Constraints.Count () == 0 );
+            Assert.That ( e.Triggers.Count () == 1 );
+            Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed" );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
         public void ShouldFindEntities ()
         {

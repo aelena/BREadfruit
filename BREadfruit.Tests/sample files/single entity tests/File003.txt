@@ -3,10 +3,15 @@
 Entity DDLVDCountry is DropDownList
 	with defaults
 		visible true
-		value User.Country		; preselect user country if there is data in SCD for this user
+		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
 		mandatory true
-		load data from Enterprise.WorldCountries
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
 		label LABELS.GENERIC.COUNTRY
+
+	with actions
+		set value '' in ErrorMessage
+		hide vendorSearchResultGrid
+		hide btnCreateVendor
 
 	with rules
 		DDLVDCountry.value in {"FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
@@ -15,11 +20,7 @@ Entity DDLVDCountry is DropDownList
 		DDLVDCountry.value not in {"PT","ES","IT","FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value "VAT" in TBVendorVAT
 	
 	with triggers
-		this.value changes then 
-			set value '' in ErrorMessage				; or if preferred "clear ErrorMessage"
-			set vendorSearchResultGrid not visible		; or just "set"
-			set btnCreateVendor not visible	
-			; what to do with default labels?
-
+		this.value changes 
+			
 
 ; ----------------------------------------------------------------------------		

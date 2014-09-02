@@ -30,7 +30,7 @@ namespace BREadfruit.Tests.Low_level_tests
         public void ShouldFindDefaultClause ( string token )
         {
             var dt = Grammar.GetDefaultClauseByToken ( token, true );
-            Assert.That ( dt.RegexPattern == Grammar.PositiveIntegerRegex );
+            Assert.That ( dt.RegexPattern == Grammar.PositiveIntegerValueRegex );
         }
 
 
@@ -65,24 +65,24 @@ namespace BREadfruit.Tests.Low_level_tests
         /// <param name="regex"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        [TestCase ( Grammar.PositiveIntegerRegex, 0, Result = true )]
-        [TestCase ( Grammar.PositiveIntegerRegex, 24, Result = true )]
-        [TestCase ( Grammar.PositiveIntegerRegex, -24, Result = false )]
-        [TestCase ( Grammar.PositiveIntegerRegex, -1.0, Result = false )]
-        [TestCase ( Grammar.PositiveIntegerRegex, 'a', Result = false )]
-        [TestCase ( Grammar.IntegerRegex, 0, Result = true )]
-        [TestCase ( Grammar.IntegerRegex, 288, Result = true )]
-        [TestCase ( Grammar.IntegerRegex, -288, Result = true )]
-        [TestCase ( Grammar.IntegerRegex, 2.88, Result = false )]
-        [TestCase ( Grammar.IntegerRegex, -2.88, Result = false )]
-        [TestCase ( Grammar.FloatRegex, -2.88d, Result = true )]
-        [TestCase ( Grammar.FloatRegex, 2.88d, Result = true )]
-        [TestCase ( Grammar.FloatRegex, 288d, Result = true )]
-        [TestCase ( Grammar.FloatRegex, -0.001d, Result = true )]
-        [TestCase ( Grammar.FloatRegex, 0.0001d, Result = true )]
-        [TestCase ( Grammar.BooleanRegex, true, Result = true )]
-        [TestCase ( Grammar.BooleanRegex, false, Result = true )]
-        [TestCase ( Grammar.BooleanRegex, 1, Result = false )]
+        [TestCase ( Grammar.PositiveIntegerValueRegex, 0, Result = true )]
+        [TestCase ( Grammar.PositiveIntegerValueRegex, 24, Result = true )]
+        [TestCase ( Grammar.PositiveIntegerValueRegex, -24, Result = false )]
+        [TestCase ( Grammar.PositiveIntegerValueRegex, -1.0, Result = false )]
+        [TestCase ( Grammar.PositiveIntegerValueRegex, 'a', Result = false )]
+        [TestCase ( Grammar.IntegerValueRegex, 0, Result = true )]
+        [TestCase ( Grammar.IntegerValueRegex, 288, Result = true )]
+        [TestCase ( Grammar.IntegerValueRegex, -288, Result = true )]
+        [TestCase ( Grammar.IntegerValueRegex, 2.88, Result = false )]
+        [TestCase ( Grammar.IntegerValueRegex, -2.88, Result = false )]
+        [TestCase ( Grammar.FloatValueRegex, -2.88d, Result = true )]
+        [TestCase ( Grammar.FloatValueRegex, 2.88d, Result = true )]
+        [TestCase ( Grammar.FloatValueRegex, 288d, Result = true )]
+        [TestCase ( Grammar.FloatValueRegex, -0.001d, Result = true )]
+        [TestCase ( Grammar.FloatValueRegex, 0.0001d, Result = true )]
+        [TestCase ( Grammar.BooleanValueRegex, true, Result = true )]
+        [TestCase ( Grammar.BooleanValueRegex, false, Result = true )]
+        [TestCase ( Grammar.BooleanValueRegex, 1, Result = false )]
         public bool GrammarRegexsShouldWork ( string regex, ValueType value )
         {
             return Regex.IsMatch ( value.ToString (), regex, RegexOptions.IgnoreCase );

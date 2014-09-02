@@ -20,7 +20,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "label invalid.naming", Grammar.LabelDefaultLineRegex, Result = false )]
         [TestCase ( "DREAMS", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "DREAMS.OF.FIRE", Grammar.LabelDefaultValueRegex, Result = true )]
-        [TestCase ( "DREAMS_OF_FIRE", Grammar.LabelDefaultValueRegex, Result = false )]
+        [TestCase ( "DREAMS_OF_FIRE", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "'Any text goes here'", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "\"Any text goes here\"", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "invalid.naming", Grammar.LabelDefaultValueRegex, Result = false )]
