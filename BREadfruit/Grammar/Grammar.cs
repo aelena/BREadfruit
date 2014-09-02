@@ -93,7 +93,7 @@ namespace BREadfruit
 
 
         // ---------------------------------------------------------------------------------
-        
+
 
         #region " --- public members --- "
 
@@ -185,7 +185,7 @@ namespace BREadfruit
         /// <summary>
         /// Validates an entire load data from line
         /// </summary>
-        public const string LoadDataFromLineRegex =  @"^load data from (WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
+        public const string LoadDataFromLineRegex = @"^load data from (WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
         /// <summary>
         /// Validates the argument part of a load data from line 
         /// (that is, all that comes after the load data from instruction)
@@ -587,15 +587,15 @@ namespace BREadfruit
         private static void PopulateDefaultTokens ()
         {
             var maxlengthdefault = new DefaultClause ( "max_length", PositiveIntegerValueRegex,
-                new List<String> () { "max", "length", "max length", "maximum_length" } );
+                new List<String> () { "maximum length", "max length"} );
             var minlengthdefault = new DefaultClause ( "min_length", PositiveIntegerValueRegex,
-                new List<String> () { "min", "min length", "minimum_length" } );
+                new List<String> () { "minimum length" } );
             var mandatorydefault = new DefaultClause ( "mandatory", BooleanValueRegex );
             var enableddefault = new DefaultClause ( "enabled", BooleanValueRegex );
             var visibledefault = new DefaultClause ( "visible", BooleanValueRegex );
             var valuedefault = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
             var labeldefault = new DefaultClause ( "label", LabelDefaultValueRegex );
-            var loaddatadefault = new DefaultClause ( "load", LoadDataFromLineRegex, new List<string> () { "load data from" } );
+            var loaddatadefault = new DefaultClause ( "load_data_from", LoadDataFromLineRegex, new List<string> () { "load data from" } );
             _defaultsTokens.Add ( maxlengthdefault );
             _defaultsTokens.Add ( minlengthdefault );
             _defaultsTokens.Add ( mandatorydefault );
@@ -604,6 +604,14 @@ namespace BREadfruit
             _defaultsTokens.Add ( valuedefault );
             _defaultsTokens.Add ( labeldefault );
             _defaultsTokens.Add ( loaddatadefault );
+            Grammar._symbols.Add ( maxlengthdefault );
+            Grammar._symbols.Add ( minlengthdefault );
+            Grammar._symbols.Add ( mandatorydefault );
+            Grammar._symbols.Add ( enableddefault );
+            Grammar._symbols.Add ( visibledefault );
+            Grammar._symbols.Add ( valuedefault );
+            Grammar._symbols.Add ( labeldefault );
+            Grammar._symbols.Add ( loaddatadefault );
         }
 
 

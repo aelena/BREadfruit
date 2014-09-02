@@ -98,7 +98,7 @@ namespace BREadfruit.Tests
             Assert.That ( e.Rules.Count () == 4 );
             Assert.That ( e.Constraints.Count () == 0 );
             Assert.That ( e.Triggers.Count () == 1 );
-            Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed" );
+            Assert.That ( e.Triggers.First ().ToString () == "DDLVDCountry.value changed" );
 
         }
 

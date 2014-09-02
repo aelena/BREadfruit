@@ -14,7 +14,7 @@ namespace BREadfruit.Tests.Low_level_tests
 
         [TestCase ( " WItH ", false, 5, false )]
         [TestCase ( "with", false, 5, true )]
-        [TestCase ("enable", true, 2, true)]
+        [TestCase ("enable", true, 0, true)]
         public void ShouldFindSymbol ( string token, bool isTerminal, int childCount, bool strictMatch )
         {
             var s = Grammar.GetSymbolByToken ( token, strictMatch );

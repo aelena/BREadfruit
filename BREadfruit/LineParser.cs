@@ -154,11 +154,15 @@ namespace BREadfruit
                      {
                          symbol = op,
                          Ocurrence = t.Item2,
-                         Index = _fused.IndexOf ( op.Token )
+                         Index = _fused.IndexOf ( t.Item2),
+                         Length = t.Item2.Length
                      };
 
+
             if ( _x != null && _x.Count () > 0 )
+            {
                 _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
+            }
             _fused = _replacedString;
 
 

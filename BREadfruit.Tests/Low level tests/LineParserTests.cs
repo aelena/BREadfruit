@@ -144,6 +144,14 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "enabled true", Result = "enable true" )]
         [TestCase ( "max_length 10", Result = "max_length 10" )]
         [TestCase ( "this starts with 0 then set visible", Result = "this starts_with 0 then visible" )]
+        [TestCase ( "load data from DATASOURCE.TABLE_11", Result = "load_data_from DATASOURCE.TABLE_11" )]
+        [TestCase ( "max length 10", Result = "max_length 10" )]
+        //[TestCase ( "max 10", Result = "max_length 10" )]
+        [TestCase ( "maximum length 10", Result = "max_length 10" )]
+        //[TestCase ( "length 10", Result = "max_length 10" )]
+        //[TestCase ( "min length 10", Result = "min_length 10" )]
+        //[TestCase ( "min 10", Result = "min_length 10" )]
+        [TestCase ( "minimum length 10", Result = "min_length 10" )]
         public string TokenizeMultiplePartOperatorTests ( string line )
         {
             var li = LineParser.ParseLine ( line );
