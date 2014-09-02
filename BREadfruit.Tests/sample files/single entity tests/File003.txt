@@ -12,6 +12,8 @@ Entity DDLVDCountry is DropDownList
 		set value '' in ErrorMessage
 		hide vendorSearchResultGrid
 		hide btnCreateVendor
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
+
 
 	with rules
 		DDLVDCountry.value in {"FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT

@@ -266,6 +266,11 @@ namespace BREadfruit
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
         public static Symbol InSymbol = new Symbol ( "in", 2, false );
 
+        public static Symbol DataSourceSymbol = new Symbol ( "DATASOURCE", 2, false );
+        public static Symbol WebServiceSymbol = new Symbol ( "WEBSERVICE", 2, false );
+        public static Symbol FileObjectSymbol = new Symbol ( "FILE", 2, false );
+
+
         public static LogicalOperatorSymbol ANDSymbol = new LogicalOperatorSymbol ( "and", 2, false );
         public static LogicalOperatorSymbol ORSymbol = new LogicalOperatorSymbol ( "or", 2, false );
 
@@ -312,7 +317,11 @@ namespace BREadfruit
                 ActionsSymbol
             } );
 
-
+        public static Symbol LoadDataSymbol = new Symbol ( "load data from", 2,
+            new List<Symbol> () { DataSourceSymbol, 
+                WebServiceSymbol, 
+                FileObjectSymbol
+            } );
 
         #endregion
 
@@ -595,7 +604,8 @@ namespace BREadfruit
             var visibledefault = new DefaultClause ( "visible", BooleanValueRegex );
             var valuedefault = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
             var labeldefault = new DefaultClause ( "label", LabelDefaultValueRegex );
-            var loaddatadefault = new DefaultClause ( "load_data_from", LoadDataFromLineRegex, new List<string> () { "load data from" } );
+            var loaddatadefault = new DefaultClause ( "load_data_from", LoadDataFromValueRegex, new List<string> () { "load data from" } );
+
             _defaultsTokens.Add ( maxlengthdefault );
             _defaultsTokens.Add ( minlengthdefault );
             _defaultsTokens.Add ( mandatorydefault );
@@ -604,6 +614,7 @@ namespace BREadfruit
             _defaultsTokens.Add ( valuedefault );
             _defaultsTokens.Add ( labeldefault );
             _defaultsTokens.Add ( loaddatadefault );
+
             Grammar._symbols.Add ( maxlengthdefault );
             Grammar._symbols.Add ( minlengthdefault );
             Grammar._symbols.Add ( mandatorydefault );

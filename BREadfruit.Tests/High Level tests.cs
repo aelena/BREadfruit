@@ -93,8 +93,12 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.First ().ToString () == "visible true" );
             Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Trim () == "value USER.COUNTRY" );
             Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Trim () == "mandatory true" );
+            Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Trim () == "load_data_from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES" );
             Assert.That ( e.Defaults.ElementAt ( 4 ).ToString () == "label LABELS.GENERIC.COUNTRY" );
             Assert.That ( e.ConditionlessActions.Count () == 3 );
+            Assert.That ( e.ConditionlessActions.First ().ToString () == "hide vendorSearchResultGrid" );
+            Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString () == "hide btnCreateVendor" );
+            Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).ToString () == "load_data_from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES" );
             Assert.That ( e.Rules.Count () == 4 );
             Assert.That ( e.Constraints.Count () == 0 );
             Assert.That ( e.Triggers.Count () == 1 );
