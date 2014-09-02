@@ -93,8 +93,7 @@ namespace BREadfruit
 
 
         // ---------------------------------------------------------------------------------
-
-
+        
 
         #region " --- public members --- "
 
@@ -150,12 +149,48 @@ namespace BREadfruit
 
         #region " --- regexs for line validation --- "
 
-        public const string PositiveIntegerRegex = "^[0-9]*$";
-        public const string IntegerRegex = "^[-]?[0-9]*$";
-        public const string FloatRegex = "^[-]?[0-9]*[(.|,)]?[0-9]*$";
-        public const string BooleanRegex = "^(true|false){1}$";
-        public const string FreeValueRegex = "^(\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
-        public const string LabelDefaultValueRegex = "^((\"|')(.*?)(\"|')|[A-Z\".\"]*)$";
+        public const string PositiveIntegerValueRegex = "^[0-9]*$";
+        public const string IntegerValueRegex = "^[-]?[0-9]*$";
+        public const string FloatValueRegex = "^[-]?[0-9]*[(.|,)]?[0-9]*$";
+        public const string BooleanValueRegex = "^(true|false){1}$";
+        /// <summary>
+        /// This regex allows either setting ad hoc strings with single or double quotes, such as
+        ///
+        /// 'My String' or "My String"
+        /// 
+        /// as well as making reference to constants that are defined somewhere else
+        /// using the all capitals and "." and "_" conventions, so that references such as
+        /// 
+        /// CONSTANTS.HELLOMESSAGE
+        /// ERROR_MESSAGES.NO_SESSION (underscores can be used too)
+        /// 
+        /// are valid
+        /// </summary>
+        public const string SetValueRegex = "^((\"|')(.*?)(\"|')|[A-Z\".\"\"_\"]*)$";
+        /// <summary>
+        /// This regex allows either setting ad hoc strings with single or double quotes for labels, such as
+        ///
+        /// 'My String' or "My String"
+        /// 
+        /// as well as making reference to constants that are defined somewhere else
+        /// using the all capitals and "." and "_" conventions, so that references such as
+        /// 
+        /// CONSTANTS.HELLOMESSAGE
+        /// ERROR_MESSAGES.NO_SESSION (underscores can be used too)
+        /// 
+        /// are valid
+        /// </summary>
+        public const string LabelDefaultValueRegex = "^((\"|')(.*?)(\"|')|[A-Z\".\"\"_\"]*)$";
+
+        /// <summary>
+        /// Validates an entire load data from line
+        /// </summary>
+        public const string LoadDataFromLineRegex =  @"^load data from (WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
+        /// <summary>
+        /// Validates the argument part of a load data from line 
+        /// (that is, all that comes after the load data from instruction)
+        /// </summary>
+        public const string LoadDataFromValueRegex = @"^(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
 
         /// <summary>
         /// Regular expression that validates the correct format of an 'entity' line.
@@ -212,6 +247,7 @@ namespace BREadfruit
         public static Symbol ActionsSymbol = new Symbol ( "actions", 1, true );
         #endregion
 
+        #region " --- symbol for entities --- "
 
         public static Symbol TextBoxSymbol = new Symbol ( "TextBox", 0, true );
         public static Symbol CheckBoxSymbol = new Symbol ( "CheckBox", 0, true );
@@ -223,6 +259,9 @@ namespace BREadfruit
         public static Symbol MultilineSymbol = new Symbol ( "Multiline", 0, true );
         public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
         public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
+
+        #endregion
+
         public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
         public static Symbol InSymbol = new Symbol ( "in", 2, false );
@@ -547,15 +586,16 @@ namespace BREadfruit
         /// </summary>
         private static void PopulateDefaultTokens ()
         {
-            var maxlengthdefault = new DefaultClause ( "max_length", PositiveIntegerRegex,
-                new List<String> () { "max", "length", "maximum_length" } );
-            var minlengthdefault = new DefaultClause ( "min_length", PositiveIntegerRegex,
-                new List<String> () { "min", "minimum_length" } );
-            var mandatorydefault = new DefaultClause ( "mandatory", BooleanRegex );
-            var enableddefault = new DefaultClause ( "enabled", BooleanRegex );
-            var visibledefault = new DefaultClause ( "visible", BooleanRegex );
-            var valuedefault = new DefaultClause ( "value", FreeValueRegex, new List<string> () { "set value" } );
+            var maxlengthdefault = new DefaultClause ( "max_length", PositiveIntegerValueRegex,
+                new List<String> () { "max", "length", "max length", "maximum_length" } );
+            var minlengthdefault = new DefaultClause ( "min_length", PositiveIntegerValueRegex,
+                new List<String> () { "min", "min length", "minimum_length" } );
+            var mandatorydefault = new DefaultClause ( "mandatory", BooleanValueRegex );
+            var enableddefault = new DefaultClause ( "enabled", BooleanValueRegex );
+            var visibledefault = new DefaultClause ( "visible", BooleanValueRegex );
+            var valuedefault = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
             var labeldefault = new DefaultClause ( "label", LabelDefaultValueRegex );
+            var loaddatadefault = new DefaultClause ( "load data from", LoadDataFromLineRegex );
             _defaultsTokens.Add ( maxlengthdefault );
             _defaultsTokens.Add ( minlengthdefault );
             _defaultsTokens.Add ( mandatorydefault );
@@ -563,6 +603,7 @@ namespace BREadfruit
             _defaultsTokens.Add ( visibledefault );
             _defaultsTokens.Add ( valuedefault );
             _defaultsTokens.Add ( labeldefault );
+            _defaultsTokens.Add ( loaddatadefault );
         }
 
 
