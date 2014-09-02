@@ -29,5 +29,25 @@ namespace BREadfruit.Tests.Low_level_tests
             return Regex.IsMatch ( line, regex );
         }
 
+        [TestCase ( "load data from DATASOURCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load data from WEBSERVICE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load data from DATAsourRCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = false )]
+        [TestCase ( "load data from webservice.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = false )]
+        [TestCase ( "load data from DATASOURCE.S", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load data from WEBSERVICE.S", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "DATASOURCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromValueRegex, Result = true )]
+        [TestCase ( "WEBSERVICE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromValueRegex, Result = true )]
+        [TestCase ( "DATASOURCE.SXXSX.XASSS.XXSSSXX.", Grammar.LoadDataFromValueRegex, Result = false )]
+        [TestCase ( "WEBSERVICE.SXXSX.XASSS.XXSSSXX.", Grammar.LoadDataFromValueRegex, Result = false )]
+        [TestCase ( "DATASOURCE.S", Grammar.LoadDataFromValueRegex, Result = true )]
+        [TestCase ( "WEBSERVICE.S", Grammar.LoadDataFromValueRegex, Result = true )]
+        [TestCase ( "DATASOURCE.", Grammar.LoadDataFromValueRegex, Result = false )]
+        [TestCase ( "WEBSERVICE.", Grammar.LoadDataFromValueRegex, Result = false )]
+        [TestCase ( "DATASOURCE", Grammar.LoadDataFromValueRegex, Result = false )]
+        [TestCase ( "WEBSERVICE", Grammar.LoadDataFromValueRegex, Result = false )]
+        public bool RegexTest_LoadDataFromClause(string line, string regex)
+        {
+            return Regex.IsMatch ( line, regex );
+        }
     }
 }
