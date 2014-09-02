@@ -20,39 +20,10 @@ namespace BREadfruit.Clauses
     {
 
         /// <summary>
-        /// Main token of the default clause, for example 'max_length'.
-        /// </summary>
-        // private readonly string _token;
-        /// <summary>
-        /// Allowed aliases for the default clauses, for example 'max_length'
-        /// could be expressed also as 'max', 'length' or 'maximum_length'.
-        /// </summary>
-        // private readonly List<string> _aliases;
-        /// <summary>
         /// Regular expression that will validate the value that can be
         /// taken by an instance of DefaultClause.
         /// </summary>
         private readonly string _regexPattern;
-        /// <summary>
-        /// Value of the default clause.
-        /// </summary>
-        private Object _value;
-        /// <summary>
-        /// Main identifier for the Default clause
-        /// </summary>
-        //public string Token
-        //{
-        //    get { return _token; }
-        //}
-
-        /// <summary>
-        /// Other valid identifiers for this default clause
-        /// </summary>
-        //public List<string> Aliases
-        //{
-        //    get { return _aliases; }
-        //}
-
         /// <summary>
         /// Pattern for the regular expression (as string,
         /// not as instance of Regex) that validates the values
@@ -63,6 +34,10 @@ namespace BREadfruit.Clauses
             get { return _regexPattern; }
         }
 
+        /// <summary>
+        /// Value of the default clause.
+        /// </summary>
+        private Object _value;
         /// <summary>
         /// Value that can be assigned to this instance.
         /// </summary>
