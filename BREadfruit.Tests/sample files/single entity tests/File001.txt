@@ -1,0 +1,18 @@
+﻿; -- RULES FOR VENDOR SEARCH FORM 
+
+Entity TBVendorName is TextBox
+	with defaults
+		visible true
+		value   ''
+		label LABELS.VENDOR.NAME
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+
+	with rules
+		
+	with triggers
+		TBVendorName.value changes
+
+; ----------------------------------------------------------------------------	

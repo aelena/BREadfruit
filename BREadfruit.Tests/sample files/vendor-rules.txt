@@ -74,8 +74,6 @@ Entity DDLVDCountry is DropDownList
 		visible true
 		value User.Country		; preselect user country if there is data in SCD for this user
 		mandatory true
-		; load data has to be a default
-		; need to define a formalism for this in a more precise manner
 		load data from Enterprise.WorldCountries
 		label LABELS.GENERIC.COUNTRY
 
