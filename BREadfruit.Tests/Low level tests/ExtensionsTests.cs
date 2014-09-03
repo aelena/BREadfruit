@@ -155,6 +155,28 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( strings.ElementAtFromLast (2) == "tu" );
         }
 
-       
+     
+        [Test]
+        public void ListIsNullOrEmptyTests_1()
+        {
+            List<string> l = null;
+            Assert.That ( l.IsNullOrEmpty () );
+        }
+
+
+        [Test]
+        public void ListIsNullOrEmptyTests_2 ()
+        {
+            List<string> l = new List<string> ();
+            Assert.That ( l.IsNullOrEmpty () );
+        }
+
+        [Test]
+        public void ListIsNullOrEmptyTests_3 ()
+        {
+            List<string> l = new List<string> () { "a"};
+            Assert.That ( !l.IsNullOrEmpty () );
+        }
+  
     }
 }
