@@ -148,6 +148,8 @@ namespace BREadfruit
                      where op is Symbol
                      || op is ResultAction
                      || op is DefaultClause
+                     || op is Operator
+                     && op.Aliases.Count () > 0
                      let t = _fused.ContainsAny2 ( op.Aliases )
                      where t.Item1
                      select new
