@@ -51,7 +51,7 @@ namespace BREadfruit
 
         private IList<DefaultClause> _defaults;
         private IList<Rule> _rules;
-        private IList<ResultAction> _actions;
+        private IList<ResultAction> _resultactions;
         private IList<UnaryAction> _unaryactions;
         private IList<Trigger> _triggers;
         private IList<Constraint> _constraints;
@@ -78,21 +78,13 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
-        public IEnumerable<ResultAction> Actions
-        {
-            get
-            {
-                return this._actions;
-            }
-        }
-
-        // ---------------------------------------------------------------------------------
-
+        
         public IEnumerable<UnaryAction> ConditionlessActions
         {
             get
             {
-                return this._unaryactions;
+                // cast to list, in order to get rid of the ConcatIterator and the two "first" and "second" properties that appear upon inspection
+                return this._unaryactions.Concat ( this._resultactions ).ToList(); 
             }
         }
 
@@ -126,7 +118,7 @@ namespace BREadfruit
             this._businessProcessCode = bpCode;
             this._defaults = new List<DefaultClause> ();
             this._rules = new List<Rule> ();
-            this._actions = new List<ResultAction> ();
+            this._resultactions = new List<ResultAction> ();
             this._unaryactions = new List<UnaryAction> ();
             this._triggers = new List<Trigger> ();
             this._constraints = new List<Constraint> ();
@@ -157,7 +149,7 @@ namespace BREadfruit
 
         public bool AddResultAction ( ResultAction action )
         {
-            this._actions.Add ( action );
+            this._resultactions.Add ( action );
             return true;
         }
 
