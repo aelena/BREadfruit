@@ -37,7 +37,9 @@ namespace BREadfruit.Conditions
         }
 
         private string _suffixLogicalOperator;
-        public string SuffixLogicalOperator
+
+        // probably this does not need to be public...
+        protected internal string SuffixLogicalOperator
         {
             get { return _suffixLogicalOperator; }
         } 
