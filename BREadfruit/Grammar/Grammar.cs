@@ -354,6 +354,9 @@ namespace BREadfruit
         public static Operator NotEndsWithOperator = new Operator ( "does_not_end_with", 2, false, new [] { "does not end with", "not ends with", "not ends" } );
         public static Operator ContainsOperator = new Operator ( "contains", 2, false );
         public static Operator NotContainsOperator = new Operator ( "does_not_contain", 2, false, new [] { "does not contain", "not contains" } );
+        public static Operator InOperator = new Operator ( "in", 2, false );
+        public static Operator NotInOperator = new Operator ( "not in", 2, false );
+
 
 
         #endregion
@@ -517,6 +520,8 @@ namespace BREadfruit
             Grammar._operators.Add ( NotEndsWithOperator );
             Grammar._operators.Add ( ContainsOperator );
             Grammar._operators.Add ( NotContainsOperator );
+            Grammar._operators.Add ( InOperator );
+            Grammar._operators.Add ( NotInOperator );
         }
 
 
