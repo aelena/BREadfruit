@@ -97,6 +97,8 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "not starts", "does_not_start_with" )]
         [TestCase ( "not starts with", "does_not_start_with" )]
         [TestCase ( "does not contain", "does_not_contain" )]
+        [TestCase ( "not in", "not_in" )]
+        [TestCase ( "in", "in" )]
         public void ShouldFindOperator ( string token, string mainAlias )
         {
             var _op = Grammar.GetOperator ( token );
@@ -104,6 +106,10 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( _op.Aliases.Contains ( token ) );
             Assert.That ( _op.Token == mainAlias );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         [TestCase ( "i s", "is" )]
         [TestCase ( " is empty", "is_empty" )]

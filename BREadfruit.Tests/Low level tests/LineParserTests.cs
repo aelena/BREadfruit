@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using BREadfruit.Helpers;
+using BREadfruit.Conditions;
+using BREadfruit.Clauses;
 
 namespace BREadfruit.Tests.Low_level_tests
 {
@@ -206,6 +208,30 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( _conds.Last ().ToString ().Equals ( expected3 ) );
             Assert.That ( _conds.Last ().SuffixLogicalOperator == null );
             return _conds.Count ();
+        }
+
+
+
+        [TestCase("DDLVDCountry.value not in {\"PT\",\"ES\",\"IT\",\"FR\",\"GF\",\"GP\",\"RE\",\"MQ\",\"YT\",\"NC\",\"PF\",\"PM\",\"WF\",\"MC\"} then")]
+        public void ShouldFindSymbol(string _fused)
+        {
+            var _x = from op in Grammar.Symbols
+                     where op is Symbol
+                     || op is ResultAction
+                     || op is DefaultClause
+                     || op is Operator
+                      && op.Aliases.Count () > 0
+                     let t = _fused.ContainsAny2 ( op.Aliases )
+                     where t.Item1
+                     select new
+                     {
+                         symbol = op,
+                         Ocurrence = t.Item2,
+                         Index = _fused.IndexOf ( t.Item2 ),
+                         Length = t.Item2.Length
+                     };
+
+            Assert.That ( _x.Where ( x => x.symbol.Token == "not_in" ).Count () == 1 );
         }
     }
 }
