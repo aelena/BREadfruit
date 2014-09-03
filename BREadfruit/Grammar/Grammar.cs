@@ -355,7 +355,7 @@ namespace BREadfruit
         public static Operator ContainsOperator = new Operator ( "contains", 2, false );
         public static Operator NotContainsOperator = new Operator ( "does_not_contain", 2, false, new [] { "does not contain", "not contains" } );
         public static Operator InOperator = new Operator ( "in", 2, false );
-        public static Operator NotInOperator = new Operator ( "not in", 2, false );
+        public static Operator NotInOperator = new Operator ( "not_in", 2, false, new [] { "not in" } );
 
 
 
@@ -505,8 +505,8 @@ namespace BREadfruit
 
         private static void AddOperators ()
         {
-            Grammar._operators.Add ( IsOperator );
             //IsOperator.Aliases.ToList ().ForEach ( x => Grammar._operators.Add ( new Operator ( x ) ) );
+            Grammar._operators.Add ( IsOperator );
             Grammar._operators.Add ( IsNotOperator );
             Grammar._operators.Add ( IsEmptyOperator );
             Grammar._operators.Add ( IsNotEmptyOperator );
@@ -569,6 +569,8 @@ namespace BREadfruit
             Grammar._symbols.Add ( NotEndsWithOperator );
             Grammar._symbols.Add ( ContainsOperator );
             Grammar._symbols.Add ( NotContainsOperator );
+            Grammar._symbols.Add ( InOperator );
+            Grammar._symbols.Add ( NotInOperator );
             // add unary actions
             Grammar._symbols.Add ( EnableUnaryActionSymbol );
             Grammar._symbols.Add ( DisableUnaryActionSymbol );
@@ -601,7 +603,7 @@ namespace BREadfruit
         private static void PopulateDefaultTokens ()
         {
             var maxlengthdefault = new DefaultClause ( "max_length", PositiveIntegerValueRegex,
-                new List<String> () { "maximum length", "max length"} );
+                new List<String> () { "maximum length", "max length" } );
             var minlengthdefault = new DefaultClause ( "min_length", PositiveIntegerValueRegex,
                 new List<String> () { "minimum length" } );
             var mandatorydefault = new DefaultClause ( "mandatory", BooleanValueRegex );
