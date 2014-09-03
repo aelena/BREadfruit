@@ -13,8 +13,13 @@ namespace BREadfruit.Conditions
     public class Rule
     {
 
-
+        /// <summary>
+        /// A rule can have one or more conditions.
+        /// </summary>
         private List<Condition> _conditions = new List<Condition> ();
+        /// <summary>
+        /// Gets a list of the conditions that this rule has.
+        /// </summary>
         public IEnumerable<Condition> Conditions
         {
             get
@@ -23,10 +28,61 @@ namespace BREadfruit.Conditions
             }
         }
 
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Gets the number of conditions the rule has.
+        /// </summary>
+        public int NumberOfConditions
+        {
+            get
+            {
+                return this._conditions.Count ();
+            }
+        }
+
 
         // ---------------------------------------------------------------------------------
 
-                     
+
+        /// <summary>
+        /// Returns a boolean value that indicates whether this is a 
+        /// "simple condition rule", that is, that it only has a condition.
+        /// </summary>
+        public bool IsSimpleConditionRule
+        {
+            get
+            {
+                return this._conditions.Count () == 1;
+            }
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Returns a boolean value that indicates whether this is a 
+        /// "multiple condition rule", that is, that it has more than a condition.
+        /// </summary>
+        public bool IsMultipleConditionRule
+        {
+            get
+            {
+                return this._conditions.Count () > 1;
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Allows privileged callers (protected internal) to add conditions to the rule
+        /// as these conditions are parsed from the file.
+        /// </summary>
+        /// <param name="condition">Condition instance.</param>
+        /// <returns></returns>
         protected internal Rule AddCondition ( Condition condition )
         {
             if ( condition == null )
@@ -40,7 +96,15 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
+        public override string ToString ()
+        {
+            string _ = "";
+            this._conditions.ForEach ( x => _ += x.ToString () + Environment.NewLine );
+            return _;
+        }
 
+
+        // ---------------------------------------------------------------------------------
 
     }
 }
