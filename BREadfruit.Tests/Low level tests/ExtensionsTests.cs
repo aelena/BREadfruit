@@ -177,6 +177,34 @@ namespace BREadfruit.Tests.Low_level_tests
             List<string> l = new List<string> () { "a"};
             Assert.That ( !l.IsNullOrEmpty () );
         }
-  
+
+
+        [TestCase ( null, 0, false, Result = "" )]
+        [TestCase ( null, 0, true, Result = "" )]
+        [TestCase ( null, 3, false, Result = "" )]
+        [TestCase ( null, 3, true, Result = "" )]
+        [TestCase ( "", 0, false,Result = "" )]
+        [TestCase ( "", 0, true, Result = "" )]
+        [TestCase ( "", 2, false, Result = "" )]
+        [TestCase ( "", 2, true, Result = "" )]
+        [TestCase ( "abcd", 2, true, Result = "ab" )]
+        [TestCase ( "abcd", 2, false, Result = "ab" )]
+        [TestCase ( "abcd ", 2, true, Result = "ab" )]
+        [TestCase ( "abcd ", 2, false, Result = "abc" )]
+        [TestCase ( "abcd       ", 2, true, Result = "ab" )]
+        [TestCase ( "abcd    ", 2, false, Result = "abcd  " )]
+        [TestCase ( "abcd ", 12, true, Result = "" )]
+        [TestCase ( "abcd ", 12, false, Result = "" )]
+        [TestCase ( "abcd", 3, true, Result = "a" )]
+        [TestCase ( "abcd", 3, false, Result = "a" )]
+        [TestCase ( "abcd", 4, true, Result = "" )]
+        [TestCase ( "abcd", 4, false, Result = "" )]
+        [TestCase ( "abcd", 5, true, Result = "" )]
+        [TestCase ( "abcd", 5, false, Result = "" )]
+        public string ShouldRemoveFromEnd ( string value, int charCount, bool trimEndFirst)
+        {
+            return value.RemoveFromEnd ( charCount, trimEndFirst );
+        }
+
     }
 }

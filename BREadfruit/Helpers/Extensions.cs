@@ -186,6 +186,14 @@ namespace BREadfruit.Helpers
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Prepends a given string to another string a n number of times 
+        /// (by default 1).
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="prependValue"></param>
+        /// <param name="repetitions"></param>
+        /// <returns></returns>
         public static string Prepend ( this string s, string prependValue, int repetitions = 1 )
         {
             if ( s == null )
@@ -205,6 +213,12 @@ namespace BREadfruit.Helpers
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Gets the penultimate element in a list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public static T Penultimate<T> ( this IEnumerable<T> list ) where T : class
         {
 
@@ -238,6 +252,13 @@ namespace BREadfruit.Helpers
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Checks if an element of type T exists in a list of Ts.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public static bool In<T> ( this T value, IEnumerable<T> list)
         {
             if ( list == null )
@@ -248,6 +269,12 @@ namespace BREadfruit.Helpers
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Returns a boolean value to tell if the instance is null or empty.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public static bool IsNullOrEmpty<T> ( this IEnumerable<T> list )
         {
             if ( list == null )
@@ -257,6 +284,40 @@ namespace BREadfruit.Helpers
 
 
         // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// This extension removes n number of characters starting from the end of the string.
+        /// If the string is null or empty, it returns String.Empty, therefore it does not crash on null.
+        /// 
+        /// If the number of characters to substract from the end is bigger that the actual
+        /// character count in the string it returns String.Empty, therefore it does not crash.
+        /// 
+        /// Caller can specify in a end trim is wanted or not, in case whitespace needs to be preserved.
+        /// By default this is assumed to be false, so pass true for the trimming to take effect.
+        /// </summary>
+        /// <param name="value">String on which to perform the operation.</param>
+        /// <param name="numberOfCharacters">Number of characters to remove from the end of the string.</param>
+        /// <param name="trimEndFirst">Boolean value that indicates if a TrimEnd is to be done 
+        /// before the removal.</param>
+        /// <returns></returns>
+        public static string RemoveFromEnd ( this string value, int numberOfCharacters, bool trimEndFirst = false)
+        {
+            if ( String.IsNullOrEmpty ( value ) )
+                return string.Empty;
+
+            if ( trimEndFirst )
+                value = value.TrimEnd ();
+
+            if ( numberOfCharacters > value.Length )
+                return String.Empty;
+
+            return value.Remove ( value.Length - numberOfCharacters );
+
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
     }
 }
