@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BREadfruit.Helpers;
 
 namespace BREadfruit.Conditions
 {
@@ -28,6 +29,32 @@ namespace BREadfruit.Conditions
 
         // ---------------------------------------------------------------------------------
 
+
+        public override string ToString ()
+        {
+           
+            return this.Token;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        protected internal string ToStringExpanded()
+        {
+            if ( !this.Aliases.IsNullOrEmpty () )
+            {
+                string _ = " ( ";
+                this._aliases.ForEach ( x => _ += x + ", " );
+                _ = _.Trim ().RemoveFromEnd ( 1 ) + " )";
+                return this.Token + _;
+            }
+            return this.Token;
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
 
     }
