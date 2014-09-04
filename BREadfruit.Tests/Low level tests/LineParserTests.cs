@@ -177,6 +177,10 @@ namespace BREadfruit.Tests.Low_level_tests
             return _conds.Count ();
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         [TestCase ( "role is 'ENQ' and role is {UPM,CPM} then enabled", "role is 'ENQ'", "role is {UPM,CPM}", Result = 2 )]
         [TestCase ( "VendorCountry is ES and TaxCode1 starts with {P,Q,S} then", "VendorCountry is ES", "TaxCode1 starts_with {P,Q,S}", Result = 2 )]
         public int ExtractConditionsTests_2 ( string line, string expected1, string expected2 )
@@ -191,6 +195,10 @@ namespace BREadfruit.Tests.Low_level_tests
 
             return _conds.Count ();
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         [TestCase ( "role is 'ENQ' and role is {UPM,CPM} or field is disabled then enabled",
             "role is 'ENQ'", "role is {UPM,CPM}", "field is disable", Result = 3 )]
@@ -210,6 +218,8 @@ namespace BREadfruit.Tests.Low_level_tests
             return _conds.Count ();
         }
 
+
+        // ---------------------------------------------------------------------------------
 
 
         [TestCase("DDLVDCountry.value not in {\"PT\",\"ES\",\"IT\",\"FR\",\"GF\",\"GP\",\"RE\",\"MQ\",\"YT\",\"NC\",\"PF\",\"PM\",\"WF\",\"MC\"} then")]
@@ -233,5 +243,35 @@ namespace BREadfruit.Tests.Low_level_tests
 
             Assert.That ( _x.Where ( x => x.symbol.Token == "not_in" ).Count () == 1 );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments {\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" }", Result = true )]
+        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", Result = false )]
+        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments", Result = true )]
+        public bool LineInfoContainsArgumentkeyValuePairsTests (string line)
+        {
+            return LineParser.LineInfoContainsArgumentkeyValuePairs ( new LineInfo ( line ) );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments {\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" }", Result=4 )]
+        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments {\"Country\":\"ES\"}", Result = 4 )]
+        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments ", Result = 3 )]
+        public int TokenizeArgumentArgumentkeyValuePairsTests ( string line  )
+        {
+            var lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
+            var newLine = LineParser.TokenizeArgumentArgumentkeyValuePairs ( lineInfo );
+            return newLine.Tokens.Count ();
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
     }
 }

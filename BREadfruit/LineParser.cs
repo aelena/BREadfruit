@@ -156,7 +156,7 @@ namespace BREadfruit
                      {
                          symbol = op,
                          Ocurrence = t.Item2,
-                         Index = _fused.IndexOf ( t.Item2),
+                         Index = _fused.IndexOf ( t.Item2 ),
                          Length = t.Item2.Length
                      };
 
@@ -245,6 +245,43 @@ namespace BREadfruit
 
             return _conds;
         }
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// This function parses a lineInfo to detect argument key value pairs 
+        /// and make a single token of all the individual tokens.
+        /// This token is to be parsed later on for extracting the individual key valuye pairs.
+        /// </summary>
+        /// <param name="lineInfo"></param>
+        /// <returns></returns>
+        protected internal static LineInfo TokenizeArgumentArgumentkeyValuePairs ( LineInfo lineInfo )
+        {
+            var _argsAsString = lineInfo.GetArgumentsAsString ();
+            if ( !String.IsNullOrWhiteSpace ( _argsAsString ) )
+            {
+                lineInfo.RemoveTokensAfterSymbol ( Grammar.WithArgumentsSymbol, true );
+                lineInfo.AddToken ( new Symbol ( _argsAsString, 2, true ) );
+            }
+            return lineInfo;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Returns a value that indicates if the passed LineInfo instance contains
+        /// a "with arguments" clause.
+        /// </summary>
+        /// <param name="lineInfo">LineInfo instance to inspect.</param>
+        /// <returns></returns>
+        protected internal static bool LineInfoContainsArgumentkeyValuePairs ( LineInfo lineInfo )
+        {
+            return lineInfo.HasSymbol ( Grammar.WithArgumentsSymbol );
+        }
+
 
         // ---------------------------------------------------------------------------------
 
