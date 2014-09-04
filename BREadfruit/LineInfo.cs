@@ -11,6 +11,7 @@ namespace BREadfruit
     /// </summary>
     public class LineInfo
     {
+        private LineParser _lineParser = new LineParser ();
 
         /// <summary>
         /// Indicates the level of indent of the line 
@@ -76,11 +77,11 @@ namespace BREadfruit
         public LineInfo ( string representation )
         {
             this._representation = representation;
-            this._indentLevel = LineParser.GetIndentCount ( this._representation );
-            this._tokens = LineParser.ExtractTokens ( this._representation ).ToList ();
+            this._indentLevel = this._lineParser.GetIndentCount ( this._representation );
+            this._tokens = this._lineParser.ExtractTokens ( this._representation ).ToList ();
             if ( this._tokens != null )
                 this._numberOfTokens = this._tokens.Count ();
-            this._isValid = LineParser.IsAValidSentence ( this );
+            this._isValid = this._lineParser.IsAValidSentence ( this );
         }
 
 
@@ -96,7 +97,7 @@ namespace BREadfruit
                 this._tokens = tokens.ToList ();
                 this._numberOfTokens = tokens.Count ();
             }
-            this._isValid = LineParser.IsAValidSentence ( this );
+            this._isValid = this._lineParser.IsAValidSentence ( this );
 
         }
 

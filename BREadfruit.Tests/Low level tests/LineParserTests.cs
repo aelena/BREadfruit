@@ -14,6 +14,9 @@ namespace BREadfruit.Tests.Low_level_tests
     public class LineParserTests
     {
 
+        LineParser lineParser = new LineParser ();
+
+
         /// <summary>
         /// Performs a series of tests to ensure that the tokens
         /// in different topologies of lines in the document format
@@ -40,7 +43,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "Entity XYZ is TextBox ; and this is a comment", 4, "TextBox", Result = true )]
         public bool ShouldExtractTokensCorrectly ( string line, int correctCount, string lastToken )
         {
-            var _t = LineParser.ExtractTokens ( line );
+            var _t = lineParser.ExtractTokens ( line );
             return ( _t.Count () == correctCount ) && ( _t.Last ().Token == lastToken );
         }
 
@@ -60,7 +63,7 @@ namespace BREadfruit.Tests.Low_level_tests
             int finalTokenCount, string fusedToken, bool shouldThereBeFusedTokens )
         {
 
-            var _t = LineParser.ExtractTokens ( line ).ToList ();
+            var _t = lineParser.ExtractTokens ( line ).ToList ();
             var _t1 = Enumerable.Range ( 0, _t.Count ).Where ( x => _t [ x ].Token.StartsWith ( matchingChar ) );
             var _t2 = Enumerable.Range ( 0, _t.Count ).Where ( x => _t [ x ].Token.EndsWith ( matchingChar ) );
             var _fusedSymbols = new List<Symbol> ();
@@ -84,7 +87,7 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             var line = "when you 'see me' then say 'hello there, boy'";
             string matchingChar = "'";
-            var _t = LineParser.ExtractTokens ( line ).ToList ();
+            var _t = lineParser.ExtractTokens ( line ).ToList ();
             var _t1 = Enumerable.Range ( 0, _t.Count ).Where ( x => _t [ x ].Token.StartsWith ( matchingChar ) );
             var _t2 = Enumerable.Range ( 0, _t.Count ).Where ( x => _t [ x ].Token.EndsWith ( matchingChar ) );
             var _fusedSymbols = new List<Symbol> ();
@@ -107,7 +110,7 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             var line = "when you \"see me\" then say \"hello there, boy\" or risk being ostracised at \"The Mad Hatter\" pub tonight";
             string matchingChar = "\"";
-            var _t = LineParser.ExtractTokens ( line ).ToList ();
+            var _t = lineParser.ExtractTokens ( line ).ToList ();
             var _t1 = Enumerable.Range ( 0, _t.Count ).Where ( x => _t [ x ].Token.StartsWith ( matchingChar ) );
             var _t2 = Enumerable.Range ( 0, _t.Count ).Where ( x => _t [ x ].Token.EndsWith ( matchingChar ) );
             var _fusedSymbols = new List<Symbol> ();
@@ -156,8 +159,8 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "minimum length 10", Result = "min_length 10" )]
         public string TokenizeMultiplePartOperatorTests ( string line )
         {
-            var li = LineParser.ParseLine ( line );
-            var resolved = LineParser.TokenizeMultiplePartOperators ( li );
+            var li = lineParser.ParseLine ( line );
+            var resolved = lineParser.TokenizeMultiplePartOperators ( li );
             return resolved;
         }
 
@@ -169,9 +172,9 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "role is {UPM,CPM} then not enabled", "role is {UPM,CPM}", Result = 1 )]
         public int ExtractConditionsTests_1 ( string line, string expected )
         {
-            var lineInfo = LineParser.ParseLine ( line );
-            lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-            var _conds = LineParser.ExtractConditions ( lineInfo );
+            var lineInfo = lineParser.ParseLine ( line );
+            lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            var _conds = lineParser.ExtractConditions ( lineInfo );
             Assert.That ( _conds.First ().ToString ().Equals ( expected ) );
             Assert.That ( _conds.First ().SuffixLogicalOperator == null );
             return _conds.Count ();
@@ -185,9 +188,9 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "VendorCountry is ES and TaxCode1 starts with {P,Q,S} then", "VendorCountry is ES", "TaxCode1 starts_with {P,Q,S}", Result = 2 )]
         public int ExtractConditionsTests_2 ( string line, string expected1, string expected2 )
         {
-            var lineInfo = LineParser.ParseLine ( line );
-            lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-            var _conds = LineParser.ExtractConditions ( lineInfo );
+            var lineInfo = lineParser.ParseLine ( line );
+            lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            var _conds = lineParser.ExtractConditions ( lineInfo );
             Assert.That ( _conds.First ().ToString ().Equals ( expected1 ) );
             Assert.That ( _conds.First ().SuffixLogicalOperator == "and" );
             Assert.That ( _conds.Last ().ToString ().Equals ( expected2 ) );
@@ -206,9 +209,9 @@ namespace BREadfruit.Tests.Low_level_tests
             "VendorCountry is ES", "TaxCode1 starts_with {P,Q,S}", "he is hungry", Result = 3 )]
         public int ExtractConditionsTests_3 ( string line, string expected1, string expected2, string expected3 )
         {
-            var lineInfo = LineParser.ParseLine ( line );
-            lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-            var _conds = LineParser.ExtractConditions ( lineInfo );
+            var lineInfo = lineParser.ParseLine ( line );
+            lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            var _conds = lineParser.ExtractConditions ( lineInfo );
             Assert.That ( _conds.First ().ToString ().Equals ( expected1 ) );
             Assert.That ( _conds.First ().SuffixLogicalOperator == "and" );
             Assert.That ( _conds.ElementAt ( 1 ).ToString ().Equals ( expected2 ) );
@@ -253,7 +256,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments", Result = true )]
         public bool LineInfoContainsArgumentkeyValuePairsTests (string line)
         {
-            return LineParser.LineInfoContainsArgumentkeyValuePairs ( new LineInfo ( line ) );
+            return lineParser.LineInfoContainsArgumentkeyValuePairs ( new LineInfo ( line ) );
         }
 
 
@@ -265,8 +268,8 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments ", Result = 3 )]
         public int TokenizeArgumentArgumentkeyValuePairsTests ( string line  )
         {
-            var lineInfo = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
-            var newLine = LineParser.TokenizeArgumentArgumentkeyValuePairs ( lineInfo );
+            var lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
+            var newLine = lineParser.TokenizeArgumentArgumentkeyValuePairs ( lineInfo );
             return newLine.Tokens.Count ();
         }
 

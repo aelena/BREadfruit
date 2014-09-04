@@ -12,6 +12,8 @@ namespace BREadfruit.Tests.Low_level_tests
     public class WithLineTests
     {
 
+        LineParser lineParser = new LineParser ();
+
 
         [TestCase ( "\twith defaults", 1, Result = true )]
         [TestCase ( "\twith triggers", 1, Result = true )]
@@ -29,7 +31,7 @@ namespace BREadfruit.Tests.Low_level_tests
         public bool ValidateWithLineInfosCorrectly ( string representation, int indentLevel )
         {
             var li = new LineInfo ( representation );
-            return LineParser.IsAValidSentence ( li );
+            return lineParser.IsAValidSentence ( li );
         }
     }
 }

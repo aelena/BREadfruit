@@ -142,7 +142,6 @@ namespace BREadfruit.Clauses
                 this._arguments.Add ( _argPair.First ().Trim (), _argPair.Last ().Trim () );
             }
 
-            //.Replace("\"", "" )
             
         }
 

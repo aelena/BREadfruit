@@ -85,7 +85,7 @@ namespace BREadfruit
                         {
                             // Clear the scope state
                             this._currentScope = CurrentScope.NO_SCOPE;
-                            if ( LineParser.IsAValidSentence ( lineInfo ) )
+                            if ( this._lineParser.IsAValidSentence ( lineInfo ) )
                             {
                                 // check the scope of the with clause and change the state accordingly                            
                                 var _withScope = lineInfo.Tokens.Last ().Token;
@@ -121,10 +121,10 @@ namespace BREadfruit
                         if ( this._currentScope == CurrentScope.RULES_BLOCK )
                         {
 
-                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
 
                             var _rule = new Rule ();
-                            var _conds = LineParser.ExtractConditions ( lineInfo );
+                            var _conds = this._lineParser.ExtractConditions ( lineInfo );
                             foreach ( var c in _conds )
                                 _rule.AddCondition ( c );
 
@@ -178,7 +178,7 @@ namespace BREadfruit
                         #region " --- condition-less actions block --- "
                         if ( this._currentScope == CurrentScope.ACTIONS_BLOCK )
                         {
-                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
                             // see if this is resultaction
                             if ( lineInfo.Tokens.Count () == 4 )
                             {
@@ -199,7 +199,7 @@ namespace BREadfruit
                         #region " --- condition  actions block --- "
                         if ( this._currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
                         {
-                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
                             if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
                             {
                                 var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
@@ -211,7 +211,7 @@ namespace BREadfruit
 
                         if ( this._currentScope == CurrentScope.TRIGGERS_BLOCK )
                         {
-                            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
                             {
                                 if ( lineInfo.Tokens.Count () == 2 )
                                 {
@@ -248,10 +248,10 @@ namespace BREadfruit
         private DefaultClause ConfigureDefaultClause ( LineInfo lineInfo )
         {
 
-            lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-            if ( LineParser.LineInfoContainsArgumentkeyValuePairs ( lineInfo ) )
+            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            if ( this._lineParser.LineInfoContainsArgumentkeyValuePairs ( lineInfo ) )
             {
-                lineInfo = LineParser.TokenizeArgumentArgumentkeyValuePairs ( lineInfo );
+                lineInfo = this._lineParser.TokenizeArgumentArgumentkeyValuePairs ( lineInfo );
             }
 
             var clause = Grammar.GetDefaultClauseByToken ( lineInfo.Tokens.First ().Token, false );
@@ -288,7 +288,7 @@ namespace BREadfruit
 
         protected internal LineInfo ParseLine ( string line )
         {
-            var lineInfo = LineParser.ParseLine ( line );
+            var lineInfo = this._lineParser.ParseLine ( line );
             _parsedLines.Add ( lineInfo );
             return lineInfo;
         }

@@ -10,6 +10,10 @@ namespace BREadfruit.Tests.Low_level_tests
     [TestFixture]
     public class ParseEntityLineTests
     {
+
+        LineParser lineParser = new LineParser ();
+
+
         [TestCase ( "", 0 )]
         [TestCase ( "Entity", 0 )]
         [TestCase ( "\tEntity", 1 )]
@@ -18,7 +22,7 @@ namespace BREadfruit.Tests.Low_level_tests
         public void ShouldFindIndentLevelCorrectly ( string line, int indentCount )
         {
             //var p = new LineParser ();
-            var li = LineParser.ParseLine ( line );
+            var li = lineParser.ParseLine ( line );
             Assert.That ( li.IndentLevel == indentCount );
         }
 
@@ -29,7 +33,7 @@ namespace BREadfruit.Tests.Low_level_tests
         public void ShouldFindCorrectTokenCount ( string line, int tokenCount )
         {
             //var p = new LineParser ();
-            var li = LineParser.ParseLine ( line );
+            var li = lineParser.ParseLine ( line );
             Assert.That ( li.Tokens.Count () == tokenCount );
         }
 
@@ -43,7 +47,7 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             //var p = new LineParser ();
             var _li = new LineInfo ( lineInfo.ToUpperInvariant() );
-            Assert.That ( LineParser.IsAValidSentence ( _li ) == result );
+            Assert.That ( lineParser.IsAValidSentence ( _li ) == result );
 
         }
     }

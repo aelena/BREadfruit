@@ -10,16 +10,27 @@ using BREadfruit.Helpers;
 
 namespace BREadfruit
 {
+    /// <summary>
+    /// Main class that takes care of parsing lines from the 
+    /// business rule file.
+    /// </summary>
     internal class LineParser
     {
 
-        public static LineInfo ParseLine ( string line )
+        /// <summary>
+        /// Parses a string representation of a line as read from the file.
+        /// </summary>
+        /// <param name="line">String containing all the line information.</param>
+        /// <returns>Returns a configured instance of LineInfo.</returns>
+        public LineInfo ParseLine ( string line )
         {
-
+            // check the indentation leven in the string representation
             var indentLevel = GetIndentCount ( line );
             // split the line in spaces; replace any tabs just in case the user
             // put tabs in between tokens
             var _tokens = ExtractTokens ( line );
+            // create the LineInfo instance, passing the original string represnetation, the tokens found
+            // and preserving the indentation level
             return new LineInfo ( line, indentLevel, _tokens );
 
         }
@@ -28,7 +39,12 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        protected internal static int GetIndentCount ( string line )
+        /// <summary>
+        /// Returns the number of tabs in the string passed as argument.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected internal int GetIndentCount ( string line )
         {
             if ( line != null )
                 return line.Where ( x => x == '\t' ).Count ();
@@ -39,25 +55,30 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        protected internal static IEnumerable<Symbol> ExtractTokens ( string line )
+        /// <summary>
+        /// get tokens from string 
+        /// if the token exists in the grammar, then it adds the grammar-declared token
+        /// otherwise, as in the case of literals or other symbols,
+        /// instantiates a new Symbol and adds it to the collection.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected internal IEnumerable<Symbol> ExtractTokens ( string line )
         {
             if ( line != null )
             {
-                // get tokens from string 
-                // if the token exists in the grammar, then add the grammar-declared token
-                // otherwise, as in teh case of literals or other symbols
-                // instantiate a new Symbol and add it to the collection
                 // this poses the details of the last token being really the nontermoinal or not....
                 // maybe this need some more careful thinking
                 var _tokens = from t in line.Replace ( "\t", " " ).Split ( new [] { " " },
-                              StringSplitOptions.RemoveEmptyEntries )
+                                 StringSplitOptions.RemoveEmptyEntries )
                               let grammarToken = Grammar.GetSymbolByToken ( t, false )
                               select
-                              grammarToken == null ?
-                              new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count (), false )
-                              : grammarToken;
+                                 grammarToken == null ?
+                                      new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count (), false )
+                                      : grammarToken;
 
                 // parse comments out
+                // there are no multiline or inline comments but there can be trailing comments at the end of the line
                 _tokens = _tokens.TakeWhile ( z => !z.Token.StartsWith ( ";" ) );
 
                 // now we need to detect and unify any tokens in between single or double quotes as one token
@@ -65,12 +86,6 @@ namespace BREadfruit
                 // no quote should actually be fount at 0...
                 if ( line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
                 {
-                    // if so, then find all the opening quotes
-                    //var _t1 = _tokens.Where ( x => x.Token.StartsWith ( "'" ) || x.Token.StartsWith ( "\"" ) );
-                    //// there could be several quoted items in the entire line
-                    //// find all the closing
-                    //var _t2 = _tokens.Where ( x => x.Token.EndsWith ( "'" ) || x.Token.EndsWith ( "\"" ) );
-
                     var _t1 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
                     var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.EndsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
 
@@ -82,7 +97,7 @@ namespace BREadfruit
                         // TODO: as this is valid for strings (user strings) any keywords here are considered just string
                         for ( var i = 0; i < _t1.Count (); i++ )
                             _fusedSymbols.Add ( _tokens.ToList ().GetRange ( _t1.ElementAt ( i ), ( _t2.ElementAt ( i ) - _t1.ElementAt ( i ) ) + 1 ).JoinTogether () );
-                        //
+                        
                         List<Symbol> replacedLineInfo = new List<Symbol> ();
                         for ( int i = 0, j = 0; i < _tokens.Count (); i++ )
                         {
@@ -97,6 +112,10 @@ namespace BREadfruit
                         }
 
                         return replacedLineInfo;
+                    }
+                    else
+                    {
+                        throw new Exception ( String.Format ( "There seems to be a mismatch in the usage of quotes in line {0}", line ) );
                     }
                 }
 
@@ -114,7 +133,7 @@ namespace BREadfruit
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public static bool IsAValidSentence ( LineInfo line )
+        public bool IsAValidSentence ( LineInfo line )
         {
             if ( line.Tokens != null && line.Tokens.Count () > 0 )
             {
@@ -122,9 +141,9 @@ namespace BREadfruit
                 switch ( line.Tokens.First ().Token.ToUpperInvariant () )
                 {
                     case "ENTITY":
-                        return LineParser.ValidateEntityStatement ( line );
+                        return this.ValidateEntityStatement ( line );
                     case "WITH":
-                        return LineParser.ValidateWithStatement ( line );
+                        return this.ValidateWithStatement ( line );
 
                 }
             }
@@ -136,7 +155,17 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        public static string TokenizeMultiplePartOperators ( LineInfo li /*IEnumerable<Symbol> tokens, string line*/ )
+        /// <summary>
+        /// This function detects keywords or operators that have multi-word tokens or aliases
+        /// (such as "load data from" which is actually a single instruction)
+        /// and performs a substitution to convert them into single-word tokens 
+        /// according to the Grammar specs. This means that in effect, the number of token
+        /// is generally reduced here or remains the same if no multi-word tokens or aliases
+        /// are found in the LineInfo instance passed as argument.
+        /// </summary>
+        /// <param name="li"></param>
+        /// <returns></returns>
+        public string TokenizeMultiplePartOperators ( LineInfo li /*IEnumerable<Symbol> tokens, string line*/ )
         {
 
             // take a repreeentation of the entire list of tokens as a simple string
@@ -181,7 +210,7 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        private static bool ValidateEntityStatement ( LineInfo line )
+        private bool ValidateEntityStatement ( LineInfo line )
         {
             var _entityLineRegex = new Regex ( Grammar.EntityLineRegex );
             return _entityLineRegex.IsMatch ( line.Representation.ToUpperInvariant () );
@@ -191,7 +220,7 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        private static bool ValidateWithStatement ( LineInfo line )
+        private bool ValidateWithStatement ( LineInfo line )
         {
             var r = new Regex ( Grammar.WithLineRegex, RegexOptions.IgnoreCase );
             if ( !r.IsMatch ( line.Representation ) )
@@ -215,7 +244,7 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        public static IEnumerable<Condition> ExtractConditions ( LineInfo lineInfo )
+        public IEnumerable<Condition> ExtractConditions ( LineInfo lineInfo )
         {
             var _conds = new List<Condition> ();
             int __ands = 0, __ors = 0;
@@ -246,6 +275,7 @@ namespace BREadfruit
             return _conds;
         }
 
+
         // ---------------------------------------------------------------------------------
 
 
@@ -256,7 +286,7 @@ namespace BREadfruit
         /// </summary>
         /// <param name="lineInfo"></param>
         /// <returns></returns>
-        protected internal static LineInfo TokenizeArgumentArgumentkeyValuePairs ( LineInfo lineInfo )
+        protected internal LineInfo TokenizeArgumentArgumentkeyValuePairs ( LineInfo lineInfo )
         {
             var _argsAsString = lineInfo.GetArgumentsAsString ();
             if ( !String.IsNullOrWhiteSpace ( _argsAsString ) )
@@ -277,7 +307,7 @@ namespace BREadfruit
         /// </summary>
         /// <param name="lineInfo">LineInfo instance to inspect.</param>
         /// <returns></returns>
-        protected internal static bool LineInfoContainsArgumentkeyValuePairs ( LineInfo lineInfo )
+        protected internal bool LineInfoContainsArgumentkeyValuePairs ( LineInfo lineInfo )
         {
             return lineInfo.HasSymbol ( Grammar.WithArgumentsSymbol );
         }

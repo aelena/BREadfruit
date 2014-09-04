@@ -11,6 +11,9 @@ namespace BREadfruit.Tests.Low_level_tests
     [TestFixture]
     public class LineInfoTests
     {
+
+        LineParser lineParser = new LineParser ();
+
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", Result = false )]
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with args", Result = true )]
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with_args", Result = true )]
@@ -40,7 +43,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", false, Result = 4 )]
         public int LineInfo_RemoveTokensAfterSymbolTests_1 ( string line, bool includeCurrentToken )
         {
-            var li = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
+            var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
             return li.RemoveTokensAfterSymbol ( Grammar.WithArgumentsSymbol, includeCurrentToken ).Count ();
         }
 
@@ -69,7 +72,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with_args", 5, Result = 3 )]
         public int LineInfo_RemoveTokensFromIndex_Tests ( string line, int index )
         {
-            var li = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
+            var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
             li.RemoveTokensFromIndex ( index );
             return li.Tokens.Count ();
         }
@@ -86,7 +89,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", Result = -1 )]
         public int LineInfo_IndexOfSymbol_Tests1 ( string line )
         {
-            var li = LineParser.ParseLine ( LineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
+            var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
             return li.IndexOfSymbol ( Grammar.WithArgumentsSymbol );
         }
 
