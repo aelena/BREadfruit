@@ -301,5 +301,18 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
+
+        [TestCase ( "{}", "{", "}", Result = "" )]
+        [TestCase ( "{amduscia}", "{", "}", Result = "amduscia" )]
+        [TestCase ( " a band like {amduscia}", "{", "}", Result = "amduscia" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "quick", "lazy", Result = " brown fox jumps over the " )]
+        [TestCase ( "{\"Country\":\"ES\"}", "{", "}", Result = "\"Country\":\"ES\"" )]
+        [TestCase ( " {\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" }", "{", "}", Result = "\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" " )]
+        public string TakeBetweenTests ( string original, string s1, string s2 )
+        {
+            return original.TakeBetween ( s1, s2 );
+        }
+
+
     }
 }

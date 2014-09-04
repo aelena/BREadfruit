@@ -385,5 +385,28 @@ namespace BREadfruit.Helpers
 
         // ---------------------------------------------------------------------------------
 
+
+        public static string TakeBetween ( this string value, string beginningString, string endString)
+        {
+            if ( String.IsNullOrWhiteSpace ( value ) )
+                throw new ArgumentException ( "String cannot be null" );
+
+            var _index1 = value.IndexOf ( beginningString );
+            var _index2 = value.IndexOf ( endString );
+
+            if ( _index2 < _index1 )
+                throw new Exception ( "End string cannot appear earlier than beginning string" );
+
+            _index1 += beginningString.Length;
+
+            return value.Substring ( _index1, _index2 - _index1 );
+
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
     }
 }
