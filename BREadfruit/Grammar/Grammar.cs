@@ -296,7 +296,7 @@ namespace BREadfruit
 
         #region " --- event symbols ( for use in triggers block ) --- "
 
-        public static Symbol ChangedEventSymbol = new Symbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes", "change" } );
+        public static Symbol ChangedEventSymbol = new Symbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes" } );
         public static Symbol FocusEventSymbol = new Symbol ( "entered", 2, true, new List<string> { "on entered", "on enter", "enters", "on focus", "focus" } );
         public static Symbol BlurredEventSymbol = new Symbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
 

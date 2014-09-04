@@ -19,12 +19,20 @@ namespace BREadfruit
         private IList<Entity> _entities = new List<Entity> ();
         internal CurrentScope _currentScope { get; private set; }
 
+        /// <summary>
+        /// Returns a collection of all parsed line in the form
+        /// of a LineInfo list.
+        /// </summary>
         public IEnumerable<LineInfo> ParsedLines
         {
             get
             { return this._parsedLines; }
         }
 
+        /// <summary>
+        /// Main object graph, where all parsed entities and all their data
+        /// (defaults, rules, triggers, actions and constraints) are to be found.
+        /// </summary>
         public IEnumerable<Entity> Entities
         {
             get
@@ -37,15 +45,14 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Main entry point for parsing a file.
+        /// </summary>
+        /// <param name="filePath">Path of the file to parse.</param>
         public void ParseRuleFile ( string filePath )
         {
 
-            if ( String.IsNullOrWhiteSpace ( filePath ) )
-                throw new ArgumentNullException ( filePath );
-
-            if ( !File.Exists ( filePath ) )
-                throw new FileNotFoundException ( "rule file not found" );
-
+            this.CheckFileExists ( filePath );
 
 
             using ( var sr = new StreamReader ( filePath ) )
@@ -63,8 +70,10 @@ namespace BREadfruit
                     {
 
                         var lineInfo = ParseLine ( line );
+                        // if this is a full comment line, skip it
                         if ( lineInfo.Tokens.Count () == 0 )
                             continue;
+                        lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
 
                         // we need to check the indent level to make sure we set the right scope
                         // this is for conditions with several action lines
@@ -121,8 +130,6 @@ namespace BREadfruit
                         if ( this._currentScope == CurrentScope.RULES_BLOCK )
                         {
 
-                            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-
                             var _rule = new Rule ();
                             var _conds = this._lineParser.ExtractConditions ( lineInfo );
                             foreach ( var c in _conds )
@@ -178,7 +185,6 @@ namespace BREadfruit
                         #region " --- condition-less actions block --- "
                         if ( this._currentScope == CurrentScope.ACTIONS_BLOCK )
                         {
-                            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
                             // see if this is resultaction
                             if ( lineInfo.Tokens.Count () == 4 )
                             {
@@ -199,7 +205,6 @@ namespace BREadfruit
                         #region " --- condition  actions block --- "
                         if ( this._currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
                         {
-                            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
                             if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
                             {
                                 var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
@@ -211,16 +216,13 @@ namespace BREadfruit
 
                         if ( this._currentScope == CurrentScope.TRIGGERS_BLOCK )
                         {
-                            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                            if ( lineInfo.Tokens.Count () == 2 )
                             {
-                                if ( lineInfo.Tokens.Count () == 2 )
-                                {
-                                    var _firstToken = lineInfo.Tokens.First ().Token;
-                                    if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this." ) )
-                                        _firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
-                                    var _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
-                                    this._entities.Last ().AddTrigger ( _trigger );
-                                }
+                                var _firstToken = lineInfo.Tokens.First ().Token;
+                                if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this." ) )
+                                    _firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
+                                var _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
+                                this._entities.Last ().AddTrigger ( _trigger );
                             }
                         }
 
@@ -239,6 +241,19 @@ namespace BREadfruit
             }
 
 
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        private void CheckFileExists ( string filePath )
+        {
+            if ( String.IsNullOrWhiteSpace ( filePath ) )
+                throw new ArgumentNullException ( filePath );
+
+            if ( !File.Exists ( filePath ) )
+                throw new FileNotFoundException ( "rule file not found" );
         }
 
 
