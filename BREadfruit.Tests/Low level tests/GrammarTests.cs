@@ -100,7 +100,12 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "not in", "not_in" )]
         [TestCase ( "in", "in" )]
         [TestCase ( "with arguments", "with_args" )]
-        [TestCase ( "with args", "with_args" )]
+        [TestCase ( "only ascii", "only_ascii" )]
+        [TestCase ( "ascii only", "only_ascii" )]
+        [TestCase ( "only numbers", "only_numbers" )]
+        [TestCase ( "numbers only", "only_numbers" )]
+        [TestCase ( "only letters", "only_letters" )]
+        [TestCase ( "letters only", "only_letters" )]
         public void ShouldFindSymbolByAlias ( string aliasToken, string mainAlias )
         {
             var _op = Grammar.GetSymbolByToken ( aliasToken );
@@ -152,6 +157,9 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "visible", Result = false )]
         [TestCase ( "with args", Result = true )]
         [TestCase ( "with arguments", Result = true )]
+        [TestCase ( "numbers only", Result = true )]
+        [TestCase ( "only ascii", Result = true )]
+        [TestCase ( "only_ascii", Result = false )]
         [TestCase ( "with_args", Result = false )]
         public bool ShouldKnowIfTokenIsAlias ( string alias )
         {

@@ -84,6 +84,7 @@ namespace BREadfruit
 
 
         private static List<LogicalOperatorSymbol> _logicalOperators = new List<LogicalOperatorSymbol> ();
+        private static List<Symbol> _constraintSymbols = new List<Symbol> ();
 
 
 
@@ -137,6 +138,15 @@ namespace BREadfruit
             get
             {
                 return _logicalOperators;
+            }
+        }
+
+
+        public static IEnumerable<Symbol> ConstraintSymbols
+        {
+            get
+            {
+                return _constraintSymbols;
             }
         }
 
@@ -217,6 +227,8 @@ namespace BREadfruit
         public const string VisibleLineRegex = @"^VISIBLE[' ']*((TRUE)?|FALSE)?[' ']*$";
         public const string FreeValueLineRegex = "^value\\s*(\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
         public const string LabelDefaultLineRegex = "^label\\s*((\"|')(.*?)(\"|')|[A-Z\".\"]*)$";
+        //public const string ConstraintValueRegex = "^()$";
+
 
 
         // ---------------------------------------------------------------------------------
@@ -331,6 +343,17 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        #region " --- constraint symbols --- "
+
+        public static Symbol OnlyAsciiConstraintSymbol = new Symbol ( "only_ascii", 2, true, new List<string> { "only ascii", "ascii only" } );
+        public static Symbol OnlyNumbersConstraintSymbol = new Symbol ( "only_numbers", 2, true, new List<string> { "only numbers", "numbers only" } );
+        public static Symbol OnlyLettersConstraintSymbol = new Symbol ( "only_letters", 2, true, new List<string> { "only letters", "letters only" } );
+
+        #endregion
+
+        // ---------------------------------------------------------------------------------
+
+
         #endregion
 
 
@@ -373,6 +396,7 @@ namespace BREadfruit
             // add valid entity types
             PopulateEntityTypes ();
             PopulateDefaultTokens ();
+            PopulateConstraintSymbols ();
             AddSymbols ();
             AddOperators ();
 
@@ -506,6 +530,17 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        private static void PopulateConstraintSymbols ()
+        {
+            Grammar._constraintSymbols.Add ( OnlyAsciiConstraintSymbol );
+            Grammar._constraintSymbols.Add ( OnlyNumbersConstraintSymbol );
+            Grammar._constraintSymbols.Add ( OnlyLettersConstraintSymbol );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
         private static void AddOperators ()
         {
             //IsOperator.Aliases.ToList ().ForEach ( x => Grammar._operators.Add ( new Operator ( x ) ) );
@@ -594,6 +629,10 @@ namespace BREadfruit
             Grammar._symbols.Add ( ChangedEventSymbol );
             Grammar._symbols.Add ( FocusEventSymbol );
             Grammar._symbols.Add ( BlurredEventSymbol );
+
+            Grammar._symbols.Add ( OnlyAsciiConstraintSymbol );
+            Grammar._symbols.Add ( OnlyNumbersConstraintSymbol );
+            Grammar._symbols.Add ( OnlyLettersConstraintSymbol );
         }
 
 

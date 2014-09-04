@@ -171,5 +171,15 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+
+        public bool AddConstraint ( Constraint constraint)
+        {
+            this._constraints.Add ( constraint );
+            return this._constraints.Contains ( constraint );
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
     }
 }

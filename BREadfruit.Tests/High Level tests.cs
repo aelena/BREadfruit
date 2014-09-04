@@ -121,6 +121,14 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
             Assert.That ( e.Defaults.Count () == 1 );
+            Assert.That ( e.Defaults.First ().Arguments.Count () == 4 );
+            Assert.That ( e.Defaults.First ().Arguments.First ().Key == "\"Active\"" );
+            Assert.That ( e.Defaults.First ().Arguments.First ().Value == "true" );
+            Assert.That ( e.Defaults.First ().Arguments.Last ().Key == "\"Title\"" );
+            Assert.That ( e.Defaults.First ().Arguments.Last ().Value == "\"No reason to fear this\"" );
+            Assert.That ( e.Constraints.Count () == 1 );
+            Assert.That ( e.Constraints.First().Name == "only_numbers");
+
         }
 
 

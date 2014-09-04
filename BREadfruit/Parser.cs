@@ -233,7 +233,8 @@ namespace BREadfruit
 
                         if ( _currentScope == CurrentScope.CONSTRAINTS_BLOCK )
                         {
-
+                            // there should be only one token
+                            this._entities.Last ().AddConstraint ( new Constraint ( lineInfo.Tokens.First ().Token ) );
                         }
 
                         #endregion
