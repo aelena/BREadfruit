@@ -167,7 +167,8 @@ namespace BREadfruit.Helpers
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <param name="searches"></param>
-        /// <returns></returns>
+        /// <returns>Returns a boolean value to indicate if the search was successful
+        /// and returns also the value itself.</returns>
         public static Tuple<bool, string> ContainsAny2 ( this string searchee, IEnumerable<string> searches )
         {
             if ( searchee == null )
@@ -259,7 +260,7 @@ namespace BREadfruit.Helpers
         /// <param name="value"></param>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static bool In<T> ( this T value, IEnumerable<T> list)
+        public static bool In<T> ( this T value, IEnumerable<T> list )
         {
             if ( list == null )
                 return false;
@@ -301,7 +302,7 @@ namespace BREadfruit.Helpers
         /// <param name="trimEndFirst">Boolean value that indicates if a TrimEnd is to be done 
         /// before the removal.</param>
         /// <returns></returns>
-        public static string RemoveFromEnd ( this string value, int numberOfCharacters, bool trimEndFirst = false)
+        public static string RemoveFromEnd ( this string value, int numberOfCharacters, bool trimEndFirst = false )
         {
             if ( String.IsNullOrEmpty ( value ) )
                 return string.Empty;
@@ -318,6 +319,71 @@ namespace BREadfruit.Helpers
 
         // ---------------------------------------------------------------------------------
 
+
+        /// <summary>
+        /// Makes a substring operation where the criteria is that the
+        /// substring starts from the end of the first occurrence of the mark string.
+        /// 
+        /// So in a string like 'the quick brown fox jumps over the lazy dog' 
+        /// where the mark string is 'fox', returns ' jumps over the lazy dog'
+        /// including the white space or not depending on the optional parameter, 
+        /// for which the default is false.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="markString"></param>
+        /// <param name="trimResults"></param>
+        /// <returns></returns>
+        public static string SubStringAfter ( this string value, string markString, StringComparison comparisonOptions = StringComparison.CurrentCulture, bool trimResults = false )
+        {
+            if ( String.IsNullOrEmpty ( value ) )
+                return String.Empty;
+
+            var _index = value.IndexOf ( markString, comparisonOptions );
+            if ( _index >= 0)
+            {
+                var s = value.Substring ( _index + markString.Length );
+                if ( trimResults )
+                    return s.Trim();
+                return s;
+            }
+
+            return value;
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Makes a substring operation where the criteria is that the
+        /// substring starts from the end of last ocurrence of the mark string.
+        /// 
+        /// So in a string like 'the quick brown fox jumps over the lazy dog' 
+        /// where the mark string is 'fox', returns ' jumps over the lazy dog'
+        /// including the white space or not depending on the optional parameter, 
+        /// for which the default is false.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="markString"></param>
+        /// <param name="trimResults"></param>
+        /// <returns></returns>
+        public static string SubStringAfterLast ( this string value, string markString, StringComparison comparisonOptions = StringComparison.CurrentCulture, bool trimResults = false )
+        {
+            if ( String.IsNullOrEmpty ( value ) )
+                return String.Empty;
+
+            var _index = value.LastIndexOf ( markString, comparisonOptions );
+            if ( _index >= 0 )
+            {
+                var s = value.Substring ( _index + markString.Length );
+                if ( trimResults )
+                    return s.Trim ();
+                return s;
+            }
+
+            return value;
+        }
+
+        // ---------------------------------------------------------------------------------
 
     }
 }

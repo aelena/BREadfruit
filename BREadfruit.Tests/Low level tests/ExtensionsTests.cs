@@ -114,6 +114,10 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( _l.ContainsAny2 ( _s ).Item2.ToString () == "c" );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
         public void ContainsAny2Tests_1 ()
         {
@@ -122,6 +126,9 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( !_l.ContainsAny2 ( _s ).Item1 );
             Assert.That ( _l.ContainsAny2 ( _s ).Item2 == null );
         }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         [TestCase ( null, "A", 1, Result = "A" )]
@@ -141,6 +148,9 @@ namespace BREadfruit.Tests.Low_level_tests
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
         public void PenultimateTests ()
         {
@@ -148,20 +158,30 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( strings.Penultimate () == "tu" );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
         public void ElementAtFromLastTests ()
         {
             var strings = new List<String> () { "cd", "ef", "po", "tu", "tt" };
-            Assert.That ( strings.ElementAtFromLast (2) == "tu" );
+            Assert.That ( strings.ElementAtFromLast ( 2 ) == "tu" );
         }
 
-     
+
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
-        public void ListIsNullOrEmptyTests_1()
+        public void ListIsNullOrEmptyTests_1 ()
         {
             List<string> l = null;
             Assert.That ( l.IsNullOrEmpty () );
         }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         [Test]
@@ -171,19 +191,26 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( l.IsNullOrEmpty () );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
         public void ListIsNullOrEmptyTests_3 ()
         {
-            List<string> l = new List<string> () { "a"};
+            List<string> l = new List<string> () { "a" };
             Assert.That ( !l.IsNullOrEmpty () );
         }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         [TestCase ( null, 0, false, Result = "" )]
         [TestCase ( null, 0, true, Result = "" )]
         [TestCase ( null, 3, false, Result = "" )]
         [TestCase ( null, 3, true, Result = "" )]
-        [TestCase ( "", 0, false,Result = "" )]
+        [TestCase ( "", 0, false, Result = "" )]
         [TestCase ( "", 0, true, Result = "" )]
         [TestCase ( "", 2, false, Result = "" )]
         [TestCase ( "", 2, true, Result = "" )]
@@ -201,10 +228,78 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "abcd", 4, false, Result = "" )]
         [TestCase ( "abcd", 5, true, Result = "" )]
         [TestCase ( "abcd", 5, false, Result = "" )]
-        public string ShouldRemoveFromEnd ( string value, int charCount, bool trimEndFirst)
+        public string ShouldRemoveFromEnd ( string value, int charCount, bool trimEndFirst )
         {
             return value.RemoveFromEnd ( charCount, trimEndFirst );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( null, "", true, Result = "" )]
+        [TestCase ( null, "", false, Result = "" )]
+        [TestCase ( "", "", true, Result = "" )]
+        [TestCase ( "", "", false, Result = "" )]
+        [TestCase ( "", "a", true, Result = "" )]
+        [TestCase ( "", "a", false, Result = "" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "fox", false, Result = " jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "fox", true, Result = "jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", true, Result = "jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", false, Result = "jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "dog", true, Result = "" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "dog", false, Result = "" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", false, Result = "the quick brown fox jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", true, Result = "the quick brown fox jumps over the lazy dog" )]
+        [TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", false, Result = " the quick brown fox jumps over the lazy dog" )]
+        [TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", true, Result = " the quick brown fox jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", false, Result = " quick brown fox jumps over the lazy brown dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", true, Result = "quick brown fox jumps over the lazy brown dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", false, Result = "quick brown fox jumps over the lazy brown dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", true, Result = "quick brown fox jumps over the lazy brown dog" )]
+        public string SubStringAfterTests ( string value, string marker, bool trimResults )
+        {
+
+            return value.SubStringAfter ( marker, StringComparison.CurrentCulture, trimResults );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( null, "", true, Result = "" )]
+        [TestCase ( null, "", false, Result = "" )]
+        [TestCase ( "", "", true, Result = "" )]
+        [TestCase ( "", "", false, Result = "" )]
+        [TestCase ( "", "a", true, Result = "" )]
+        [TestCase ( "", "a", false, Result = "" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "fox", false, Result = " jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "fox", true, Result = "jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", true, Result = "jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", false, Result = "jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "dog", true, Result = "" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "dog", false, Result = "" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", false, Result = "the quick brown fox jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", true, Result = "the quick brown fox jumps over the lazy dog" )]
+        [TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", false, Result = " the quick brown fox jumps over the lazy dog" )]
+        [TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", true, Result = " the quick brown fox jumps over the lazy dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "brown", false, Result = " dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "brown", true, Result = "dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", false, Result = " lazy brown dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", true, Result = "lazy brown dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", false, Result = "lazy brown dog" )]
+        [TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", true, Result = "lazy brown dog" )]
+        public string SubStringAfterLastTests ( string value, string marker, bool trimResults )
+        {
+
+            return value.SubStringAfterLast ( marker, StringComparison.CurrentCulture, trimResults );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
     }
 }
