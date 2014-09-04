@@ -62,6 +62,7 @@
     <Compile Include="Low level tests\DefaultClauseTests.cs" />
     <Compile Include="Low level tests\ExtensionsTests.cs" />
     <Compile Include="Low level tests\GrammarTests.cs" />
+    <Compile Include="Low level tests\LineInfoTests.cs" />
     <Compile Include="Low level tests\LineParserTests.cs" />
     <Compile Include="Low level tests\ParseEntityLineTests.cs" />
     <Compile Include="Low level tests\RegexTests.cs" />
@@ -80,6 +81,7 @@
     <Content Include="sample files\single entity tests\File003.txt" />
     <Content Include="sample files\single entity tests\File002.txt" />
     <Content Include="sample files\single entity tests\File001.txt" />
+    <Content Include="sample files\single entity tests\File004.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace BREadfruit.Tests
 {
     [TestFixture]
-    public class Class1
+    public class HighLevelTests
     {
         /// <summary>
         /// The purpose of the tests in this section is to consume a series of small
@@ -107,6 +107,20 @@ namespace BREadfruit.Tests
 
 
 
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile004 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File004.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Defaults.Count () == 1 );
         }
 
 

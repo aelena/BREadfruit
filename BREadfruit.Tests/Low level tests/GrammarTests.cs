@@ -14,7 +14,7 @@ namespace BREadfruit.Tests.Low_level_tests
 
         [TestCase ( " WItH ", false, 5, false )]
         [TestCase ( "with", false, 5, true )]
-        [TestCase ("enable", true, 0, true)]
+        [TestCase ( "enable", true, 0, true )]
         public void ShouldFindSymbol ( string token, bool isTerminal, int childCount, bool strictMatch )
         {
             var s = Grammar.GetSymbolByToken ( token, strictMatch );
@@ -99,6 +99,27 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "does not contain", "does_not_contain" )]
         [TestCase ( "not in", "not_in" )]
         [TestCase ( "in", "in" )]
+        [TestCase ( "with arguments", "with_args" )]
+        [TestCase ( "with args", "with_args" )]
+        public void ShouldFindSymbolByAlias ( string aliasToken, string mainAlias )
+        {
+            var _op = Grammar.GetSymbolByToken ( aliasToken );
+            Assert.That ( _op != null );
+            if ( _op.Aliases.Count() > 0 )
+                Assert.That ( _op.Aliases.Contains ( aliasToken ) );
+            Assert.That ( _op.Token == mainAlias );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+        [TestCase ( "is", "is" )]
+        [TestCase ( "is empty", "is_empty" )]
+        [TestCase ( "not starts", "does_not_start_with" )]
+        [TestCase ( "not starts with", "does_not_start_with" )]
+        [TestCase ( "does not contain", "does_not_contain" )]
+        [TestCase ( "not in", "not_in" )]
+        [TestCase ( "in", "in" )]
         public void ShouldFindOperator ( string token, string mainAlias )
         {
             var _op = Grammar.GetOperator ( token );
@@ -129,7 +150,10 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "changed", Result = false )]
         [TestCase ( "make enabled", Result = true )]
         [TestCase ( "visible", Result = false )]
-        public bool ShouldKnowIfTokenIsAlias(string alias )
+        [TestCase ( "with args", Result = true )]
+        [TestCase ( "with arguments", Result = true )]
+        [TestCase ( "with_args", Result = false )]
+        public bool ShouldKnowIfTokenIsAlias ( string alias )
         {
             return Grammar.TokenIsAlias ( alias );
         }

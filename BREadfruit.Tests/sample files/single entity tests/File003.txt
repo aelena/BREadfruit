@@ -12,7 +12,7 @@ Entity DDLVDCountry is DropDownList
 		set value '' in ErrorMessage
 		hide vendorSearchResultGrid
 		hide btnCreateVendor
-		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES ;{"Country":"ES","Active":true, "Age":30, "Title":"No reason to fear this" }
 
 
 	with rules
