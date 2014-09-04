@@ -266,6 +266,8 @@ namespace BREadfruit
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
         public static Symbol InSymbol = new Symbol ( "in", 2, false );
 
+        public static Symbol WithArgumentsSymbol = new Symbol ( "with_args", 2, false, new [] { "with args", "with arguments" } );
+
         public static Symbol DataSourceSymbol = new Symbol ( "DATASOURCE", 2, false );
         public static Symbol WebServiceSymbol = new Symbol ( "WEBSERVICE", 2, false );
         public static Symbol FileObjectSymbol = new Symbol ( "FILE", 2, false );
@@ -427,6 +429,7 @@ namespace BREadfruit
             {
                 _s = from s in Symbols
                      where s.Token == token
+                     || s.Aliases.Contains ( token ) // TODO: NOT HAPPY ABOUT THIS SHIT HERE
                      select s;
             }
             else
@@ -552,6 +555,7 @@ namespace BREadfruit
             Grammar._symbols.Add ( ThenSymbol );
             Grammar._symbols.Add ( ThisSymbol );
             Grammar._symbols.Add ( InSymbol );
+            Grammar._symbols.Add ( WithArgumentsSymbol );
             // add default symbols
             Grammar._symbols.Add ( ValueSymbol );
             // add operator symbols
