@@ -81,6 +81,7 @@ namespace BREadfruit
                         if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK && lineInfo.IndentLevel == 2 )
                             _currentScope = CurrentScope.RULES_BLOCK;
 
+
                         #region " --- entity block --- "
                         if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                         {
@@ -89,6 +90,7 @@ namespace BREadfruit
                                 lineInfo.Tokens.ElementAt ( 3 ).Token ) );
                         }
                         #endregion
+
 
                         #region " --- with block --- "
                         if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.WithSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
@@ -108,7 +110,10 @@ namespace BREadfruit
                             if ( _currentScope != CurrentScope.NO_SCOPE )
                                 continue;   // ugly... but for the moment...
                         }
+                        #endregion
 
+
+                        #region " --- default block --- "
                         // now, if we're in the scope of the defaults block
                         if ( _currentScope == CurrentScope.DEFAULTS_BLOCK )
                         {
@@ -116,6 +121,7 @@ namespace BREadfruit
                             this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
                         }
                         #endregion
+
 
                         #region " --- rules block --- "
                         if ( _currentScope == CurrentScope.RULES_BLOCK )
@@ -173,6 +179,7 @@ namespace BREadfruit
                         }
                         #endregion
 
+
                         #region " --- condition-less actions block --- "
                         if ( _currentScope == CurrentScope.ACTIONS_BLOCK )
                         {
@@ -193,6 +200,7 @@ namespace BREadfruit
                         }
                         #endregion
 
+                    
                         #region " --- condition  actions block --- "
                         if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
                         {
@@ -205,6 +213,8 @@ namespace BREadfruit
                         }
                         #endregion
 
+
+                        #region " --- trigger block --- "
                         if ( _currentScope == CurrentScope.TRIGGERS_BLOCK )
                         {
                             if ( lineInfo.Tokens.Count () == 2 )
@@ -216,11 +226,17 @@ namespace BREadfruit
                                 this._entities.Last ().AddTrigger ( _trigger );
                             }
                         }
+                        #endregion
+
+
+                        #region " --- constraints block --- "
 
                         if ( _currentScope == CurrentScope.CONSTRAINTS_BLOCK )
                         {
 
                         }
+
+                        #endregion
 
 
                     }
@@ -229,7 +245,8 @@ namespace BREadfruit
 
                 }   // close of while loop
 
-            }
+
+            }   // close of using statement
 
 
         }
