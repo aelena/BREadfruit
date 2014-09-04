@@ -17,7 +17,7 @@ namespace BREadfruit
         private List<LineInfo> _parsedLines = new List<LineInfo> ();
 
         private IList<Entity> _entities = new List<Entity> ();
-        internal CurrentScope _currentScope { get; private set; }
+
 
         /// <summary>
         /// Returns a collection of all parsed line in the form
@@ -61,6 +61,7 @@ namespace BREadfruit
                 var _currLine = 0;
                 // current line in the text file
                 var line = String.Empty;
+                var _currentScope = CurrentScope.NO_SCOPE;
 
                 while ( line != null )
                 {
@@ -83,7 +84,7 @@ namespace BREadfruit
                         #region " --- entity block --- "
                         if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                         {
-                            this._currentScope = CurrentScope.NEW_ENTITY;
+                            _currentScope = CurrentScope.NEW_ENTITY;
                             this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
                                 lineInfo.Tokens.ElementAt ( 3 ).Token ) );
                         }
@@ -93,33 +94,23 @@ namespace BREadfruit
                         if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.WithSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                         {
                             // Clear the scope state
-                            this._currentScope = CurrentScope.NO_SCOPE;
+                            _currentScope = CurrentScope.NO_SCOPE;
                             if ( this._lineParser.IsAValidSentence ( lineInfo ) )
                             {
                                 // check the scope of the with clause and change the state accordingly                            
-                                var _withScope = lineInfo.Tokens.Last ().Token;
-                                if ( _withScope.Equals ( Grammar.DefaultsSymbol.Token ) )
-                                    this._currentScope = CurrentScope.DEFAULTS_BLOCK;
-                                if ( _withScope.Equals ( Grammar.ActionsSymbol.Token ) )
-                                    this._currentScope = CurrentScope.ACTIONS_BLOCK;
-                                if ( _withScope.Equals ( Grammar.RulesSymbol.Token ) )
-                                    this._currentScope = CurrentScope.RULES_BLOCK;
-                                if ( _withScope.Equals ( Grammar.ConstraintsSymbol.Token ) )
-                                    this._currentScope = CurrentScope.CONSTRAINTS_BLOCK;
-                                if ( _withScope.Equals ( Grammar.TriggersSymbol.Token ) )
-                                    this._currentScope = CurrentScope.TRIGGERS_BLOCK;
+                                _currentScope = SetCurrentScope ( _currentScope, lineInfo );
                             }
                             else
                                 throw new ArgumentException ( String.Format (
                                     "Invalid with clause found in line {0} in rule file {1}",
                                     _currLine, filePath ) );
 
-                            if ( this._currentScope != CurrentScope.NO_SCOPE )
+                            if ( _currentScope != CurrentScope.NO_SCOPE )
                                 continue;   // ugly... but for the moment...
                         }
 
                         // now, if we're in the scope of the defaults block
-                        if ( this._currentScope == CurrentScope.DEFAULTS_BLOCK )
+                        if ( _currentScope == CurrentScope.DEFAULTS_BLOCK )
                         {
                             // then try and parse a default clause
                             this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
@@ -127,7 +118,7 @@ namespace BREadfruit
                         #endregion
 
                         #region " --- rules block --- "
-                        if ( this._currentScope == CurrentScope.RULES_BLOCK )
+                        if ( _currentScope == CurrentScope.RULES_BLOCK )
                         {
 
                             var _rule = new Rule ();
@@ -183,7 +174,7 @@ namespace BREadfruit
                         #endregion
 
                         #region " --- condition-less actions block --- "
-                        if ( this._currentScope == CurrentScope.ACTIONS_BLOCK )
+                        if ( _currentScope == CurrentScope.ACTIONS_BLOCK )
                         {
                             // see if this is resultaction
                             if ( lineInfo.Tokens.Count () == 4 )
@@ -203,7 +194,7 @@ namespace BREadfruit
                         #endregion
 
                         #region " --- condition  actions block --- "
-                        if ( this._currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
+                        if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
                         {
                             if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
                             {
@@ -214,7 +205,7 @@ namespace BREadfruit
                         }
                         #endregion
 
-                        if ( this._currentScope == CurrentScope.TRIGGERS_BLOCK )
+                        if ( _currentScope == CurrentScope.TRIGGERS_BLOCK )
                         {
                             if ( lineInfo.Tokens.Count () == 2 )
                             {
@@ -226,7 +217,7 @@ namespace BREadfruit
                             }
                         }
 
-                        if ( this._currentScope == CurrentScope.CONSTRAINTS_BLOCK )
+                        if ( _currentScope == CurrentScope.CONSTRAINTS_BLOCK )
                         {
 
                         }
@@ -241,6 +232,32 @@ namespace BREadfruit
             }
 
 
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Sets up the current scope according to the with clause found.
+        /// </summary>
+        /// <param name="_currentScope"></param>
+        /// <param name="lineInfo"></param>
+        /// <returns></returns>
+        private CurrentScope SetCurrentScope ( CurrentScope _currentScope, LineInfo lineInfo )
+        {
+            var _withScope = lineInfo.Tokens.Last ().Token;
+            if ( _withScope.Equals ( Grammar.DefaultsSymbol.Token ) )
+                _currentScope = CurrentScope.DEFAULTS_BLOCK;
+            if ( _withScope.Equals ( Grammar.ActionsSymbol.Token ) )
+                _currentScope = CurrentScope.ACTIONS_BLOCK;
+            if ( _withScope.Equals ( Grammar.RulesSymbol.Token ) )
+                _currentScope = CurrentScope.RULES_BLOCK;
+            if ( _withScope.Equals ( Grammar.ConstraintsSymbol.Token ) )
+                _currentScope = CurrentScope.CONSTRAINTS_BLOCK;
+            if ( _withScope.Equals ( Grammar.TriggersSymbol.Token ) )
+                _currentScope = CurrentScope.TRIGGERS_BLOCK;
+            return _currentScope;
         }
 
 
