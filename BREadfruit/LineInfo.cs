@@ -52,7 +52,7 @@ namespace BREadfruit
         /// <summary>
         /// Internal list of tokens.
         /// </summary>
-        private readonly IEnumerable<Symbol> _tokens;
+        private List<Symbol> _tokens;
 
         /// <summary>
         /// Enumerable list of the tokens found in this instance.
@@ -73,13 +73,13 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        private LineInfo () { }
-
         public LineInfo ( string representation )
         {
             this._representation = representation;
             this._indentLevel = LineParser.GetIndentCount ( this._representation );
-            this._tokens = LineParser.ExtractTokens ( this._representation );
+            this._tokens = LineParser.ExtractTokens ( this._representation ).ToList ();
+            if ( this._tokens != null )
+                this._numberOfTokens = this._tokens.Count ();
             this._isValid = LineParser.IsAValidSentence ( this );
         }
 
@@ -91,9 +91,11 @@ namespace BREadfruit
         {
             this._representation = representation;
             this._indentLevel = indentLevel;
-            this._tokens = tokens;
             if ( tokens != null )
+            {
+                this._tokens = tokens.ToList ();
                 this._numberOfTokens = tokens.Count ();
+            }
             this._isValid = LineParser.IsAValidSentence ( this );
 
         }
@@ -122,19 +124,107 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        public static IEnumerable<Symbol> AfterThen ( LineInfo lineInfo )
+        public IEnumerable<Symbol> GetSymbolsAfterThen ()
         {
-            if ( lineInfo != null )
-            {
-                var thenClause = lineInfo.Tokens.SkipWhile ( x => x != Grammar.ThenSymbol );
-                return thenClause.ToList ().Skip ( 1 );
+            var thenClause = this.Tokens.SkipWhile ( x => x != Grammar.ThenSymbol );
+            return thenClause.ToList ().Skip ( 1 );
+        }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        public string GetArgumentsAsString ()
+        {
+            if ( this.HasSymbol ( Grammar.WithArgumentsSymbol ) )
+            {
+                return this._representation.SubStringAfter ( Grammar.WithArgumentsSymbol.Token, trimResults: true );
             }
-            return null;
+            return String.Empty;
         }
 
         // ---------------------------------------------------------------------------------
 
+
+        public override string ToString ()
+        {
+            return this.Representation;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        internal bool HasSymbol ( Symbol symbol )
+        {
+            if ( symbol != null )
+            {
+                if ( this._representation.Contains ( symbol.Token ) )
+                    return true;
+
+                if ( symbol.Aliases.Count () > 0 )
+                {
+                    return this._representation.ContainsAny ( symbol.Aliases );
+                }
+            }
+            return false;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        internal int IndexOfSymbol ( Symbol symbol )
+        {
+            if ( this.HasSymbol ( symbol ) )
+            {
+                return this._tokens.ToList ().IndexOf ( symbol );
+            }
+            return -1;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        protected internal IEnumerable<Symbol> AddToken ( Symbol s )
+        {
+            if ( this._tokens == null )
+                this._tokens = new List<Symbol> ();
+            this._tokens.Add ( s );
+            return this.Tokens;
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        protected internal IEnumerable<Symbol> RemoveTokensFromIndex ( int index )
+        {
+            if ( index >= 0 )
+            {
+                this._tokens = this._tokens.Take ( index ).ToList ();
+                return this.Tokens;
+            }
+            else
+                throw new ArgumentException ( "You cannot remove all tokens or specify a negative index.", "index" );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        protected internal IEnumerable<Symbol> RemoveTokensAfterSymbol ( Symbol s, bool includeCurrentToken = false )
+        {
+
+            var index = this.IndexOfSymbol ( s );
+
+            if ( index >= 0 )
+                this._tokens = this._tokens.Take ( includeCurrentToken ? index + 1 : index ).ToList ();
+
+            return this.Tokens;
+
+
+        }
 
     }
 }
