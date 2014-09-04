@@ -157,7 +157,7 @@ namespace BREadfruit
                                     {
                                         if ( lineInfo.Tokens.Penultimate () != Grammar.InSymbol )
                                             throw new Exception ( String.Format ( "Line {0} seems to be missing token 'in'", line ) );
-                                        var thenClause = LineInfo.AfterThen ( lineInfo );
+                                        var thenClause = lineInfo.GetSymbolsAfterThen ();
                                         var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
                                             thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
                                         _rule.Conditions.Last ().AddResultAction ( _ra );
@@ -249,6 +249,11 @@ namespace BREadfruit
         {
 
             lineInfo = ParseLine ( LineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            if ( LineParser.LineInfoContainsArgumentkeyValuePairs ( lineInfo ) )
+            {
+                lineInfo = LineParser.TokenizeArgumentArgumentkeyValuePairs ( lineInfo );
+            }
+
             var clause = Grammar.GetDefaultClauseByToken ( lineInfo.Tokens.First ().Token, false );
             if ( clause != null )
             {
@@ -264,7 +269,13 @@ namespace BREadfruit
                 // if there are more tokens, it's comments most likely, but let's keep this separate for the time being
                 // altough it could be the same for this and the previous case just by using ElementAt(1)
                 if ( lineInfo.Tokens.Count () > 2 )
+                {
                     clause.SetValue ( lineInfo.Tokens.ElementAt ( 1 ).Token );
+                    if ( lineInfo.HasSymbol ( Grammar.WithArgumentsSymbol ) )
+                    {
+                        clause.AddArgumentsFromString ( lineInfo.Tokens.ElementAt ( lineInfo.IndexOfSymbol ( Grammar.WithArgumentsSymbol ) + 1 ).Token );
+                    }
+                }
 
 
             }
