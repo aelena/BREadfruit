@@ -29,7 +29,7 @@ namespace BREadfruit
         /// <summary>
         /// Number of tokens found in this line
         /// </summary>
-        private readonly int _numberOfTokens;
+        private int _numberOfTokens;
 
         /// <summary>
         /// Number of tokens found in this line
@@ -193,6 +193,7 @@ namespace BREadfruit
             if ( this._tokens == null )
                 this._tokens = new List<Symbol> ();
             this._tokens.Add ( s );
+            this._numberOfTokens = this._tokens.Count ();
             return this.Tokens;
         }
 
@@ -204,6 +205,7 @@ namespace BREadfruit
             if ( index >= 0 )
             {
                 this._tokens = this._tokens.Take ( index ).ToList ();
+                this._numberOfTokens = this._tokens.Count ();
                 return this.Tokens;
             }
             else
@@ -222,8 +224,9 @@ namespace BREadfruit
             if ( index >= 0 )
                 this._tokens = this._tokens.Take ( includeCurrentToken ? index + 1 : index ).ToList ();
 
-            return this.Tokens;
+            this._numberOfTokens = this._tokens.Count ();
 
+            return this.Tokens;
 
         }
 
