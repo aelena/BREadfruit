@@ -31,8 +31,9 @@ namespace BREadfruit
             var _tokens = ExtractTokens ( line );
             // create the LineInfo instance, passing the original string represnetation, the tokens found
             // and preserving the indentation level
-            return new LineInfo ( line, indentLevel, _tokens );
-
+            var li = new LineInfo ( line, indentLevel, _tokens );
+           
+            return li;
         }
 
 
@@ -97,7 +98,7 @@ namespace BREadfruit
                         // TODO: as this is valid for strings (user strings) any keywords here are considered just string
                         for ( var i = 0; i < _t1.Count (); i++ )
                             _fusedSymbols.Add ( _tokens.ToList ().GetRange ( _t1.ElementAt ( i ), ( _t2.ElementAt ( i ) - _t1.ElementAt ( i ) ) + 1 ).JoinTogether () );
-                        
+
                         List<Symbol> replacedLineInfo = new List<Symbol> ();
                         for ( int i = 0, j = 0; i < _tokens.Count (); i++ )
                         {
@@ -168,6 +169,13 @@ namespace BREadfruit
         public string TokenizeMultiplePartOperators ( LineInfo li /*IEnumerable<Symbol> tokens, string line*/ )
         {
 
+            var _conditionValueList = li.TokenizeValueListInCondition ();
+            if (  _conditionValueList != null )
+            {
+                li.RemoveTokensFromTo ( _conditionValueList.Item2, _conditionValueList.Item3 + 1 );
+                li.InsertTokenAt ( _conditionValueList.Item2, new Symbol ( _conditionValueList.Item1, 2 ) );
+            }
+
             // take a repreeentation of the entire list of tokens as a simple string
             var _fused = li.Tokens.JoinTogether ().Token;
             var _replacedString = _fused;
@@ -196,7 +204,7 @@ namespace BREadfruit
             }
             _fused = _replacedString;
 
-
+           
             _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
             return _replacedString;
         }

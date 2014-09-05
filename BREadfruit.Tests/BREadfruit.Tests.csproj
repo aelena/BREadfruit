@@ -82,6 +82,7 @@
     <Content Include="sample files\single entity tests\File002.txt" />
     <Content Include="sample files\single entity tests\File001.txt" />
     <Content Include="sample files\single entity tests\File004.txt" />
+    <Content Include="sample files\single entity tests\File005.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

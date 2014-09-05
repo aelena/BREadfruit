@@ -137,12 +137,45 @@ namespace BREadfruit
 
         public string GetArgumentsAsString ()
         {
+            // first lets check for the presence of specific explicit "with_args" symbol, which
+            // indicates a list of arguments to be passed (generally in calls to datasource or web service)
             if ( this.HasSymbol ( Grammar.WithArgumentsSymbol ) )
-            {
                 return this._representation.SubStringAfter ( Grammar.WithArgumentsSymbol.Token, trimResults: true );
-            }
             return String.Empty;
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        protected internal Tuple<string, int, int> TokenizeValueListInCondition ()
+        {
+            if ( this.HasSymbol ( Grammar.InSymbol ) || this.HasSymbol ( Grammar.IsOperator ) || this.HasSymbol ( Grammar.IsNotOperator ) )
+            {
+                int i1 = 0, i2 = 0;
+                if ( this.HasSymbol ( Grammar.InSymbol ) && this.HasSymbol ( Grammar.ThenSymbol ) )
+                {
+                    i1 = this.IndexOfSymbol ( Grammar.InSymbol ) + 1;
+                    i2 = this.IndexOfSymbol ( Grammar.ThenSymbol ) - 1;
+                    return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
+                }
+                if ( this.HasSymbol ( Grammar.IsNotOperator ) && this.HasSymbol ( Grammar.ThenSymbol ) )
+                {
+                    i1 = this.IndexOfSymbol ( Grammar.IsNotOperator ) + 1;
+                    i2 = this.IndexOfSymbol ( Grammar.ThenSymbol ) - 1;
+                    return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
+                }
+                if ( this.HasSymbol ( Grammar.IsOperator ) && this.HasSymbol ( Grammar.ThenSymbol ) )
+                {
+                    i1 = this.IndexOfSymbol ( Grammar.IsOperator ) + 1;
+                    i2 = this.IndexOfSymbol ( Grammar.ThenSymbol ) - 1;
+                    return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
+                }
+
+            }
+            return null;
+        }
+
 
         // ---------------------------------------------------------------------------------
 
@@ -156,17 +189,23 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Returns a boolean value that indicates if the instance contains
+        /// a specific symbol within its tokens.
+        /// </summary>
+        /// <param name="symbol">Symbol from the Grammar that is to be searched.</param>
+        /// <returns>Returns a boolean value that indicates if the instance contains the passed symbol.</returns>
         internal bool HasSymbol ( Symbol symbol )
         {
             if ( symbol != null )
             {
+                // first search for Symbol's main token
                 if ( this._representation.Contains ( symbol.Token ) )
                     return true;
 
+                // then, if there are aliases, search for them
                 if ( symbol.Aliases.Count () > 0 )
-                {
                     return this._representation.ContainsAny ( symbol.Aliases );
-                }
             }
             return false;
         }
@@ -175,12 +214,17 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Returns the index of a Symbol instance within
+        /// the instance's Tokens collection.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns>Returns the index of a Symbol instance or 
+        /// -1 if the Symbol is not found.</returns>
         internal int IndexOfSymbol ( Symbol symbol )
         {
             if ( this.HasSymbol ( symbol ) )
-            {
                 return this._tokens.ToList ().IndexOf ( symbol );
-            }
             return -1;
         }
 
@@ -188,6 +232,11 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Adds a Token to the internal collection.
+        /// </summary>
+        /// <param name="s">Token's Symbol to be added.</param>
+        /// <returns></returns>
         protected internal IEnumerable<Symbol> AddToken ( Symbol s )
         {
             if ( this._tokens == null )
@@ -200,6 +249,12 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Starting from the specified index (0 or higher), it removes all
+        /// tokens that come after that index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         protected internal IEnumerable<Symbol> RemoveTokensFromIndex ( int index )
         {
             if ( index >= 0 )
@@ -216,6 +271,14 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Removes all tokens after the first occurrence of a specific symbol.
+        /// Has an optional parameter that allows a caller to indicate if 
+        /// the specific symbol is to be cut off or be included.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="includeCurrentToken"></param>
+        /// <returns></returns>
         protected internal IEnumerable<Symbol> RemoveTokensAfterSymbol ( Symbol s, bool includeCurrentToken = false )
         {
 
@@ -230,5 +293,30 @@ namespace BREadfruit
 
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        internal void RemoveTokensFromTo ( int from, int to )
+        {
+            if ( from < 0 )
+                throw new ArgumentException ( "Cannot specify a starting position lower than 0", "from" );
+            if ( to < from )
+                throw new ArgumentException ( "Cannot specify a upper index lower than the starting index", "to" );
+
+            this._tokens = this._tokens.Take ( from ).Concat ( this._tokens.Skip ( to ) ).ToList();
+            this._numberOfTokens = this._tokens.Count ();
+
+        }
+
+        
+        // ---------------------------------------------------------------------------------
+
+
+
+        internal void InsertTokenAt ( int index, Symbol token )
+        {
+            this._tokens.Insert ( index, token );
+        }
     }
 }

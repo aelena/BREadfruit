@@ -136,6 +136,19 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        public void ParseSampleFile005 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File005.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();

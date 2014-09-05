@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace BREadfruit.Helpers
 {
+    /// <summary>
+    /// Provides a series of useful extension methods used during all 
+    /// manner of parsing operations.
+    /// </summary>
     public static class Extensions
     {
         /// <summary>
@@ -34,6 +38,41 @@ namespace BREadfruit.Helpers
 
         // ---------------------------------------------------------------------------------
 
+
+        /// <summary>
+        /// Joins together a series of Symbols. 
+        /// This is basically a matter of concatenating their tokens
+        /// </summary>
+        /// <param name="series"></param>
+        /// <returns></returns>
+        public static Symbol JoinTogetherBetween ( this IEnumerable<Symbol> series, int from, int to)
+        {
+            if ( series == null )
+                throw new ArgumentNullException ( "Cannot join together a null series of symbols", "series" );
+
+            if ( from < 0)
+                throw new ArgumentException ( "Cannot specify a starting position lower than 0", "from" );
+
+            if ( to < from)
+                throw new ArgumentException ( "Cannot specify a upper index lower than the starting index", "to" );
+
+
+            series = series.From ( from ).To ( to - from );
+
+            string _s = String.Empty;
+            foreach ( var s in series )
+                _s += s.Token + " ";
+
+            // we return a new symbol with the concatenated representation
+            // assuming we take the indent level of the first in the series
+            // (maybe we should check all symbols in the series have the same indentlevel)
+            // and the isTerminal value for the last in the series
+            return new Symbol ( _s.Trim (), series.First ().IndentLevel, series.Last ().IsTerminal );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         /// <summary>
