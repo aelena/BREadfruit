@@ -157,19 +157,22 @@ namespace BREadfruit
                 {
                     i1 = this.IndexOfSymbol ( Grammar.InSymbol ) + 1;
                     i2 = this.IndexOfSymbol ( Grammar.ThenSymbol ) - 1;
-                    return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
+                    if ( i1 <= i2 )
+                        return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
                 }
                 if ( this.HasSymbol ( Grammar.IsNotOperator ) && this.HasSymbol ( Grammar.ThenSymbol ) )
                 {
                     i1 = this.IndexOfSymbol ( Grammar.IsNotOperator ) + 1;
                     i2 = this.IndexOfSymbol ( Grammar.ThenSymbol ) - 1;
-                    return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
+                    if ( i1 <= i2 )
+                        return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
                 }
                 if ( this.HasSymbol ( Grammar.IsOperator ) && this.HasSymbol ( Grammar.ThenSymbol ) )
                 {
                     i1 = this.IndexOfSymbol ( Grammar.IsOperator ) + 1;
                     i2 = this.IndexOfSymbol ( Grammar.ThenSymbol ) - 1;
-                    return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
+                    if ( i1 <= i2 )
+                        return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
                 }
 
             }
@@ -304,12 +307,12 @@ namespace BREadfruit
             if ( to < from )
                 throw new ArgumentException ( "Cannot specify a upper index lower than the starting index", "to" );
 
-            this._tokens = this._tokens.Take ( from ).Concat ( this._tokens.Skip ( to ) ).ToList();
+            this._tokens = this._tokens.Take ( from ).Concat ( this._tokens.Skip ( to ) ).ToList ();
             this._numberOfTokens = this._tokens.Count ();
 
         }
 
-        
+
         // ---------------------------------------------------------------------------------
 
 
