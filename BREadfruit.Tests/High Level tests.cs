@@ -125,7 +125,7 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.First ().Arguments.First ().Key == "\"Active\"" );
             Assert.That ( e.Defaults.First ().Arguments.First ().Value == "true" );
             Assert.That ( e.Defaults.First ().Arguments.Last ().Key == "\"Title\"" );
-            Assert.That ( e.Defaults.First ().Arguments.Last ().Value == "\"No reason to fear this\"" );
+            Assert.That ( e.Defaults.First ().Arguments.Last ().Value == "\"Anything\"" );
             Assert.That ( e.Constraints.Count () == 1 );
             Assert.That ( e.Constraints.First().Name == "only_numbers");
 
