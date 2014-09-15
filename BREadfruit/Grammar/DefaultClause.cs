@@ -29,7 +29,7 @@ namespace BREadfruit.Clauses
         /// not as instance of Regex) that validates the values
         /// that can be assigned to this instance.
         /// </summary>
-        public String RegexPattern
+        protected internal String RegexPattern
         {
             get { return _regexPattern; }
         }
@@ -57,9 +57,9 @@ namespace BREadfruit.Clauses
 
         private SortedList<string, string> _arguments;
 
-        public SortedList<string, string> Arguments
+        public IEnumerable<KeyValuePair<string, string>> Arguments
         {
-            get { return this._arguments; }
+            get { return this._arguments.AsEnumerable (); }
         }
 
 
@@ -72,7 +72,7 @@ namespace BREadfruit.Clauses
         /// <param name="token"></param>
         /// <param name="regexPattern"></param>
         /// <param name="aliases"></param>
-        public DefaultClause ( string token, string regexPattern, IEnumerable<String> aliases = null ) :
+        protected internal DefaultClause ( string token, string regexPattern, IEnumerable<String> aliases = null ) :
             base ( token, 0 /*indentLevel*/)
         {
             //this._token = token;
@@ -96,7 +96,7 @@ namespace BREadfruit.Clauses
         /// <returns>returns true if the value has been assigned, which
         /// depends on it matching the regex pattern. Otherwise
         /// the value returned is false.</returns>
-        public bool SetValue ( Object value )
+        internal bool SetValue ( Object value )
         {
             if ( value != null )
             {
