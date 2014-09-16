@@ -79,13 +79,13 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
-        
+
         public IEnumerable<UnaryAction> ConditionlessActions
         {
             get
             {
                 // cast to list, in order to get rid of the ConcatIterator and the two "first" and "second" properties that appear upon inspection
-                return this._unaryactions.Concat ( this._resultactions ).ToList(); 
+                return this._unaryactions.Concat ( this._resultactions ).ToList ();
             }
         }
 
@@ -132,8 +132,17 @@ namespace BREadfruit
 
         public bool AddDefaultClause ( DefaultClause defaultClause )
         {
-            this._defaults.Add ( defaultClause );
-            return true;
+
+            if ( defaultClause == null )
+                throw new ArgumentNullException ( "Default clause cannot be null." );
+
+            if ( !this._defaults.Contains ( defaultClause ) )
+            {
+                this._defaults.Add ( defaultClause );
+                return true;
+            }
+
+            return false;
         }
 
 
@@ -173,7 +182,7 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        public bool AddConstraint ( Constraint constraint)
+        public bool AddConstraint ( Constraint constraint )
         {
             // check the constraint value is ok
             if ( Regex.IsMatch ( constraint.Name, Grammar.ConstraintLineRegex, RegexOptions.IgnoreCase ) )
