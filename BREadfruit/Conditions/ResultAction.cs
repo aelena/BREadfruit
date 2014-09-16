@@ -17,14 +17,14 @@ namespace BREadfruit.Conditions
 
         public object Value { get; protected internal set; }
 
-        public ResultAction ( Symbol s, object value, string reference = "this" ) :
+        protected internal ResultAction ( Symbol s, object value, string reference = "this" ) :
             base ( s.Token, s.IndentLevel, s.IsTerminal )
         {
             this.Value = value;
             this.Reference = reference;
         }
 
-        public ResultAction ( string identifier,
+        protected internal ResultAction ( string identifier,
             int indentLevel,
             bool isTerminal,
             IEnumerable<string> aliases = null,
