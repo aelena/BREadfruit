@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BREadfruit.Clauses.DefaultClause">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABBAAAAAAAAAAgAEAAAAAAAAAAAAAAAAYAAgAAAAEAg=</HashCode>
+      <FileName>Grammar\DefaultClause.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BREadfruit.Symbol" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAQgAEEEAEAAAAAAIAAABEAAAQBAAA=</HashCode>
+      <FileName>Symbol.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BREadfruit.LogicalOperatorSymbol" Collapsed="true">
+    <Position X="6.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Symbol.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BREadfruit.Conditions.Rule">
+    <Position X="10" Y="1.5" Width="2.25" />
+    <Members>
+      <Field Name="_conditions" Hidden="true" />
+      <Method Name="AddCondition" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>QAAIAAAAAAAAQAAEABAEAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Conditions\Rule.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Conditions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="BREadfruit.Conditions.Condition">
+    <Position X="13.5" Y="1.5" Width="2" />
+    <Members>
+      <Field Name="_operand" Hidden="true" />
+      <Field Name="_operator" Hidden="true" />
+      <Field Name="_resultActions" Hidden="true" />
+      <Field Name="_results" Hidden="true" />
+      <Field Name="_suffixLogicalOperator" Hidden="true" />
+      <Field Name="_value" Hidden="true" />
+      <Method Name="AddResultAction" Hidden="true" />
+      <Method Name="AddUnaryAction" Hidden="true" />
+      <Method Name="Condition" Hidden="true" />
+      <Method Name="SetLogicalOperator" Hidden="true" />
+      <Property Name="SuffixLogicalOperator" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>ABAAghAAIAAQAAAEAAAAAAAAKAAMAAQAAAAgAAEAoAA=</HashCode>
+      <FileName>Conditions\Condition.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="ResultActions" />
+      <Property Name="Results" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="BREadfruit.Conditions.ResultAction">
+    <Position X="17.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Conditions\ResultAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BREadfruit.Conditions.UnaryAction">
+    <Position X="17.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Conditions\UnaryAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

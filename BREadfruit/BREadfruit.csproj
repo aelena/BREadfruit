@@ -60,6 +60,9 @@
     <Content Include="abnf.txt" />
     <Content Include="abnf_2.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="_documentation\General Class Diagram.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
