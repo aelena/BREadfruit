@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BREadfruit.Clauses;
 using BREadfruit.Conditions;
@@ -174,8 +175,14 @@ namespace BREadfruit
 
         public bool AddConstraint ( Constraint constraint)
         {
-            this._constraints.Add ( constraint );
-            return this._constraints.Contains ( constraint );
+            // check the constraint value is ok
+            if ( Regex.IsMatch ( constraint.Name, Grammar.ConstraintLineRegex, RegexOptions.IgnoreCase ) )
+            {
+                this._constraints.Add ( constraint );
+                return this._constraints.Contains ( constraint );
+            }
+            else
+                throw new InvalidOperationException ( String.Format ( "Added wrong or unknown constraint type ('{0}')", constraint.Name ) );
         }
 
         // ---------------------------------------------------------------------------------
