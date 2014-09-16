@@ -95,7 +95,7 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
-        public Condition ( string operand, Operator operatorItem, object value )
+        protected internal Condition ( string operand, Operator operatorItem, object value )
         {
             this._operand = operand;
             this._operator = operatorItem;
@@ -106,7 +106,7 @@ namespace BREadfruit.Conditions
 
         // ---------------------------------------------------------------------------------
 
-        public Condition ( string operand, Operator operatorItem, object value, string suffixLogixOperator )
+        protected internal Condition ( string operand, Operator operatorItem, object value, string suffixLogixOperator )
         {
             this._operand = operand;
             this._operator = operatorItem;
