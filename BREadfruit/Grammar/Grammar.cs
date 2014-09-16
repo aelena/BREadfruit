@@ -211,7 +211,11 @@ namespace BREadfruit
             get { return _entityLineRegex; }
         }
 
-
+        private static string _constraintLineRegex = @"^\t{0,2}(###)$";
+        public static string ConstraintLineRegex
+        {
+            get { return _constraintLineRegex; }
+        }
         // ---------------------------------------------------------------------------------
 
 
@@ -400,14 +404,34 @@ namespace BREadfruit
             AddSymbols ();
             AddOperators ();
 
-            _entityLineRegex = _entityLineRegex.Replace ( "###", String.Format ( "({0})",
-                String.Join ( "|", Grammar.EntityTypes.Select ( x => x.Token ) ) ) ).ToUpperInvariant ();
-
+            ComposeEntityLineRegex ();
+            ComposeConstraintLineRegex ();
 
         }
 
 
         // ---------------------------------------------------------------------------------
+
+
+        private static void ComposeEntityLineRegex ()
+        {
+            _entityLineRegex = _entityLineRegex.Replace ( "###", String.Format ( "({0})",
+                String.Join ( "|", Grammar.EntityTypes.Select ( x => x.Token ) ) ) ).ToUpperInvariant ();
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        private static void ComposeConstraintLineRegex ()
+        {
+            _constraintLineRegex = _constraintLineRegex.Replace ( "###",
+                String.Join ( "|", Grammar.ConstraintSymbols.Select ( x => x.Token ) ) );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
 
         #region " --- utility methods --- "

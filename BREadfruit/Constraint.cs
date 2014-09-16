@@ -17,27 +17,10 @@ namespace BREadfruit
             get { return _constraintName; }
         }
 
-        // ---------------------------------------------------------------------------------
 
-        private readonly string _regex;
-
-        /// <summary>
-        /// Gets the regex that was set up during construction.
-        /// Not all constraints might have regular expressions and therefore this
-        /// property could return null.
-        /// </summary>
-        public string RegexValidationPattern
-        {
-            get { return _regex; }
-        }
-
-        // ---------------------------------------------------------------------------------
-
-
-        public Constraint ( string name, string regexValidationPattern = null )
+        public Constraint ( string name)
         {
             this._constraintName = name;
-            this._regex = regexValidationPattern;
         }
 
         // ---------------------------------------------------------------------------------
@@ -45,8 +28,6 @@ namespace BREadfruit
 
         public override string ToString ()
         {
-            if ( RegexValidationPattern != null )
-                return String.Format ( "{0} {1}", this.Name, this.RegexValidationPattern );
             return this.Name;
         }
 

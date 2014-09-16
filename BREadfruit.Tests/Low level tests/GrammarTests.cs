@@ -110,7 +110,7 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             var _op = Grammar.GetSymbolByToken ( aliasToken );
             Assert.That ( _op != null );
-            if ( _op.Aliases.Count() > 0 )
+            if ( _op.Aliases.Count () > 0 )
                 Assert.That ( _op.Aliases.Contains ( aliasToken ) );
             Assert.That ( _op.Token == mainAlias );
         }
@@ -167,6 +167,19 @@ namespace BREadfruit.Tests.Low_level_tests
         }
 
         // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ConstraintSymbolsTests ()
+        {
+
+            Assert.That ( Grammar.ConstraintSymbols.Count () == 3 );
+            Assert.That ( Grammar.ConstraintLineRegex.Equals ( @"^\t{0,2}(only_ascii|only_numbers|only_letters)$" ) );
+
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
     }
 }
