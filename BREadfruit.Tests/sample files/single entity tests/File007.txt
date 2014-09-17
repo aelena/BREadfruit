@@ -1,0 +1,41 @@
+﻿Entity btnSearch is Button
+	; with defaults
+	;	visible true
+	;	label LABELS.BUTTONS.SEARCH
+
+	with rules
+		
+		TBVendorIFA.value is not empty then DDLVDCountry mandatory
+
+	;	DDLVDCountry is empty then
+	;		set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+		
+		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
+		TBVendorName is empty and TBVendorCity is empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in ErrorMessage
+		
+		TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
+		DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in ErrorMessage
+		
+		TBVendorName is not empty and DDLVDCountry is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
+		TBVendorIFA.text is not empty then DDLVDCountry not mandatory
+
+		TBVendorIFA.value is not empty then DDLVDCountry mandatory
+
+		; this has to be defined better
+		; USER_HAS_NO_PERMISSIONS then
+		;	set value MESSAGES.VALIDATIONS.SEARCH.NOAUTH in ErrorMessage
+			
+
+	with triggers
+
+		; this onclick SEARCH_VENDORS with mappings
+		;	 ABCDE.FGHIJ = TBVendorName
+		;	 ... and so on

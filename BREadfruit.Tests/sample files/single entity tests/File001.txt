@@ -2,9 +2,10 @@
 
 Entity TBVendorName is TextBox
 	with defaults
-		visible true
+		visible
 		value   ''
 		label LABELS.VENDOR.NAME
+		min length 10
 
 	with actions
 		hide btnCreateVendor

@@ -35,7 +35,7 @@ namespace BREadfruit.Tests
             // after parsing we should have something here...
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
-            Assert.That ( e.Defaults.Count () == 3 );
+            Assert.That ( e.Defaults.Count () == 4 );
             Assert.That ( e.Defaults.First ().ToString () == "visible true" );
             Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Trim () == "value" );
             Assert.That ( e.Defaults.ElementAt ( 2 ).ToString () == "label LABELS.VENDOR.NAME" );
@@ -127,7 +127,7 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.First ().Arguments.Last ().Key == "\"Title\"" );
             Assert.That ( e.Defaults.First ().Arguments.Last ().Value == "\"Anything\"" );
             Assert.That ( e.Constraints.Count () == 1 );
-            Assert.That ( e.Constraints.First().Name == "only_numbers");
+            Assert.That ( e.Constraints.First ().Name == "only_numbers" );
 
         }
 
@@ -149,10 +149,46 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        public void ParseSampleFile006 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File006.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            Assert.That ( parser.Entities.First ().Rules.Count () == 2 );
+            Assert.That ( parser.Entities.First ().Rules.First ().Conditions.Count () == 1 );
+            Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.Count () == 1 );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile007 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File007.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            Assert.That ( parser.Entities.First ().Rules.Count () == 8 );
+
+        }
+
+
+
+
+        // ---------------------------------------------------------------------------------
+
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();
             parser.ParseRuleFile ( @"..\..\sample files\vendor-rules.txt" );
+
+            Assert.That ( parser.Entities.Count () == 8 );
+
         }
 
         // ---------------------------------------------------------------------------------

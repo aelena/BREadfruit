@@ -1,0 +1,12 @@
+﻿Entity TBVendorNumber is TextBox
+
+	with defaults
+		label LABELS.VENDOR.TAXCODE4
+
+	with rules
+		TBVendorNumber.text starts with '0' then
+			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in ErrorMessage
+		TBVendorNumber.text not starts with '0' then
+			set value '' in ErrorMessage					; o clear ErrorMessage
+
+; ----------------------------------------------------------------------------	

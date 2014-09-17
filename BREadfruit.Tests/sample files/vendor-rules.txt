@@ -2,9 +2,10 @@
 
 Entity TBVendorName is TextBox
 	with defaults
-		visible true
+		visible
 		value   ''
 		label LABELS.VENDOR.NAME
+
 
 	with actions
 		hide btnCreateVendor
@@ -29,6 +30,7 @@ Entity TBVendorCity is TextBox
 
 	with triggers
 		this.value on change
+
 
 ; ----------------------------------------------------------------------------	
 
@@ -69,7 +71,8 @@ Entity TBVendorIFA is TextBox
 		
 ; ----------------------------------------------------------------------------	
 
-Entity DDLVDCountry is DropDownList
+
+ Entity DDLVDCountry is DropDownList
 	with defaults
 		visible true
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
@@ -77,19 +80,21 @@ Entity DDLVDCountry is DropDownList
 		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
 		label LABELS.GENERIC.COUNTRY
 
+	with actions
+		set value '' in ErrorMessage
+		hide vendorSearchResultGrid
+		hide btnCreateVendor
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES ;{"Country":"ES","Active":true, "Age":30, "Title":"No reason to fear this" }
+
+
 	with rules
 		DDLVDCountry.value in {"FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
 		DDLVDCountry.value in {"PT","ES"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.NIF in TBVendorVAT
-		DDLVDCountry.value in "IT" then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
+		DDLVDCountry.value is "IT" then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
 		DDLVDCountry.value not in {"PT","ES","IT","FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value "VAT" in TBVendorVAT
 	
 	with triggers
-		this.value changes then 
-			set value '' in ErrorMessage				; or if preferred "clear ErrorMessage"
-			set vendorSearchResultGrid not visible		; or just "set"
-			set btnCreateVendor not visible	
-			; what to do with default labels?
-
+		this.value changes 
 
 ; ----------------------------------------------------------------------------	
 
@@ -110,7 +115,7 @@ Entity DDLCDCountry is DropDownList
 		visible true
 		; we need to define these things too, let's calle them "data constants" for now...
 		value User.Country
-		load data from ACTIVE_COUNTRIES
+		load data from DATASOURCE.ACTIVE_COUNTRIES
 		label LABELS.GENERIC.COUNTRY
 
 	with rules
@@ -176,15 +181,15 @@ Entity btnSearch is Button
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
 
 		; this has to be defined better
-		USER_HAS_NO_PERMISSIONS then
-			set value MESSAGES.VALIDATIONS.SEARCH.NOAUTH in ErrorMessage
+		; USER_HAS_NO_PERMISSIONS then
+		;	set value MESSAGES.VALIDATIONS.SEARCH.NOAUTH in ErrorMessage
 			
 
 	with triggers
 
-		this onclick SEARCH_VENDORS with mappings
-			 ABCDE.FGHIJ = TBVendorName
-			 ... and so on
+		; this onclick SEARCH_VENDORS with mappings
+		;	 ABCDE.FGHIJ = TBVendorName
+		;	 ... and so on
 
 
 ; ----------------------------------------------------------------------------	
@@ -207,7 +212,7 @@ Entity vendorSearchResultGrid is Grid
 		visible false
 	
 
-	TODO: DEFINE CONVENTIONS FOR GRID BETTER
+	; TODO: DEFINE CONVENTIONS FOR GRID BETTER
 
 ; ----------------------------------------------------------------------------	
 
@@ -226,7 +231,7 @@ Entity GD_Ctr_RiskClassification is DropDownList
 
 	with triggers
 		; TODO FIND A BETTER WAY TO EXPRESS THIS....
-		BANK_INSERTED EVALUATE -----
+		; BANK_INSERTED EVALUATE -----
 
 ; ----------------------------------------------------------------------------	
 
@@ -235,7 +240,7 @@ Entity GD_Adr_Country is DropDownList
 	with defaults
 		visible true
 		enabled false					; this control is always disabled
-		value LOCALSTORAGE.COUNTRY		; -- depends on country selected in search form, so this data has to be passed
+		value USER.COUNTRY				; -- depends on country selected in search form, so this data has to be passed
 
 ; ----------------------------------------------------------------------------	
 
@@ -287,10 +292,9 @@ Entity GD_Ctr_IsNaturalPerson is DropDownList
 	with rules
 		Vendor.AccountGroup in {"YVT4", "YVT5"} then
 			set DIV_ADDITIONAL_INFO_NATURAL_PERSON visible	
-			ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
-			; MEANING WHAT? For customer country France the value is set due to legal form selection.
+			; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
 		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P", "Q", "S"} then set value GD_Ctr_IsNaturalPerson.Checked false
 		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value GD_Ctr_IsNaturalPerson.Checked true
 
-		// CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
+		; CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
 

@@ -23,7 +23,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "DREAMS_OF_FIRE", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "'Any text goes here'", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "\"Any text goes here\"", Grammar.LabelDefaultValueRegex, Result = true )]
-        [TestCase ( "invalid.naming", Grammar.LabelDefaultValueRegex, Result = false )]
+        [TestCase ( "invalid.naming", Grammar.LabelDefaultValueRegex, Result = true )]
         public bool RegexTest_LabelDefaultClause(string line, string regex )
         {
             return Regex.IsMatch ( line, regex );
