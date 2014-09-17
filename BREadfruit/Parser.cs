@@ -132,6 +132,8 @@ namespace BREadfruit
                             foreach ( var c in _conds )
                                 _rule.AddCondition ( c );
 
+                            this._entities.Last ().AddRule ( _rule );
+
                             // check presence of token 'then'
                             if ( lineInfo.Tokens.Contains ( Grammar.ThenSymbol ) )
                             {
@@ -153,8 +155,14 @@ namespace BREadfruit
                                     // then it's a long result action line
                                     if ( lineInfo.Tokens.ElementAtFromLast ( 3 ) == Grammar.ThenSymbol )
                                     {
-                                        var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
-                                            lineInfo.Tokens.Last ().Token );
+                                        var _penultimate = Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token );
+                                        UnaryAction _unaryAction = null;
+                                        if ( _penultimate != null )
+                                            _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
+                                               lineInfo.Tokens.Last ().Token );
+                                        else
+                                            _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
+                                                lineInfo.Tokens.Penultimate ().Token );
                                         _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
                                     }
                                     if ( lineInfo.Tokens.ElementAtFromLast ( 5 ) == Grammar.ThenSymbol )
@@ -169,7 +177,7 @@ namespace BREadfruit
 
                                 }
 
-                                this._entities.Last ().AddRule ( _rule );
+                                //this._entities.Last ().AddRule ( _rule );
                             }
                             else
                                 throw new Exception (
@@ -200,7 +208,7 @@ namespace BREadfruit
                         }
                         #endregion
 
-                    
+
                         #region " --- condition  actions block --- "
                         if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
                         {
