@@ -78,6 +78,7 @@ namespace BREadfruit
         /// 
         /// </summary>
         private static List<Operator> _operators = new List<Operator> ();
+        private static List<Operator> _unaryOperators = new List<Operator> ();
 
 
         private static List<DefaultClause> _defaultsTokens = new List<DefaultClause> ();
@@ -122,6 +123,14 @@ namespace BREadfruit
             get
             {
                 return _operators;
+            }
+        }
+
+        public static IEnumerable<Operator> UnaryOperators
+        {
+            get
+            {
+                return _unaryOperators;
             }
         }
 
@@ -176,7 +185,7 @@ namespace BREadfruit
         /// 
         /// are valid
         /// </summary>
-        public const string SetValueRegex = "^((\"|')(.*?)(\"|')|[A-Z\".\"\"_\"]*)$";
+        public const string SetValueRegex = "^((\"|')(.*?)(\"|')|[A-Za-z\".\"\"_\"0-9]*)$";
         /// <summary>
         /// This regex allows either setting ad hoc strings with single or double quotes for labels, such as
         ///
@@ -190,12 +199,12 @@ namespace BREadfruit
         /// 
         /// are valid
         /// </summary>
-        public const string LabelDefaultValueRegex = "^((\"|')(.*?)(\"|')|[A-Z\".\"\"_\"]*)$";
+        public const string LabelDefaultValueRegex = "^((\"|')(.*?)(\"|')|[A-Za-z\".\"\"_\"0-9]*)$";
 
         /// <summary>
         /// Validates an entire load data from line
         /// </summary>
-        public const string LoadDataFromLineRegex = @"^load data from (WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
+        public const string LoadDataFromLineRegex = @"^load data from (WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+$";
         /// <summary>
         /// Validates the argument part of a load data from line 
         /// (that is, all that comes after the load data from instruction)
@@ -281,6 +290,10 @@ namespace BREadfruit
         public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
         public static Symbol InSymbol = new Symbol ( "in", 2, false );
+      
+        public static Symbol EmptyStringSymbol = new Symbol ( "\"\"", 2, true );
+        public static Symbol NullValueSymbol = new Symbol ( "null", 2, true );
+
 
         public static Symbol WithArgumentsSymbol = new Symbol ( "with_args", 2, false, new [] { "with args", "with arguments" } );
 
@@ -371,6 +384,8 @@ namespace BREadfruit
         public static Operator IsNotOperator = new Operator ( "is_not", 2, false, new [] { "is not", "isn't" } );
         public static Operator IsEmptyOperator = new Operator ( "is_empty", 2, false, new [] { "is empty" } );
         public static Operator IsNotEmptyOperator = new Operator ( "is_not_empty", 2, false, new [] { "is not empty" } );
+        public static Operator IsNullOperator = new Operator ( "is_null", 2, false, new [] { "is null" } );
+        public static Operator IsNotNullOperator = new Operator ( "is_not_null", 2, false, new [] { "is not null" } );
         public static Operator IsMandatoryOperator = new Operator ( "is_mandatory", 2, false, new [] { "is mandatory" } );
         public static Operator IsNotMandatoryOperator = new Operator ( "is_not_mandatory", 2, false, new [] { "is not mandatory" } );
         public static Operator IsVisibleOperator = new Operator ( "is_visible", 2, false, new [] { "is visible" } );
@@ -385,6 +400,8 @@ namespace BREadfruit
         public static Operator NotContainsOperator = new Operator ( "does_not_contain", 2, false, new [] { "does not contain", "not contains" } );
         public static Operator InOperator = new Operator ( "in", 2, false );
         public static Operator NotInOperator = new Operator ( "not_in", 2, false, new [] { "not in" } );
+        public static Operator EqualityOperator = new Operator ( "==", 2, false );
+        public static Operator NonEqualityOperator = new Operator ( "!=", 2, false );
 
 
 
@@ -584,6 +601,21 @@ namespace BREadfruit
             Grammar._operators.Add ( NotContainsOperator );
             Grammar._operators.Add ( InOperator );
             Grammar._operators.Add ( NotInOperator );
+            Grammar._operators.Add ( IsEmptyOperator );
+            Grammar._operators.Add ( IsNotEmptyOperator );
+            Grammar._operators.Add ( IsNullOperator );
+            Grammar._operators.Add ( IsNotNullOperator );
+            Grammar._operators.Add ( EqualityOperator );
+            Grammar._operators.Add ( NonEqualityOperator );
+
+
+            Grammar._unaryOperators.Add ( IsEmptyOperator );
+            Grammar._unaryOperators.Add ( IsNotEmptyOperator );
+            Grammar._unaryOperators.Add ( IsNullOperator );
+            Grammar._unaryOperators.Add ( IsNotNullOperator );
+            Grammar._unaryOperators.Add ( EqualityOperator );
+            Grammar._unaryOperators.Add ( NonEqualityOperator );
+
         }
 
 
@@ -634,6 +666,12 @@ namespace BREadfruit
             Grammar._symbols.Add ( NotContainsOperator );
             Grammar._symbols.Add ( InOperator );
             Grammar._symbols.Add ( NotInOperator );
+            Grammar._symbols.Add ( IsEmptyOperator );
+            Grammar._symbols.Add ( IsNotEmptyOperator );
+            Grammar._symbols.Add ( IsNullOperator );
+            Grammar._symbols.Add ( IsNotNullOperator );
+            Grammar._symbols.Add ( EqualityOperator );
+            Grammar._symbols.Add ( NonEqualityOperator );
             // add unary actions
             Grammar._symbols.Add ( EnableUnaryActionSymbol );
             Grammar._symbols.Add ( DisableUnaryActionSymbol );
@@ -672,7 +710,7 @@ namespace BREadfruit
             var maxlengthdefault = new DefaultClause ( "max_length", PositiveIntegerValueRegex,
                 new List<String> () { "maximum length", "max length" } );
             var minlengthdefault = new DefaultClause ( "min_length", PositiveIntegerValueRegex,
-                new List<String> () { "minimum length" } );
+                new List<String> () { "min length", "minimum length" } );
             var mandatorydefault = new DefaultClause ( "mandatory", BooleanValueRegex );
             var enableddefault = new DefaultClause ( "enabled", BooleanValueRegex );
             var visibledefault = new DefaultClause ( "visible", BooleanValueRegex );
