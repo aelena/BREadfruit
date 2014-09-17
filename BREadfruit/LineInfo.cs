@@ -157,7 +157,8 @@ namespace BREadfruit
             // first lets check for the presence of specific explicit "with_args" symbol, which
             // indicates a list of arguments to be passed (generally in calls to datasource or web service)
             if ( this.HasSymbol ( Grammar.WithArgumentsSymbol ) )
-                return this._representation.SubStringAfter ( Grammar.WithArgumentsSymbol.Token, trimResults: true );
+                return this._representation.TakeBetween ( Grammar.WithArgumentsSymbol.Token, "{", "}", trimResults: true );
+            //return this._representation.SubStringAfter ( Grammar.WithArgumentsSymbol.Token, trimResults: true );
             return String.Empty;
         }
 
@@ -270,6 +271,24 @@ namespace BREadfruit
             this._numberOfTokens = this._tokens.Count ();
             return this.Tokens;
         }
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Adds a Token to the internal collection.
+        /// </summary>
+        /// <param name="s">Token's Symbol to be added.</param>
+        /// <returns></returns>
+        protected internal IEnumerable<Symbol> AddTokens ( IEnumerable<Symbol> symbols )
+        {
+            if ( this._tokens == null )
+                this._tokens = new List<Symbol> ();
+            this._tokens.AddRange ( symbols );
+            this._numberOfTokens = this._tokens.Count ();
+            return this.Tokens;
+        }
+
 
         // ---------------------------------------------------------------------------------
 

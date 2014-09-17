@@ -127,13 +127,14 @@ Entity DDLCDCountry is DropDownList
 		load data from DATASOURCE.ACTIVE_COUNTRIES
 		label LABELS.GENERIC.COUNTRY
 
-	with rules
-		this.value changes then
-			; load active companies for this country
-			load data in DDLCDCompany from ACTIVE_CCs this.value
-			; purge the data in this dropdownlist
-			clear DDLCDPurchOrg
-	
+	with actions
+		; load active companies for this country
+		load data in DDLCDCompany from DATASOURCE.ACTIVE_CCs this.value
+		; purge the data in this dropdownlist
+		clear DDLCDPurchOrg
+
+	with triggers
+		this.value changes
 
 ; ----------------------------------------------------------------------------	
 
@@ -144,10 +145,12 @@ Entity DDLCDCompany is DropDownList
 		value USER_COST_LOCATION_UNIT			; another data constant
 		label LABELS.GENERIC.COMPANY
 
-	with rules
-		this.value changes then
-			; load active companies for this country
-			load data in DDLCDPurchOrg from DATASOURCES.ACTIVE_POs this.value
+	with actions
+		; load active companies for this country
+		load data in DDLCDPurchOrg from DATASOURCES.ACTIVE_POs this.value
+
+	with triggers
+		this.value changes
 
 ; ----------------------------------------------------------------------------	
 

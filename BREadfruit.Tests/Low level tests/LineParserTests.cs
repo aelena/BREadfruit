@@ -269,7 +269,7 @@ namespace BREadfruit.Tests.Low_level_tests
         public int TokenizeArgumentArgumentkeyValuePairsTests ( string line  )
         {
             var lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
-            var newLine = lineParser.TokenizeArgumentArgumentkeyValuePairs ( lineInfo );
+            var newLine = lineParser.TokenizeArgumentKeyValuePairs ( lineInfo );
             return newLine.Tokens.Count ();
         }
 

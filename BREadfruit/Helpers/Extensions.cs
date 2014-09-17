@@ -45,15 +45,15 @@ namespace BREadfruit.Helpers
         /// </summary>
         /// <param name="series"></param>
         /// <returns></returns>
-        public static Symbol JoinTogetherBetween ( this IEnumerable<Symbol> series, int from, int to)
+        public static Symbol JoinTogetherBetween ( this IEnumerable<Symbol> series, int from, int to )
         {
             if ( series == null )
                 throw new ArgumentNullException ( "Cannot join together a null series of symbols", "series" );
 
-            if ( from < 0)
+            if ( from < 0 )
                 throw new ArgumentException ( "Cannot specify a starting position lower than 0", "from" );
 
-            if ( to < from)
+            if ( to < from )
                 throw new ArgumentException ( "Cannot specify a upper index lower than the starting index", "to" );
 
 
@@ -326,6 +326,24 @@ namespace BREadfruit.Helpers
         // ---------------------------------------------------------------------------------
 
 
+        public static IEnumerable<T> TakeAfter<T> ( this IEnumerable<T> list, Func<T, bool> func )
+        {
+            int i = 0;
+            foreach ( var l in list){
+                if ( func (l) )
+                {
+                    return list.Skip ( ++i );
+                }
+                i++;
+            }
+            return null;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+
         /// <summary>
         /// This extension removes n number of characters starting from the end of the string.
         /// If the string is null or empty, it returns String.Empty, therefore it does not crash on null.
@@ -378,11 +396,11 @@ namespace BREadfruit.Helpers
                 return String.Empty;
 
             var _index = value.IndexOf ( markString, comparisonOptions );
-            if ( _index >= 0)
+            if ( _index >= 0 )
             {
                 var s = value.Substring ( _index + markString.Length );
                 if ( trimResults )
-                    return s.Trim();
+                    return s.Trim ();
                 return s;
             }
 
@@ -405,7 +423,8 @@ namespace BREadfruit.Helpers
         /// <param name="markString"></param>
         /// <param name="trimResults"></param>
         /// <returns></returns>
-        public static string SubStringAfterLast ( this string value, string markString, StringComparison comparisonOptions = StringComparison.CurrentCulture, bool trimResults = false )
+        public static string SubStringAfterLast ( this string value, string markString,
+            StringComparison comparisonOptions = StringComparison.CurrentCulture, bool trimResults = false )
         {
             if ( String.IsNullOrEmpty ( value ) )
                 return String.Empty;
@@ -425,7 +444,7 @@ namespace BREadfruit.Helpers
         // ---------------------------------------------------------------------------------
 
 
-        public static string TakeBetween ( this string value, string beginningString, string endString)
+        public static string TakeBetween ( this string value, string beginningString, string endString )
         {
             if ( String.IsNullOrWhiteSpace ( value ) )
                 throw new ArgumentException ( "String cannot be null" );
@@ -445,6 +464,35 @@ namespace BREadfruit.Helpers
 
 
         // ---------------------------------------------------------------------------------
+
+
+        public static string TakeBetween ( this string value, string markString, string beginningString, string endString, bool trimResults = false )
+        {
+            if ( String.IsNullOrWhiteSpace ( value ) )
+                throw new ArgumentException ( "String cannot be null (value)" );
+            if ( String.IsNullOrWhiteSpace ( markString ) )
+                throw new ArgumentException ( "String cannot be null (markString)" );
+
+            value = value.SubStringAfter ( markString );
+
+            var _index1 = value.IndexOf ( beginningString );
+            var _index2 = value.IndexOf ( endString );
+
+            if ( _index2 < _index1 )
+                throw new Exception ( "End string cannot appear earlier than beginning string" );
+
+            _index1 += beginningString.Length;
+
+            if ( trimResults )
+                return value.Substring ( _index1, _index2 - _index1 ).Trim ();
+
+            return value.Substring ( _index1, _index2 - _index1 );
+
+
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
 
     }

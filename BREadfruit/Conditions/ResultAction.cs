@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace BREadfruit.Conditions
 {
 
+
     /// <summary>
     /// Represens a result / action that performs an action on an entity,
     /// being that an DOM element or an object's field,
@@ -17,12 +18,30 @@ namespace BREadfruit.Conditions
 
         public object Value { get; protected internal set; }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        private SortedList<string, string> _arguments;
+
+        public IEnumerable<KeyValuePair<string, string>> Arguments
+        {
+            get { return this._arguments.AsEnumerable (); }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
         protected internal ResultAction ( Symbol s, object value, string reference = "this" ) :
             base ( s.Token, s.IndentLevel, s.IsTerminal )
         {
             this.Value = value;
             this.Reference = reference;
         }
+
+        
+        // ---------------------------------------------------------------------------------
+
 
         protected internal ResultAction ( string identifier,
             int indentLevel,
@@ -33,6 +52,22 @@ namespace BREadfruit.Conditions
         {
 
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        internal void AddArgument ( string key, string value )
+        {
+            if ( this._arguments == null )
+                this._arguments = new SortedList<string, string> ();
+
+            this._arguments.Add ( key, value );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         public override string ToString ()
         {

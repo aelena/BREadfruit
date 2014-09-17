@@ -318,14 +318,19 @@ namespace BREadfruit
         /// </summary>
         /// <param name="lineInfo"></param>
         /// <returns></returns>
-        protected internal LineInfo TokenizeArgumentArgumentkeyValuePairs ( LineInfo lineInfo )
+        protected internal LineInfo TokenizeArgumentKeyValuePairs ( LineInfo lineInfo )
         {
             var _argsAsString = lineInfo.GetArgumentsAsString ();
+            // check for tokens that might be after the token ending with }
+            var _trailingTokensToBePreserved = lineInfo.Tokens.TakeAfter ( x => x.Token.EndsWith ( "}" ) );
             if ( !String.IsNullOrWhiteSpace ( _argsAsString ) )
             {
                 lineInfo.RemoveTokensAfterSymbol ( Grammar.WithArgumentsSymbol, true );
                 lineInfo.AddToken ( new Symbol ( _argsAsString, 2, true ) );
             }
+            // if there were such tokens, preserve them again in the new instance
+            if ( _trailingTokensToBePreserved != null)
+                lineInfo.AddTokens ( _trailingTokensToBePreserved );
             return lineInfo;
         }
 

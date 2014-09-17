@@ -175,11 +175,22 @@ namespace BREadfruit.Tests
         }
 
 
-
-
         // ---------------------------------------------------------------------------------
 
 
+        [Test]
+        public void ParseSampleFile008 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File008.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            Assert.That ( parser.Entities.First ().Rules.Count () == 0 );
+            Assert.That ( parser.Entities.First ().ConditionlessActions.Count () == 2 );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
         [Test]
         public void ShouldFindEntities ()
@@ -187,7 +198,107 @@ namespace BREadfruit.Tests
             var parser = new Parser ();
             parser.ParseRuleFile ( @"..\..\sample files\vendor-rules.txt" );
 
-            Assert.That ( parser.Entities.Count () == 8 );
+            Assert.That ( parser.Entities.Count () == 18 );
+
+            // TBVendorName
+            Assert.That ( parser.Entities.ElementAt ( 0 ).Name == "TBVendorName" );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).Defaults.Count () == 4 );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).ConditionlessActions.Count () == 2 );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).ConditionlessActions.First ().ToString() == "hide btnCreateVendor" );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).ConditionlessActions.Last ().ToString () == "hide vendorSearchResultGrid" );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).Rules.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).Triggers.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).Triggers.First ().Event == "changed" );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).Triggers.First ().Target == "TBVendorName.value" );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).Constraints.Count () == 0 );
+
+            // TBVendorCity
+            Assert.That ( parser.Entities.ElementAt ( 1 ).Name == "TBVendorCity" );
+            Assert.That ( parser.Entities.ElementAt ( 1 ).Defaults.Count () == 3 );
+            Assert.That ( parser.Entities.ElementAt ( 1 ).ConditionlessActions.Count () == 2 );
+            Assert.That ( parser.Entities.ElementAt ( 1 ).Rules.Count () == 0 ); 
+            Assert.That ( parser.Entities.ElementAt ( 1 ).ConditionlessActions.First ().ToString () == "hide btnCreateVendor" );
+            Assert.That ( parser.Entities.ElementAt ( 1 ).ConditionlessActions.Last ().ToString () == "hide vendorSearchResultGrid" );
+            Assert.That ( parser.Entities.ElementAt ( 1 ).Triggers.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 1 ).Constraints.Count () == 0 );
+
+
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Name == "TBVendorNumber" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Defaults.Count () == 5 );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).ConditionlessActions.Count () == 2 );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Count () == 2 );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.First ().Action == "set_value" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.First ().Reference == "ErrorMessage" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString() == "MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Last ().Conditions.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Last ().Conditions.First ().ResultActions.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Last ().Conditions.First ().ResultActions.First ().Action == "set_value" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Last ().Conditions.First ().ResultActions.First ().Reference == "ErrorMessage" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Last ().Conditions.First ().ResultActions.First ().Value.ToString () == "''" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Triggers.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Triggers.First ().Event == "changed" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Triggers.First ().Target == "TBVendorNumber.value" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Constraints.Count () == 1 );
+
+
+            Assert.That ( parser.Entities.ElementAt ( 3 ).Name == "TBVendorIFA" );
+            Assert.That ( parser.Entities.ElementAt ( 3 ).Defaults.Count () == 3 );
+            Assert.That ( parser.Entities.ElementAt ( 3 ).ConditionlessActions.Count () == 2 );
+            Assert.That ( parser.Entities.ElementAt ( 3 ).Rules.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.First ().Event == "changed" );
+            Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.First ().Target == "TBVendorIFA.value" );
+            Assert.That ( parser.Entities.ElementAt ( 3 ).Constraints.Count () == 0 );
+
+
+            Assert.That ( parser.Entities.ElementAt ( 4 ).Name == "DDLVDCountry" );
+            Assert.That ( parser.Entities.ElementAt ( 4 ).Defaults.Count () == 5 );
+            Assert.That ( parser.Entities.ElementAt ( 4 ).ConditionlessActions.Count () == 4 );
+            Assert.That ( parser.Entities.ElementAt ( 4 ).Rules.Count () == 4 );
+            Assert.That ( parser.Entities.ElementAt ( 4 ).Triggers.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 4 ).Constraints.Count () == 0 );
+
+
+            Assert.That ( parser.Entities.ElementAt ( 5 ).Name == "TBVendorVAT" );
+            Assert.That ( parser.Entities.ElementAt ( 5 ).Defaults.Count () == 3 );
+            Assert.That ( parser.Entities.ElementAt ( 5 ).ConditionlessActions.Count () == 2 );
+            Assert.That ( parser.Entities.ElementAt ( 5 ).Rules.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 5 ).Triggers.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 5 ).Constraints.Count () == 0 );
+
+
+            Assert.That ( parser.Entities.ElementAt ( 6 ).Name == "DDLCDCountry" );
+            Assert.That ( parser.Entities.ElementAt ( 6 ).Defaults.Count () == 4 );
+            Assert.That ( parser.Entities.ElementAt ( 6 ).ConditionlessActions.Count () == 2);
+            Assert.That ( parser.Entities.ElementAt ( 6 ).Rules.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 6 ).Triggers.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 6 ).Constraints.Count () == 0 );
+
+
+            Assert.That ( parser.Entities.ElementAt ( 7 ).Name == "DDLCDCompany" );
+            Assert.That ( parser.Entities.ElementAt ( 7 ).Defaults.Count () == 3 );
+            Assert.That ( parser.Entities.ElementAt ( 7 ).ConditionlessActions.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 7 ).Rules.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 7 ).Triggers.Count () == 1 );
+            Assert.That ( parser.Entities.ElementAt ( 7 ).Constraints.Count () == 0 );
+
+
+            Assert.That ( parser.Entities.ElementAt ( 8 ).Name == "DDLCDPurchOrg" );
+            Assert.That ( parser.Entities.ElementAt ( 8 ).Defaults.Count () == 3 );
+            Assert.That ( parser.Entities.ElementAt ( 8 ).ConditionlessActions.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 8 ).Rules.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 8 ).Triggers.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 8 ).Constraints.Count () == 0 );
+
+
+            Assert.That ( parser.Entities.ElementAt ( 9 ).Name == "btnSearch" );
+            Assert.That ( parser.Entities.ElementAt ( 9 ).Defaults.Count () == 2 );
+            Assert.That ( parser.Entities.ElementAt ( 9 ).ConditionlessActions.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 9 ).Rules.Count () == 8 );
+            Assert.That ( parser.Entities.ElementAt ( 9 ).Triggers.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 9 ).Constraints.Count () == 0 );
 
         }
 
