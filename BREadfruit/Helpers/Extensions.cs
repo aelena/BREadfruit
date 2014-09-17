@@ -478,6 +478,9 @@ namespace BREadfruit.Helpers
             var _index1 = value.IndexOf ( beginningString );
             var _index2 = value.IndexOf ( endString );
 
+            if ( _index1 == -1 || _index2 == -1 )
+                return value;
+
             if ( _index2 < _index1 )
                 throw new Exception ( "End string cannot appear earlier than beginning string" );
 

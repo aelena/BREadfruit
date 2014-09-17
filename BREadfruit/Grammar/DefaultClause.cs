@@ -134,8 +134,13 @@ namespace BREadfruit.Clauses
             if ( String.IsNullOrWhiteSpace ( argumentsToken ) )
                 throw new ArgumentNullException ( "Argument string is null or empty", "argumentsToken" );
 
+            string [] _args = null;
             // check that argumentsToken contains both "{" and "}"
-            var _args = argumentsToken.TakeBetween ( "{", "}" ).Split ( new char [] {','}, StringSplitOptions.RemoveEmptyEntries );
+            if (argumentsToken.Contains("{") && argumentsToken.Contains ( "}") )
+                _args = argumentsToken.TakeBetween ( "{", "}" ).Split ( new char [] {','}, StringSplitOptions.RemoveEmptyEntries );
+            else
+                _args = argumentsToken.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+
             foreach ( var _a in _args )
             {
                 var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );

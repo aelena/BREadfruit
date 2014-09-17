@@ -322,25 +322,19 @@ namespace BREadfruit
             }
         }
 
+
+        public override string ToString ()
+        {
+            return this.Token;
+        }
+
     }
 
 
     // ---------------------------------------------------------------------------------
 
 
-    public class LogicalOperatorSymbol : Symbol
-    {
 
-        public LogicalOperatorSymbol ( string symbol, int indentLevel )
-            : base ( symbol, indentLevel )
-        { }
+    // ---------------------------------------------------------------------------------
 
-        public LogicalOperatorSymbol ( string symbol, int indentLevel, bool isTerminal )
-            : base ( symbol, indentLevel, isTerminal )
-        { }
-
-        public LogicalOperatorSymbol ( string symbol, int indentLevel, IList<Symbol> validChildren )
-            : base ( symbol, indentLevel, validChildren )
-        { }
-    }
 }

@@ -92,10 +92,10 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", "with_args", Result = -1 )]
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", "set enabled", Result = -1 )]
         [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", "set enabled", Result = -1 )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", "set enabled", Result = 6 )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "set enabled", Result = 7 )]
-        [TestCase ( "VENDOR.COUNTRY is {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "set enabled", Result = 7 )]
-        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "set enabled", Result = 7 )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 6 )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 7 )]
+        [TestCase ( "VENDOR.COUNTRY is {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 7 )]
+        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 7 )]
         public int LineInfo_IndexOfSymbol_Tests1 ( string line, string token )
         {
             var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
