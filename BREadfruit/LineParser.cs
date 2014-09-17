@@ -32,7 +32,7 @@ namespace BREadfruit
             // create the LineInfo instance, passing the original string represnetation, the tokens found
             // and preserving the indentation level
             var li = new LineInfo ( line, indentLevel, _tokens );
-           
+
             return li;
         }
 
@@ -170,7 +170,7 @@ namespace BREadfruit
         {
 
             var _conditionValueList = li.TokenizeValueListInCondition ();
-            if (  _conditionValueList != null )
+            if ( _conditionValueList != null )
             {
                 li.RemoveTokensFromTo ( _conditionValueList.Item2, _conditionValueList.Item3 + 1 );
                 li.InsertTokenAt ( _conditionValueList.Item2, new Symbol ( _conditionValueList.Item1, 2 ) );
@@ -189,6 +189,7 @@ namespace BREadfruit
                      && op.Aliases.Count () > 0
                      let t = _fused.ContainsAny2 ( op.Aliases )
                      where t.Item1
+                     orderby op.Token.Length descending
                      select new
                      {
                          symbol = op,
@@ -204,7 +205,7 @@ namespace BREadfruit
             }
             _fused = _replacedString;
 
-           
+
             _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
             return _replacedString;
         }
@@ -266,6 +267,29 @@ namespace BREadfruit
                 var _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
                                                    Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
                                                    lineInfo.Tokens.ElementAt ( ++i ).Token );
+
+                if ( _c.Operator.In ( Grammar.UnaryOperators ) )
+                    i -= 2;
+
+                if ( _c.Operator == Grammar.IsEmptyOperator )
+                    _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+                        Grammar.EqualityOperator, Grammar.EmptyStringSymbol.Token );
+
+                if ( _c.Operator == Grammar.IsNotEmptyOperator )
+                    _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+                        Grammar.NonEqualityOperator, Grammar.EmptyStringSymbol.Token );
+
+                if ( _c.Operator == Grammar.IsNullOperator )
+                    _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+                        Grammar.EqualityOperator, Grammar.NullValueSymbol.Token);
+
+                if ( _c.Operator == Grammar.IsNotNullOperator )
+                    _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+                        Grammar.NonEqualityOperator, Grammar.NullValueSymbol.Token );
+
+                if ( _c.Operator.In ( Grammar.UnaryOperators ) )
+                    i += 1;
+
                 _conds.Add ( _c );
 
                 var _logical = lineInfo.Tokens.ElementAtOrDefault ( ++i );
