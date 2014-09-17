@@ -44,7 +44,7 @@ namespace BREadfruit
         /// within the valid file syntax
         /// </summary>
         protected List<String> _aliases = new List<string> ();
-        public IEnumerable<String> Aliases
+        protected internal IEnumerable<String> Aliases
         {
             get
             {
@@ -63,7 +63,7 @@ namespace BREadfruit
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public bool MatchesToken ( string token )
+        protected internal bool MatchesToken ( string token )
         {
             if ( !String.IsNullOrWhiteSpace ( token ) )
             {
@@ -87,7 +87,7 @@ namespace BREadfruit
         /// <summary>
         /// Enumerable list of children for callers or validators to consume.
         /// </summary>
-        public IEnumerable<Symbol> Children
+        protected internal IEnumerable<Symbol> Children
         {
             get
             {
@@ -107,7 +107,7 @@ namespace BREadfruit
         /// <param name="symbol">string representation of the token, for example
         /// 'Entity' or 'with'.
         /// </param>
-        public Symbol ( string symbol, int indentLevel )
+        protected internal Symbol ( string symbol, int indentLevel )
         {
             this.Token = symbol;
             this.IndentLevel = indentLevel;
@@ -126,7 +126,7 @@ namespace BREadfruit
         /// <param name="symbol">string representation of the token, for example
         /// 'Entity' or 'with'.
         /// </param>
-        public Symbol ( string symbol, int indentLevel, IEnumerable<string> aliases )
+        protected internal Symbol ( string symbol, int indentLevel, IEnumerable<string> aliases )
         {
             this.Token = symbol;
             this.IndentLevel = indentLevel;
@@ -149,7 +149,7 @@ namespace BREadfruit
         /// </param>
         /// <param name="isTerminal">Pass false to create a nonterminal symbol, otherwise
         /// pass true to create a terminal.</param>
-        public Symbol ( string symbol, int indentLevel, bool isTerminal )
+        protected internal Symbol ( string symbol, int indentLevel, bool isTerminal )
         {
             this.Token = symbol;
             this.IndentLevel = indentLevel;
@@ -169,7 +169,7 @@ namespace BREadfruit
         /// </param>
         /// <param name="isTerminal">Pass false to create a nonterminal symbol, otherwise
         /// pass true to create a terminal.</param>
-        public Symbol ( string symbol, int indentLevel, bool isTerminal, IEnumerable<string> aliases )
+        protected internal Symbol ( string symbol, int indentLevel, bool isTerminal, IEnumerable<string> aliases )
         {
             this.Token = symbol;
             this.IndentLevel = indentLevel;
@@ -192,7 +192,7 @@ namespace BREadfruit
         /// <param name="validChildren">
         /// List of valid children for this Symbol instance.
         /// </param>
-        public Symbol ( string symbol, int indentLevel, IEnumerable<string> aliases, IList<Symbol> validChildren )
+        protected internal Symbol ( string symbol, int indentLevel, IEnumerable<string> aliases, IList<Symbol> validChildren )
         {
             this.Token = symbol;
             this.IndentLevel = indentLevel;
@@ -218,7 +218,7 @@ namespace BREadfruit
         /// <param name="validChildren">
         /// List of valid children for this Symbol instance.
         /// </param>
-        public Symbol ( string symbol, int indentLevel, IList<Symbol> validChildren )
+        protected internal Symbol ( string symbol, int indentLevel, IList<Symbol> validChildren )
         {
             this.Token = symbol;
             this.IndentLevel = indentLevel;
@@ -234,7 +234,7 @@ namespace BREadfruit
         /// Allows a caller to add child Symbols to a nonterminal Symbol.
         /// </summary>
         /// <param name="s"></param>
-        public void AddValidChild ( Symbol s )
+        protected internal void AddValidChild ( Symbol s )
         {
             if ( this.IsTerminal )
                 throw new InvalidOperationException ( "This is a terminal symbol. No symbols can be added." );
@@ -249,7 +249,7 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
-        public IEnumerable<String> ChildTokens
+        protected internal IEnumerable<String> ChildTokens
         {
             get
             {
