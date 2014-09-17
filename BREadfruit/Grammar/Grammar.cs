@@ -290,7 +290,7 @@ namespace BREadfruit
         public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
         public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
         public static Symbol InSymbol = new Symbol ( "in", 2, false );
-      
+
         public static Symbol EmptyStringSymbol = new Symbol ( "\"\"", 2, true );
         public static Symbol NullValueSymbol = new Symbol ( "null", 2, true );
 
@@ -464,12 +464,14 @@ namespace BREadfruit
             {
                 _s = from s in Grammar.DefaultTokens
                      where s.Token == token
+                     || s.Aliases.Contains ( token )
                      select s;
             }
             else
             {
                 _s = from s in Grammar.DefaultTokens
                      where s.Token.Trim ().ToUpperInvariant () == token.Trim ().ToUpperInvariant ()
+                     || s.Aliases.Contains ( token )
                      select s;
             }
             if ( _s != null && _s.Count () > 0 )
@@ -712,7 +714,7 @@ namespace BREadfruit
             var minlengthdefault = new DefaultClause ( "min_length", PositiveIntegerValueRegex,
                 new List<String> () { "min length", "minimum length" } );
             var mandatorydefault = new DefaultClause ( "mandatory", BooleanValueRegex );
-            var enableddefault = new DefaultClause ( "enabled", BooleanValueRegex );
+            var enableddefault = new DefaultClause ( "enable", BooleanValueRegex );
             var visibledefault = new DefaultClause ( "visible", BooleanValueRegex );
             var valuedefault = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
             var labeldefault = new DefaultClause ( "label", LabelDefaultValueRegex );

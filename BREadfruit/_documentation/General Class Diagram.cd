@@ -2,6 +2,18 @@
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="BREadfruit.Clauses.DefaultClause">
     <Position X="0.5" Y="2" Width="1.5" />
+    <Members>
+      <Field Name="_arguments" Hidden="true" />
+      <Field Name="_regexPattern" Hidden="true" />
+      <Field Name="_value" Hidden="true" />
+      <Method Name="AddArgumentsFromString" Hidden="true" />
+      <Method Name="DefaultClause" Hidden="true" />
+      <Property Name="RegexPattern" Hidden="true" />
+      <Method Name="SetValue" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>ABBAAAAAAAAAAgAEAAAAAAAAAAAAAAAAYAAgAAAAEAg=</HashCode>
       <FileName>Grammar\DefaultClause.cs</FileName>
@@ -55,8 +67,8 @@
       <FileName>Conditions\Condition.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="ResultActions" />
       <Property Name="Results" />
+      <Property Name="ResultActions" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="BREadfruit.Conditions.ResultAction">

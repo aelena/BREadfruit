@@ -2,6 +2,7 @@
 
 Entity TBVendorName is TextBox
 	with defaults
+		enabled true
 		visible
 		value   ''
 		label LABELS.VENDOR.NAME
@@ -53,7 +54,7 @@ Entity TBVendorNumber is TextBox
 			set value '' in ErrorMessage					; o clear ErrorMessage
 
 	with triggers
-		this.value changes then set btnCreateVendor not visible, set vendorSearchResultGrid not visible
+		this.value changes
 
 	with constraints
 		only numbers
@@ -66,8 +67,12 @@ Entity TBVendorIFA is TextBox
 		value ''
 		label LABELS.VENDOR.TAXCODE4
 
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+
 	with triggers
-		this.value changes then set btnCreateVendor not visible, set vendorSearchResultGrid not visible
+		this.value changes
 		
 ; ----------------------------------------------------------------------------	
 
@@ -104,8 +109,12 @@ Entity TBVendorVAT is TextBox
 		value ''
 		label LABELS.GENERIC.VAT
 
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+
 	with triggers
-		this.value changes then set btnCreateVendor not visible, set vendorSearchResultGrid not visible
+		this.value changes
 		
 ; ----------------------------------------------------------------------------	
 
@@ -132,14 +141,13 @@ Entity DDLCDCountry is DropDownList
 Entity DDLCDCompany is DropDownList
 	with defaults
 		visible true
-		; or prefer value null?
 		value USER_COST_LOCATION_UNIT			; another data constant
 		label LABELS.GENERIC.COMPANY
 
 	with rules
 		this.value changes then
 			; load active companies for this country
-			load data in DDLCDPurchOrg from ACTIVE_POs this.value
+			load data in DDLCDPurchOrg from DATASOURCES.ACTIVE_POs this.value
 
 ; ----------------------------------------------------------------------------	
 
@@ -154,6 +162,7 @@ Entity DDLCDPurchOrg is DropDownList
 ; ----------------------------------------------------------------------------	
 
 Entity btnSearch is Button
+
 	with defaults
 		visible true
 		label LABELS.BUTTONS.SEARCH
@@ -175,8 +184,9 @@ Entity btnSearch is Button
 		DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in ErrorMessage
 		
-		TBVendorName is not empty and DDLVDCountry is empty
+		TBVendorName is not empty and DDLVDCountry is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
 		TBVendorIFA.text is not empty then DDLVDCountry not mandatory
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
 
@@ -220,11 +230,12 @@ Entity vendorSearchResultGrid is Grid
 
 
 Entity GD_Ctr_RiskClassification is DropDownList
+
 	with defaults
 		enabled true
 		visible true
 		value "00"
-		load data from RISK_CLASSIFICATIONS
+		load data from DATASOURCE.RISK_CLASSIFICATIONS
 
 	with rules
 		role not in {"RCO","ENQ","CLERK"} then enabled false
@@ -237,6 +248,7 @@ Entity GD_Ctr_RiskClassification is DropDownList
 
 
 Entity GD_Adr_Country is DropDownList
+
 	with defaults
 		visible true
 		enabled false					; this control is always disabled
@@ -245,11 +257,12 @@ Entity GD_Adr_Country is DropDownList
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_VendorClassification is DropDownList
+
 	with defaults
 		visible true
 		enabled true
 		value "NG"
-		load data from VENDOR_CLASSIFICATIONS
+		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
 
 	with rules
 		role in {"UPM","CPM"} then enabled false
@@ -260,11 +273,12 @@ Entity GD_Ctr_VendorClassification is DropDownList
 ; ----------------------------------------------------------------------------	
 
 Entity CC_AM_BPClassification is DropDownList
+
 	with defaults
 		visible true
 		enabled true
 		value "NORM"
-		load data from BP_CLASSIFICATIONS
+		load data from DATASOURCE.BP_CLASSIFICATIONS
 
 	with rules
 		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then AttachManager mandatory 
@@ -276,11 +290,11 @@ Entity GD_Damex is DropDownList
 		visible true
 		enabled true
 		value ''
-		load data from YES_NO
+		load data from DATASOURCE.YES_NO
 		mandatory true
 
 	with rules
-		Request.FlowType not in {"VC", "VC_CC"} GD_Damex not mandatory, GD_Damex not visible
+		Request.FlowType not in {"VC", "VC_CC"} then GD_Damex not mandatory, GD_Damex not visible
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_IsNaturalPerson is DropDownList

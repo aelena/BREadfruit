@@ -180,29 +180,29 @@ namespace BREadfruit
             var _fused = li.Tokens.JoinTogether ().Token;
             var _replacedString = _fused;
 
-            // now check for occurrence
-            var _x = from op in Grammar.Symbols
-                     where op is Symbol
-                     || op is ResultAction
-                     || op is DefaultClause
-                     || op is Operator
-                     && op.Aliases.Count () > 0
-                     let t = _fused.ContainsAny2 ( op.Aliases )
-                     where t.Item1
-                     orderby op.Token.Length descending
-                     select new
-                     {
-                         symbol = op,
-                         Ocurrence = t.Item2,
-                         Index = _fused.IndexOf ( t.Item2 ),
-                         Length = t.Item2.Length
-                     };
+           
+                // now check for occurrence
+                var _x = from op in Grammar.Symbols
+                         where op is Symbol
+                         || op is ResultAction
+                         || op is DefaultClause
+                         || op is Operator
+                         && op.Aliases.Count () > 0
+                         let t = _fused.ContainsAny2 ( op.Aliases )
+                         where t.Item1
+                         orderby op.Token.Length descending
+                         select new
+                         {
+                             symbol = op,
+                             Ocurrence = t.Item2,
+                             Index = _fused.IndexOf ( t.Item2 ),
+                             Length = t.Item2.Length
+                         };
 
 
-            if ( _x != null && _x.Count () > 0 )
-            {
-                _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
-            }
+                if ( _x != null && _x.Count () > 0 )
+                    _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
+
             _fused = _replacedString;
 
 
@@ -281,7 +281,7 @@ namespace BREadfruit
 
                 if ( _c.Operator == Grammar.IsNullOperator )
                     _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
-                        Grammar.EqualityOperator, Grammar.NullValueSymbol.Token);
+                        Grammar.EqualityOperator, Grammar.NullValueSymbol.Token );
 
                 if ( _c.Operator == Grammar.IsNotNullOperator )
                     _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
