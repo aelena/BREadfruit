@@ -70,6 +70,17 @@ namespace BREadfruit
             get { return _representation; }
         }
 
+        private readonly bool _isEntityLine;
+        public bool IsEntityLine
+        {
+            get { return this._isEntityLine; }
+        }
+
+        private readonly bool _isWithLine;
+        public bool IsWithLine
+        {
+            get { return this._isWithLine; }
+        }
 
         // ---------------------------------------------------------------------------------
 
@@ -90,15 +101,21 @@ namespace BREadfruit
 
         public LineInfo ( string representation, int indentLevel, IEnumerable<Symbol> tokens )
         {
-            this._representation = representation;
-            this._indentLevel = indentLevel;
-            if ( tokens != null )
             {
-                this._tokens = tokens.ToList ();
-                this._numberOfTokens = tokens.Count ();
+                this._representation = representation;
+                this._indentLevel = indentLevel;
+                if ( tokens != null )
+                {
+                    this._tokens = tokens.ToList ();
+                    this._numberOfTokens = tokens.Count ();
+                }
+                this._isValid = this._lineParser.IsAValidSentence ( this );
+                if ( tokens.Count () > 0 )
+                {
+                    this._isEntityLine = _tokens.First () == Grammar.EntitySymbol;
+                    this._isWithLine = _tokens.First () == Grammar.WithSymbol;
+                }
             }
-            this._isValid = this._lineParser.IsAValidSentence ( this );
-
         }
 
 
@@ -150,7 +167,12 @@ namespace BREadfruit
 
         protected internal Tuple<string, int, int> TokenizeValueListInCondition ()
         {
-            if ( this.HasSymbol ( Grammar.InSymbol ) || this.HasSymbol ( Grammar.IsOperator ) || this.HasSymbol ( Grammar.IsNotOperator ) )
+            // reeturn immediately in this case
+            if ( this.IsEntityLine || this.IsWithLine )
+                return null;
+
+            if ( ! this.HasSymbol ( Grammar.IsNotEmptyOperator ) 
+                 && ( this.HasSymbol ( Grammar.InSymbol ) || this.HasSymbol ( Grammar.IsOperator ) || this.HasSymbol ( Grammar.IsNotOperator ) ) )
             {
                 int i1 = 0, i2 = 0;
                 if ( this.HasSymbol ( Grammar.InSymbol ) && this.HasSymbol ( Grammar.ThenSymbol ) )
@@ -321,5 +343,7 @@ namespace BREadfruit
         {
             this._tokens.Insert ( index, token );
         }
+
+
     }
 }
