@@ -126,10 +126,10 @@ Entity DDLCDCountry is DropDownList
 		value User.Country
 		load data from DATASOURCE.ACTIVE_COUNTRIES
 		label LABELS.GENERIC.COUNTRY
-
+	
 	with actions
 		; load active companies for this country
-		load data in DDLCDCompany from DATASOURCE.ACTIVE_CCs this.value
+		load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
 		; purge the data in this dropdownlist
 		clear DDLCDPurchOrg
 
@@ -147,7 +147,7 @@ Entity DDLCDCompany is DropDownList
 
 	with actions
 		; load active companies for this country
-		load data in DDLCDPurchOrg from DATASOURCES.ACTIVE_POs this.value
+		load data from DATASOURCES.ACTIVE_POs with arguments {"Arg1": this.value} in DDLCDPurchOrg 
 
 	with triggers
 		this.value changes

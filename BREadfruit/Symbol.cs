@@ -19,13 +19,13 @@ namespace BREadfruit
         /// For example, a symbol with IndentLevel = 1 cannot appear 
         /// at the beginning of a line or at a second level of indentation (2 tabs).
         /// </summary>
-        public int IndentLevel { get; protected set; }
+        protected internal int IndentLevel { get; protected set; }
 
         /// <summary>
         /// Gets a boolean value that indicates whether this is
         /// a terminal or nonterminal.
         /// </summary>
-        public bool IsTerminal { get; protected set; }
+        protected internal bool IsTerminal { get; protected set; }
 
         /// <summary>
         /// Private list of other Symbols that can be considered children

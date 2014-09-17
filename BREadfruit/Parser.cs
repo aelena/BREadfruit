@@ -33,7 +33,7 @@ namespace BREadfruit
         /// Main object graph, where all parsed entities and all their data
         /// (defaults, rules, triggers, actions and constraints) are to be found.
         /// </summary>
-        public IEnumerable<Entity> Entities
+        internal IEnumerable<Entity> Entities
         {
             get
             {
@@ -49,7 +49,7 @@ namespace BREadfruit
         /// Main entry point for parsing a file.
         /// </summary>
         /// <param name="filePath">Path of the file to parse.</param>
-        public void ParseRuleFile ( string filePath )
+        public IEnumerable<Entity> ParseRuleFile ( string filePath )
         {
 
             this.CheckFileExists ( filePath );
@@ -282,6 +282,8 @@ namespace BREadfruit
 
 
             }   // close of using statement
+
+            return this.Entities;
 
 
         }

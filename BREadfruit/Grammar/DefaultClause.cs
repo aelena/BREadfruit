@@ -29,7 +29,7 @@ namespace BREadfruit.Clauses
         /// not as instance of Regex) that validates the values
         /// that can be assigned to this instance.
         /// </summary>
-        protected internal String RegexPattern
+        internal String RegexPattern
         {
             get { return _regexPattern; }
         }
@@ -43,7 +43,7 @@ namespace BREadfruit.Clauses
         /// </summary>
         private Object _value;
         /// <summary>
-        /// Value that can be assigned to this instance.
+        /// Value that can be assigned to the default clause instance.
         /// </summary>
         public Object Value
         {
@@ -57,6 +57,13 @@ namespace BREadfruit.Clauses
 
         private SortedList<string, string> _arguments;
 
+        /// <summary>
+        /// In the case of default clauses that need to have argument (for example
+        /// calls to web services or external datasources) this list will contain 
+        /// arguments in the form of a list of key and value pairs, where the
+        /// key is the name of the parameter / argument, and the value in the pair 
+        /// is the value for the argument.
+        /// </summary>
         public IEnumerable<KeyValuePair<string, string>> Arguments
         {
             get { return this._arguments.AsEnumerable (); }

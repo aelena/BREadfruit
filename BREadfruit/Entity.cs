@@ -197,5 +197,10 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        public override string ToString ()
+        {
+            return String.Format ( "Entity {0} is {1}", this.Name, this.TypeDescription );
+        }
+
     }
 }

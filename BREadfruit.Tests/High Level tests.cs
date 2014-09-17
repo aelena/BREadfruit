@@ -200,6 +200,12 @@ namespace BREadfruit.Tests
 
             Assert.That ( parser.Entities.Count () == 18 );
 
+            var parser2 = new Parser ();
+            var eList = parser2.ParseRuleFile ( @"..\..\sample files\vendor-rules.txt" );
+
+            Assert.That ( eList.Count () == 18 );
+
+
             // TBVendorName
             Assert.That ( parser.Entities.ElementAt ( 0 ).Name == "TBVendorName" );
             Assert.That ( parser.Entities.ElementAt ( 0 ).Defaults.Count () == 4 );
