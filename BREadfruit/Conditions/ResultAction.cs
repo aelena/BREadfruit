@@ -22,8 +22,31 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
-        private SortedList<string, string> _arguments;
+        public override bool IsUnary
+        {
+            get
+            {
+                return false;
+            }
+        }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        public override bool IsResultAction
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        private SortedList<string, string> _arguments;
         public IEnumerable<KeyValuePair<string, string>> Arguments
         {
             get { return this._arguments.AsEnumerable (); }

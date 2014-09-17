@@ -28,12 +28,34 @@ namespace BREadfruit.Conditions
 
         // ---------------------------------------------------------------------------------
 
+        public virtual bool IsUnary
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public virtual bool IsResultAction
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="s"></param>
-        public UnaryAction ( Symbol s, string reference = "this" ) :
+        internal UnaryAction ( Symbol s, string reference = "this" ) :
             base ( s.Token, s.IndentLevel, s.IsTerminal )
         {
             if ( s.Children != null )
@@ -54,7 +76,7 @@ namespace BREadfruit.Conditions
         /// <param name="indentLevel"></param>
         /// <param name="isTerminal"></param>
         /// <param name="aliases"></param>
-        public UnaryAction ( string identifier, int indentLevel, bool isTerminal, IEnumerable<string> aliases = null, string reference = "this" )
+        internal UnaryAction ( string identifier, int indentLevel, bool isTerminal, IEnumerable<string> aliases = null, string reference = "this" )
             : base ( identifier, indentLevel, isTerminal )
         {
             if ( String.IsNullOrWhiteSpace ( identifier ) )
