@@ -219,15 +219,23 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        private bool ValidateEntityStatement ( LineInfo line )
+        internal bool ValidateEntityStatement ( LineInfo line )
         {
-            var _entityLineRegex = new Regex ( Grammar.EntityLineRegex );
-            return _entityLineRegex.IsMatch ( line.Representation.ToUpperInvariant () );
+            return this.ValidateEntityStatement ( line.Representation.ToUpperInvariant () );
         }
 
 
         // ---------------------------------------------------------------------------------
 
+
+        internal bool ValidateEntityStatement ( string line )
+        {
+            var _entityLineRegex = new Regex ( Grammar.EntityLineRegex );
+            return _entityLineRegex.IsMatch ( line.ToUpperInvariant () );
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
         private bool ValidateWithStatement ( LineInfo line )
         {
