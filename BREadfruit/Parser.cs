@@ -119,7 +119,6 @@ namespace BREadfruit
                     if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.WithSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                     {
                         _currentScope = this.ProcessWithClauseStatement ( _currLine, _currentScope, line, lineInfo );
-
                         if ( _currentScope != CurrentScope.NO_SCOPE )
                             continue;   // ugly... but for the moment...
                     }

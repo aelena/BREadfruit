@@ -87,6 +87,9 @@ namespace BREadfruit
         private static List<LogicalOperatorSymbol> _logicalOperators = new List<LogicalOperatorSymbol> ();
         private static List<Symbol> _constraintSymbols = new List<Symbol> ();
 
+        private static List<String> _defaultClausesValidationRegexs = new List<string> ();
+
+
 
 
         // ---------------------------------------------------------------------------------
@@ -100,7 +103,7 @@ namespace BREadfruit
         #region " --- public members --- "
 
         /// <summary>
-        /// Returns a collection of the symbols currently known to the grammar
+        /// Returns a collection of the symbols currently declared in the grammar
         /// </summary>
         public static IEnumerable<Symbol> Symbols
         {
@@ -110,6 +113,9 @@ namespace BREadfruit
             }
         }
 
+        /// <summary>
+        /// Returns a collection of the entity types currently declared in the grammar
+        /// </summary>
         public static IEnumerable<Symbol> EntityTypes
         {
             get
@@ -118,6 +124,9 @@ namespace BREadfruit
             }
         }
 
+        /// <summary>
+        /// Returns a collection of the operators currently declared in the grammar
+        /// </summary>
         public static IEnumerable<Operator> Operators
         {
             get
@@ -126,6 +135,9 @@ namespace BREadfruit
             }
         }
 
+        /// <summary>
+        /// Returns a collection of the unary operators currently declared in the grammar
+        /// </summary>
         public static IEnumerable<Operator> UnaryOperators
         {
             get
@@ -134,6 +146,9 @@ namespace BREadfruit
             }
         }
 
+        /// <summary>
+        /// Returns a collection of the default clauses currently declared in the grammar
+        /// </summary>
         public static IEnumerable<DefaultClause> DefaultTokens
         {
             get
@@ -142,6 +157,9 @@ namespace BREadfruit
             }
         }
 
+        /// <summary>
+        /// Returns a collection of the logical operators currently declared in the grammar
+        /// </summary>
         public static IEnumerable<LogicalOperatorSymbol> LogicalOperators
         {
             get
@@ -150,12 +168,22 @@ namespace BREadfruit
             }
         }
 
-
+        /// <summary>
+        /// Returns a collection of the types of constraints currently declared in the grammar
+        /// </summary>
         public static IEnumerable<Symbol> ConstraintSymbols
         {
             get
             {
                 return _constraintSymbols;
+            }
+        }
+
+        public static IEnumerable<String> DefaultClausesValidationRegexs
+        {
+            get
+            {
+                return Grammar._defaultClausesValidationRegexs;
             }
         }
 
@@ -233,14 +261,16 @@ namespace BREadfruit
         /// within the document format.
         /// </summary>
         public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS|RULES|ACTIONS){1}[\t' ']*$";
-        public const string MaxLengthLineRegex = "^MAX_LENGTH [0-9]*[' ']*$";
-        public const string MinLengthLineRegex = "^MIN_LENGTH [0-9]*[\t' ']*$";
-        public const string MandatoryLineRegex = @"^MANDATORY[\t' ']*((TRUE)?|FALSE)?[\t' ']*$";
-        public const string EnabledLineRegex = @"^ENABLED[\t' ']*((TRUE)?|FALSE)?[\t' ']*$";
-        public const string VisibleLineRegex = @"^VISIBLE[\t' ']*((TRUE)?|FALSE)?[\t' ']*$";
-        public const string FreeValueLineRegex = "^value\\s*(\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
+
+        public const string MaxLengthLineRegex = @"^MAX_LENGTH[\t\s]*[0-9]+[\t\s]*$";
+        public const string MinLengthLineRegex = @"^MIN_LENGTH[\t\s]*[0-9]+[\t\s]*$";
+        public const string MandatoryLineRegex = @"^MANDATORY[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
+        public const string EnabledLineRegex = @"^ENABLED[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
+        public const string VisibleLineRegex = @"^VISIBLE[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
+        public const string FreeValueLineRegex = "^VALUE[\t\\s]*(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
         public const string LabelDefaultLineRegex = "^label\\s*((\"|')(.*?)(\"|')|[A-Z\".\"]*)$";
-        //public const string ConstraintValueRegex = "^()$";
+        public const string LoadDataDefaultLineRegex = "LOAD_DATA_FROM[\t' ']*((\"|')(.*?)(\"|')|[A-Z\".\"]*)[\t' ']*$";
+
 
 
 
@@ -320,7 +350,7 @@ namespace BREadfruit
         public static UnaryAction LoadDataUnaryActionSymbol = new UnaryAction ( "load_data_from", 2, true, new [] { "load data from" } );
 
         public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
-       
+
 
 
         #endregion
@@ -350,7 +380,7 @@ namespace BREadfruit
                 ActionsSymbol
             } );
 
-        public static Symbol LoadDataSymbol = new Symbol ( "load_data_from", 2, new List<string>() {"load data from"},
+        public static Symbol LoadDataSymbol = new Symbol ( "load_data_from", 2, new List<string> () { "load data from" },
             new List<Symbol> () { DataSourceSymbol, 
                 WebServiceSymbol, 
                 FileObjectSymbol
@@ -433,9 +463,27 @@ namespace BREadfruit
             AddSymbols ();
             AddOperators ();
 
+            AddDefaultClauseLineValidationRegexs ();
+
             ComposeEntityLineRegex ();
             ComposeConstraintLineRegex ();
 
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        private static void AddDefaultClauseLineValidationRegexs ()
+        {
+            Grammar._defaultClausesValidationRegexs.Add ( MaxLengthLineRegex );
+            Grammar._defaultClausesValidationRegexs.Add ( MinLengthLineRegex );
+            Grammar._defaultClausesValidationRegexs.Add ( MandatoryLineRegex );
+            Grammar._defaultClausesValidationRegexs.Add ( EnabledLineRegex );
+            Grammar._defaultClausesValidationRegexs.Add ( VisibleLineRegex );
+            Grammar._defaultClausesValidationRegexs.Add ( FreeValueLineRegex );
+            Grammar._defaultClausesValidationRegexs.Add ( LabelDefaultLineRegex );
+            Grammar._defaultClausesValidationRegexs.Add ( LoadDataDefaultLineRegex );
         }
 
 
@@ -584,7 +632,7 @@ namespace BREadfruit
             if ( strictComparison )
             {
                 _s = from s in Symbols
-                     where filteredTypes.Contains ( s.GetType() )
+                     where filteredTypes.Contains ( s.GetType () )
                      && s.Token == token
                      || s.Aliases.Contains ( token ) // TODO: NOT HAPPY ABOUT THIS SHIT HERE
                      select s;
@@ -777,7 +825,7 @@ namespace BREadfruit
             //Grammar._symbols.Add ( HideElementUnaryActionSymbol );
             Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
             Grammar._symbols.Add ( LoadDataUnaryActionSymbol );
-            
+
             // result actions
             Grammar._symbols.Add ( SetValueActionSymbol );
 
@@ -803,7 +851,7 @@ namespace BREadfruit
         /// </summary>
         private static void PopulateDefaultTokens ()
         {
-          
+
             _defaultsTokens.Add ( MaxlengthDefaultClause );
             _defaultsTokens.Add ( MinLengthDefaultClause );
             _defaultsTokens.Add ( MandatoryDefaultClause );
