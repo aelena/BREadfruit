@@ -31,6 +31,27 @@ namespace BREadfruit
             return this.Name;
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static bool operator == ( Constraint constraint, Symbol y )
+        {
+            var t = Grammar.GetSymbolByToken ( constraint.Name);
+            return t == y;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static bool operator != ( Constraint constraint, Symbol y )
+        {
+            var t = Grammar.GetSymbolByToken ( constraint.Name );
+            return t != y;
+        }
+
+
         // ---------------------------------------------------------------------------------
 
     }
