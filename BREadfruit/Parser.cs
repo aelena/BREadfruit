@@ -110,14 +110,7 @@ namespace BREadfruit
                     #region " --- entity block --- "
                     if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                     {
-                        if ( this._lineParser.IsAValidSentence ( lineInfo ) )
-                        {
-                            _currentScope = CurrentScope.NEW_ENTITY;
-                            this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
-                                lineInfo.Tokens.ElementAt ( 3 ).Token ) );
-                        }
-                        else
-                            throw new InvalidEntityDeclarationException ( String.Format ( Grammar.InvalidEntityDeclarationExceptionMessageTemplate, _currLine+1, line.Trim() ) );
+                        _currentScope = ProcessEntityBlock ( _currLine, _currentScope, line, lineInfo );
                     }
                     #endregion
 
@@ -125,16 +118,7 @@ namespace BREadfruit
                     #region " --- with block --- "
                     if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.WithSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                     {
-                        // Clear the scope state
-                        _currentScope = CurrentScope.NO_SCOPE;
-                        if ( this._lineParser.IsAValidSentence ( lineInfo ) )
-                        {
-                            // check the scope of the with clause and change the state accordingly                            
-                            _currentScope = SetCurrentScope ( _currentScope, lineInfo );
-                        }
-                        else
-                            throw new ArgumentException ( String.Format (
-                                "Invalid with clause found in line '{0}'", _currLine ) );
+                        _currentScope = this.ProcessWithClauseStatement ( _currLine, _currentScope, line, lineInfo );
 
                         if ( _currentScope != CurrentScope.NO_SCOPE )
                             continue;   // ugly... but for the moment...
@@ -311,6 +295,67 @@ namespace BREadfruit
             return this.Entities;
 
 
+        }
+
+       
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// This method processes entity declarations found at the beginning
+        /// of each entity block.
+        /// Not meant to be used or leaked outside.
+        /// </summary>
+        /// <param name="_currLine">current global counter</param>
+        /// <param name="_currentScope">marker for the current scope in parsing, which
+        /// indicates what block the parser is parsing right now.</param>
+        /// <param name="line">Current text line being parsed.</param>
+        /// <param name="lineInfo">Object contained the tokens parsed</param>
+        /// <returns></returns>
+        private CurrentScope ProcessEntityBlock ( int _currLine, CurrentScope _currentScope, string line, LineInfo lineInfo )
+        {
+            if ( this._lineParser.IsAValidSentence ( lineInfo ) )
+            {
+                _currentScope = CurrentScope.NEW_ENTITY;
+                this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
+                    lineInfo.Tokens.ElementAt ( 3 ).Token ) );
+            }
+            else
+                // throw an exception if the regex validation fails 
+                throw new InvalidEntityDeclarationException ( String.Format ( Grammar.InvalidEntityDeclarationExceptionMessageTemplate, _currLine + 1, line.Trim () ) );
+          
+            return _currentScope;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// This method processes with clauses marking the beginning of each block
+        /// of each entity block.
+        /// Not meant to be used or leaked outside.
+        /// </summary>
+        /// <param name="_currLine">current global counter</param>
+        /// <param name="_currentScope">marker for the current scope in parsing, which
+        /// indicates what block the parser is parsing right now.</param>
+        /// <param name="line">Current text line being parsed.</param>
+        /// <param name="lineInfo">Object contained the tokens parsed</param>
+        /// <returns></returns>
+        private CurrentScope ProcessWithClauseStatement ( int _currLine, CurrentScope _currentScope, string line, LineInfo lineInfo )
+        {
+            // Clear the scope state
+            _currentScope = CurrentScope.NO_SCOPE;
+            if ( this._lineParser.IsAValidSentence ( lineInfo ) )
+            {
+                // check the scope of the with clause and change the state accordingly                            
+                _currentScope = SetCurrentScope ( _currentScope, lineInfo );
+            }
+            else
+                throw new InvalidWithClauseException ( String.Format
+                    ( Grammar.InvalidWithClauseExceptionMessageTemplate, _currLine + 1, line.Trim () ) );
+            return _currentScope;
         }
 
 

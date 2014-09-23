@@ -267,6 +267,19 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        [ExpectedException ( ExpectedException = typeof ( InvalidWithClauseException ),
+            ExpectedMessage = "Invalid With clause found in line 4 - 'with actiones'" )]
+        public void ParseSampleFile010 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File010.txt" );
+
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();

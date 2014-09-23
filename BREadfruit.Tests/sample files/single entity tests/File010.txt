@@ -1,0 +1,13 @@
+﻿Entity DDLCDCountry is Button
+	with defaults
+		visible true
+
+	; this with clause is invalid, so should trigger validation excetpion
+	with actiones
+		; load active companies for this country
+		load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
+		; purge the data in this dropdownlist
+		clear DDLCDPurchOrg
+
+	with triggers
+		this.value changes

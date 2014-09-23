@@ -834,11 +834,31 @@ namespace BREadfruit
 
 
         /// <summary>
-        /// Template for the custom exception thrown when an invalid exception is found 
+        /// Template for the custom exception thrown when an invalid entity is found 
         /// parsing the file.
-        /// The template is "Invalid Entity declaration found in line '{0}'".
+        /// The template is "Invalid Entity declaration found in line {0} - '{1}'",
+        /// where {0} should be the line number, and {1} the line itself for easy identification
         /// </summary>
         public static readonly string InvalidEntityDeclarationExceptionMessageTemplate = "Invalid Entity declaration found in line {0} - '{1}'";
+        /// <summary>
+        /// Default unadorned message for the custom exception thrown when an invalid entity is found 
+        /// parsing the file.
+        /// The template is "Invalid Entity declaration found.".
+        /// </summary>
+        public static readonly string InvalidEntityDeclarationExceptionDefaultMessage = "Invalid Entity declaration found.";
+        /// <summary>
+        /// Template for the custom exception thrown when an invalid with clause is found 
+        /// parsing the file.
+        /// The template is "Invalid Entity declaration found in line {0} - '{1}'",
+        /// where {0} should be the line number, and {1} the line itself for easy identification
+        /// </summary>
+        public static readonly string InvalidWithClauseExceptionMessageTemplate = "Invalid With clause found in line {0} - '{1}'";
+        /// <summary>
+        /// Default unadorned message for the custom exception thrown when an invalid with clause is found 
+        /// parsing the file.
+        /// The template is "Invalid With clause found.".
+        /// </summary>
+        public static readonly string InvalidWithClauseExceptionDefaultMessage = "Invalid With clause found.";
 
 
 

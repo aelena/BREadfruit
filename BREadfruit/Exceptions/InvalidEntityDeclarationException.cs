@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace BREadfruit.Exceptions
 {
-    class InvalidEntityDeclarationException : Exception, ISerializable
+    public class InvalidEntityDeclarationException : Exception, ISerializable
     {
 
 
         public InvalidEntityDeclarationException ()
-            : base ( "Invalid Entity declaration found." )
+            : base ( Grammar.InvalidEntityDeclarationExceptionDefaultMessage )
         {
         }
 

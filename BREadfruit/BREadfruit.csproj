@@ -45,6 +45,7 @@
     <Compile Include="Conditions\UnaryAction.cs" />
     <Compile Include="Conditions\Rule.cs" />
     <Compile Include="Constraint.cs" />
+    <Compile Include="Exceptions\InvalidWithClauseException.cs" />
     <Compile Include="Exceptions\InvalidEntityDeclarationException.cs" />
     <Compile Include="Grammar\DefaultClause.cs" />
     <Compile Include="Entity.cs" />
