@@ -97,5 +97,29 @@ namespace BREadfruit.Conditions
             return String.Format ( "{0} {1} {2}", this.Token, this.Value.ToString (), this.Reference );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static bool operator == ( ResultAction resultAction, Symbol y )
+        {
+            var t = Grammar.GetSymbolByToken ( resultAction.Action );
+            return t == y;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static bool operator != ( ResultAction resultAction, Symbol y )
+        {
+            var t = Grammar.GetSymbolByToken ( resultAction.Action );
+            return t != y;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
     }
 }
