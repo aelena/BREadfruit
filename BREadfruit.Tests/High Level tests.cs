@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BREadfruit.Exceptions;
 using NUnit.Framework;
 
 
@@ -249,6 +250,21 @@ namespace BREadfruit.Tests
 
 
         // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        [ExpectedException ( ExpectedException = typeof(InvalidEntityDeclarationException), 
+            ExpectedMessage="Invalid Entity declaration found in line 1 - 'Entity DDLCDCountry is Buttton'"  )]
+        public void ParseSampleFile009 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File009.txt" );
+            Assert.That ( parser.Entities.Count () == 0 );
+
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
         [Test]
         public void ShouldFindEntities ()

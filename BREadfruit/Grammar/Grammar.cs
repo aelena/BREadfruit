@@ -214,7 +214,7 @@ namespace BREadfruit
         /// <summary>
         /// Regular expression that validates the correct format of an 'entity' line.
         /// </summary>
-        private static string _entityLineRegex = "^ENTITY [A-Za-z0-9_]* (IS|is|Is|iS)? (###){1}$";
+        private static string _entityLineRegex = "^ENTITY [A-Za-z0-9_]* (IS|is|Is|iS)? (###){1}[\t' ']*$";
         public static string EntityLineRegex
         {
             get { return _entityLineRegex; }
@@ -232,12 +232,12 @@ namespace BREadfruit
         /// Regular expression that validates the correct format of a with statement
         /// within the document format.
         /// </summary>
-        public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS|RULES|ACTIONS){1}[' ']*$";
+        public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS|RULES|ACTIONS){1}[\t' ']*$";
         public const string MaxLengthLineRegex = "^MAX_LENGTH [0-9]*[' ']*$";
-        public const string MinLengthLineRegex = "^MIN_LENGTH [0-9]*[' ']*$";
-        public const string MandatoryLineRegex = @"^MANDATORY[' ']*((TRUE)?|FALSE)?[' ']*$";
-        public const string EnabledLineRegex = @"^ENABLED[' ']*((TRUE)?|FALSE)?[' ']*$";
-        public const string VisibleLineRegex = @"^VISIBLE[' ']*((TRUE)?|FALSE)?[' ']*$";
+        public const string MinLengthLineRegex = "^MIN_LENGTH [0-9]*[\t' ']*$";
+        public const string MandatoryLineRegex = @"^MANDATORY[\t' ']*((TRUE)?|FALSE)?[\t' ']*$";
+        public const string EnabledLineRegex = @"^ENABLED[\t' ']*((TRUE)?|FALSE)?[\t' ']*$";
+        public const string VisibleLineRegex = @"^VISIBLE[\t' ']*((TRUE)?|FALSE)?[\t' ']*$";
         public const string FreeValueLineRegex = "^value\\s*(\"|')(.*?)(\"|')$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
         public const string LabelDefaultLineRegex = "^label\\s*((\"|')(.*?)(\"|')|[A-Z\".\"]*)$";
         //public const string ConstraintValueRegex = "^()$";
@@ -282,6 +282,7 @@ namespace BREadfruit
         public static Symbol ButtonSymbol = new Symbol ( "Button", 0, true );
         public static Symbol DivSymbol = new Symbol ( "Div", 0, true );
         public static Symbol MultilineSymbol = new Symbol ( "Multiline", 0, true );
+        public static Symbol GridSymbol = new Symbol ( "Grid", 0, true );
         public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
         public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
@@ -653,6 +654,7 @@ namespace BREadfruit
             Grammar._entityTypes.Add ( RadioButtonSymbol );
             Grammar._entityTypes.Add ( LabelSymbol );
             Grammar._entityTypes.Add ( ButtonSymbol );
+            Grammar._entityTypes.Add ( GridSymbol );
             Grammar._entityTypes.Add ( DivSymbol );
             Grammar._entityTypes.Add ( MultilineSymbol );
             Grammar._entityTypes.Add ( ObjectSymbol );
@@ -829,6 +831,20 @@ namespace BREadfruit
 
 
         // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Template for the custom exception thrown when an invalid exception is found 
+        /// parsing the file.
+        /// The template is "Invalid Entity declaration found in line '{0}'".
+        /// </summary>
+        public static readonly string InvalidEntityDeclarationExceptionMessageTemplate = "Invalid Entity declaration found in line {0} - '{1}'";
+
+
+
+
+        // ---------------------------------------------------------------------------------
+
 
     }
 }

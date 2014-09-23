@@ -36,5 +36,23 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( e.Constraints.Count () == 0 );
             return e.Constraints.First ().Name == constraintToken;
         }
+
+
+        [TestCase ( "Entity XYZ is TextBox", Result = true )]
+        [TestCase ( "Entity XYZ is DropDownList", Result = true )]
+        [TestCase ( "Entity XYZ is Label", Result = true )]
+        [TestCase ( "Entity XYZ is Div", Result = true )]
+        [TestCase ( "Entity XYZ is Button  ", Result = true )]
+        [TestCase ( "Entity XYZ is Button   ", Result = true )]
+        [TestCase ( "Entity XYZ is FakeEntity", Result = false )]
+        [TestCase ( "Entity XYZ is", Result = false )]
+        [TestCase ( " Entity XYZ is", Result = false )]
+        [TestCase ( "   Entity XYZ is", Result = false )]
+        public bool ValidateEntityStatements(string statement)
+        {
+            var lp = new LineParser ();
+            return lp.ValidateEntityStatement ( statement );
+        }
+
     }
 }

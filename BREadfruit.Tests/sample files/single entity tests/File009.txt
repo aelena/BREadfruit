@@ -1,0 +1,17 @@
+﻿; this does not exist, so should trigger validation excetpion
+Entity DDLCDCountry is Buttton	
+	;with defaults
+	;	visible true
+		; we need to define these things too, let's calle them "data constants" for now...
+	;	value User.Country
+	;	load data from DATASOURCE.ACTIVE_COUNTRIES
+	;	label LABELS.GENERIC.COUNTRY
+
+	with actions
+		; load active companies for this country
+		load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
+		; purge the data in this dropdownlist
+		clear DDLCDPurchOrg
+
+	with triggers
+		this.value changes

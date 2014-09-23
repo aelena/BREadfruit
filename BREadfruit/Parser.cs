@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BREadfruit.Clauses;
 using BREadfruit.Conditions;
+using BREadfruit.Exceptions;
 using BREadfruit.Helpers;
 
 namespace BREadfruit
@@ -109,9 +110,14 @@ namespace BREadfruit
                     #region " --- entity block --- "
                     if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                     {
-                        _currentScope = CurrentScope.NEW_ENTITY;
-                        this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
-                            lineInfo.Tokens.ElementAt ( 3 ).Token ) );
+                        if ( this._lineParser.IsAValidSentence ( lineInfo ) )
+                        {
+                            _currentScope = CurrentScope.NEW_ENTITY;
+                            this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
+                                lineInfo.Tokens.ElementAt ( 3 ).Token ) );
+                        }
+                        else
+                            throw new InvalidEntityDeclarationException ( String.Format ( Grammar.InvalidEntityDeclarationExceptionMessageTemplate, _currLine+1, line.Trim() ) );
                     }
                     #endregion
 
