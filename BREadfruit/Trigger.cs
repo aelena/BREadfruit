@@ -10,7 +10,7 @@ namespace BREadfruit
         private readonly string _triggerName;
         /// <summary>
         /// Gets an event descriptor that indicates the event 
-        /// that this trigger represents
+        /// that this resultAction represents
         /// </summary>
         public string Event
         {
@@ -46,6 +46,28 @@ namespace BREadfruit
         {
             return String.Format ( "{0} {1}", this.Target, this.Event );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+
+        public static bool operator == ( Trigger trigger, Symbol y )
+        {
+            var t = Grammar.GetSymbolByToken ( trigger.Event );
+            return t == y;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static bool operator != ( Trigger trigger, Symbol y )
+        {
+            var t = Grammar.GetSymbolByToken ( trigger.Event );
+            return t != y;
+        }
+
 
         // ---------------------------------------------------------------------------------
 
