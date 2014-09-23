@@ -47,242 +47,261 @@ namespace BREadfruit
 
         /// <summary>
         /// Main entry point for parsing a file.
+        /// Reads a file containing rules and store every line in array
+        /// in order to pass the read lines to the parsing engine.
         /// </summary>
-        /// <param name="filePath">Path of the file to parse.</param>
+        /// <param name="filePath">File containing rules to be parsed.</param>
+        /// <returns>A collection of entities.</returns>
         public IEnumerable<Entity> ParseRuleFile ( string filePath )
         {
-
             this.CheckFileExists ( filePath );
 
-
+            var line = String.Empty;
+            List<string> lines = new List<string> ();
             using ( var sr = new StreamReader ( filePath ) )
             {
-                // current line counter
-                var _currLine = 0;
-                // current line in the text file
-                var line = String.Empty;
-                var _currentScope = CurrentScope.NO_SCOPE;
-
                 while ( line != null )
                 {
-
                     line = sr.ReadLine ();
-                    if ( !( String.IsNullOrWhiteSpace ( line ) ) )
+                    lines.Add ( line );
+                }
+            }
+
+            return ParseRuleSet ( lines );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Main entry point for parsing a file.
+        /// Allows a caller to send in a list of strings (standard text lines)
+        /// containing all the entities and rules to be parsed by the engine.
+        /// </summary>
+        /// <param name="filePath">Array of lines to be parsed.</param>
+        public IEnumerable<Entity> ParseRuleSet ( IEnumerable<string> lines )
+        {
+
+
+            // current line counter
+            var _currLine = 0;
+            var _currentScope = CurrentScope.NO_SCOPE;
+
+            foreach ( var line in lines )
+            {
+
+                if ( !( String.IsNullOrWhiteSpace ( line ) ) )
+                {
+
+                    var lineInfo = ParseLine ( line );
+                    // if this is a full comment line, skip it
+                    if ( lineInfo.Tokens.Count () == 0 )
+                        continue;
+                    lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+
+                    // we need to check the indent level to make sure we set the right scope
+                    // this is for conditions with several action lines
+                    if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK && lineInfo.IndentLevel == 2 )
+                        _currentScope = CurrentScope.RULES_BLOCK;
+
+
+                    #region " --- entity block --- "
+                    if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
+                    {
+                        _currentScope = CurrentScope.NEW_ENTITY;
+                        this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
+                            lineInfo.Tokens.ElementAt ( 3 ).Token ) );
+                    }
+                    #endregion
+
+
+                    #region " --- with block --- "
+                    if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.WithSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
+                    {
+                        // Clear the scope state
+                        _currentScope = CurrentScope.NO_SCOPE;
+                        if ( this._lineParser.IsAValidSentence ( lineInfo ) )
+                        {
+                            // check the scope of the with clause and change the state accordingly                            
+                            _currentScope = SetCurrentScope ( _currentScope, lineInfo );
+                        }
+                        else
+                            throw new ArgumentException ( String.Format (
+                                "Invalid with clause found in line '{0}'", _currLine ) );
+
+                        if ( _currentScope != CurrentScope.NO_SCOPE )
+                            continue;   // ugly... but for the moment...
+                    }
+                    #endregion
+
+
+                    #region " --- default block --- "
+                    // now, if we're in the scope of the defaults block
+                    if ( _currentScope == CurrentScope.DEFAULTS_BLOCK )
+                    {
+                        // then try and parse a default clause
+                        this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
+                    }
+                    #endregion
+
+
+                    #region " --- rules block --- "
+                    if ( _currentScope == CurrentScope.RULES_BLOCK )
                     {
 
-                        var lineInfo = ParseLine ( line );
-                        // if this is a full comment line, skip it
-                        if ( lineInfo.Tokens.Count () == 0 )
-                            continue;
-                        lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+                        var _rule = new Rule ();
+                        var _conds = this._lineParser.ExtractConditions ( lineInfo );
+                        foreach ( var c in _conds )
+                            _rule.AddCondition ( c );
 
-                        // we need to check the indent level to make sure we set the right scope
-                        // this is for conditions with several action lines
-                        if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK && lineInfo.IndentLevel == 2 )
-                            _currentScope = CurrentScope.RULES_BLOCK;
+                        this._entities.Last ().AddRule ( _rule );
 
-
-                        #region " --- entity block --- "
-                        if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
+                        // check presence of token 'then'
+                        if ( lineInfo.Tokens.Contains ( Grammar.ThenSymbol ) )
                         {
-                            _currentScope = CurrentScope.NEW_ENTITY;
-                            this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
-                                lineInfo.Tokens.ElementAt ( 3 ).Token ) );
-                        }
-                        #endregion
-
-
-                        #region " --- with block --- "
-                        if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.WithSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
-                        {
-                            // Clear the scope state
-                            _currentScope = CurrentScope.NO_SCOPE;
-                            if ( this._lineParser.IsAValidSentence ( lineInfo ) )
+                            // if then is the last token, then there are actions
+                            if ( lineInfo.Tokens.Last ().Equals ( Grammar.ThenSymbol ) )
                             {
-                                // check the scope of the with clause and change the state accordingly                            
-                                _currentScope = SetCurrentScope ( _currentScope, lineInfo );
+                                _currentScope = CurrentScope.CONDITION_ACTIONS_BLOCK;
+                                continue;
                             }
                             else
-                                throw new ArgumentException ( String.Format (
-                                    "Invalid with clause found in line {0} in rule file {1}",
-                                    _currLine, filePath ) );
-
-                            if ( _currentScope != CurrentScope.NO_SCOPE )
-                                continue;   // ugly... but for the moment...
-                        }
-                        #endregion
-
-
-                        #region " --- default block --- "
-                        // now, if we're in the scope of the defaults block
-                        if ( _currentScope == CurrentScope.DEFAULTS_BLOCK )
-                        {
-                            // then try and parse a default clause
-                            this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
-                        }
-                        #endregion
-
-
-                        #region " --- rules block --- "
-                        if ( _currentScope == CurrentScope.RULES_BLOCK )
-                        {
-
-                            var _rule = new Rule ();
-                            var _conds = this._lineParser.ExtractConditions ( lineInfo );
-                            foreach ( var c in _conds )
-                                _rule.AddCondition ( c );
-
-                            this._entities.Last ().AddRule ( _rule );
-
-                            // check presence of token 'then'
-                            if ( lineInfo.Tokens.Contains ( Grammar.ThenSymbol ) )
                             {
-                                // if then is the last token, then there are actions
-                                if ( lineInfo.Tokens.Last ().Equals ( Grammar.ThenSymbol ) )
+                                // if it's not the last then we have the action right after the token
+                                // check if it's a valid action
+                                if ( lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol )
                                 {
-                                    _currentScope = CurrentScope.CONDITION_ACTIONS_BLOCK;
-                                    continue;
+                                    var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
+                                    _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
                                 }
-                                else
+                                // then it's a long result action line
+                                if ( lineInfo.Tokens.ElementAtFromLast ( 3 ) == Grammar.ThenSymbol )
                                 {
-                                    // if it's not the last then we have the action right after the token
-                                    // check if it's a valid action
-                                    if ( lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol )
-                                    {
-                                        var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
-                                        _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
-                                    }
-                                    // then it's a long result action line
-                                    if ( lineInfo.Tokens.ElementAtFromLast ( 3 ) == Grammar.ThenSymbol )
-                                    {
-                                        var _penultimate = Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token );
-                                        UnaryAction _unaryAction = null;
-                                        if ( _penultimate != null )
-                                            _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
-                                               lineInfo.Tokens.Last ().Token );
-                                        else
-                                            _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
-                                                lineInfo.Tokens.Penultimate ().Token );
-                                        _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
-                                    }
-                                    if ( lineInfo.Tokens.ElementAtFromLast ( 5 ) == Grammar.ThenSymbol )
-                                    {
-                                        if ( lineInfo.Tokens.Penultimate () != Grammar.InSymbol )
-                                            throw new Exception ( String.Format ( "Line {0} seems to be missing token 'in'", line ) );
-                                        var thenClause = lineInfo.GetSymbolsAfterThen ();
-                                        var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
-                                            thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
-                                        _rule.Conditions.Last ().AddResultAction ( _ra );
-                                    }
-
+                                    var _penultimate = Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token );
+                                    UnaryAction _unaryAction = null;
+                                    if ( _penultimate != null )
+                                        _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
+                                           lineInfo.Tokens.Last ().Token );
+                                    else
+                                        _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
+                                            lineInfo.Tokens.Penultimate ().Token );
+                                    _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
+                                }
+                                if ( lineInfo.Tokens.ElementAtFromLast ( 5 ) == Grammar.ThenSymbol )
+                                {
+                                    if ( lineInfo.Tokens.Penultimate () != Grammar.InSymbol )
+                                        throw new Exception ( String.Format ( "Line {0} seems to be missing token 'in'", line ) );
+                                    var thenClause = lineInfo.GetSymbolsAfterThen ();
+                                    var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
+                                        thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
+                                    _rule.Conditions.Last ().AddResultAction ( _ra );
                                 }
 
-                                //this._entities.Last ().AddRule ( _rule );
                             }
-                            else
-                                throw new Exception (
-                                    String.Format ( "Found Invalid Condition Syntax - symbol 'then' missing in line '{0}'",
-                                        lineInfo.Representation ) );
 
+                            //this._entities.Last ().AddRule ( _rule );
                         }
-                        #endregion
-
-
-                        #region " --- condition-less actions block --- "
-                        if ( _currentScope == CurrentScope.ACTIONS_BLOCK )
-                        {
-
-                            if ( this._lineParser.LineInfoContainsArgumentkeyValuePairs ( lineInfo ) )
-                            {
-                                lineInfo = this._lineParser.TokenizeArgumentKeyValuePairs ( lineInfo );
-                            }
-                            if ( lineInfo.Tokens.Count () == 6 )
-                            {
-                                if ( lineInfo.HasSymbol ( Grammar.WithArgumentsSymbol ) && lineInfo.HasSymbol ( Grammar.InSymbol ) )
-                                {
-                                    // then it must be this sort of rule
-                                    // load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
-                                    var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
-                                            lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
-
-                                    // quite brittle this one here...
-                                    // replace with extension such as ElementAfterToken(xxx) or something like that.
-                                    var _args = lineInfo.Tokens.ElementAt(3).Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
-                                    foreach ( var _a in _args )
-                                    {
-                                        var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
-                                        _ra.AddArgument ( _argPair.First ().Trim (), _argPair.Last ().Trim () );
-                                    }
-
-                                    this._entities.Last ().AddResultAction ( _ra );
-                                }
-                            }
-                            // see if this is resultaction
-                            if ( lineInfo.Tokens.Count () == 4 )
-                            {
-                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
-                                            lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
-                                this._entities.Last ().AddResultAction ( _ra );
-                            }
-                            // or unary action
-                            if ( lineInfo.Tokens.Count () == 2 )
-                            {
-                                var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
-                                    lineInfo.Tokens.ElementAt ( 1 ).Token );
-                                this._entities.Last ().AddUnaryAction ( _ua );
-                            }
-                        }
-                        #endregion
-
-
-                        #region " --- condition  actions block --- "
-                        if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
-                        {
-                            if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
-                            {
-                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
-                                            lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
-                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
-                            }
-                        }
-                        #endregion
-
-
-                        #region " --- trigger block --- "
-                        if ( _currentScope == CurrentScope.TRIGGERS_BLOCK )
-                        {
-                            if ( lineInfo.Tokens.Count () == 2 )
-                            {
-                                var _firstToken = lineInfo.Tokens.First ().Token;
-                                if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this." ) )
-                                    _firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
-                                var _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
-                                this._entities.Last ().AddTrigger ( _trigger );
-                            }
-                        }
-                        #endregion
-
-
-                        #region " --- constraints block --- "
-
-                        if ( _currentScope == CurrentScope.CONSTRAINTS_BLOCK )
-                        {
-                            // there should be only one token
-                            this._entities.Last ().AddConstraint ( new Constraint ( lineInfo.Tokens.First ().Token ) );
-                        }
-
-                        #endregion
-
+                        else
+                            throw new Exception (
+                                String.Format ( "Found Invalid Condition Syntax - symbol 'then' missing in line '{0}'",
+                                    lineInfo.Representation ) );
 
                     }
-
-                    _currLine++;
-
-                }   // close of while loop
+                    #endregion
 
 
-            }   // close of using statement
+                    #region " --- condition-less actions block --- "
+                    if ( _currentScope == CurrentScope.ACTIONS_BLOCK )
+                    {
 
+                        if ( this._lineParser.LineInfoContainsArgumentkeyValuePairs ( lineInfo ) )
+                        {
+                            lineInfo = this._lineParser.TokenizeArgumentKeyValuePairs ( lineInfo );
+                        }
+                        if ( lineInfo.Tokens.Count () == 6 )
+                        {
+                            if ( lineInfo.HasSymbol ( Grammar.WithArgumentsSymbol ) && lineInfo.HasSymbol ( Grammar.InSymbol ) )
+                            {
+                                // then it must be this sort of rule
+                                // load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                        lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
+
+                                // quite brittle this one here...
+                                // replace with extension such as ElementAfterToken(xxx) or something like that.
+                                var _args = lineInfo.Tokens.ElementAt ( 3 ).Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+                                foreach ( var _a in _args )
+                                {
+                                    var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
+                                    _ra.AddArgument ( _argPair.First ().Trim (), _argPair.Last ().Trim () );
+                                }
+
+                                this._entities.Last ().AddResultAction ( _ra );
+                            }
+                        }
+                        // see if this is resultaction
+                        if ( lineInfo.Tokens.Count () == 4 )
+                        {
+                            var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                        lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
+                            this._entities.Last ().AddResultAction ( _ra );
+                        }
+                        // or unary action
+                        if ( lineInfo.Tokens.Count () == 2 )
+                        {
+                            var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                lineInfo.Tokens.ElementAt ( 1 ).Token );
+                            this._entities.Last ().AddUnaryAction ( _ua );
+                        }
+                    }
+                    #endregion
+
+
+                    #region " --- condition  actions block --- "
+                    if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
+                    {
+                        if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
+                        {
+                            var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                        lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
+                            this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                        }
+                    }
+                    #endregion
+
+
+                    #region " --- trigger block --- "
+                    if ( _currentScope == CurrentScope.TRIGGERS_BLOCK )
+                    {
+                        if ( lineInfo.Tokens.Count () == 2 )
+                        {
+                            var _firstToken = lineInfo.Tokens.First ().Token;
+                            if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this." ) )
+                                _firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
+                            var _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
+                            this._entities.Last ().AddTrigger ( _trigger );
+                        }
+                    }
+                    #endregion
+
+
+                    #region " --- constraints block --- "
+
+                    if ( _currentScope == CurrentScope.CONSTRAINTS_BLOCK )
+                    {
+                        // there should be only one token
+                        this._entities.Last ().AddConstraint ( new Constraint ( lineInfo.Tokens.First ().Token ) );
+                    }
+
+                    #endregion
+
+
+                }
+
+                _currLine++;
+
+            }
             return this.Entities;
 
 
