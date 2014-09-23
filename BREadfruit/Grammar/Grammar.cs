@@ -316,9 +316,10 @@ namespace BREadfruit
         public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show_element", 2, true, new [] { "show element", "show" } );
         //public static UnaryAction HideElementUnaryActionSymbol = new UnaryAction ( "hide_element", 2, true, new [] { "hide element", "hide" } );
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
+        public static UnaryAction LoadDataUnaryActionSymbol = new UnaryAction ( "load_data_from", 2, true, new [] { "load data from" } );
 
         public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
-
+       
 
 
         #endregion
@@ -348,7 +349,7 @@ namespace BREadfruit
                 ActionsSymbol
             } );
 
-        public static Symbol LoadDataSymbol = new Symbol ( "load data from", 2,
+        public static Symbol LoadDataSymbol = new Symbol ( "load_data_from", 2, new List<string>() {"load data from"},
             new List<Symbol> () { DataSourceSymbol, 
                 WebServiceSymbol, 
                 FileObjectSymbol
@@ -406,6 +407,16 @@ namespace BREadfruit
 
 
         #endregion
+
+
+        public static DefaultClause MaxlengthDefaultClause = new DefaultClause ( "max_length", PositiveIntegerValueRegex, new List<String> () { "maximum length", "max length" } );
+        public static DefaultClause MinLengthDefaultClause = new DefaultClause ( "min_length", PositiveIntegerValueRegex, new List<String> () { "min length", "minimum length" } );
+        public static DefaultClause MandatoryDefaultClause = new DefaultClause ( "mandatory", BooleanValueRegex );
+        public static DefaultClause EnabledDefaultClause = new DefaultClause ( "enable", BooleanValueRegex );
+        public static DefaultClause VisibleDefaultClause = new DefaultClause ( "visible", BooleanValueRegex );
+        public static DefaultClause ValueDefaultClause = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
+        public static DefaultClause LabelDefaultClause = new DefaultClause ( "label", LabelDefaultValueRegex );
+        public static DefaultClause LoadDataDefaultClause = new DefaultClause ( "load_data_from", LoadDataFromValueRegex, new List<string> () { "load data from" } );
 
 
         // ---------------------------------------------------------------------------------
@@ -503,6 +514,47 @@ namespace BREadfruit
             {
                 _s = from s in Symbols
                      where s.Token.Trim ().ToUpperInvariant () == token.Trim ().ToUpperInvariant ()
+                     select s;
+            }
+            if ( _s != null && _s.Count () > 0 )
+                return _s.First ();
+
+            return null;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static Symbol GetSymbolByToken ( string token, Type filterType, bool strictComparison = true )
+        {
+            return GetSymbolByToken ( token, new List<Type> { filterType }, strictComparison );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static Symbol GetSymbolByToken ( string token, IEnumerable<Type> filteredTypes, bool strictComparison = true )
+        {
+            if ( String.IsNullOrWhiteSpace ( token ) )
+                throw new ArgumentNullException ( token );
+
+            IEnumerable<Symbol> _s;
+
+            if ( strictComparison )
+            {
+                _s = from s in Symbols
+                     where filteredTypes.Contains ( s.GetType() )
+                     && s.Token == token
+                     || s.Aliases.Contains ( token ) // TODO: NOT HAPPY ABOUT THIS SHIT HERE
+                     select s;
+            }
+            else
+            {
+                _s = from s in Symbols
+                     where filteredTypes.Contains ( s.GetType () )
+                     && s.Token.Trim ().ToUpperInvariant () == token.Trim ().ToUpperInvariant ()
                      select s;
             }
             if ( _s != null && _s.Count () > 0 )
@@ -684,6 +736,8 @@ namespace BREadfruit
             Grammar._symbols.Add ( ShowElementUnaryActionSymbol );
             //Grammar._symbols.Add ( HideElementUnaryActionSymbol );
             Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
+            Grammar._symbols.Add ( LoadDataUnaryActionSymbol );
+            
             // result actions
             Grammar._symbols.Add ( SetValueActionSymbol );
 
@@ -709,34 +763,24 @@ namespace BREadfruit
         /// </summary>
         private static void PopulateDefaultTokens ()
         {
-            var maxlengthdefault = new DefaultClause ( "max_length", PositiveIntegerValueRegex,
-                new List<String> () { "maximum length", "max length" } );
-            var minlengthdefault = new DefaultClause ( "min_length", PositiveIntegerValueRegex,
-                new List<String> () { "min length", "minimum length" } );
-            var mandatorydefault = new DefaultClause ( "mandatory", BooleanValueRegex );
-            var enableddefault = new DefaultClause ( "enable", BooleanValueRegex );
-            var visibledefault = new DefaultClause ( "visible", BooleanValueRegex );
-            var valuedefault = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
-            var labeldefault = new DefaultClause ( "label", LabelDefaultValueRegex );
-            var loaddatadefault = new DefaultClause ( "load_data_from", LoadDataFromValueRegex, new List<string> () { "load data from" } );
+          
+            _defaultsTokens.Add ( MaxlengthDefaultClause );
+            _defaultsTokens.Add ( MinLengthDefaultClause );
+            _defaultsTokens.Add ( MandatoryDefaultClause );
+            _defaultsTokens.Add ( EnabledDefaultClause );
+            _defaultsTokens.Add ( VisibleDefaultClause );
+            _defaultsTokens.Add ( ValueDefaultClause );
+            _defaultsTokens.Add ( LabelDefaultClause );
+            _defaultsTokens.Add ( LoadDataDefaultClause );
 
-            _defaultsTokens.Add ( maxlengthdefault );
-            _defaultsTokens.Add ( minlengthdefault );
-            _defaultsTokens.Add ( mandatorydefault );
-            _defaultsTokens.Add ( enableddefault );
-            _defaultsTokens.Add ( visibledefault );
-            _defaultsTokens.Add ( valuedefault );
-            _defaultsTokens.Add ( labeldefault );
-            _defaultsTokens.Add ( loaddatadefault );
-
-            Grammar._symbols.Add ( maxlengthdefault );
-            Grammar._symbols.Add ( minlengthdefault );
-            Grammar._symbols.Add ( mandatorydefault );
-            Grammar._symbols.Add ( enableddefault );
-            Grammar._symbols.Add ( visibledefault );
-            Grammar._symbols.Add ( valuedefault );
-            Grammar._symbols.Add ( labeldefault );
-            Grammar._symbols.Add ( loaddatadefault );
+            Grammar._symbols.Add ( MaxlengthDefaultClause );
+            Grammar._symbols.Add ( MinLengthDefaultClause );
+            Grammar._symbols.Add ( MandatoryDefaultClause );
+            Grammar._symbols.Add ( EnabledDefaultClause );
+            Grammar._symbols.Add ( VisibleDefaultClause );
+            Grammar._symbols.Add ( ValueDefaultClause );
+            Grammar._symbols.Add ( LabelDefaultClause );
+            Grammar._symbols.Add ( LoadDataDefaultClause );
         }
 
 
