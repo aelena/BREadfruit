@@ -464,6 +464,14 @@ namespace BREadfruit
 
         #region " --- utility methods --- "
 
+        // TODO: Probably this is obsolete
+
+        /// <summary>
+        /// Performs a search of default tokens
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="strictComparison"></param>
+        /// <returns></returns>
         public static DefaultClause GetDefaultClauseByToken ( string token, bool strictComparison = true )
         {
             if ( String.IsNullOrWhiteSpace ( token ) )
@@ -496,6 +504,14 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Searches any symbol declared in the Grammar whose main token
+        /// or aliases are the same as the token specified as the first parameter.
+        /// </summary>
+        /// <param name="token">String with the value for the Symbol.</param>
+        /// <param name="strictComparison">Sets a value to indicate if the comparison has to be strict or not
+        /// regarding case sensitivity</param>
+        /// <returns></returns>
         public static Symbol GetSymbolByToken ( string token, bool strictComparison = true )
         {
             if ( String.IsNullOrWhiteSpace ( token ) )
@@ -526,6 +542,17 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Searches any symbol declared in the Grammar whose main token
+        /// or aliases are the same as the token specified as the first parameter.
+        /// This overload allows the caller a specific Type instance
+        /// that will act as filter to the query against the Grammar.
+        /// </summary>
+        /// <param name="token">String with the value for the Symbol.</param>
+        /// <param name="filterType">Type instance that will act as filter to the query against the Grammar</param>
+        /// <param name="strictComparison">Sets a value to indicate if the comparison has to be strict or not
+        /// regarding case sensitivity</param>
+        /// <returns></returns>
         public static Symbol GetSymbolByToken ( string token, Type filterType, bool strictComparison = true )
         {
             return GetSymbolByToken ( token, new List<Type> { filterType }, strictComparison );
@@ -535,6 +562,17 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Searches any symbol declared in the Grammar whose main token
+        /// or aliases are the same as the token specified as the first parameter.
+        /// This overload allows the caller to pass a collection of Type instances
+        /// that will act as filter to the query against the Grammar.
+        /// </summary>
+        /// <param name="token">String with the value for the Symbol.</param>
+        /// <param name="filteredTypes">Collection of Type instances that will act as filter to the query against the Grammar</param>
+        /// <param name="strictComparison">Sets a value to indicate if the comparison has to be strict or not
+        /// regarding case sensitivity</param>
+        /// <returns></returns>
         public static Symbol GetSymbolByToken ( string token, IEnumerable<Type> filteredTypes, bool strictComparison = true )
         {
             if ( String.IsNullOrWhiteSpace ( token ) )
