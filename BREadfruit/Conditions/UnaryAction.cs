@@ -9,7 +9,7 @@ namespace BREadfruit.Conditions
     {
 
         /// <summary>
-        /// Contains the name of the object / entity this unary action
+        /// Contains the name of the object / entity this unary constraint
         /// refers to. 
         /// If it is not specified then a value of this is assumed
         /// </summary>
