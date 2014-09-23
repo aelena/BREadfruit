@@ -328,11 +328,40 @@ namespace BREadfruit
             return this.Token;
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+
+        public static implicit operator Symbol ( string token )
+        {
+            return Grammar.GetSymbolByToken ( token );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static bool operator == ( string token, Symbol y )
+        {
+            var t = Grammar.GetSymbolByToken ( token );
+            return t == y;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static bool operator != ( string token, Symbol y )
+        {
+            var t = Grammar.GetSymbolByToken ( token );
+            return t != y;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
     }
-
-
-    // ---------------------------------------------------------------------------------
-
 
 
     // ---------------------------------------------------------------------------------

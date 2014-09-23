@@ -24,6 +24,9 @@ namespace BREadfruit.Tests.Low_level_tests
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
         [TestCase ( "s1", 0, true, "s1", 0, true, Result = true )]
         [TestCase ( "s1", 0, true, "s1", 0, false, Result = false )]
         [TestCase ( "s1", 0, true, "s2", 0, true, Result = false )]
@@ -41,6 +44,9 @@ namespace BREadfruit.Tests.Low_level_tests
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
         public void ShouldDetectSymbolsWithDifferentChildCount ()
         {
@@ -48,12 +54,15 @@ namespace BREadfruit.Tests.Low_level_tests
             s1.AddValidChild ( Grammar.EntitySymbol );
             s1.AddValidChild ( Grammar.WithSymbol );
 
-            var s2 = new Symbol ( "s1", 1, false);
+            var s2 = new Symbol ( "s1", 1, false );
             s2.AddValidChild ( Grammar.EntitySymbol );
 
             Assert.That ( !( s1.Equals ( s2 ) ) );
-            
+
         }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         [Test]
@@ -71,6 +80,10 @@ namespace BREadfruit.Tests.Low_level_tests
 
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         [Test]
         public void ShouldAcceptIdenticalSymbolInstances ()
         {
@@ -85,6 +98,27 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( ( s1.Equals ( s2 ) ) );
 
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void OverridingOperatorsShouldWork ()
+        {
+            string _token = "then";
+            Assert.That ( _token == Grammar.ThenSymbol );
+            Assert.IsTrue ( _token != Grammar.ThisSymbol );
+
+
+            Symbol s = "then";
+            Assert.That ( s == Grammar.ThenSymbol );
+            Assert.IsTrue ( s != Grammar.ThisSymbol );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
     }
 }
