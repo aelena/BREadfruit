@@ -48,6 +48,25 @@ namespace BREadfruit.Tests
             Assert.That ( e.Triggers.Count () == 1 );
             Assert.That ( e.Triggers.First ().ToString () == "TBVendorName.value changed" );
 
+            // test equality stuff  
+
+            Assert.IsTrue ( e.Defaults.First ().Token == Grammar.VisibleDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ).Token == Grammar.ValueDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ).Token == Grammar.LabelDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 3 ).Token == Grammar.MinLengthDefaultClause );
+
+            Assert.IsTrue ( e.Defaults.First () == Grammar.VisibleDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ) == Grammar.ValueDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ) == Grammar.LabelDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 3 ) == Grammar.MinLengthDefaultClause );
+
+            Assert.IsTrue ( e.ConditionlessActions.First ().Action == Grammar.HideUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.First () == Grammar.HideUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ).Action == Grammar.HideUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ) == Grammar.HideUnaryActionSymbol );
+
+            Assert.IsTrue ( e.Triggers.First ().Event == Grammar.ChangedEventSymbol );
+            Assert.IsTrue ( e.Triggers.First () == Grammar.ChangedEventSymbol );
 
         }
 
@@ -77,6 +96,18 @@ namespace BREadfruit.Tests
             Assert.That ( e.Triggers.Count () == 1 );
             Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed" );
 
+            Assert.IsTrue ( e.Defaults.First () == Grammar.VisibleDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ) == Grammar.ValueDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ) == Grammar.LabelDefaultClause );
+
+            Assert.IsTrue ( e.ConditionlessActions.First ().Action == Grammar.HideUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.First () == Grammar.HideUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ).Action == Grammar.HideUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ) == Grammar.HideUnaryActionSymbol );
+
+            Assert.IsTrue ( e.Triggers.First ().Event == Grammar.ChangedEventSymbol );
+            Assert.IsTrue ( e.Triggers.First () == Grammar.ChangedEventSymbol );
+
         }
 
 
@@ -105,6 +136,28 @@ namespace BREadfruit.Tests
             Assert.That ( e.Triggers.Count () == 1 );
             Assert.That ( e.Triggers.First ().ToString () == "DDLVDCountry.value changed" );
 
+            Assert.IsTrue ( e.Defaults.First () == Grammar.VisibleDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ) == Grammar.ValueDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ) == Grammar.MandatoryDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 4 ) == Grammar.LabelDefaultClause );
+
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ) == Grammar.HideUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ) == Grammar.HideUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 2 ) == Grammar.LoadDataUnaryActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 3 ) == Grammar.SetValueActionSymbol );
+
+            Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.InOperator );
+            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First () == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First().Operator == Grammar.InOperator );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First().ResultActions.First () == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First().Operator == Grammar.IsOperator );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First().ResultActions.First () == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First().Operator == Grammar.NotInOperator );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First().ResultActions.First () == Grammar.SetValueActionSymbol );
+
+            Assert.IsTrue ( e.Triggers.First () == Grammar.ChangedEventSymbol );
+
 
 
         }
@@ -128,6 +181,11 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.First ().Arguments.Last ().Value == "\"Anything\"" );
             Assert.That ( e.Constraints.Count () == 1 );
             Assert.That ( e.Constraints.First ().Name == "only_numbers" );
+
+            Assert.IsTrue ( e.Defaults.ElementAt ( 0 ) == Grammar.LoadDataDefaultClause );
+            Assert.IsTrue ( e.Constraints.ElementAt ( 0 ) == Grammar.OnlyNumbersConstraintSymbol );
+
+
 
         }
 
@@ -210,7 +268,7 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.ElementAt ( 0 ).Name == "TBVendorName" );
             Assert.That ( parser.Entities.ElementAt ( 0 ).Defaults.Count () == 4 );
             Assert.That ( parser.Entities.ElementAt ( 0 ).ConditionlessActions.Count () == 2 );
-            Assert.That ( parser.Entities.ElementAt ( 0 ).ConditionlessActions.First ().ToString() == "hide btnCreateVendor" );
+            Assert.That ( parser.Entities.ElementAt ( 0 ).ConditionlessActions.First ().ToString () == "hide btnCreateVendor" );
             Assert.That ( parser.Entities.ElementAt ( 0 ).ConditionlessActions.Last ().ToString () == "hide vendorSearchResultGrid" );
             Assert.That ( parser.Entities.ElementAt ( 0 ).Rules.Count () == 0 );
             Assert.That ( parser.Entities.ElementAt ( 0 ).Triggers.Count () == 1 );
@@ -222,7 +280,7 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.ElementAt ( 1 ).Name == "TBVendorCity" );
             Assert.That ( parser.Entities.ElementAt ( 1 ).Defaults.Count () == 3 );
             Assert.That ( parser.Entities.ElementAt ( 1 ).ConditionlessActions.Count () == 2 );
-            Assert.That ( parser.Entities.ElementAt ( 1 ).Rules.Count () == 0 ); 
+            Assert.That ( parser.Entities.ElementAt ( 1 ).Rules.Count () == 0 );
             Assert.That ( parser.Entities.ElementAt ( 1 ).ConditionlessActions.First ().ToString () == "hide btnCreateVendor" );
             Assert.That ( parser.Entities.ElementAt ( 1 ).ConditionlessActions.Last ().ToString () == "hide vendorSearchResultGrid" );
             Assert.That ( parser.Entities.ElementAt ( 1 ).Triggers.Count () == 1 );
@@ -237,7 +295,7 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.Count () == 1 );
             Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.First ().Action == "set_value" );
             Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.First ().Reference == "ErrorMessage" );
-            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString() == "MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED" );
+            Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED" );
             Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Last ().Conditions.Count () == 1 );
             Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Last ().Conditions.First ().ResultActions.Count () == 1 );
             Assert.That ( parser.Entities.ElementAt ( 2 ).Rules.Last ().Conditions.First ().ResultActions.First ().Action == "set_value" );
@@ -277,7 +335,7 @@ namespace BREadfruit.Tests
 
             Assert.That ( parser.Entities.ElementAt ( 6 ).Name == "DDLCDCountry" );
             Assert.That ( parser.Entities.ElementAt ( 6 ).Defaults.Count () == 4 );
-            Assert.That ( parser.Entities.ElementAt ( 6 ).ConditionlessActions.Count () == 2);
+            Assert.That ( parser.Entities.ElementAt ( 6 ).ConditionlessActions.Count () == 2 );
             Assert.That ( parser.Entities.ElementAt ( 6 ).Rules.Count () == 0 );
             Assert.That ( parser.Entities.ElementAt ( 6 ).Triggers.Count () == 1 );
             Assert.That ( parser.Entities.ElementAt ( 6 ).Constraints.Count () == 0 );
