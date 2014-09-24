@@ -268,10 +268,8 @@ namespace BREadfruit
         public const string EnabledLineRegex = @"^ENABLED[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
         public const string VisibleLineRegex = @"^VISIBLE[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
         public const string FreeValueLineRegex = "^VALUE[\t\\s]*(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
-        public const string LabelDefaultLineRegex = "^label\\s*((\"|')(.*?)(\"|')|[A-Z\".\"]*)$";
-        public const string LoadDataDefaultLineRegex = "LOAD_DATA_FROM[\t' ']*((\"|')(.*?)(\"|')|[A-Z\".\"]*)[\t' ']*$";
-
-
+        public const string LabelDefaultLineRegex = "^LABEL[\t\\s]*(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$";
+        public const string LoadDataDefaultLineRegex = @"^LOAD_DATA_FROM[\t\s]*(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
 
 
         // ---------------------------------------------------------------------------------

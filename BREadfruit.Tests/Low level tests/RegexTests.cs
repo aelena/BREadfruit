@@ -14,10 +14,10 @@ namespace BREadfruit.Tests.Low_level_tests
 
         [TestCase ( "label DREAMS", Grammar.LabelDefaultLineRegex, Result = true )]
         [TestCase ( "label DREAMS.OF.FIRE", Grammar.LabelDefaultLineRegex, Result = true )]
-        [TestCase ( "label DREAMS_OF_FIRE", Grammar.LabelDefaultLineRegex, Result = false )]
+        [TestCase ( "label DREAMS_OF_FIRE", Grammar.LabelDefaultLineRegex, Result = true )]
         [TestCase ( "label 'Any text goes here'", Grammar.LabelDefaultLineRegex, Result = true )]
         [TestCase ( "label \"Any text goes here\"", Grammar.LabelDefaultLineRegex, Result = true )]
-        [TestCase ( "label invalid.naming", Grammar.LabelDefaultLineRegex, Result = false )]
+        [TestCase ( "label invalid.naming", Grammar.LabelDefaultLineRegex, Result = true )]
         [TestCase ( "DREAMS", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "DREAMS.OF.FIRE", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "DREAMS_OF_FIRE", Grammar.LabelDefaultValueRegex, Result = true )]
@@ -26,7 +26,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "invalid.naming", Grammar.LabelDefaultValueRegex, Result = true )]
         public bool RegexTest_LabelDefaultClause(string line, string regex )
         {
-            return Regex.IsMatch ( line, regex );
+            return Regex.IsMatch ( line.ToUpperInvariant(), regex );
         }
 
         [TestCase ( "load data from DATASOURCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
