@@ -7,26 +7,26 @@ using System.Threading.Tasks;
 
 namespace BREadfruit.Exceptions
 {
-    public class InvalidWithClauseException : Exception, ISerializable
+    public class InvalidShowStatementClauseException : Exception, ISerializable
     {
 
 
-        public InvalidWithClauseException ()
+        public InvalidShowStatementClauseException ()
             : base ( Grammar.InvalidShowElementExceptionDefaultMessage )
         {
         }
 
-        public InvalidWithClauseException ( string message )
+        public InvalidShowStatementClauseException ( string message )
             : base ( message )
         {
         }
 
-        public InvalidWithClauseException ( string message, Exception inner )
+        public InvalidShowStatementClauseException ( string message, Exception inner )
             : base ( message, inner )
         {
         }
 
-        protected InvalidWithClauseException ( SerializationInfo info, StreamingContext context )
+        protected InvalidShowStatementClauseException ( SerializationInfo info, StreamingContext context )
             : base ( info, context )
         {
         }

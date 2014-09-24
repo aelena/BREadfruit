@@ -29,6 +29,10 @@ namespace BREadfruit.Tests.Low_level_tests
             return Regex.IsMatch ( line.ToUpperInvariant(), regex );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
         [TestCase ( "load data from DATASOURCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
         [TestCase ( "load data from WEBSERVICE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
         [TestCase ( "load data from DATAsourRCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = false )]
@@ -49,5 +53,46 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             return Regex.IsMatch ( line, regex );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "show this", Grammar.ShowElementLineRegex, Result =true )]
+        [TestCase ( "show NAME_OF_DIV", Grammar.ShowElementLineRegex, Result = true )]
+        [TestCase ( "show this      ", Grammar.ShowElementLineRegex, Result = true )]
+        [TestCase ( "show NAME_OF_DIV   ", Grammar.ShowElementLineRegex, Result = true )]
+        [TestCase ( " show NAME_OF_DIV   ", Grammar.ShowElementLineRegex, Result = false )]
+        [TestCase ( " show", Grammar.ShowElementLineRegex, Result = false )]
+        [TestCase ( " show", Grammar.ShowElementLineRegex, Result = false )]
+        [TestCase ( "show", Grammar.ShowElementLineRegex, Result = false )]
+        [TestCase ( "show 'dudud'", Grammar.ShowElementLineRegex, Result = false )]
+        public bool ShouldDiscriminateShowElementsLineCorrectly( string line, string regex)
+        {
+             return Regex.IsMatch ( line, regex, RegexOptions.IgnoreCase );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+
+        [TestCase ( "hide this", Grammar.HideElementLineRegex, Result = true )]
+        [TestCase ( "hide NAME_OF_DIV", Grammar.HideElementLineRegex, Result = true )]
+        [TestCase ( "hide this      ", Grammar.HideElementLineRegex, Result = true )]
+        [TestCase ( "hide NAME_OF_DIV   ", Grammar.HideElementLineRegex, Result = true )]
+        [TestCase ( " hide NAME_OF_DIV   ", Grammar.HideElementLineRegex, Result = false )]
+        [TestCase ( " hide", Grammar.HideElementLineRegex, Result = false )]
+        [TestCase ( " hide", Grammar.HideElementLineRegex, Result = false )]
+        [TestCase ( "hide", Grammar.HideElementLineRegex, Result = false )]
+        [TestCase ( "hide 'dudud'", Grammar.HideElementLineRegex, Result = false )]
+        public bool ShouldDiscriminateHideElementsLineCorrectly ( string line, string regex )
+        {
+            return Regex.IsMatch ( line, regex, RegexOptions.IgnoreCase );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
     }
 }

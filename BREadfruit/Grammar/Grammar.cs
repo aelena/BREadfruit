@@ -274,6 +274,23 @@ namespace BREadfruit
         public const string LabelDefaultLineRegex = "^LABEL[\t\\s]*(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$";
         public const string LoadDataDefaultLineRegex = @"^LOAD_DATA_FROM[\t\s]*(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
 
+        /// <summary>
+        /// Regex for lines such as 
+        /// show this
+	    /// show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
+        /// See tests in ShouldDiscriminateShowElementsLineCorrectly
+        /// </summary>
+        public const string ShowElementLineRegex = @"^show[\t\s]+(this|([A-Za-z0-9_])+){1}[\t\s]*$";
+        /// <summary>
+        /// Regex for lines such as 
+        /// hide this
+        /// hide DIV_ADDITIONAL_INFO_NATURAL_PERSON	
+        /// See tests in ShouldDiscriminateHideElementsLineCorrectly
+        /// </summary>
+        public const string HideElementLineRegex = @"^hide[\t\s]+(this|([A-Za-z0-9_])+){1}[\t\s]*$";
+
+        
+
 
         // ---------------------------------------------------------------------------------
 
@@ -347,7 +364,7 @@ namespace BREadfruit
         public static UnaryAction HideUnaryActionSymbol = new UnaryAction ( "hide", 2, true, new [] { "set hidden", "make hidden", "hidden" } );
         public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory" } );
         public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
-        public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show_element", 2, true, new [] { "show element", "show" } );
+        public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show", 2, true, new [] { "show element" } );
         //public static UnaryAction HideElementUnaryActionSymbol = new UnaryAction ( "hide_element", 2, true, new [] { "hide element", "hide" } );
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
         public static UnaryAction LoadDataUnaryActionSymbol = new UnaryAction ( "load_data_from", 2, true, new [] { "load data from" } );
@@ -914,8 +931,12 @@ namespace BREadfruit
         /// </summary>
         public static readonly string InvalidWithClauseExceptionDefaultMessage = "Invalid With clause found.";
 
+        public static readonly string InvalidShowElementExceptionDefaultMessage = "Invalid Show Element clause found";
+        public static readonly string InvalidShowElementExceptionMessageTemplate = "Invalid Show Element clause found in line {0} - '{1}'";
+         public static readonly string InvalidHideElementExceptionDefaultMessage = "Invalid Hide Element clause found";
+         public static readonly string InvalidHideElementExceptionMessageTemplate = "Invalid Hide Element clause found in line {0} - '{1}'";
 
-
+        
 
         // ---------------------------------------------------------------------------------
 

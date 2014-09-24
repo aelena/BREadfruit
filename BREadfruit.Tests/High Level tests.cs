@@ -153,12 +153,12 @@ namespace BREadfruit.Tests
 
             Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.InOperator );
             Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First () == Grammar.SetValueActionSymbol );
-            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First().Operator == Grammar.InOperator );
-            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First().ResultActions.First () == Grammar.SetValueActionSymbol );
-            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First().Operator == Grammar.IsOperator );
-            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First().ResultActions.First () == Grammar.SetValueActionSymbol );
-            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First().Operator == Grammar.NotInOperator );
-            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First().ResultActions.First () == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator == Grammar.InOperator );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.First () == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator == Grammar.IsOperator );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ResultActions.First () == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First ().Operator == Grammar.NotInOperator );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First ().ResultActions.First () == Grammar.SetValueActionSymbol );
 
             Assert.IsTrue ( e.Triggers.First () == Grammar.ChangedEventSymbol );
 
@@ -216,7 +216,7 @@ namespace BREadfruit.Tests
         {
             var parser = new Parser ();
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File006.txt" );
-            Assert.That ( parser.Entities.First().Form == "frmSearch" );
+            Assert.That ( parser.Entities.First ().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 2 );
             Assert.That ( parser.Entities.First ().Rules.First ().Conditions.Count () == 1 );
@@ -233,7 +233,7 @@ namespace BREadfruit.Tests
         {
             var parser = new Parser ();
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File007.txt" );
-            Assert.That ( parser.Entities.First().Form == "frmSearch" );
+            Assert.That ( parser.Entities.First ().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 8 );
 
@@ -260,8 +260,8 @@ namespace BREadfruit.Tests
 
 
         [Test]
-        [ExpectedException ( ExpectedException = typeof(InvalidEntityDeclarationException), 
-            ExpectedMessage="Invalid Entity declaration found in line 1 - 'Entity DDLCDCountry is Buttton in \"frmSearch\"'"  )]
+        [ExpectedException ( ExpectedException = typeof ( InvalidEntityDeclarationException ),
+            ExpectedMessage = "Invalid Entity declaration found in line 1 - 'Entity DDLCDCountry is Buttton in \"frmSearch\"'" )]
         public void ParseSampleFile009 ()
         {
             var parser = new Parser ();
@@ -308,14 +308,54 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Equals ( "value \"NG\"" ) );
             Assert.That ( e.Defaults.ElementAt ( 2 ) == Grammar.ValueDefaultClause );
             // the value is represented internally as an already quoted string
-            Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString() == "\"NG\"" );
+            Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == "\"NG\"" );
 
             Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Equals ( "load_data_from DATASOURCE.VENDOR_CLASSIFICATIONS" ) );
             Assert.That ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "DATASOURCE.VENDOR_CLASSIFICATIONS" );
 
 
-        } 
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile012 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File012.txt" );
+            Assert.That ( parser.Entities.First ().Form == "fmrMain" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Defaults.Count () == 3 );
+            Assert.That ( e.Defaults.ElementAt ( 0 ).ToString ().Equals ( "visible true" ) );
+            Assert.That ( e.Defaults.ElementAt ( 0 ) == Grammar.VisibleDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 0 ).Value.ToString () == Grammar.TrueSymbol );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Equals ( "enable true" ) );
+            Assert.That ( e.Defaults.ElementAt ( 1 ) == Grammar.EnabledDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == Grammar.TrueSymbol );
+            Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Equals ( "value " ) );
+            Assert.That ( e.Defaults.ElementAt ( 2 ) == Grammar.ValueDefaultClause );
+            // the value is represented internally as an already quoted string
+            Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == "" );
+
+            Assert.That ( e.Rules.Count () == 3 );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Count () == 2 );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Count () == 2 );
+
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Value.ToString () == "{\"YVT4\",\"YVT5\"}" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Operand == "Vendor.AccountGroup" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Operator == Grammar.InOperator );
+
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.First ().ToString () == "show GD_Ctr_IsNaturalPerson" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.ElementAt ( 1 ).ToString () == "show DIV_ADDITIONAL_INFO_NATURAL_PERSON" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.ElementAt ( 2 ).ToString () == "hide GD_Ctr_IsNaturalPerson" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.ElementAt ( 3 ).ToString () == "hide ABCDEFG_HIJK" );
+        }
+
 
         // ---------------------------------------------------------------------------------
 

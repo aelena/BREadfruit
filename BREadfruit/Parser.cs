@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BREadfruit.Clauses;
 using BREadfruit.Conditions;
@@ -250,6 +251,35 @@ namespace BREadfruit
                     #region " --- condition  actions block --- "
                     if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
                     {
+                        // unary action
+                        if ( lineInfo.Tokens.Count () == 2 )
+                        {
+                            if ( lineInfo.Tokens.First () == Grammar.ShowElementUnaryActionSymbol )
+                            {
+                                if ( Regex.IsMatch ( lineInfo.Representation.Trim (), Grammar.ShowElementLineRegex, RegexOptions.IgnoreCase ) )
+                                {
+                                    var _ua = new UnaryAction ( lineInfo.Tokens.First (),
+                                        lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
+                                    this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+                                }
+                                else
+                                    throw new InvalidShowStatementClauseException (
+                                        String.Format ( Grammar.InvalidShowElementExceptionMessageTemplate, _currLine + 1, line.Trim () ) );
+                            }
+                            if ( lineInfo.Tokens.First () == Grammar.HideUnaryActionSymbol )
+                            {
+                                if ( Regex.IsMatch ( lineInfo.Representation.Trim (), Grammar.HideElementLineRegex, RegexOptions.IgnoreCase ) )
+                                {
+                                    var _ua = new UnaryAction ( lineInfo.Tokens.First (),
+                                        lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
+                                    this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+                                }
+                                else
+                                    throw new InvalidHideStatementClauseException (
+                                        String.Format ( Grammar.InvalidHideElementExceptionMessageTemplate, _currLine + 1, line.Trim () ) );
+                            }
+                        }
+
                         if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
                         {
                             var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
@@ -296,7 +326,7 @@ namespace BREadfruit
 
         }
 
-       
+
 
         // ---------------------------------------------------------------------------------
 
@@ -317,15 +347,15 @@ namespace BREadfruit
             if ( this._lineParser.IsAValidSentence ( lineInfo ) )
             {
                 _currentScope = CurrentScope.NEW_ENTITY;
-                this._entities.Add ( new Entity ( 
+                this._entities.Add ( new Entity (
                     lineInfo.Tokens.ElementAt ( 1 ).Token,
-                    lineInfo.Tokens.ElementAt ( 3 ).Token, 
-                    lineInfo.Tokens.Last().Token ) );               // last token in form's name where the entity belongs
+                    lineInfo.Tokens.ElementAt ( 3 ).Token,
+                    lineInfo.Tokens.Last ().Token ) );               // last token in form's name where the entity belongs
             }
             else
                 // throw an exception if the regex validation fails 
                 throw new InvalidEntityDeclarationException ( String.Format ( Grammar.InvalidEntityDeclarationExceptionMessageTemplate, _currLine + 1, line.Trim () ) );
-          
+
             return _currentScope;
         }
 
