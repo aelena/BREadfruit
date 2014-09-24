@@ -329,8 +329,9 @@ namespace BREadfruit.Helpers
         public static IEnumerable<T> TakeAfter<T> ( this IEnumerable<T> list, Func<T, bool> func )
         {
             int i = 0;
-            foreach ( var l in list){
-                if ( func (l) )
+            foreach ( var l in list )
+            {
+                if ( func ( l ) )
                 {
                     return list.Skip ( ++i );
                 }
@@ -464,6 +465,60 @@ namespace BREadfruit.Helpers
 
 
         // ---------------------------------------------------------------------------------
+
+
+
+        /// <summary>
+        /// Removes all ocurrences of a string in the interval denoted by the 
+        /// beginningString and endString markers.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="stringToRemove"></param>
+        /// <param name="beginningString"></param>
+        /// <param name="endString"></param>
+        /// <returns></returns>
+        public static string RemoveBetween ( this string value, string stringToRemove, string beginningString, string endString )
+        {
+            return value.RemoveBetween ( new List<string> { stringToRemove }, beginningString, endString );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Removes all ocurrences of a string in the interval denoted by the 
+        /// beginningString and endString markers.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="stringToRemove"></param>
+        /// <param name="beginningString"></param>
+        /// <param name="endString"></param>
+        /// <returns></returns>
+        public static string RemoveBetween ( this string value, IEnumerable<string> stringsToRemove, string beginningString, string endString )
+        {
+            if ( String.IsNullOrWhiteSpace ( value ) )
+                throw new ArgumentException ( "String cannot be null" );
+
+            var _index1 = value.IndexOf ( beginningString );
+            var _index2 = value.IndexOf ( endString );
+
+            if ( _index2 < _index1 )
+                throw new Exception ( "End string cannot appear earlier than beginning string" );
+
+            var _subset = value.Substring ( _index1, ( _index2 - _index1 ) + endString.Length );
+            foreach ( var s in stringsToRemove )
+                _subset = _subset.Replace ( s, String.Empty );
+
+            var _ = String.Format ( "{0}{1}{2}", value.Substring ( 0, _index1 ), _subset, value.Substring ( _index2 + endString.Length ) );
+            return _;
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
 
         public static string TakeBetween ( this string value, string markString, string beginningString, string endString, bool trimResults = false )

@@ -314,5 +314,58 @@ namespace BREadfruit.Tests.Low_level_tests
         }
 
 
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "{'P', 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
+        [TestCase ( "{'P',     'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
+        [TestCase ( "{'P', 'Q', '2', 'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+        [TestCase ( "{'P',   'Q', '2',    'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+
+        [TestCase ( "hello boys and girls {'P', 'Q'} what was that?", " ", "{", "}", Result = "hello boys and girls {'P','Q'} what was that?" )]
+        [TestCase ( "hello boys and girls {'P',     'Q'} what was that?", " ", "{", "}", Result = "hello boys and girls {'P','Q'} what was that?" )]
+        [TestCase ( "hello boys and girls {'P', 'Q', '2', 'birds'} what was that?", " ", "{", "}", Result = "hello boys and girls {'P','Q','2','birds'} what was that?" )]
+        [TestCase ( "hello boys and girls {'P',   'Q', '2',    'birds'} what was that?", " ", "{", "}", Result = "hello boys and girls {'P','Q','2','birds'} what was that?" )]
+
+        [TestCase ( "dog{'P', 'Q'}god", " ", "dog{", "}god", Result = "dog{'P','Q'}god" )]
+        [TestCase ( "dog{'P',     'Q'}god", " ", "dog{", "}god", Result = "dog{'P','Q'}god" )]
+        [TestCase ( "dog{'P', 'Q', '2', 'birds'}god", " ", "dog{", "}god", Result = "dog{'P','Q','2','birds'}god" )]
+        [TestCase ( "dog{'P',   'Q', '2',    'birds'}god", " ", "dog{", "}god", Result = "dog{'P','Q','2','birds'}god" )]
+
+        [TestCase ( "random stirng before dog{'P', 'Q'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q'}god" )]
+        [TestCase ( "random stirng before dog{'P',     'Q'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q'}god" )]
+        [TestCase ( "random stirng before dog{'P', 'Q', '2', 'birds'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q','2','birds'}god" )]
+        [TestCase ( "random stirng before dog{'P',   'Q', '2',    'birds'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q','2','birds'}god" )]
+
+        public string RemoveBetweenTests ( string original, string removee, string s1, string s2 )
+        {
+            return original.RemoveBetween ( removee, s1, s2 );
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "{'P', 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
+        [TestCase ( "{'P',  'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
+        [TestCase ( "{'P',          'Q', '2', 'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+        [TestCase ( "{'P',      'Q',     '2',    'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+        public string RemoveBetweenTests2 ( string original, string removee, string s1, string s2 )
+        {
+            return original.RemoveBetween ( new List<String> { " ", "\t" }, s1, s2 );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "{'P', - 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
+        [TestCase ( "{'P',   -- 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
+        [TestCase ( "{'P',      -  -    -   'Q', '2', 'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+        [TestCase ( "{'P',  - - #    'Q',     '2',    'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+        public string RemoveBetweenTests3 ( string original, string removee, string s1, string s2 )
+        {
+            return original.RemoveBetween ( new List<String> { " ", "\t", "-", "#" }, s1, s2 );
+        }
+
     }
 }
