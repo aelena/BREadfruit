@@ -1,15 +1,15 @@
 ﻿Entity GD_Ctr_IsNaturalPerson is DropDownList in "fmrMain"
-	with defaults
-		visible true
-		enabled true
-		value ''
+;	with defaults
+;		visible true
+;		enabled true
+;		value ''
 
 	with rules
-		Vendor.AccountGroup in {"YVT4","YVT5"} then
-			show this
-			show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
-			hide this
-			hide ABCDEFG_HIJK
+;		Vendor.AccountGroup in {"YVT4", "YVT5"} then
+;			show this
+;			show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
+;			hide this
+;			hide ABCDEFG_HIJK
 			; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
 		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P", "Q", "S"} then set value false GD_Ctr_IsNaturalPerson.Checked
 		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value true GD_Ctr_IsNaturalPerson.Checked 

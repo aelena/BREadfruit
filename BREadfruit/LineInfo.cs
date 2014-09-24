@@ -176,6 +176,13 @@ namespace BREadfruit
                  && ( this.HasSymbol ( Grammar.InSymbol ) || this.HasSymbol ( Grammar.IsOperator ) || this.HasSymbol ( Grammar.IsNotOperator ) ) )
             {
                 int i1 = 0, i2 = 0;
+                if ( this.HasSymbol ( Grammar.StartsWithOperator ) && this.HasSymbol ( Grammar.ThenSymbol ) )
+                {
+                    i1 = this.IndexOfSymbol ( Grammar.StartsWithOperator ) + 1;
+                    i2 = this.IndexOfSymbol ( Grammar.ThenSymbol ) - 1;
+                    if ( i1 <= i2 )
+                        return new Tuple<string, int, int> ( this.Tokens.JoinTogetherBetween ( i1, i2 ).Token, i1, i2 );
+                }
                 if ( this.HasSymbol ( Grammar.InSymbol ) && this.HasSymbol ( Grammar.ThenSymbol ) )
                 {
                     i1 = this.IndexOfSymbol ( Grammar.InSymbol ) + 1;

@@ -367,5 +367,19 @@ namespace BREadfruit.Tests.Low_level_tests
             return original.RemoveBetween ( new List<String> { " ", "\t", "-", "#" }, s1, s2 );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( null, " ", "{", "}", Result = "{'P','Q'}", ExpectedException = typeof(ArgumentException), ExpectedMessage = "String cannot be null" )]
+        [TestCase ( "}'P',   -- 'Q'{", " ", "{", "}", Result = "{'P','Q'}", ExpectedException = typeof ( Exception ), ExpectedMessage = "End string cannot appear earlier than beginning string" )]
+        public string RemoveBetweenTestsExceptions ( string original, string removee, string s1, string s2 )
+        {
+            return original.RemoveBetween ( new List<String> { " ", "\t", "-", "#" }, s1, s2 );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
     }
 }

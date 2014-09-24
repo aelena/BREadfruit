@@ -169,45 +169,54 @@ namespace BREadfruit
         public string TokenizeMultiplePartOperators ( LineInfo li /*IEnumerable<Symbol> tokens, string line*/ )
         {
 
+            CheckForValueListsInCondition ( li );
+
+            // take a repreeentation of the entire list of tokens as a simple string
+            var _fused = li.Tokens.JoinTogether ().Token;
+            var _replacedString = _fused;
+
+
+            // now check for occurrence
+            var _x = from op in Grammar.Symbols
+                     where op is Symbol
+                     || op is ResultAction
+                     || op is DefaultClause
+                     || op is Operator
+                     && op.Aliases.Count () > 0
+                     let t = _fused.ContainsAny2 ( op.Aliases )
+                     where t.Item1
+                     orderby op.Token.Length descending
+                     select new
+                     {
+                         symbol = op,
+                         Ocurrence = t.Item2,
+                         Index = _fused.IndexOf ( t.Item2 ),
+                         Length = t.Item2.Length
+                     };
+
+
+            if ( _x != null && _x.Count () > 0 )
+                _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
+
+            _fused = _replacedString;
+
+
+            _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
+
+            li = ParseLine ( _replacedString.RemoveBetween ( " ", "{", "}" ) );
+
+            var _ = li.Representation;
+            return li.Representation;
+        }
+
+        private static void CheckForValueListsInCondition ( LineInfo li )
+        {
             var _conditionValueList = li.TokenizeValueListInCondition ();
             if ( _conditionValueList != null )
             {
                 li.RemoveTokensFromTo ( _conditionValueList.Item2, _conditionValueList.Item3 + 1 );
                 li.InsertTokenAt ( _conditionValueList.Item2, new Symbol ( _conditionValueList.Item1, 2 ) );
             }
-
-            // take a repreeentation of the entire list of tokens as a simple string
-            var _fused = li.Tokens.JoinTogether ().Token;
-            var _replacedString = _fused;
-
-           
-                // now check for occurrence
-                var _x = from op in Grammar.Symbols
-                         where op is Symbol
-                         || op is ResultAction
-                         || op is DefaultClause
-                         || op is Operator
-                         && op.Aliases.Count () > 0
-                         let t = _fused.ContainsAny2 ( op.Aliases )
-                         where t.Item1
-                         orderby op.Token.Length descending
-                         select new
-                         {
-                             symbol = op,
-                             Ocurrence = t.Item2,
-                             Index = _fused.IndexOf ( t.Item2 ),
-                             Length = t.Item2.Length
-                         };
-
-
-                if ( _x != null && _x.Count () > 0 )
-                    _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
-
-            _fused = _replacedString;
-
-
-            _replacedString = _replacedString.Prepend ( "\t", li.IndentLevel );
-            return _replacedString;
         }
 
         // ---------------------------------------------------------------------------------
@@ -337,7 +346,7 @@ namespace BREadfruit
                 lineInfo.AddToken ( new Symbol ( _argsAsString, 2, true ) );
             }
             // if there were such tokens, preserve them again in the new instance
-            if ( _trailingTokensToBePreserved != null)
+            if ( _trailingTokensToBePreserved != null )
                 lineInfo.AddTokens ( _trailingTokensToBePreserved );
             return lineInfo;
         }
