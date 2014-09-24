@@ -269,9 +269,8 @@ Entity GD_Ctr_VendorClassification is DropDownList
 
 	with rules
 		role in {"UPM","CPM"} then enabled false
-		; MEANING WHAT? For customer country France the value is set due to legal form selection.
-		if Vendor. Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P", "Q", "S"} then set value GD_Ctr_VendorClassification.Value "G"
-		if Vendor. Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value GD_Ctr_VendorClassification.Value "NG"
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification.Value
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value "NG" in GD_Ctr_VendorClassification.Value
 
 ; ----------------------------------------------------------------------------	
 

@@ -280,6 +280,39 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        public void ParseSampleFile011 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File011.txt" );
+
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Defaults.Count () == 4 );
+
+            Assert.That ( e.Defaults.ElementAt ( 0 ).ToString ().Equals ( "visible true" ) );
+            Assert.That ( e.Defaults.ElementAt ( 0 ) == Grammar.VisibleDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 0 ).Value.ToString () == Grammar.TrueSymbol );
+
+            Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Equals ( "enable true" ) );
+            Assert.That ( e.Defaults.ElementAt ( 1 ) == Grammar.EnabledDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == Grammar.TrueSymbol );
+
+            Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Equals ( "value \"NG\"" ) );
+            Assert.That ( e.Defaults.ElementAt ( 2 ) == Grammar.ValueDefaultClause );
+            // the value is represented internally as an already quoted string
+            Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString() == "\"NG\"" );
+
+            Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Equals ( "load_data_from DATASOURCE.VENDOR_CLASSIFICATIONS" ) );
+            Assert.That ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "DATASOURCE.VENDOR_CLASSIFICATIONS" );
+
+
+        } 
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();

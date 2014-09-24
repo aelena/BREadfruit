@@ -1,0 +1,12 @@
+﻿Entity GD_Ctr_VendorClassification is DropDownList
+
+	with defaults
+		visible true
+		enabled true
+		value "NG"
+		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
+
+	with rules
+		role in {"UPM","CPM"} then enabled false
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification.Value
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value "NG" in GD_Ctr_VendorClassification.Value
