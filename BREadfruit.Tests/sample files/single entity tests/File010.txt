@@ -1,4 +1,4 @@
-﻿Entity DDLCDCountry is Button
+﻿Entity DDLCDCountry is Button in "frmSearch"
 	with defaults
 		visible true
 

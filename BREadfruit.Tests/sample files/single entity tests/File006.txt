@@ -1,4 +1,4 @@
-﻿Entity TBVendorNumber is TextBox
+﻿Entity TBVendorNumber is TextBox in "frmSearch"
 
 	with defaults
 		label LABELS.VENDOR.TAXCODE4

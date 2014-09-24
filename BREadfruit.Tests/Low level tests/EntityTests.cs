@@ -16,7 +16,7 @@ namespace BREadfruit.Tests.Low_level_tests
         public bool Entity_AddConstraint_Tests ( string constraintToken )
         {
             var c = new Constraint ( constraintToken );
-            var e = new Entity ( "sample", "TextBox" );
+            var e = new Entity ( "sample", "TextBox", "dont care" );
             e.AddConstraint ( c );
 
             Assert.That ( e.Constraints.Count () == 1 );
@@ -30,7 +30,7 @@ namespace BREadfruit.Tests.Low_level_tests
         public bool Entity_AddConstraint_Tests_Exceptions ( string constraintToken )
         {
             var c = new Constraint ( constraintToken );
-            var e = new Entity ( "sample", "TextBox" );
+            var e = new Entity ( "sample", "TextBox", "anythingoes" );
             e.AddConstraint ( c );
 
             Assert.That ( e.Constraints.Count () == 0 );
@@ -38,12 +38,15 @@ namespace BREadfruit.Tests.Low_level_tests
         }
 
 
-        [TestCase ( "Entity XYZ is TextBox", Result = true )]
-        [TestCase ( "Entity XYZ is DropDownList", Result = true )]
-        [TestCase ( "Entity XYZ is Label", Result = true )]
-        [TestCase ( "Entity XYZ is Div", Result = true )]
-        [TestCase ( "Entity XYZ is Button  ", Result = true )]
-        [TestCase ( "Entity XYZ is Button   ", Result = true )]
+        [TestCase ( "Entity XYZ is TextBox", Result = false )]
+        [TestCase ( "Entity XYZ is TextBox in \"frmSearch\"", Result = true )]
+        [TestCase ( "Entity XYZ is TextBox in 'frmSearch'", Result = true )]
+        [TestCase ( "Entity XYZ is TextBox in frmSearch", Result = false )]
+        [TestCase ( "Entity XYZ is DropDownList", Result = false )]
+        [TestCase ( "Entity XYZ is Label", Result = false )]
+        [TestCase ( "Entity XYZ is Div", Result = false )]
+        [TestCase ( "Entity XYZ is Button  ", Result = false )]
+        [TestCase ( "Entity XYZ is Button   ", Result = false )]
         [TestCase ( "Entity XYZ is FakeEntity", Result = false )]
         [TestCase ( "Entity XYZ is", Result = false )]
         [TestCase ( " Entity XYZ is", Result = false )]

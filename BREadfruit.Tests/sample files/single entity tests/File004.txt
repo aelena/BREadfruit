@@ -1,4 +1,4 @@
-﻿Entity Carcass is TextBox
+﻿Entity Carcass is TextBox in "frmSearch"
 	with defaults
 		; rule that makes no sense, just to get the args things right
 		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments {"Country":"ES","Active":true, "Age":30, "Title":"Anything" }

@@ -1,4 +1,4 @@
-﻿Entity DDLCDCountry is DropDownList
+﻿Entity DDLCDCountry is DropDownList in "frmSearch"
 	;with defaults
 	;	visible true
 		; we need to define these things too, let's calle them "data constants" for now...

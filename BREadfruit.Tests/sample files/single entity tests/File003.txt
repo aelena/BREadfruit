@@ -1,6 +1,6 @@
 ﻿; ----------------------------------------------------------------------------	
 
-Entity DDLVDCountry is DropDownList
+Entity DDLVDCountry is DropDownList  in "frmSearch"
 	with defaults
 		visible true
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user

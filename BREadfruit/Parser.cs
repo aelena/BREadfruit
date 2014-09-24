@@ -317,8 +317,10 @@ namespace BREadfruit
             if ( this._lineParser.IsAValidSentence ( lineInfo ) )
             {
                 _currentScope = CurrentScope.NEW_ENTITY;
-                this._entities.Add ( new Entity ( lineInfo.Tokens.ElementAt ( 1 ).Token,
-                    lineInfo.Tokens.ElementAt ( 3 ).Token ) );
+                this._entities.Add ( new Entity ( 
+                    lineInfo.Tokens.ElementAt ( 1 ).Token,
+                    lineInfo.Tokens.ElementAt ( 3 ).Token, 
+                    lineInfo.Tokens.Last().Token ) );               // last token in form's name where the entity belongs
             }
             else
                 // throw an exception if the regex validation fails 

@@ -1,4 +1,4 @@
-﻿Entity btnSearch is Button
+﻿Entity btnSearch is Button in "frmSearch"
 	; with defaults
 	;	visible true
 	;	label LABELS.BUTTONS.SEARCH

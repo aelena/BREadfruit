@@ -1,4 +1,4 @@
-﻿Entity TBVendorCity is TextBox
+﻿Entity TBVendorCity is TextBox in "frmSearch"
 	with defaults
 		visible true
 		value ""

@@ -16,23 +16,45 @@ namespace BREadfruit
     public class Entity
     {
 
+        /// <summary>
+        /// Name of the entity
+        /// </summary>
         private readonly string _name;
+        /// <summary>
+        /// Gets the name of the Entity
+        /// </summary>
         public string Name
         {
             get { return _name; }
         }
 
         private readonly string _typeDescription;
+        /// <summary>
+        /// Gets the type of the Entity (textbox, div, button, etc.)
+        /// </summary>
         public string TypeDescription
         {
             get { return _typeDescription; }
         }
 
         private readonly string _businessProcessCode;
+        /// <summary>
+        /// Gets the BP to which this entity belongs to.
+        /// </summary>
         public string BusinessProcessCode
         {
             get { return _businessProcessCode; }
         }
+
+        private readonly string _form;
+        /// <summary>
+        /// Gets the BP to which this entity belongs to.
+        /// </summary>
+        public string Form
+        {
+            get { return _form; }
+        }
+
 
         public Type Type { get; set; }
         /// <summary>
@@ -112,11 +134,12 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        public Entity ( string name, string typeDescription, string bpCode = "" )
+        public Entity ( string name, string typeDescription, string formName, string bpCode = "" )
         {
             this._name = name;
             this._typeDescription = typeDescription;
             this._businessProcessCode = bpCode;
+            this._form = formName.Replace ( "\"", "" );
             this._defaults = new List<DefaultClause> ();
             this._rules = new List<Rule> ();
             this._resultactions = new List<ResultAction> ();
@@ -201,6 +224,10 @@ namespace BREadfruit
         {
             return String.Format ( "Entity {0} is {1}", this.Name, this.TypeDescription );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
 
     }
 }

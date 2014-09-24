@@ -1,5 +1,5 @@
 ﻿; this does not exist, so should trigger validation excetpion
-Entity DDLCDCountry is Buttton	
+Entity DDLCDCountry is Buttton in "frmSearch"
 	;with defaults
 	;	visible true
 		; we need to define these things too, let's calle them "data constants" for now...

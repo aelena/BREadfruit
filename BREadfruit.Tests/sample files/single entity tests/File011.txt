@@ -1,4 +1,4 @@
-﻿Entity GD_Ctr_VendorClassification is DropDownList
+﻿Entity GD_Ctr_VendorClassification is DropDownList in "frmSearch"
 
 	with defaults
 		visible true

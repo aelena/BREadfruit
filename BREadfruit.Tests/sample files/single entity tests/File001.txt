@@ -1,6 +1,6 @@
 ﻿; -- RULES FOR VENDOR SEARCH FORM 
 
-Entity TBVendorName is TextBox
+Entity TBVendorName is TextBox in "frmSearch"
 	with defaults
 		visible
 		value   ''

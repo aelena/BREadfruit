@@ -242,7 +242,10 @@ namespace BREadfruit
         /// <summary>
         /// Regular expression that validates the correct format of an 'entity' line.
         /// </summary>
-        private static string _entityLineRegex = "^ENTITY [A-Za-z0-9_]* (IS|is|Is|iS)? (###){1}[\t' ']*$";
+        private static string _entityLineRegex = "^ENTITY[\t\\s]+[A-Za-z0-9_]*[\t\\s]+(IS|is|Is|iS)?[\t\\s]+(###){1}[\t\\s]+(IN|in|In|iN)?[\t\\s]+(((\"|')([A-Za-z0-9'.'_])+(\"|'))){1}[\t\\s]*$";
+        // prev value : "^ENTITY [A-Za-z0-9_]* (IS|is|Is|iS)? (###){1}[\t' ']*$";
+        // ^ENTITY[\t\s]+[A-Za-z0-9_]*[\t\s]+(IS|is|Is|iS)?[\t\s]+(###){1}[\t\s]+in[\t\s]+(((\"|')([A-Za-z0-9'.'_])+(\"|'))){1}[\t\s]*$
+
         public static string EntityLineRegex
         {
             get { return _entityLineRegex; }
@@ -493,7 +496,7 @@ namespace BREadfruit
         private static void ComposeEntityLineRegex ()
         {
             _entityLineRegex = _entityLineRegex.Replace ( "###", String.Format ( "({0})",
-                String.Join ( "|", Grammar.EntityTypes.Select ( x => x.Token ) ) ) ).ToUpperInvariant ();
+                String.Join ( "|", Grammar.EntityTypes.Select ( x => x.Token.ToUpperInvariant () ) ) ) );
         }
 
 

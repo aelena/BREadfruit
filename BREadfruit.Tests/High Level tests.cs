@@ -36,6 +36,7 @@ namespace BREadfruit.Tests
             // after parsing we should have something here...
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmSearch" );
             Assert.That ( e.Defaults.Count () == 4 );
             Assert.That ( e.Defaults.First ().ToString () == "visible true" );
             Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Trim () == "value" );
@@ -84,6 +85,7 @@ namespace BREadfruit.Tests
             // after parsing we should have something here...
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmSearch" );
             Assert.That ( e.Defaults.Count () == 3 );
             Assert.That ( e.Defaults.First ().ToString () == "visible true" );
             Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Trim () == "value" );
@@ -122,6 +124,7 @@ namespace BREadfruit.Tests
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File003.txt" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmSearch" );
             Assert.That ( e.Defaults.Count () == 5 );
             Assert.That ( e.Defaults.First ().ToString () == "visible true" );
             Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Trim () == "value USER.COUNTRY" );
@@ -174,6 +177,7 @@ namespace BREadfruit.Tests
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File004.txt" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmSearch" );
             Assert.That ( e.Defaults.Count () == 1 );
             Assert.That ( e.Defaults.First ().Arguments.Count () == 4 );
             Assert.That ( e.Defaults.First ().Arguments.First ().Key == "\"Active\"" );
@@ -212,6 +216,7 @@ namespace BREadfruit.Tests
         {
             var parser = new Parser ();
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File006.txt" );
+            Assert.That ( parser.Entities.First().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 2 );
             Assert.That ( parser.Entities.First ().Rules.First ().Conditions.Count () == 1 );
@@ -228,6 +233,7 @@ namespace BREadfruit.Tests
         {
             var parser = new Parser ();
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File007.txt" );
+            Assert.That ( parser.Entities.First().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 8 );
 
@@ -242,6 +248,7 @@ namespace BREadfruit.Tests
         {
             var parser = new Parser ();
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File008.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 0 );
             Assert.That ( parser.Entities.First ().ConditionlessActions.Count () == 2 );
@@ -254,7 +261,7 @@ namespace BREadfruit.Tests
 
         [Test]
         [ExpectedException ( ExpectedException = typeof(InvalidEntityDeclarationException), 
-            ExpectedMessage="Invalid Entity declaration found in line 1 - 'Entity DDLCDCountry is Buttton'"  )]
+            ExpectedMessage="Invalid Entity declaration found in line 1 - 'Entity DDLCDCountry is Buttton in \"frmSearch\"'"  )]
         public void ParseSampleFile009 ()
         {
             var parser = new Parser ();
@@ -284,6 +291,7 @@ namespace BREadfruit.Tests
         {
             var parser = new Parser ();
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File011.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmSearch" );
 
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
