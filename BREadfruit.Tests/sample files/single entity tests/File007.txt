@@ -13,7 +13,7 @@
 		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
 	
-		TBVendorName is empty and TBVendorCity is empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in ErrorMessage
 		
 		TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then

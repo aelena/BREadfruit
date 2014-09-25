@@ -237,6 +237,24 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 9 );
 
+
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.Count () == 5 );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 0 ).ToString () == "TBVendorName == \"\"" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 0 ).SuffixLogicalOperator == Grammar.ANDSymbol );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 0 ).Operand == "TBVendorName" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).ToString () == "TBVendorCity == \"\"" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).SuffixLogicalOperator == Grammar.ANDSymbol );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).Operand == "TBVendorCity" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).ToString () == "TBVendorIFA == \"\"" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).SuffixLogicalOperator == Grammar.ANDSymbol );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).Operand == "TBVendorIFA" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 3 ).ToString () == "DDLVDCountry == \"\"" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 3 ).SuffixLogicalOperator == Grammar.ANDSymbol );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 3 ).Operand == "DDLVDCountry" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 4 ).ToString () == "TBVendorVAT == \"\"" );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 4 ).SuffixLogicalOperator == null );
+            Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 4 ).Operand == "TBVendorVAT" );
+
             Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().ToString () == "TBVendorIFA.value != \"\"" );
             Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().Results.First ().ToString () == "mandatory DDLVDCountry" );
             Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().Results.First ().Token == "mandatory" );
@@ -325,7 +343,7 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Equals ( "load_data_from DATASOURCE.VENDOR_CLASSIFICATIONS" ) );
             Assert.That ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "DATASOURCE.VENDOR_CLASSIFICATIONS" );
-            
+
             Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Count () == 1 );
             Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().ToString () == "role in {\"UPM\",\"CPM\"}" );
             Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().ResultActions.Count () == 0 );
