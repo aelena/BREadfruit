@@ -451,6 +451,49 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        public void ParseSampleFile013 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File013.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmMain" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Defaults.Count () == 5 );
+            Assert.That ( e.Defaults.ElementAt ( 0 ).ToString ().Equals ( "visible true" ) );
+            Assert.That ( e.Defaults.ElementAt ( 0 ) == Grammar.VisibleDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 0 ).Value.ToString () == Grammar.TrueSymbol );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Equals ( "enable true" ) );
+            Assert.That ( e.Defaults.ElementAt ( 1 ) == Grammar.EnabledDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == Grammar.TrueSymbol );
+            Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Equals ( "value " ) );
+            Assert.That ( e.Defaults.ElementAt ( 2 ) == Grammar.ValueDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == "" );
+            Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Equals ( "load_data_from DATASOURCE.YES_NO" ) );
+            Assert.That ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "DATASOURCE.YES_NO" );
+            Assert.That ( e.Defaults.ElementAt ( 4 ).ToString ().Equals ( "mandatory true" ) );
+            Assert.That ( e.Defaults.ElementAt ( 4 ) == Grammar.MandatoryDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 4 ).Value.ToString () == "true" );
+
+            Assert.That ( e.Rules.First ().Conditions.First ().ToString () == "Request.FlowType not_in {\"VC\",\"VC_CC\"}" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.Count () == 4 );
+            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.Count () == 0 );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Token == "not_mandatory" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Reference == "GD_Damex" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 1 ).Token == "mandatory" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 1 ).Reference == "ABCD" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 2 ).Token == "mandatory" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 2 ).Reference == "EFGH" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 3 ).Token == "hide" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 3 ).Reference == "GD_Damex" );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();

@@ -165,32 +165,34 @@ Entity DDLCDPurchOrg is DropDownList in "frmSearch"
 ; ----------------------------------------------------------------------------	
 
 Entity btnSearch is Button in "frmSearch"
-
-	with defaults
-		visible true
-		label LABELS.BUTTONS.SEARCH
+	; with defaults
+	;	visible true
+	;	label LABELS.BUTTONS.SEARCH
 
 	with rules
+		
+		TBVendorIFA.value is not empty then DDLVDCountry mandatory
 
 		DDLVDCountry is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
 		
 		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
-
-		TBVendorName is empty and TBVendorCity is empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+	
+		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in ErrorMessage
 		
 		TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
-
+	
 		DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in ErrorMessage
 		
 		TBVendorName is not empty and DDLVDCountry is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
 
-		TBVendorIFA.text is not empty then DDLVDCountry not mandatory
+		TBVendorIFA.value is not empty then DDLVDCountry not mandatory
+
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
 
 		; this has to be defined better
@@ -203,6 +205,7 @@ Entity btnSearch is Button in "frmSearch"
 		; this onclick SEARCH_VENDORS with mappings
 		;	 ABCDE.FGHIJ = TBVendorName
 		;	 ... and so on
+
 
 
 ; ----------------------------------------------------------------------------	
@@ -232,7 +235,7 @@ Entity vendorSearchResultGrid is Grid in "frmSearch"
 ; -- RULES FOR VENDOR MAIN FORM (MDM.ASPX)
 
 
-Entity GD_Ctr_RiskClassification is DropDownList in "fmrMain"
+Entity GD_Ctr_RiskClassification is DropDownList in "frmMain"
 
 	with defaults
 		enabled true
@@ -250,7 +253,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in "fmrMain"
 ; ----------------------------------------------------------------------------	
 
 
-Entity GD_Adr_Country is DropDownList in "fmrMain"
+Entity GD_Adr_Country is DropDownList in "frmMain"
 
 	with defaults
 		visible true
@@ -259,7 +262,7 @@ Entity GD_Adr_Country is DropDownList in "fmrMain"
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Ctr_VendorClassification is DropDownList in "fmrMain"
+Entity GD_Ctr_VendorClassification is DropDownList in "frmSearch"
 
 	with defaults
 		visible true
@@ -268,13 +271,13 @@ Entity GD_Ctr_VendorClassification is DropDownList in "fmrMain"
 		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
 
 	with rules
-		role in {"UPM","CPM"} then enabled false
-		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification.Value
-		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value "NG" in GD_Ctr_VendorClassification.Value
+		role in {"UPM", "CPM"} then enabled false
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_VendorClassification
 
 ; ----------------------------------------------------------------------------	
 
-Entity CC_AM_BPClassification is DropDownList in "fmrMain"
+Entity CC_AM_BPClassification is DropDownList in "frmMain"
 
 	with defaults
 		visible true
@@ -287,7 +290,7 @@ Entity CC_AM_BPClassification is DropDownList in "fmrMain"
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Damex is DropDownList in "fmrMain"
+Entity GD_Damex is DropDownList in "frmMain"
 	with defaults
 		visible true
 		enabled true
@@ -299,7 +302,7 @@ Entity GD_Damex is DropDownList in "fmrMain"
 		Request.FlowType not in {"VC", "VC_CC"} then GD_Damex not mandatory, GD_Damex not visible
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Ctr_IsNaturalPerson is DropDownList in "fmrMain"
+Entity GD_Ctr_IsNaturalPerson is DropDownList in "frmMain"
 	with defaults
 		visible true
 		enabled true
@@ -307,10 +310,10 @@ Entity GD_Ctr_IsNaturalPerson is DropDownList in "fmrMain"
 
 	with rules
 		Vendor.AccountGroup in {"YVT4", "YVT5"} then
-			set DIV_ADDITIONAL_INFO_NATURAL_PERSON visible	
+			show this
+			show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
 			; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
-		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P", "Q", "S"} then set value GD_Ctr_IsNaturalPerson.Checked false
-		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with X then set value GD_Ctr_IsNaturalPerson.Checked true
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P", "Q", "S"} then set value false GD_Ctr_IsNaturalPerson.Checked
+		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value true GD_Ctr_IsNaturalPerson.Checked 
 
 		; CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
-

@@ -1,4 +1,4 @@
-﻿Entity GD_Ctr_IsNaturalPerson is DropDownList in "fmrMain"
+﻿Entity GD_Ctr_IsNaturalPerson is DropDownList in "frmMain"
 	with defaults
 		visible true
 		enabled true

@@ -176,6 +176,7 @@ namespace BREadfruit
                                         _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
                                             lineInfo.Tokens.Penultimate ().Token );
                                     _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
+                                    continue;
                                 }
                                 if ( lineInfo.Tokens.ElementAtFromLast ( 4 ) == Grammar.ThenSymbol )
                                 {
@@ -183,6 +184,7 @@ namespace BREadfruit
                                     var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
                                         thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
                                     _rule.Conditions.Last ().AddResultAction ( _ra );
+                                    continue;
                                 }
                                 if ( lineInfo.Tokens.ElementAtFromLast ( 5 ) == Grammar.ThenSymbol )
                                 {
@@ -192,7 +194,16 @@ namespace BREadfruit
                                     var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
                                         thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
                                     _rule.Conditions.Last ().AddResultAction ( _ra );
+                                    continue;
                                 }
+
+                                //// last case here
+                                //// detect then clauses that have commans in their actions in order to parse those...
+                                //var thenClause2 = lineInfo.GetSymbolsAfterThen ();
+                                //if ( thenClause2.JoinTogether ().Token.IndexOf ( "," ) > 0 )
+                                //{
+                                //}
+
 
                             }
 
@@ -257,6 +268,8 @@ namespace BREadfruit
                     #region " --- condition  actions block --- "
                     if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
                     {
+
+                        // TODO: REFACTOR THIS ENTIRE SECTION AND MAKE MORE HOMOGENEOUS -------------------
                         // unary action
                         if ( lineInfo.Tokens.Count () == 2 )
                         {
@@ -284,6 +297,25 @@ namespace BREadfruit
                                     throw new InvalidHideStatementClauseException (
                                         String.Format ( Grammar.InvalidHideElementExceptionMessageTemplate, _currLine + 1, line.Trim () ) );
                             }
+
+                            if ( lineInfo.Tokens.Contains ( Grammar.MakeMandatoryUnaryActionSymbol ) )
+                            {
+                                ProcessUnaryAction ( lineInfo, Grammar.MakeMandatoryUnaryActionSymbol );
+                                continue;
+                            }
+
+                            if ( lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause ) )
+                            {
+                                ProcessUnaryAction ( lineInfo, Grammar.MandatoryDefaultClause );
+                                continue;
+                            }
+
+                            if ( lineInfo.Tokens.Contains ( Grammar.MakeNonMandatoryUnaryActionSymbol ) )
+                            {
+                                ProcessUnaryAction ( lineInfo, Grammar.MakeNonMandatoryUnaryActionSymbol );
+                                continue;
+                            }
+
                         }
 
                         if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
@@ -330,6 +362,21 @@ namespace BREadfruit
             return this.Entities;
 
 
+        }
+
+        private void ProcessUnaryAction ( LineInfo lineInfo, Symbol symbol )
+        {
+            if ( lineInfo.Tokens.Contains ( symbol ) )
+            {
+                UnaryAction _ua = null;
+                if ( lineInfo.Tokens.First () == symbol )
+                    _ua = new UnaryAction ( lineInfo.Tokens.First (),
+                           lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
+                else
+                    _ua = new UnaryAction ( lineInfo.Tokens.Last (),
+                           lineInfo.Tokens.First ().Token == "this" ? this.Entities.First ().Name : lineInfo.Tokens.First ().Token );
+                this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+            }
         }
 
 
