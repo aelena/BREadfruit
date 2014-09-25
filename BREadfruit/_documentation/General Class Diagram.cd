@@ -19,10 +19,10 @@
       <FileName>Grammar\DefaultClause.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BREadfruit.Symbol" Collapsed="true">
+  <Class Name="BREadfruit.Symbol">
     <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAQgAEEEAEAAAAAAIAAABEAAAQBAAA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAUgAEEEAEAAAAAAIAAABFAAAQBAiA=</HashCode>
       <FileName>Symbol.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -30,7 +30,7 @@
     <Position X="6.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Symbol.cs</FileName>
+      <FileName>LogicalSymbol.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BREadfruit.Conditions.Rule">
@@ -74,15 +74,43 @@
   <Class Name="BREadfruit.Conditions.ResultAction">
     <Position X="17.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAQABQAAAYAAgAAAAAiA=</HashCode>
       <FileName>Conditions\ResultAction.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BREadfruit.Conditions.UnaryAction">
     <Position X="17.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAACAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <HashCode>AAAAAACAAAAAAAAEAAAAAAAAAAABQAAAAAAAAAAAAiQ=</HashCode>
       <FileName>Conditions\UnaryAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BREadfruit.Grammar">
+    <Position X="21.25" Y="0.75" Width="3.5" />
+    <Members>
+      <Field Name="_constraintLineRegex" Hidden="true" />
+      <Field Name="_constraintSymbols" Hidden="true" />
+      <Field Name="_defaultClausesValidationRegexs" Hidden="true" />
+      <Field Name="_defaultsTokens" Hidden="true" />
+      <Field Name="_entityLineRegex" Hidden="true" />
+      <Field Name="_entityTypes" Hidden="true" />
+      <Field Name="_logicalOperators" Hidden="true" />
+      <Field Name="_operators" Hidden="true" />
+      <Field Name="_symbols" Hidden="true" />
+      <Field Name="_unaryOperators" Hidden="true" />
+      <Method Name="AddDefaultClauseLineValidationRegexs" Hidden="true" />
+      <Method Name="AddOperators" Hidden="true" />
+      <Method Name="AddSymbols" Hidden="true" />
+      <Method Name="ComposeConstraintLineRegex" Hidden="true" />
+      <Method Name="ComposeEntityLineRegex" Hidden="true" />
+      <Method Name="Grammar" Hidden="true" />
+      <Method Name="PopulateConstraintSymbols" Hidden="true" />
+      <Method Name="PopulateDefaultTokens" Hidden="true" />
+      <Method Name="PopulateEntityTypes" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>NDF3ROYXqZ1HmHyrrbzHMIcAoAAwBEJgdCBZ20zqalI=</HashCode>
+      <FileName>Grammar\Grammar.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

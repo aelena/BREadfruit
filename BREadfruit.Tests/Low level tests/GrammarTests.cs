@@ -48,16 +48,6 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        [Test]
-        public void ShouldHaveEntityRegex ()
-        {
-            Assert.That ( Grammar.EntityLineRegex.Contains ( "DYNAMIC" ) );
-        }
-
-
-        // ---------------------------------------------------------------------------------
-
-
         /// <summary>
         /// This series of tests validates the Regular Expressions
         /// that are part of the Grammar.
@@ -161,6 +151,10 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "only ascii", Result = true )]
         [TestCase ( "only_ascii", Result = false )]
         [TestCase ( "with_args", Result = false )]
+        [TestCase ( null, Result = false )]
+        [TestCase ( "", Result = false )]
+        [TestCase ( " ", Result = false )]
+        [TestCase ( "   ", Result = false )]
         public bool ShouldKnowIfTokenIsAlias ( string alias )
         {
             return Grammar.TokenIsAlias ( alias );

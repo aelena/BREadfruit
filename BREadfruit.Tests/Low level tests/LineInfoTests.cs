@@ -92,10 +92,9 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", "with_args", Result = -1 )]
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", "set enabled", Result = -1 )]
         [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", "set enabled", Result = -1 )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 6 )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 7 )]
-        [TestCase ( "VENDOR.COUNTRY is {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 7 )]
-        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 7 )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
+        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
         public int LineInfo_IndexOfSymbol_Tests1 ( string line, string token )
         {
             var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
@@ -109,10 +108,14 @@ namespace BREadfruit.Tests.Low_level_tests
         // this one should return "" because it's not really valid not having a then clause after the condition
         [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", Result =null )]
         // the rest are valid and should be joining correctly
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\", \"PT\"}" )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\", \"FR\", \"PT\"}" )]
-        [TestCase ( "VENDOR.COUNTRY is {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\", \"FR\", \"PT\"}" )]
-        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled",  Result = "{\"ES\", \"FR\", \"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY is {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled",  Result = "{\"ES\",\"FR\",\"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\",     \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\",     \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY is {\"ES\",   \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY is not {\"ES\",      \"FR\",           \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
         public string LineInfo_TokenizeValueListInCondition_Tests1 ( string line  )
         {
             var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );

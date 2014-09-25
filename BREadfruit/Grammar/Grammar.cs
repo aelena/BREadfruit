@@ -78,21 +78,21 @@ namespace BREadfruit
         /// 
         /// </summary>
         private static List<Operator> _operators = new List<Operator> ();
+
         private static List<Operator> _unaryOperators = new List<Operator> ();
-
-
+        
         private static List<DefaultClause> _defaultsTokens = new List<DefaultClause> ();
-
-
+        
         private static List<LogicalOperatorSymbol> _logicalOperators = new List<LogicalOperatorSymbol> ();
+
         private static List<Symbol> _constraintSymbols = new List<Symbol> ();
 
         private static List<String> _defaultClausesValidationRegexs = new List<string> ();
 
 
 
-
         // ---------------------------------------------------------------------------------
+
 
         #endregion
 
@@ -333,8 +333,8 @@ namespace BREadfruit
         public static Symbol DivSymbol = new Symbol ( "Div", 0, true );
         public static Symbol MultilineSymbol = new Symbol ( "Multiline", 0, true );
         public static Symbol GridSymbol = new Symbol ( "Grid", 0, true );
-        public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
-        public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
+        //public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
+        //public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
         #endregion
 
@@ -363,9 +363,8 @@ namespace BREadfruit
         public static UnaryAction VisibleUnaryActionSymbol = new UnaryAction ( "visible", 2, true, new [] { "set visible", "make visible" } );
         public static UnaryAction HideUnaryActionSymbol = new UnaryAction ( "hide", 2, true, new [] { "set hidden", "make hidden", "hidden" } );
         public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory" } );
-        public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
+        public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not_mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
         public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show", 2, true, new [] { "show element" } );
-        //public static UnaryAction HideElementUnaryActionSymbol = new UnaryAction ( "hide_element", 2, true, new [] { "hide element", "hide" } );
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
         public static UnaryAction LoadDataUnaryActionSymbol = new UnaryAction ( "load_data_from", 2, true, new [] { "load data from" } );
 
@@ -696,8 +695,21 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Receives a given token (string) and returns a boolean value
+        /// that indicates if that token is an alias (not a main token)
+        /// of any of the symbols in the grammar.
+        /// </summary>
+        /// <param name="token">Token to be searched in all Symbols
+        /// in the grammar</param>
+        /// <returns>boolean value
+        /// that indicates if that token is an alias (not a main token)
+        /// of any of the symbols in the grammar.</returns>
         public static bool TokenIsAlias ( string token )
         {
+            if ( String.IsNullOrWhiteSpace ( token ) )
+                return false;
+
             var _ = from s in Grammar.Symbols
                     where s is Symbol
                     where s.Aliases.Contains ( token )
@@ -725,8 +737,6 @@ namespace BREadfruit
             Grammar._entityTypes.Add ( GridSymbol );
             Grammar._entityTypes.Add ( DivSymbol );
             Grammar._entityTypes.Add ( MultilineSymbol );
-            Grammar._entityTypes.Add ( ObjectSymbol );
-            Grammar._entityTypes.Add ( DynamicSymbol );
         }
 
 
@@ -806,8 +816,6 @@ namespace BREadfruit
             Grammar._symbols.Add ( ButtonSymbol );
             Grammar._symbols.Add ( DivSymbol );
             Grammar._symbols.Add ( MultilineSymbol );
-            Grammar._symbols.Add ( ObjectSymbol );
-            Grammar._symbols.Add ( DynamicSymbol );
             Grammar._symbols.Add ( ThenSymbol );
             Grammar._symbols.Add ( ThisSymbol );
             Grammar._symbols.Add ( InSymbol );

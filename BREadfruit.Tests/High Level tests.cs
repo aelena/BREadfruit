@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BREadfruit.Exceptions;
 using NUnit.Framework;
-
+using BREadfruit.Helpers;
 
 namespace BREadfruit.Tests
 {
@@ -235,7 +235,19 @@ namespace BREadfruit.Tests
             parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File007.txt" );
             Assert.That ( parser.Entities.First ().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
-            Assert.That ( parser.Entities.First ().Rules.Count () == 8 );
+            Assert.That ( parser.Entities.First ().Rules.Count () == 9 );
+
+            Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().ToString () == "TBVendorIFA.value != \"\"" );
+            Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().Results.First ().ToString () == "mandatory DDLVDCountry" );
+            Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().Results.First ().Token == "mandatory" );
+            Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().Results.First ().Reference == "DDLVDCountry" );
+            Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().ResultActions.Count () == 0 );
+
+            Assert.That ( parser.Entities.First ().Rules.Penultimate ().Conditions.First ().ToString () == "TBVendorIFA.value != \"\"" );
+            Assert.That ( parser.Entities.First ().Rules.Penultimate ().Conditions.First ().Results.First ().ToString () == "not_mandatory DDLVDCountry" );
+            Assert.That ( parser.Entities.First ().Rules.Penultimate ().Conditions.First ().Results.First ().Token == "not_mandatory" );
+            Assert.That ( parser.Entities.First ().Rules.Penultimate ().Conditions.First ().Results.First ().Reference == "DDLVDCountry" );
+            Assert.That ( parser.Entities.First ().Rules.Penultimate ().Conditions.First ().ResultActions.Count () == 0 );
 
         }
 
