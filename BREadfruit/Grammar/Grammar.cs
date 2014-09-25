@@ -277,7 +277,7 @@ namespace BREadfruit
         /// <summary>
         /// Regex for lines such as 
         /// show this
-	    /// show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
+        /// show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
         /// See tests in ShouldDiscriminateShowElementsLineCorrectly
         /// </summary>
         public const string ShowElementLineRegex = @"^show[\t\s]+(this|([A-Za-z0-9_])+){1}[\t\s]*$";
@@ -289,7 +289,7 @@ namespace BREadfruit
         /// </summary>
         public const string HideElementLineRegex = @"^hide[\t\s]+(this|([A-Za-z0-9_])+){1}[\t\s]*$";
 
-        
+
 
 
         // ---------------------------------------------------------------------------------
@@ -307,7 +307,7 @@ namespace BREadfruit
         #region " --- terminals --- "
 
         public static readonly Symbol TrueSymbol = new Symbol ( "true", 2, true );
-        public static readonly Symbol FalseSymbol =new Symbol ( "false", 2, true ); 
+        public static readonly Symbol FalseSymbol = new Symbol ( "false", 2, true );
 
         /* 
          * when adding a new Symbol here, do not forget
@@ -930,13 +930,15 @@ namespace BREadfruit
         /// The template is "Invalid With clause found.".
         /// </summary>
         public static readonly string InvalidWithClauseExceptionDefaultMessage = "Invalid With clause found.";
-
         public static readonly string InvalidShowElementExceptionDefaultMessage = "Invalid Show Element clause found";
         public static readonly string InvalidShowElementExceptionMessageTemplate = "Invalid Show Element clause found in line {0} - '{1}'";
-         public static readonly string InvalidHideElementExceptionDefaultMessage = "Invalid Hide Element clause found";
-         public static readonly string InvalidHideElementExceptionMessageTemplate = "Invalid Hide Element clause found in line {0} - '{1}'";
+        public static readonly string InvalidHideElementExceptionDefaultMessage = "Invalid Hide Element clause found";
+        public static readonly string InvalidHideElementExceptionMessageTemplate = "Invalid Hide Element clause found in line {0} - '{1}'";
+        public static readonly string MissingInClauseExceptionDefaultMessage = "Line seems to be missing token 'in'";
+        public static readonly string MissingInClauseExceptionMessageTemplate = "Line {0} seems to be missing token 'in' - '{1}'";
 
-        
+
+
 
         // ---------------------------------------------------------------------------------
 

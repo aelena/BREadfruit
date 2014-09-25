@@ -313,7 +313,37 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Equals ( "load_data_from DATASOURCE.VENDOR_CLASSIFICATIONS" ) );
             Assert.That ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "DATASOURCE.VENDOR_CLASSIFICATIONS" );
+            
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().ToString () == "role in {\"UPM\",\"CPM\"}" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().ResultActions.Count () == 0 );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.First ().ToString () == "enable false" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.First () == Grammar.EnableUnaryActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.First ().Token.ToString () == "enable" );
 
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Count () == 2 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ToString () == "Vendor.Country is \"ES\"" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ToString () == "GD_Ctr_TaxCode1.Text starts_with {\"P\",\"Q\",\"S\"}" );
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ToString () == "Vendor.Country is \"ES\"" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ToString () == "GD_Ctr_TaxCode1.Text starts_with \"X\"" );
+
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().ToString () == "set_value \"G\" GD_Ctr_VendorClassification" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().IsResultAction == true );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Action == "set_value" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "\"G\"" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Ctr_VendorClassification" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().ToString () == "set_value \"NG\" GD_Ctr_VendorClassification" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().IsResultAction == true );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Action == "set_value" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "\"NG\"" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Ctr_VendorClassification" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol );
 
         }
 
@@ -354,6 +384,36 @@ namespace BREadfruit.Tests
             Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.ElementAt ( 1 ).ToString () == "show DIV_ADDITIONAL_INFO_NATURAL_PERSON" );
             Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.ElementAt ( 2 ).ToString () == "hide GD_Ctr_IsNaturalPerson" );
             Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Results.ElementAt ( 3 ).ToString () == "hide ABCDEFG_HIJK" );
+
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.Count () == 4 );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().ToString () == "show GD_Ctr_IsNaturalPerson" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 1 ).ToString () == "show DIV_ADDITIONAL_INFO_NATURAL_PERSON" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 2 ).ToString () == "hide GD_Ctr_IsNaturalPerson" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 3 ).ToString () == "hide ABCDEFG_HIJK" );
+
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Count () == 2 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ToString () == "Vendor.Country is \"ES\"" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ToString () == "GD_Ctr_TaxCode1.Text starts_with {\"P\",\"Q\",\"S\"}" );
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ToString () == "Vendor.Country is \"ES\"" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ToString () == "GD_Ctr_TaxCode1.Text starts_with \"X\"" );
+
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().ToString () == "set_value false GD_Ctr_IsNaturalPerson.Checked" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().IsResultAction == true );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Action == "set_value" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "false" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Ctr_IsNaturalPerson.Checked" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().ToString () == "set_value true GD_Ctr_IsNaturalPerson.Checked" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().IsResultAction == true );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Action == "set_value" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "true" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Ctr_IsNaturalPerson.Checked" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+
         }
 
 

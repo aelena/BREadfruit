@@ -177,10 +177,17 @@ namespace BREadfruit
                                             lineInfo.Tokens.Penultimate ().Token );
                                     _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
                                 }
+                                if ( lineInfo.Tokens.ElementAtFromLast ( 4 ) == Grammar.ThenSymbol )
+                                {
+                                    var thenClause = lineInfo.GetSymbolsAfterThen ();
+                                    var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
+                                        thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
+                                    _rule.Conditions.Last ().AddResultAction ( _ra );
+                                }
                                 if ( lineInfo.Tokens.ElementAtFromLast ( 5 ) == Grammar.ThenSymbol )
                                 {
                                     if ( lineInfo.Tokens.Penultimate () != Grammar.InSymbol )
-                                        throw new Exception ( String.Format ( "Line {0} seems to be missing token 'in'", line ) );
+                                        throw new MissingInClauseException ( String.Format ( Grammar.MissingInClauseExceptionMessageTemplate, _currLine, line ) );
                                     var thenClause = lineInfo.GetSymbolsAfterThen ();
                                     var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
                                         thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
