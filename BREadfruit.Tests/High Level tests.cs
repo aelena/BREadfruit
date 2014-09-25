@@ -32,7 +32,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile001 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File001.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File001.txt" );
             // after parsing we should have something here...
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
@@ -81,7 +81,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile002 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File002.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File002.txt" );
             // after parsing we should have something here...
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
@@ -121,7 +121,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile003 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File003.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File003.txt" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
             Assert.That ( e.Form == "frmSearch" );
@@ -174,7 +174,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile004 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File004.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File004.txt" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
             Assert.That ( e.Form == "frmSearch" );
@@ -202,7 +202,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile005 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File005.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File005.txt" );
             Assert.That ( parser.Entities.Count () == 1 );
 
         }
@@ -215,7 +215,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile006 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File006.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File006.txt" );
             Assert.That ( parser.Entities.First ().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 2 );
@@ -232,7 +232,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile007 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File007.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File007.txt" );
             Assert.That ( parser.Entities.First ().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 9 );
@@ -277,7 +277,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile008 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File008.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File008.txt" );
             Assert.That ( parser.Entities.First ().Form == "frmSearch" );
             Assert.That ( parser.Entities.Count () == 1 );
             Assert.That ( parser.Entities.First ().Rules.Count () == 0 );
@@ -295,7 +295,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile009 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File009.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File009.txt" );
             Assert.That ( parser.Entities.Count () == 0 );
 
         }
@@ -309,7 +309,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile010 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File010.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File010.txt" );
 
         }
 
@@ -320,7 +320,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile011 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File011.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File011.txt" );
             Assert.That ( parser.Entities.First ().Form == "frmSearch" );
 
             Assert.That ( parser.Entities.Count () == 1 );
@@ -385,8 +385,8 @@ namespace BREadfruit.Tests
         public void ParseSampleFile012 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File012.txt" );
-            Assert.That ( parser.Entities.First ().Form == "fmrMain" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File012.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmMain" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
             Assert.That ( e.Defaults.Count () == 3 );
@@ -454,7 +454,7 @@ namespace BREadfruit.Tests
         public void ParseSampleFile013 ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\single entity tests\File013.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File013.txt" );
             Assert.That ( parser.Entities.First ().Form == "frmMain" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
@@ -497,12 +497,12 @@ namespace BREadfruit.Tests
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();
-            parser.ParseRuleFile ( @"..\..\sample files\vendor-rules.txt" );
+            parser.ParseRuleSet ( @"..\..\sample files\vendor-rules.txt" );
 
             Assert.That ( parser.Entities.Count () == 18 );
 
             var parser2 = new Parser ();
-            var eList = parser2.ParseRuleFile ( @"..\..\sample files\vendor-rules.txt" );
+            var eList = parser2.ParseRuleSet ( @"..\..\sample files\vendor-rules.txt" );
 
             Assert.That ( eList.Count () == 18 );
 
@@ -603,7 +603,7 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.ElementAt ( 9 ).Name == "btnSearch" );
             Assert.That ( parser.Entities.ElementAt ( 9 ).Defaults.Count () == 2 );
             Assert.That ( parser.Entities.ElementAt ( 9 ).ConditionlessActions.Count () == 0 );
-            Assert.That ( parser.Entities.ElementAt ( 9 ).Rules.Count () == 8 );
+            Assert.That ( parser.Entities.ElementAt ( 9 ).Rules.Count () == 9 );
             Assert.That ( parser.Entities.ElementAt ( 9 ).Triggers.Count () == 0 );
             Assert.That ( parser.Entities.ElementAt ( 9 ).Constraints.Count () == 0 );
 

@@ -165,9 +165,9 @@ Entity DDLCDPurchOrg is DropDownList in "frmSearch"
 ; ----------------------------------------------------------------------------	
 
 Entity btnSearch is Button in "frmSearch"
-	; with defaults
-	;	visible true
-	;	label LABELS.BUTTONS.SEARCH
+	with defaults
+		visible true
+		label LABELS.BUTTONS.SEARCH
 
 	with rules
 		

@@ -54,7 +54,7 @@ namespace BREadfruit
         /// </summary>
         /// <param name="filePath">File containing rules to be parsed.</param>
         /// <returns>A collection of entities.</returns>
-        public IEnumerable<Entity> ParseRuleFile ( string filePath )
+        public IEnumerable<Entity> ParseRuleSet ( string filePath )
         {
             this.CheckFileExists ( filePath );
 
