@@ -12,7 +12,7 @@ namespace BREadfruit.Exceptions
 
 
         public MissingInClauseException ()
-            : base ( Grammar.InvalidShowElementExceptionDefaultMessage )
+            : base ( Grammar.MissingInClauseExceptionDefaultMessage )
         {
         }
 

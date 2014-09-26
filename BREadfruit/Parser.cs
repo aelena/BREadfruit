@@ -204,6 +204,8 @@ namespace BREadfruit
                                 //{
                                 //}
 
+                                // tentatively, if we make it here, we haven't parsed something...
+                                throw new InvalidLineFoundException ( String.Format ( Grammar.InvalidLineFoundExceptionDefaultTemplate, _currLine, line ) );
 
                             }
 
@@ -211,7 +213,7 @@ namespace BREadfruit
                         }
                         else
                             throw new Exception (
-                                String.Format ( "Found Invalid Condition Syntax - symbol 'then' missing in line '{0}'",
+                                String.Format ( Grammar.MissingThenClauseExceptionMessageTemplate, _currLine, 
                                     lineInfo.Representation ) );
 
                     }

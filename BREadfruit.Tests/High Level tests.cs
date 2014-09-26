@@ -254,7 +254,6 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 4 ).ToString () == "TBVendorVAT == \"\"" );
             Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 4 ).SuffixLogicalOperator == null );
             Assert.That ( parser.Entities.First ().Rules.ElementAt ( 3 ).Conditions.ElementAt ( 4 ).Operand == "TBVendorVAT" );
-
             Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().ToString () == "TBVendorIFA.value != \"\"" );
             Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().Results.First ().ToString () == "mandatory DDLVDCountry" );
             Assert.That ( parser.Entities.First ().Rules.Last ().Conditions.First ().Results.First ().Token == "mandatory" );
@@ -422,8 +421,12 @@ namespace BREadfruit.Tests
             Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 3 ).ToString () == "hide ABCDEFG_HIJK" );
 
             Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Count () == 2 );
+
             Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ToString () == "Vendor.Country is \"ES\"" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().SuffixLogicalOperator == Grammar.ANDSymbol );
+
             Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ToString () == "GD_Ctr_TaxCode1.Text starts_with {\"P\",\"Q\",\"S\"}" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().SuffixLogicalOperator == null );
 
             Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ToString () == "Vendor.Country is \"ES\"" );
             Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ToString () == "GD_Ctr_TaxCode1.Text starts_with \"X\"" );
@@ -475,17 +478,18 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.ElementAt ( 4 ) == Grammar.MandatoryDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 4 ).Value.ToString () == "true" );
 
+            Assert.That ( e.Rules.First ().Conditions.Count () == 2 );
             Assert.That ( e.Rules.First ().Conditions.First ().ToString () == "Request.FlowType not_in {\"VC\",\"VC_CC\"}" );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.Count () == 4 );
-            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.Count () == 0 );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Token == "not_mandatory" );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Reference == "GD_Damex" );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 1 ).Token == "mandatory" );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 1 ).Reference == "ABCD" );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 2 ).Token == "mandatory" );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 2 ).Reference == "EFGH" );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 3 ).Token == "hide" );
-            Assert.That ( e.Rules.First ().Conditions.First ().Results.ElementAt ( 3 ).Reference == "GD_Damex" );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.Count () == 4 );
+            Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Count () == 0 );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.First ().Token == Grammar.MakeNonMandatoryUnaryActionSymbol );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.First ().Reference == "GD_Damex" );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.ElementAt ( 1 ) == Grammar.MakeMandatoryUnaryActionSymbol );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.ElementAt ( 1 ).Reference == "ABCD" );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.ElementAt ( 2 ) == Grammar.MakeMandatoryUnaryActionSymbol );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.ElementAt ( 2 ).Reference == "EFGH" );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.ElementAt ( 3 ) == Grammar.HideUnaryActionSymbol );
+            Assert.That ( e.Rules.First ().Conditions.Last ().Results.ElementAt ( 3 ).Reference == "GD_Damex" );
 
         }
 

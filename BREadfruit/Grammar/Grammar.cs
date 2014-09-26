@@ -945,7 +945,10 @@ namespace BREadfruit
         public static readonly string InvalidHideElementExceptionMessageTemplate = "Invalid Hide Element clause found in line {0} - '{1}'";
         public static readonly string MissingInClauseExceptionDefaultMessage = "Line seems to be missing token 'in'";
         public static readonly string MissingInClauseExceptionMessageTemplate = "Line {0} seems to be missing token 'in' - '{1}'";
-
+        public static readonly string MissingThenClauseExceptionDefaultMessage = "Found Invalid Condition Syntax - symbol 'then' missing in line";
+        public static readonly string MissingThenClauseExceptionMessageTemplate = "Found Invalid Condition Syntax - symbol 'then' missing in line {0} - '{1}'";
+        public static readonly string InvalidLineFoundExceptionDefaultMessage = "A line that seems invalid or was not parsed was found.";
+        public static readonly string InvalidLineFoundExceptionDefaultTemplate = "Line {0} ('{1}') seems invalid or was not parsed correctly.";
 
 
 
