@@ -138,14 +138,30 @@ namespace BREadfruit
         {
             if ( line.Tokens != null && line.Tokens.Count () > 0 )
             {
-                // considering the opening token of a line info
-                switch ( line.Tokens.First ().Token.ToUpperInvariant () )
-                {
-                    case "ENTITY":
-                        return this.ValidateEntityStatement ( line );
-                    case "WITH":
-                        return this.ValidateWithStatement ( line );
 
+                // extract this hardcoded identifier
+                if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( "ENTITY" ) )
+                {
+                    return this.ValidateEntityStatement ( line );
+                }
+                if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( "WITH" ) )
+                {
+                    return this.ValidateWithStatement ( line );
+                }
+                if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.ChangeFormUnaryActionSymbol.Token.ToUpperInvariant () ) )
+                {
+                    if ( !line.HasSymbol ( Grammar.WithArgumentsSymbol ) )
+                        return Regex.IsMatch ( line.Representation.Trim(), Grammar.ChangeFormNoArgumentsLineRegex, RegexOptions.IgnoreCase );
+                    else
+                    {
+                        // parse separately the beginning and the with arguments clause
+                        var _firstPart = new LineInfo ( line.TakeUntil ( Grammar.WithArgumentsSymbol ).JoinTogether ().Token );
+                        var _secondPart = new LineInfo ( line.TakeFrom ( Grammar.WithArgumentsSymbol ).JoinTogether ().Token );
+
+                        return Regex.IsMatch ( line.TakeUntil ( Grammar.WithArgumentsSymbol, false ).JoinTogether ().Token, Grammar.ChangeFormNoArgumentsLineRegex, RegexOptions.IgnoreCase ) &&
+                               Regex.IsMatch ( line.TakeFrom ( Grammar.WithArgumentsSymbol, true ).JoinTogether ().Token, Grammar.WithArgumentsClauseLineRegex, RegexOptions.IgnoreCase );
+
+                    }
                 }
             }
 
