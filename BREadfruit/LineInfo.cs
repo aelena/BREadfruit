@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BREadfruit.Exceptions;
 using BREadfruit.Helpers;
 
 namespace BREadfruit
@@ -172,7 +173,7 @@ namespace BREadfruit
             if ( this.IsEntityLine || this.IsWithLine )
                 return null;
 
-            if ( ! this.HasSymbol ( Grammar.IsNotEmptyOperator ) 
+            if ( !this.HasSymbol ( Grammar.IsNotEmptyOperator )
                  && ( this.HasSymbol ( Grammar.InSymbol ) || this.HasSymbol ( Grammar.IsOperator ) || this.HasSymbol ( Grammar.IsNotOperator ) ) )
             {
                 int i1 = 0, i2 = 0;
@@ -348,6 +349,14 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// 
+        /// 
+        /// This is a command (which is why it has return type void) that modifies the state of the current
+        /// instance's token collection.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
         internal void RemoveTokensFromTo ( int from, int to )
         {
             if ( from < 0 )
@@ -364,11 +373,65 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-
         internal void InsertTokenAt ( int index, Symbol token )
         {
             this._tokens.Insert ( index, token );
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Given a symbol S searches in the current instance until that token is found
+        /// returning only the tokens before that position.
+        /// The flag allows the caller to specify whether to include or not the search token
+        /// as part of the results.
+        /// This method does not modify the state of the current token list in the present instance.
+        /// </summary>
+        /// <param name="s">Symbol to be looked for.</param>
+        /// <param name="includeSearchToken">allows the caller to specify whether to include or not the search token
+        /// as part of the results</param>
+        /// <returns>A list of symbols or throws an exception if the Symbol s is not found.</returns>
+        protected internal IEnumerable<Symbol> TakeFrom ( Symbol s, bool includeSearchToken = false )
+        {
+            var index = this.IndexOfSymbol ( s );
+
+            if ( index >= 0 )
+                return this._tokens.Skip ( !includeSearchToken ? index + 1 : index ).ToList ();
+            else
+                throw new TokenNotFoundException ( String.Format ( Grammar.TokenNotFoundExceptionDefaultTemplate, s.Token, this.Representation ) );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Given a symbol S searches in the current instance until that token is found
+        /// returning only the tokens after that position.
+        /// The flag allows the caller to specify whether to include or not the search token
+        /// as part of the results.
+        /// This method does not modify the state of the current token list in the present instance.
+        /// </summary>
+        /// <param name="s">Symbol to be looked for.</param>
+        /// <param name="includeSearchToken">allows the caller to specify whether to include or not the search token
+        /// as part of the results</param>
+        /// <returns>A list of symbols or throws an exception if the Symbol s is not found.</returns>
+        protected internal IEnumerable<Symbol> TakeUntil ( Symbol s, bool includeSearchToken = false )
+        {
+            var index = this.IndexOfSymbol ( s );
+
+            if ( index >= 0 )
+                return this._tokens.Take ( includeSearchToken ? index + 1 : index ).ToList ();
+            else
+                throw new TokenNotFoundException ( String.Format ( Grammar.TokenNotFoundExceptionDefaultTemplate, s.Token, this.Representation ) );
+
+        }
+
+
+
+        // ---------------------------------------------------------------------------------
 
 
     }
