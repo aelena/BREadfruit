@@ -80,14 +80,16 @@ namespace BREadfruit
         private static List<Operator> _operators = new List<Operator> ();
 
         private static List<Operator> _unaryOperators = new List<Operator> ();
-        
+
         private static List<DefaultClause> _defaultsTokens = new List<DefaultClause> ();
-        
+
         private static List<LogicalOperatorSymbol> _logicalOperators = new List<LogicalOperatorSymbol> ();
 
         private static List<Symbol> _constraintSymbols = new List<Symbol> ();
 
         private static List<String> _defaultClausesValidationRegexs = new List<string> ();
+
+        private static List<Symbol> _triggerSymbols = new List<Symbol> ();
 
 
 
@@ -171,6 +173,18 @@ namespace BREadfruit
         /// <summary>
         /// Returns a collection of the types of constraints currently declared in the grammar
         /// </summary>
+        public static IEnumerable<Symbol> TriggerSymbols
+        {
+            get
+            {
+                return _triggerSymbols;
+            }
+        }
+
+
+        /// <summary>
+        /// Returns a collection of the types of constraints currently declared in the grammar
+        /// </summary>
         public static IEnumerable<Symbol> ConstraintSymbols
         {
             get
@@ -240,9 +254,18 @@ namespace BREadfruit
         public const string LoadDataFromValueRegex = @"^(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
 
         /// <summary>
+        /// Validates a line that instructs to change the current form shown
+        /// This is when there are no arguments to pass to the second form
+        ///  
+        /// </summary>
+        public const string ChangeFormNoArgumentsLineRegex = "^CHANGE_FORM_TO[\t\\s]*(((\"|')?(([A-Za-z0-9'.'_])+(\"|')?)){1}|((\"|'){1}(([A-Za-z0-9'.'_\\s])+(\"|'){1})){1})[\t\\s]*$";
+
+
+        public const string WithArgumentsClauseLineRegex = "^WITH_ARGS[\t\\s]*{([\t\\s]*((\"|')?([A-Za-z0-9'.'_])+(\"|'))[\t\\s]*:[\t\\s]*((\"|')?(.)+(\"|'))[\t\\s]*),?}[\t\\s]*$";
+        /// <summary>
         /// Regular expression that validates the correct format of an 'entity' line.
         /// </summary>
-        private static string _entityLineRegex = "^ENTITY[\t\\s]+[A-Za-z0-9_]*[\t\\s]+(IS|is|Is|iS)?[\t\\s]+(###){1}[\t\\s]+(IN|in|In|iN)?[\t\\s]+(((\"|')([A-Za-z0-9'.'_])+(\"|'))){1}[\t\\s]*$";
+        private static string _entityLineRegex = "^ENTITY[\t\\s]+[A-Za-z0-9_]*[\t\\s]+(IS|is|Is|iS)?[\t\\s]+(###){1}[\t\\s]+(IN|in|In|iN)?[\t\\s]+(((\"|')?([A-Za-z0-9'.'_])+(\"|')?)){1}[\t\\s]*$";
         // prev value : "^ENTITY [A-Za-z0-9_]* (IS|is|Is|iS)? (###){1}[\t' ']*$";
         // ^ENTITY[\t\s]+[A-Za-z0-9_]*[\t\s]+(IS|is|Is|iS)?[\t\s]+(###){1}[\t\s]+in[\t\s]+(((\"|')([A-Za-z0-9'.'_])+(\"|'))){1}[\t\s]*$
 
@@ -368,6 +391,7 @@ namespace BREadfruit
         public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show", 2, true, new [] { "show element" } );
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
         public static UnaryAction LoadDataUnaryActionSymbol = new UnaryAction ( "load_data_from", 2, true, new [] { "load data from" } );
+        public static UnaryAction ChangeFormUnaryActionSymbol = new UnaryAction ( "change_form_to", 2, true, new [] { "change form to" } );
 
         public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
 
@@ -380,7 +404,7 @@ namespace BREadfruit
         public static Symbol ChangedEventSymbol = new Symbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes" } );
         public static Symbol FocusEventSymbol = new Symbol ( "entered", 2, true, new List<string> { "on entered", "on enter", "enters", "on focus", "focus" } );
         public static Symbol BlurredEventSymbol = new Symbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
-        public static Symbol ClickedEventSymbol = new Symbol ( "clicked", 2, true, new List<string> { "on click" } );
+        public static Symbol ClickedEventSymbol = new Symbol ( "clicked", 2, true, new List<string> { "click", "onclick", "on_click", "on click", "on clicked", "on_clicked", "onclicked" } );
 
 
         #endregion
@@ -484,6 +508,7 @@ namespace BREadfruit
             PopulateConstraintSymbols ();
             AddSymbols ();
             AddOperators ();
+            AddTriggerSymbols ();
 
             AddDefaultClauseLineValidationRegexs ();
 
@@ -797,6 +822,18 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
+        private static void AddTriggerSymbols ()
+        {
+            Grammar._triggerSymbols.Add ( ChangedEventSymbol );
+            Grammar._triggerSymbols.Add ( FocusEventSymbol );
+            Grammar._triggerSymbols.Add ( BlurredEventSymbol );
+            Grammar._triggerSymbols.Add ( ClickedEventSymbol );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
         private static void AddSymbols ()
         {
 
@@ -859,6 +896,7 @@ namespace BREadfruit
             //Grammar._symbols.Add ( HideElementUnaryActionSymbol );
             Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
             Grammar._symbols.Add ( LoadDataUnaryActionSymbol );
+            Grammar._symbols.Add ( ChangeFormUnaryActionSymbol );
 
             // result actions
             Grammar._symbols.Add ( SetValueActionSymbol );
@@ -952,6 +990,9 @@ namespace BREadfruit
         public static readonly string MissingThenClauseExceptionMessageTemplate = "Found Invalid Condition Syntax - symbol 'then' missing in line {0} - '{1}'";
         public static readonly string InvalidLineFoundExceptionDefaultMessage = "A line that seems invalid or was not parsed was found.";
         public static readonly string InvalidLineFoundExceptionDefaultTemplate = "Line {0} ('{1}') seems invalid or was not parsed correctly.";
+        public static readonly string TokenNotFoundExceptionDefaultMessage = "Token not found";
+        public static readonly string TokenNotFoundExceptionDefaultTemplate = "Token '{0}' was not found in line {1}";
+
 
 
 
