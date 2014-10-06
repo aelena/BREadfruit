@@ -176,6 +176,10 @@ Entity btnSearch is Button in "frmSearch"
 		visible true
 		label LABELS.BUTTONS.SEARCH
 
+	with actions
+		; missing defining arguments here...
+		load data from WEBSERVICE.SEARCH_VENDORS with arguments {} in grid
+
 	with rules
 		
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
@@ -214,9 +218,7 @@ Entity btnSearch is Button in "frmSearch"
 
 	with triggers
 
-		; this onclick SEARCH_VENDORS with mappings
-		;	 ABCDE.FGHIJ = TBVendorName
-		;	 ... and so on
+		this on click
 
 
 
@@ -230,9 +232,10 @@ Entity btnCreateVendor is Button in "frmSearch"
 
 	with rules
 		; how to specify all that happens server side here?
+		; shall be express something like change form?
 
 	with triggers
-
+		this click
 
 ; ----------------------------------------------------------------------------	
 

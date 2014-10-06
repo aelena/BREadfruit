@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BREadfruit.Exceptions;
 using NUnit.Framework;
 using BREadfruit.Helpers;
+using BREadfruit.Conditions;
 
 namespace BREadfruit.Tests
 {
@@ -506,11 +507,32 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
             Assert.That ( e.Defaults.Count () == 3 );
-            Assert.That ( e.Triggers.Count () == 2 );
-            Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed" );
-            Assert.That ( e.Triggers.Last ().ToString () == "TBVendorCity clicked" );
+            Assert.That ( e.Triggers.Count () == 5, "Expected 5 triggers" );
+            Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed", "wrong trigger expression(1)." );
+            Assert.That ( e.Triggers.ElementAt ( 1 ).ToString () == "TBVendorCity clicked", "wrong trigger expression(2)." );
+            Assert.That ( e.Triggers.ElementAt ( 2 ).ToString () == "TBVendorCity clicked", "wrong trigger expression(3)." );
+            Assert.That ( e.Triggers.ElementAt ( 3 ).ToString () == "TBVendorCity clicked", "wrong trigger expression(4)." );
+            Assert.That ( e.Triggers.Last ().ToString () == "TBVendorCity clicked", "wrong trigger expression(5)." );
         }
 
+
+
+        [Test]
+        public void ParseSampleFile015 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File015.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmSearch" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.ConditionlessActions.Count () == 3 );
+            Assert.That ( e.ConditionlessActions.First ().ToString ().Equals ( "change_form_to \"frmMain\"" ) );
+            Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString ().Equals ( "change_form_to frmMain" ) );
+            Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).ToString ().Equals ( "change_form_to \"frmMain\" this" ) );
+            Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).IsResultAction );
+            Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 2 ) ).Arguments.Count () == 1 );
+
+        }
 
         [Test]
         public void ShouldFindEntities ()

@@ -1,4 +1,4 @@
-﻿Entity TBVendorCity is TextBox in "frmSearch"
+﻿Entity TBVendorCity is TextBox in frmSearch
 	with defaults
 		visible true
 		value ""
@@ -10,4 +10,7 @@
 
 	with triggers
 		this.value on change
-		this on click
+		this on click		
+		this on_click		
+		this onclick
+		this click

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using BREadfruit.Helpers;
 
 
 namespace BREadfruit.Tests.Low_level_tests
@@ -106,17 +107,17 @@ namespace BREadfruit.Tests.Low_level_tests
 
 
         // this one should return "" because it's not really valid not having a then clause after the condition
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", Result =null )]
+        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", Result = null )]
         // the rest are valid and should be joining correctly
         [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY is {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
-        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled",  Result = "{\"ES\",\"FR\",\"PT\"}" )]
+        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY in {\"ES\",     \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\",     \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY is {\"ES\",   \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY is not {\"ES\",      \"FR\",           \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
-        public string LineInfo_TokenizeValueListInCondition_Tests1 ( string line  )
+        public string LineInfo_TokenizeValueListInCondition_Tests1 ( string line )
         {
             var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
             var t = li.TokenizeValueListInCondition ();
@@ -124,6 +125,23 @@ namespace BREadfruit.Tests.Low_level_tests
                 return t.Item1;
             return null;
         }
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments {\"A\" : \"B\"}", "load_data_from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with_args", "with_args {\"A\":\"B\"}", true, true )]
+        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments {\"A\" : \"B\"}", "load_data_from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", "{\"A\":\"B\"}", false, false )]
+        [TestCase ( "change form to \"frmVendor\" with arguments {\"A\" : \"B\"}", "change_form_to \"frmVendor\"", "with_args {\"A\":\"B\"}", false, true )]
+        public void LineInfo_TakeFromTests1 ( string line, string expected1, string expected2, bool includeCurrentToken1, bool includeCurrentToken2 )
+        {
+            var lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
+            var _firstPart = new LineInfo ( lineInfo.TakeUntil ( Grammar.WithArgumentsSymbol, includeCurrentToken1 ).JoinTogether ().Token );
+            var _secondPart = new LineInfo ( lineInfo.TakeFrom ( Grammar.WithArgumentsSymbol, includeCurrentToken2 ).JoinTogether ().Token );
+
+            Assert.That ( _firstPart.Representation.Equals ( expected1 ) );
+            Assert.That ( _secondPart.Representation.Equals ( expected2 ) );
+        }
+
 
         // ---------------------------------------------------------------------------------
 

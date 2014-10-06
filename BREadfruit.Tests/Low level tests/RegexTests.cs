@@ -94,5 +94,41 @@ namespace BREadfruit.Tests.Low_level_tests
 
         // ---------------------------------------------------------------------------------
 
+
+        [TestCase ( "CHANGE_FORM_TO fmrSearch", Result = true )]
+        [TestCase ( "CHANGE_FORM_TO 'fmrSearch'", Result = true )]
+        [TestCase ( "CHANGE_FORM_TO \"fmrSearch\"", Result = true )]
+        [TestCase ( "CHANGE_FORM_TO     \"fmrSearch\"", Result = true )]
+        [TestCase ( "CHANGE_FORM_TO     \"fmrSearch\"   ", Result = true )]
+        // allow for identifiers with spaces in them when quoted
+        [TestCase ( "CHANGE_FORM_TO \"Vendor Search Screen\"", Result = true )]
+        [TestCase ( "CHANGE_FORM_TO 'Vendor Search Screen'", Result = true )]
+        [TestCase ( "CHANGE_FORM_TO Vendor Search Screen", Result = false )]
+        [TestCase ( "CHANGE_FORM_TO Vendor Search Screen    ", Result = false )]
+        public bool ChangeFormNoArgumentsLineRegexTests ( string line )
+        {
+            return Regex.IsMatch ( line, Grammar.ChangeFormNoArgumentsLineRegex, RegexOptions.IgnoreCase );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "WITH_ARGUMENTS {\"A\":\"los cojones 33\"}", Result = true )]
+        [TestCase ( "WITH_ARGUMENTS     {\"A\":\"los cojones 33\"}", Result = true )]
+        [TestCase ( "WITH_ARGUMENTS     {\"A\"  : \"los cojones 33\"}  ", Result = true )]
+        [TestCase ( "WITH_ARGUMENTS {'A':\"los cojones 33\"}", Result = true )]
+        [TestCase ( "WITH_ARGUMENTS {'A':'los cojones 33'}", Result = true )]
+        [TestCase ( "WITH_ARGUMENTS {'xsxsA':'sxsxs  )(//(& nes 33'}", Result = true )]
+        [TestCase ( "WITH_ARGUMENTS {xsxsA:'sxsxs  )(//(& nes 33'}", Result = false )]
+        [TestCase ( "WITH_ARGUMENTS {xsxsA:sxsxs  )(//(& nes 33'}", Result = false )]
+        [TestCase ( "WITH_ARGUMENTS {\"A\":\"los cojones 33\", \"B2\" : \"another val\"}", Result = true )]
+        [TestCase ( "WITH_ARGUMENTS {\"A\":\"los cojones 33\", \"B2\" : \"another val\", \"CCC\": \"soixuosi\"}", Result = true )]
+        public bool WithArgumentsClauseRegexTests ( string line )
+        {
+            return Regex.IsMatch ( line, Grammar.WithArgumentsClauseLineRegex, RegexOptions.IgnoreCase );
+        }
+
+
     }
 }

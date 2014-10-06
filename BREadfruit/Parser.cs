@@ -213,7 +213,7 @@ namespace BREadfruit
                         }
                         else
                             throw new Exception (
-                                String.Format ( Grammar.MissingThenClauseExceptionMessageTemplate, _currLine, 
+                                String.Format ( Grammar.MissingThenClauseExceptionMessageTemplate, _currLine,
                                     lineInfo.Representation ) );
 
                     }
@@ -252,16 +252,36 @@ namespace BREadfruit
                         // see if this is resultaction
                         if ( lineInfo.Tokens.Count () == 4 )
                         {
-                            var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
-                                        lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
-                            this._entities.Last ().AddResultAction ( _ra );
+                            if ( lineInfo.Tokens.Contains ( Grammar.WithArgumentsSymbol ) )
+                            {
+                                var _r = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), 
+                                       lineInfo.Tokens.ElementAt ( 1 ).Token );
+                                var _args = lineInfo.Tokens.ElementAt ( 3 ).Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+                                foreach ( var _a in _args )
+                                {
+                                    var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
+                                    _r.AddArgument ( _argPair.First ().Trim (), _argPair.Last ().Trim () );
+                                }
+                                this._entities.Last ().AddResultAction ( _r );
+                            }
+                            else
+                            {
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                            lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
+                                this._entities.Last ().AddResultAction ( _ra );
+                            }
                         }
                         // or unary action
                         if ( lineInfo.Tokens.Count () == 2 )
                         {
-                            var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
-                                lineInfo.Tokens.ElementAt ( 1 ).Token );
-                            this._entities.Last ().AddUnaryAction ( _ua );
+                            if ( this._lineParser.IsAValidSentence ( lineInfo ) )
+                            {
+                                var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+                                    lineInfo.Tokens.ElementAt ( 1 ).Token );
+                                this._entities.Last ().AddUnaryAction ( _ua );
+                            }
+                            else
+                                throw new InvalidLineFoundException ( String.Format(Grammar.InvalidLineFoundExceptionDefaultTemplate, _currLine, line) );
                         }
                     }
                     #endregion
@@ -333,14 +353,23 @@ namespace BREadfruit
                     #region " --- trigger block --- "
                     if ( _currentScope == CurrentScope.TRIGGERS_BLOCK )
                     {
-                        if ( lineInfo.Tokens.Count () == 2 )
-                        {
+                        var _x = from op in Grammar.TriggerSymbols
+                                 where op.Aliases.Count () > 0
+                                 && op.Aliases.Contains ( lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token )
+                                 select op;
+
+                        //if ( lineInfo.Tokens.Count () == 2 )
+                        //{
                             var _firstToken = lineInfo.Tokens.First ().Token;
                             if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this" ) )
                                 _firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
-                            var _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
+                            Trigger _trigger;
+                            if ( _x != null && _x.Count () > 0 )
+                                _trigger = new Trigger ( _firstToken, _x.First ().Token );
+                            else
+                                _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
                             this._entities.Last ().AddTrigger ( _trigger );
-                        }
+                        //}
                     }
                     #endregion
 
