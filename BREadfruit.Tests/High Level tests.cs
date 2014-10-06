@@ -498,6 +498,21 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        public void ParseSampleFile014 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File014.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmSearch" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Defaults.Count () == 3 );
+            Assert.That ( e.Triggers.Count () == 2 );
+            Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed" );
+            Assert.That ( e.Triggers.Last ().ToString () == "TBVendorCity clicked" );
+        }
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();

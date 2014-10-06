@@ -336,7 +336,7 @@ namespace BREadfruit
                         if ( lineInfo.Tokens.Count () == 2 )
                         {
                             var _firstToken = lineInfo.Tokens.First ().Token;
-                            if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this." ) )
+                            if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this" ) )
                                 _firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
                             var _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
                             this._entities.Last ().AddTrigger ( _trigger );

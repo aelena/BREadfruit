@@ -48,10 +48,11 @@ Entity TBVendorNumber is TextBox in "frmSearch"
 		set hidden vendorSearchResultGrid
 
 	with rules
+		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
 		TBVendorNumber.text starts with '0' then
 			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in ErrorMessage
 		TBVendorNumber.text not starts with '0' then
-			set value '' in ErrorMessage					; o clear ErrorMessage
+			set value '' in ErrorMessage
 
 	with triggers
 		this.value changes
@@ -70,6 +71,12 @@ Entity TBVendorIFA is TextBox in "frmSearch"
 	with actions
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
+	
+	with rules
+		; should this be moved to rules for the btnSearch button? maybe.....
+		DDLVDCountry.value not is '' DDLVDCountry not mandatory
+		DDLVDCountry.value is '' DDLVDCountry mandatory
+
 
 	with triggers
 		this.value changes
@@ -194,10 +201,15 @@ Entity btnSearch is Button in "frmSearch"
 		TBVendorIFA.value is not empty then DDLVDCountry not mandatory
 
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
+						
 
-		; this has to be defined better
-		; USER_HAS_NO_PERMISSIONS then
-		;	set value MESSAGES.VALIDATIONS.SEARCH.NOAUTH in ErrorMessage
+		; this means the database has to be asked to see if current user has permissions for the selected combination
+		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
+		; show an error message or popup
+		; maybe this has to be defined a bit better
+		; would this be DATASOURCE or maybe WEBSERVICE call?
+		; what properties should be passed to identify the user? or shall this be somehow managed or injected by environment?
+		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {"User" : USER.USER_ID, "Country" : DDLCDCountry, "Company" : DDLCDCompany, "PurchaseOrg" : DDLCDPurchOrg} in ErrorMessage
 			
 
 	with triggers
@@ -205,6 +217,7 @@ Entity btnSearch is Button in "frmSearch"
 		; this onclick SEARCH_VENDORS with mappings
 		;	 ABCDE.FGHIJ = TBVendorName
 		;	 ... and so on
+
 
 
 

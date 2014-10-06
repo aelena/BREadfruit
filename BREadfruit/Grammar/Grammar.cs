@@ -380,6 +380,8 @@ namespace BREadfruit
         public static Symbol ChangedEventSymbol = new Symbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes" } );
         public static Symbol FocusEventSymbol = new Symbol ( "entered", 2, true, new List<string> { "on entered", "on enter", "enters", "on focus", "focus" } );
         public static Symbol BlurredEventSymbol = new Symbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
+        public static Symbol ClickedEventSymbol = new Symbol ( "clicked", 2, true, new List<string> { "on click" } );
+
 
         #endregion
 
@@ -867,6 +869,7 @@ namespace BREadfruit
             Grammar._symbols.Add ( ChangedEventSymbol );
             Grammar._symbols.Add ( FocusEventSymbol );
             Grammar._symbols.Add ( BlurredEventSymbol );
+            Grammar._symbols.Add ( ClickedEventSymbol );
 
             Grammar._symbols.Add ( OnlyAsciiConstraintSymbol );
             Grammar._symbols.Add ( OnlyNumbersConstraintSymbol );
