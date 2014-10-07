@@ -564,6 +564,70 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        public void ParseSampleFile017 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File017 - GD_Ctr_IsNaturalPerson.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmMain" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+
+            Assert.That ( e.Rules.Count () == 3 );
+            Assert.That ( e.Defaults.Count () == 3 );
+            Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.Count () == 2 );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Reference == "GD_Ctr_IsNaturalPerson" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Action == Grammar.ShowElementUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.Last ().Reference == "DIV_ADDITIONAL_INFO_NATURAL_PERSON" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.Last ().Action == Grammar.ShowElementUnaryActionSymbol.Token );
+
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Count () == 2 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).IsMultipleConditionRule );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).Operand == "GD_Ctr_TaxCode1.Text" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).Operator == Grammar.StartsWithOperator );
+
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Reference == "GD_Ctr_IsNaturalPerson.Checked" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString() == Grammar.FalseSymbol.Token );
+
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Reference == "GD_Ctr_IsNaturalPerson.Checked" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString() == Grammar.TrueSymbol.Token );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile018 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File018 - GD_Adr_Street2.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmMain" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+
+            Assert.That ( e.Defaults.Count () == 1 );
+            Assert.That ( e.Defaults.First ().Token == Grammar.MaxlengthDefaultClause );
+            Assert.That ( e.Defaults.First ().Value.ToString() == "32" );
+
+            Assert.That ( e.Rules.Count () == 1 );
+            Assert.That ( e.Rules.First ().Conditions.First ().Operand == "REGIONAL_COUNTRY" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.IsOperator );
+
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Action == Grammar.NotVisibleUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Reference == "GD_Adr_Street2" );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();

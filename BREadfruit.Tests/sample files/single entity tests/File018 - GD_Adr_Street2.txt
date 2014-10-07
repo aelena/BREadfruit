@@ -1,0 +1,6 @@
+﻿Entity GD_Adr_Street2 is TextBox in frmMain
+	with defaults
+		max length 32
+
+	with rules
+		REGIONAL_COUNTRY is "FR" then GD_Adr_Street2 not visible

@@ -253,7 +253,7 @@ Entity vendorSearchResultGrid is Grid in "frmSearch"
 ; -- RULES FOR VENDOR MAIN FORM (MDM.ASPX)
 
 
-Entity GD_Ctr_RiskClassification is DropDownList in "frmMain"
+Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 	with defaults
 		enabled true
@@ -271,7 +271,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in "frmMain"
 ; ----------------------------------------------------------------------------	
 
 
-Entity GD_Adr_Country is DropDownList in "frmMain"
+Entity GD_Adr_Country is DropDownList in frmMain
 
 	with defaults
 		visible true
@@ -295,7 +295,7 @@ Entity GD_Ctr_VendorClassification is DropDownList in "frmSearch"
 
 ; ----------------------------------------------------------------------------	
 
-Entity CC_AM_BPClassification is DropDownList in "frmMain"
+Entity CC_AM_BPClassification is DropDownList in frmMain
 
 	with defaults
 		visible true
@@ -308,7 +308,7 @@ Entity CC_AM_BPClassification is DropDownList in "frmMain"
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Damex is DropDownList in "frmMain"
+Entity GD_Damex is DropDownList in frmMain
 	with defaults
 		visible true
 		enabled true
@@ -317,12 +317,12 @@ Entity GD_Damex is DropDownList in "frmMain"
 		mandatory true
 
 	with rules
-		Request.FlowType not in {"VC", "VC_CC"} then 
+		REQUEST.FLOWTYPE not in {"VC", "VC_CC"} then 
 			GD_Damex not mandatory
 			GD_Damex not visible
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Ctr_IsNaturalPerson is DropDownList in "frmMain"
+Entity GD_Ctr_IsNaturalPerson is DropDownList in frmMain
 	with defaults
 		visible true
 		enabled true
@@ -337,3 +337,201 @@ Entity GD_Ctr_IsNaturalPerson is DropDownList in "frmMain"
 		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value true GD_Ctr_IsNaturalPerson.Checked 
 
 		; CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
+
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Procur_SuppliersName2 is TextBox in frmMain
+	with defaults
+		max length 32
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Procur_SuppliersName3 is TextBox in frmMain
+	with defaults
+		max length 32
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Procur_SuppliersName4 is TextBox in frmMain
+	with defaults
+		max length 32
+
+; ----------------------------------------------------------------------------	
+; so far 21 entities up to now
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Procur_ESNCode  is TextBox in frmMain
+	with defaults
+		max length 3
+
+	with rules
+		REQUEST.FLOWTYPE in {"VC", "VC_CC"} then 
+			GD_Procur_ESNCode mandatory
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Procur_ESNCode2 is TextBox in frmMain
+	with defaults
+		max length 3
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Procur_ESNCode3 is TextBox in frmMain
+	with defaults
+		max length 3
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Procur_ESNCode4 is TextBox in frmMain
+	with defaults
+		max length 3
+
+; ----------------------------------------------------------------------------	
+; 25 entities
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Adr_Name is TextBox in frmMain
+	with defaults
+		max length 32
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_Name2 is TextBox in frmMain
+	with defaults
+		max length 32
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_Street is TextBox in frmMain
+	with defaults
+		max length 32
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_Street2 is TextBox in frmMain
+	with defaults
+		max length 32
+
+	with rules
+		REGIONAL_COUNTRY is "FR" then GD_Adr_Street2 not visible
+		
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_Street3 is TextBox in frmMain
+	with defaults
+		max length 32
+
+	with rules
+		REGIONAL_COUNTRY is "FR" then GD_Adr_Street2 not visible
+		
+; ----------------------------------------------------------------------------	
+
+; ----------------------------------------------------------------------------	
+; 30 entities
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_Region is TextBox in DropDownList in frmMain
+	with defaults
+		enabled true
+		visible true
+
+	; "16-07-2014(RG): 1) In customer creation from scratch MADAM has to check in table in sheet “Mandatory Region List” if it is mandatory and MADAM has to show in DDL the values according to the customer country.
+	 
+	;	2) If customer country  belongs to YCT6 or YCT9 -> Region mandatory and the control generate postback
+	;	3) if customer country belongs to YCT1 -> region mandatory /if region = 01 -> language = NL/If region = 02 OR 03 -> language = FR
+	;	4) If customer country belongs to YCT6/YCT9: if region selected = ""2A"" -> Postal code begins with 20/if region selected = ""2B"" -> Postal code begins with 20 else Postal code begins with code region
+
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Adr_CountryGD is TextBox in frmMain
+	with defaults
+		enabled false		; always disabled
+		value SEARCH_FORM_VALUES.DDLVDCountry			; Vendor country, country of the company code!!!!
+
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_City2 is TextBox in frmMain
+	with defaults
+		visible false		; always disabled
+
+	with rules
+		VENDOR_COUNTRY is "GR" then GD_Adr_City2 visible
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Adr_Name4 is TextBox in frmMain
+	with defaults
+		mandatory false
+		enabled true
+
+	with rules
+		; for any company 
+		CURRENT_ROLE is "MDM_CLERK" then mandatory true
+		; mandatory for ENQ and in 5150 (the only Greece CoCD)
+		COMPANY_CODE is 5150 and CURRENT_ROLE is "ENQ" then mandatory true
+
+
+; ----------------------------------------------------------------------------	
+; 35 entities
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_Name3 is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+		max length 32
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Com_Comment is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_PostalCode is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+
+	with rules
+		
+		;	TODO: CREATE SPECIFIC TESTS FOR THIS CONTROL
+		;	1)By default maxlength = 10 
+		;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4 (only numbers - Format: XXXX)
+		;	IF vendor country belongs to YVT3/YVT5 -> Maxlength = 5 (only numbers- Format: XXXXX)
+		;	IF vendor country belongs to YVT4 -> Maxlength = 8 (only numbers - Format: XXXX-XXX)
+		;	IF vendor country belongs to YVT7 - > Maxlength = 5 (only numbers- Format: XXXXX)
+		;	IF vendor country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT) -> Maxlength = 5 and control generate postback (only numbers- Format: XXXX)
+		;	2) If vendor country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT)-> region equals the first 2 digits from postal code
+		;	3)VALIDATIONS
+		;	If vendor country Belgium-> only numbers and
+		;	region 01 -> must be >=1500 and <=3999 OR >=8000 and <=9999
+		;	region 02 -> must be >=1300 and <=1499 OR >=4000 and <=7999
+		;	region 03 -> must be >=1000 and <=1299 "
+
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Adr_PostalCode is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+
+; ----------------------------------------------------------------------------	
+
+
+
+; ----------------------------------------------------------------------------	
+; 40 entities
+; ----------------------------------------------------------------------------	
