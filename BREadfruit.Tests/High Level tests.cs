@@ -516,6 +516,8 @@ namespace BREadfruit.Tests
         }
 
 
+        // ---------------------------------------------------------------------------------
+
 
         [Test]
         public void ParseSampleFile015 ()
@@ -533,6 +535,33 @@ namespace BREadfruit.Tests
             Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 2 ) ).Arguments.Count () == 1 );
 
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile016 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File016.txt" );
+            Assert.That ( parser.Entities.First ().Form == "frmMain" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+
+            Assert.That ( e.Rules.Count () == 1 );
+            Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.Count () == 2 );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Reference == "GD_Damex" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Action == Grammar.MakeNonMandatoryUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.Last ().Reference == "GD_Damex" );
+            Assert.That ( e.Rules.First ().Conditions.First ().Results.Last ().Action == Grammar.NotVisibleUnaryActionSymbol.Token );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         [Test]
         public void ShouldFindEntities ()
@@ -594,7 +623,7 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.ElementAt ( 3 ).Name == "TBVendorIFA" );
             Assert.That ( parser.Entities.ElementAt ( 3 ).Defaults.Count () == 3 );
             Assert.That ( parser.Entities.ElementAt ( 3 ).ConditionlessActions.Count () == 2 );
-            Assert.That ( parser.Entities.ElementAt ( 3 ).Rules.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 3 ).Rules.Count () == 2 );
             Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.Count () == 1 );
             Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.First ().Event == "changed" );
             Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.First ().Target == "TBVendorIFA.value" );
@@ -643,9 +672,9 @@ namespace BREadfruit.Tests
 
             Assert.That ( parser.Entities.ElementAt ( 9 ).Name == "btnSearch" );
             Assert.That ( parser.Entities.ElementAt ( 9 ).Defaults.Count () == 2 );
-            Assert.That ( parser.Entities.ElementAt ( 9 ).ConditionlessActions.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 9 ).ConditionlessActions.Count () == 2 );
             Assert.That ( parser.Entities.ElementAt ( 9 ).Rules.Count () == 9 );
-            Assert.That ( parser.Entities.ElementAt ( 9 ).Triggers.Count () == 0 );
+            Assert.That ( parser.Entities.ElementAt ( 9 ).Triggers.Count () == 1 );
             Assert.That ( parser.Entities.ElementAt ( 9 ).Constraints.Count () == 0 );
 
         }

@@ -338,6 +338,12 @@ namespace BREadfruit
                                 continue;
                             }
 
+                            if ( lineInfo.Tokens.Contains ( Grammar.NotVisibleUnaryActionSymbol))
+                            {
+                                ProcessUnaryAction ( lineInfo, Grammar.NotVisibleUnaryActionSymbol );
+                                continue;
+                            }
+
                         }
 
                         if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )

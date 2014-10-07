@@ -74,8 +74,8 @@ Entity TBVendorIFA is TextBox in "frmSearch"
 	
 	with rules
 		; should this be moved to rules for the btnSearch button? maybe.....
-		DDLVDCountry.value not is '' DDLVDCountry not mandatory
-		DDLVDCountry.value is '' DDLVDCountry mandatory
+		DDLVDCountry.value not is '' then DDLVDCountry not mandatory
+		DDLVDCountry.value is '' then DDLVDCountry mandatory
 
 
 	with triggers
@@ -178,7 +178,15 @@ Entity btnSearch is Button in "frmSearch"
 
 	with actions
 		; missing defining arguments here...
-		load data from WEBSERVICE.SEARCH_VENDORS with arguments {} in grid
+		load data from WEBSERVICE.SEARCH_VENDORS with arguments {"A" : "B"} in grid
+		; this means the database has to be asked to see if current user has permissions for the selected combination
+		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
+		; show an error message or popup
+		; maybe this has to be defined a bit better
+		; would this be DATASOURCE or maybe WEBSERVICE call?
+		; what properties should be passed to identify the user? or shall this be somehow managed or injected by environment?
+		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {"User" : USER.USER_ID, "Country" : DDLCDCountry, "Company" : DDLCDCompany, "PurchaseOrg" : DDLCDPurchOrg} in ErrorMessage
+		
 
 	with rules
 		
@@ -207,21 +215,9 @@ Entity btnSearch is Button in "frmSearch"
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
 						
 
-		; this means the database has to be asked to see if current user has permissions for the selected combination
-		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
-		; show an error message or popup
-		; maybe this has to be defined a bit better
-		; would this be DATASOURCE or maybe WEBSERVICE call?
-		; what properties should be passed to identify the user? or shall this be somehow managed or injected by environment?
-		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {"User" : USER.USER_ID, "Country" : DDLCDCountry, "Company" : DDLCDCompany, "PurchaseOrg" : DDLCDPurchOrg} in ErrorMessage
-			
-
 	with triggers
 
 		this on click
-
-
-
 
 ; ----------------------------------------------------------------------------	
 
@@ -229,6 +225,12 @@ Entity btnCreateVendor is Button in "frmSearch"
 	with defaults
 		visible false
 		label LABELS.BUTTONS.CREATEVENDOR
+
+	with actions
+		; transition to the main form
+		; guess we will have to pass some arguments here and map things to the conceptual model
+		; this works already anyway
+		change form to frmMain with arguments {"A" : "B"}
 
 	with rules
 		; how to specify all that happens server side here?
@@ -315,7 +317,9 @@ Entity GD_Damex is DropDownList in "frmMain"
 		mandatory true
 
 	with rules
-		Request.FlowType not in {"VC", "VC_CC"} then GD_Damex not mandatory, GD_Damex not visible
+		Request.FlowType not in {"VC", "VC_CC"} then 
+			GD_Damex not mandatory
+			GD_Damex not visible
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_IsNaturalPerson is DropDownList in "frmMain"

@@ -41,7 +41,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "Entity XYZ is TextBox", Result = false )]
         [TestCase ( "Entity XYZ is TextBox in \"frmSearch\"", Result = true )]
         [TestCase ( "Entity XYZ is TextBox in 'frmSearch'", Result = true )]
-        [TestCase ( "Entity XYZ is TextBox in frmSearch", Result = false )]
+        [TestCase ( "Entity XYZ is TextBox in frmSearch", Result = true )]
         [TestCase ( "Entity XYZ is DropDownList", Result = false )]
         [TestCase ( "Entity XYZ is Label", Result = false )]
         [TestCase ( "Entity XYZ is Div", Result = false )]

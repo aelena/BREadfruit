@@ -246,12 +246,14 @@ namespace BREadfruit
         /// <summary>
         /// Validates an entire load data from line
         /// </summary>
-        public const string LoadDataFromLineRegex = @"^load data from (WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+$";
+        public const string LoadDataFromLineRegex = @"^load_data_from[\t\s]*(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
         /// <summary>
         /// Validates the argument part of a load data from line 
         /// (that is, all that comes after the load data from instruction)
         /// </summary>
         public const string LoadDataFromValueRegex = @"^(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
+
+        public const string ClearValueLineRegex = @"^clear_element[\t\s]*([A-Za-z0-9'.'_])+[\t\s]*$";
 
         /// <summary>
         /// Validates a line that instructs to change the current form shown
@@ -310,7 +312,7 @@ namespace BREadfruit
         /// hide DIV_ADDITIONAL_INFO_NATURAL_PERSON	
         /// See tests in ShouldDiscriminateHideElementsLineCorrectly
         /// </summary>
-        public const string HideElementLineRegex = @"^hide[\t\s]+(this|([A-Za-z0-9_])+){1}[\t\s]*$";
+        public const string HideElementLineRegex = @"^hide[\t\s]*(this|([A-Za-z0-9_\.])+){1}[\t\s]*$";
 
 
 
@@ -384,7 +386,7 @@ namespace BREadfruit
         public static UnaryAction EnableUnaryActionSymbol = new UnaryAction ( "enable", 2, true, new [] { "set enabled", "make enabled", "enabled" } );
         public static UnaryAction DisableUnaryActionSymbol = new UnaryAction ( "disable", 2, true, new [] { "set disabled", "make disabled", "not enabled", "not enable", "disabled" } );
         public static UnaryAction VisibleUnaryActionSymbol = new UnaryAction ( "visible", 2, true, new [] { "set visible", "make visible" } );
-        public static UnaryAction NotVisibleUnaryActionSymbol = new UnaryAction ( "not_visible", 2, true, new [] { "set not visible", "make not visible" } );
+        public static UnaryAction NotVisibleUnaryActionSymbol = new UnaryAction ( "not_visible", 2, true, new [] { "set not visible", "make not visible", "not visible" } );
         public static UnaryAction HideUnaryActionSymbol = new UnaryAction ( "hide", 2, true, new [] { "set hidden", "make hidden", "hidden" } );
         public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory", "mandatory true" } );
         public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not_mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
@@ -893,6 +895,7 @@ namespace BREadfruit
             Grammar._symbols.Add ( MakeMandatoryUnaryActionSymbol );
             Grammar._symbols.Add ( MakeNonMandatoryUnaryActionSymbol );
             Grammar._symbols.Add ( ShowElementUnaryActionSymbol );
+            Grammar._symbols.Add ( NotVisibleUnaryActionSymbol );
             //Grammar._symbols.Add ( HideElementUnaryActionSymbol );
             Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
             Grammar._symbols.Add ( LoadDataUnaryActionSymbol );

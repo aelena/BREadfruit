@@ -1,0 +1,12 @@
+﻿Entity GD_Damex is DropDownList in frmMain
+	with defaults
+		visible true
+		enabled true
+		value ''
+		load data from DATASOURCE.YES_NO
+		mandatory true
+
+	with rules
+		Request.FlowType not in {"VC", "VC_CC"} then 
+			GD_Damex not mandatory
+			GD_Damex not visible

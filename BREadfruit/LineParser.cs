@@ -163,6 +163,21 @@ namespace BREadfruit
 
                     }
                 }
+
+                if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.HideUnaryActionSymbol.Token.ToUpperInvariant () ) )
+                {
+                    return Regex.IsMatch ( line.Representation.Trim(), Grammar.HideElementLineRegex, RegexOptions.IgnoreCase );
+                }
+
+                if(line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.LoadDataSymbol.Token.ToUpperInvariant () ))
+                {
+                    return Regex.IsMatch ( line.Representation.Trim (), Grammar.LoadDataFromLineRegex, RegexOptions.IgnoreCase );
+                }
+
+                if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.ClearValueUnaryActionSymbol.Token.ToUpperInvariant () ) )
+                {
+                    return Regex.IsMatch ( line.Representation.Trim (), Grammar.ClearValueLineRegex, RegexOptions.IgnoreCase );
+                }
             }
 
             return false;
@@ -198,6 +213,7 @@ namespace BREadfruit
                      || op is ResultAction
                      || op is DefaultClause
                      || op is Operator
+                     || op is UnaryAction
                      && op.Aliases.Count () > 0
                      let t = _fused.ContainsAny2 ( op.Aliases )
                      where t.Item1

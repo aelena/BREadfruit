@@ -33,12 +33,15 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        [TestCase ( "load data from DATASOURCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
-        [TestCase ( "load data from WEBSERVICE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
-        [TestCase ( "load data from DATAsourRCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = false )]
-        [TestCase ( "load data from webservice.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = false )]
-        [TestCase ( "load data from DATASOURCE.S", Grammar.LoadDataFromLineRegex, Result = true )]
-        [TestCase ( "load data from WEBSERVICE.S", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load_data_from DATASOURCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load_data_from WEBSERVICE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load_data_from     WEBSERVICE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load_data_from     WEBSERVICE.SXXSX    ", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load_data_from       WEBSERVICE.SXXSX  ", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load_data_from DATAsourRCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = false )]
+        [TestCase ( "load_data_from webservice.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromLineRegex, Result = false )]
+        [TestCase ( "load_data_from     DATASOURCE.S", Grammar.LoadDataFromLineRegex, Result = true )]
+        [TestCase ( "load_data_from WEBSERVICE.S", Grammar.LoadDataFromLineRegex, Result = true )]
         [TestCase ( "DATASOURCE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromValueRegex, Result = true )]
         [TestCase ( "WEBSERVICE.SXXSX.XASSS.XXSSSXX.XSXS_XSXS", Grammar.LoadDataFromValueRegex, Result = true )]
         [TestCase ( "DATASOURCE.SXXSX.XASSS.XXSSSXX.", Grammar.LoadDataFromValueRegex, Result = false )]
@@ -114,16 +117,16 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        [TestCase ( "WITH_ARGUMENTS {\"A\":\"los cojones 33\"}", Result = true )]
-        [TestCase ( "WITH_ARGUMENTS     {\"A\":\"los cojones 33\"}", Result = true )]
-        [TestCase ( "WITH_ARGUMENTS     {\"A\"  : \"los cojones 33\"}  ", Result = true )]
-        [TestCase ( "WITH_ARGUMENTS {'A':\"los cojones 33\"}", Result = true )]
-        [TestCase ( "WITH_ARGUMENTS {'A':'los cojones 33'}", Result = true )]
-        [TestCase ( "WITH_ARGUMENTS {'xsxsA':'sxsxs  )(//(& nes 33'}", Result = true )]
-        [TestCase ( "WITH_ARGUMENTS {xsxsA:'sxsxs  )(//(& nes 33'}", Result = false )]
-        [TestCase ( "WITH_ARGUMENTS {xsxsA:sxsxs  )(//(& nes 33'}", Result = false )]
-        [TestCase ( "WITH_ARGUMENTS {\"A\":\"los cojones 33\", \"B2\" : \"another val\"}", Result = true )]
-        [TestCase ( "WITH_ARGUMENTS {\"A\":\"los cojones 33\", \"B2\" : \"another val\", \"CCC\": \"soixuosi\"}", Result = true )]
+        [TestCase ( "WITH_ARGS {\"A\":\"los cojones 33\"}", Result = true )]
+        [TestCase ( "WITH_ARGS     {\"A\":\"los cojones 33\"}", Result = true )]
+        [TestCase ( "WITH_ARGS     {\"A\"  : \"los cojones 33\"}  ", Result = true )]
+        [TestCase ( "WITH_ARGS {'A':\"los cojones 33\"}", Result = true )]
+        [TestCase ( "WITH_ARGS {'A':'los cojones 33'}", Result = true )]
+        [TestCase ( "WITH_ARGS {'xsxsA':'sxsxs  )(//(& nes 33'}", Result = true )]
+        [TestCase ( "WITH_ARGS {xsxsA:'sxsxs  )(//(& nes 33'}", Result = false )]
+        [TestCase ( "WITH_ARGS {xsxsA:sxsxs  )(//(& nes 33'}", Result = false )]
+        [TestCase ( "WITH_ARGS {\"A\":\"los cojones 33\", \"B2\" : \"another val\"}", Result = true )]
+        [TestCase ( "WITH_ARGS {\"A\":\"los cojones 33\", \"B2\" : \"another val\", \"CCC\": \"soixuosi\"}", Result = true )]
         public bool WithArgumentsClauseRegexTests ( string line )
         {
             return Regex.IsMatch ( line, Grammar.WithArgumentsClauseLineRegex, RegexOptions.IgnoreCase );
