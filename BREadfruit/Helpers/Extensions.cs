@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BREadfruit.Helpers
@@ -182,16 +183,30 @@ namespace BREadfruit.Helpers
         /// <param name="list"></param>
         /// <param name="searches"></param>
         /// <returns></returns>
-        public static bool ContainsAny ( this string searchee, IEnumerable<string> searches )
+        public static bool ContainsAny ( this string searchee, IEnumerable<string> searches, bool wordBoundaries = false )
         {
             if ( searchee == null )
                 throw new ArgumentNullException ( "searchee", "the string cannot be null." );
-
-            if ( searches != null )
-                foreach ( var s in searches )
-                    if ( searchee.Contains ( s ) )
-                        return true;
-
+            if ( !wordBoundaries )
+            {
+                if ( searches != null )
+                    foreach ( var s in searches )
+                        if ( searchee.Contains ( s ) )
+                            return true;
+            }
+            else
+            {
+                if ( searches != null )
+                {
+                    foreach ( var s in searches )
+                    {
+                        var _rx = "\\b" + s + "\\b";
+                        var _matches = Regex.Matches ( searchee, _rx );
+                        if ( _matches != null && _matches.Count > 0 )
+                            return true;
+                    }
+                }
+            }
             return false;
 
         }
@@ -208,19 +223,37 @@ namespace BREadfruit.Helpers
         /// <param name="searches"></param>
         /// <returns>Returns a boolean value to indicate if the search was successful
         /// and returns also the value itself.</returns>
-        public static Tuple<bool, string> ContainsAny2 ( this string searchee, IEnumerable<string> searches )
+        public static Tuple<bool, string> ContainsAny2 ( this string searchee, IEnumerable<string> searches, bool wordBoundaries = false )
         {
             if ( searchee == null )
                 throw new ArgumentNullException ( "searchee", "the string cannot be null." );
 
-            if ( searches != null )
-                foreach ( var s in searches )
-                    if ( searchee.Contains ( s ) )
-                        return new Tuple<bool, string> ( true, s );
+            if ( !wordBoundaries )
+            {
+                if ( searches != null )
+                    foreach ( var s in searches )
+                        if ( searchee.Contains ( s ) )
+                            return new Tuple<bool, string> ( true, s );
+            }
+            else
+            {
+                if ( searches != null )
+                {
+                    foreach ( var s in searches )
+                    {
+                        var _rx = "\\b" + s + "\\b";
+                        var _matches = Regex.Matches ( searchee, _rx );
+                        if ( _matches != null && _matches.Count > 0 )
+                            return new Tuple<bool, string> ( true, s );
+
+                    }
+                }
+            }
 
             return new Tuple<bool, string> ( false, String.Empty );
 
         }
+
 
 
         // ---------------------------------------------------------------------------------
@@ -555,8 +588,40 @@ namespace BREadfruit.Helpers
 
         }
 
+
         // ---------------------------------------------------------------------------------
 
+
+        public static bool HasItems<T> ( this IEnumerable<T> t )
+        {
+            return t != null && t.Count () > 0;
+        }
+
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static string ReplaceWord ( this string subject, string oldValue, string newValue )
+        {
+
+
+            var _rx = @"([\t\s]|\b)+" + oldValue + @"([\t\s)]|\b)+";
+            var _matches = Regex.Matches ( subject, _rx );
+            if ( _matches != null && _matches.Count > 0 )
+            {
+                var _replacements = new List<Tuple<string, string>> ();
+                for ( int i = 0; i < _matches.Count; i++ )
+                    _replacements.Add ( new Tuple<string, string> ( _matches [ i ].Value, _matches [ i ].Value.Replace ( oldValue, newValue ) ) );
+
+                foreach ( var s in _replacements )
+                    subject = subject.Replace ( s.Item1, s.Item2 );
+
+                return subject;
+            }
+            return subject;
+
+        }
 
 
     }

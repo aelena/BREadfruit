@@ -84,23 +84,39 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( _l.ContainsAny ( _s ) );
         }
 
-        [TestCase ( "this is my string yeah", Result = true )]
-        [TestCase ( "that is my string yeah", Result = false )]
-        [TestCase ( "well, yeah, about that...", Result = true )]
-        [TestCase ( "", Result = false )]
-        public bool ContainsAnyForStringTests ( string teststring )
+        [TestCase ( "this is my string yeah", false, Result = true )]
+        [TestCase ( "that is my string yeah", false, Result = false )]
+        [TestCase ( "well, yeah, about that...", false, Result = true )]
+        [TestCase ( "usually, island are inhabited by islanders", true, Result = true )]
+        [TestCase ( "usually, island are inhabited by islanders", false, Result = true )]
+        [TestCase ( "usually, islands are inhabited by islanders", true, Result = false )]
+        [TestCase ( "usually, islands are inhabited by islanders", false, Result = true )]
+        [TestCase ( "the islanders were crazy", true, Result = false )]
+        [TestCase ( "the islanders were crazy", false, Result = true )]
+        [TestCase ( "", false, Result = false )]
+        [TestCase ( "", true, Result = false )]
+        public bool ContainsAnyForStringTests ( string teststring, bool asWord )
         {
-            return teststring.ContainsAny ( new List<String> () { "no", "I", "don't", "know", "about", "this" } );
+            var _ = teststring.ContainsAny ( new List<String> () { "no", "I", "don't", "know", "about", "this", "island" }, asWord );
+            return _;
         }
 
 
-        [TestCase ( "this is my string yeah", "this", Result = true )]
-        [TestCase ( "that is my string yeah", "", Result = false )]
-        [TestCase ( "well, yeah, about that...", "about", Result = true )]
-        [TestCase ( "", "", Result = false )]
-        public bool ContainsAny2ForStringTests ( string teststring, string item )
+        [TestCase ( "this is my string yeah", "this", false, Result = true )]
+        [TestCase ( "that is my string yeah", "", false, Result = false )]
+        [TestCase ( "well, yeah, about that...", "about", false, Result = true )]
+        [TestCase ( "usually, an island is inhabited by islanders", "island", true, Result = true )]
+        [TestCase ( "the islanders were crazy", "", true, Result = false )]
+        [TestCase ( "the islanders were crazy", "island", false, Result = true )]
+        [TestCase ( "usually, island are inhabited by islanders", "island", true, Result = true )]
+        [TestCase ( "usually, island are inhabited by islanders", "island", false, Result = true )]
+        [TestCase ( "usually, islands are inhabited by islanders", "", true, Result = false )]
+        [TestCase ( "usually, islands are inhabited by islanders", "island", false, Result = true )]
+        [TestCase ( "", "", false, Result = false )]
+        [TestCase ( "", "", true, Result = false )]
+        public bool ContainsAny2ForStringTests ( string teststring, string item, bool asWord )
         {
-            var t = teststring.ContainsAny2 ( new List<String> () { "no", "I", "don't", "know", "about", "this" } );
+            var t = teststring.ContainsAny2 ( new List<String> () { "no", "I", "don't", "know", "about", "this", "island" }, asWord );
             Assert.That ( t.Item2 == item );
             return t.Item1;
         }
@@ -371,7 +387,7 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        [TestCase ( null, " ", "{", "}", Result = "{'P','Q'}", ExpectedException = typeof(ArgumentException), ExpectedMessage = "String cannot be null" )]
+        [TestCase ( null, " ", "{", "}", Result = "{'P','Q'}", ExpectedException = typeof ( ArgumentException ), ExpectedMessage = "String cannot be null" )]
         [TestCase ( "}'P',   -- 'Q'{", " ", "{", "}", Result = "{'P','Q'}", ExpectedException = typeof ( Exception ), ExpectedMessage = "End string cannot appear earlier than beginning string" )]
         public string RemoveBetweenTestsExceptions ( string original, string removee, string s1, string s2 )
         {
@@ -380,6 +396,21 @@ namespace BREadfruit.Tests.Low_level_tests
 
 
         // ---------------------------------------------------------------------------------
+
+
+        // this one should not change as island is not contained as a word inside the subject sentence
+        [TestCase ( "the islanders were insane", "island", "villag", Result = "the islanders were insane" )]
+        [TestCase ( "the islands were quite beautiful in summer", "islands", "villages", Result = "the villages were quite beautiful in summer" )]
+        [TestCase ( "some islands were quite beautiful in summer, other islands were better in winter", "islands", "villages",
+            Result = "some villages were quite beautiful in summer, other villages were better in winter" )]
+        public string ReplaceWordTests ( string teststring, string newstring, string oldstring )
+        {
+            return teststring.ReplaceWord ( newstring, oldstring );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
     }
 }
