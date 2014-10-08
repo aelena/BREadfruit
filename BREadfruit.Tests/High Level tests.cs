@@ -589,12 +589,12 @@ namespace BREadfruit.Tests
 
             Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
             Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Reference == "GD_Ctr_IsNaturalPerson.Checked" );
-            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString() == Grammar.FalseSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString () == Grammar.FalseSymbol.Token );
 
 
             Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
             Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Reference == "GD_Ctr_IsNaturalPerson.Checked" );
-            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString() == Grammar.TrueSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString () == Grammar.TrueSymbol.Token );
 
         }
 
@@ -613,7 +613,7 @@ namespace BREadfruit.Tests
 
             Assert.That ( e.Defaults.Count () == 1 );
             Assert.That ( e.Defaults.First ().Token == Grammar.MaxlengthDefaultClause );
-            Assert.That ( e.Defaults.First ().Value.ToString() == "32" );
+            Assert.That ( e.Defaults.First ().Value.ToString () == "32" );
 
             Assert.That ( e.Rules.Count () == 1 );
             Assert.That ( e.Rules.First ().Conditions.First ().Operand == "REGIONAL_COUNTRY" );
@@ -621,6 +621,80 @@ namespace BREadfruit.Tests
 
             Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Action == Grammar.NotVisibleUnaryActionSymbol.Token );
             Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Reference == "GD_Adr_Street2" );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile019 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File019 - GD_Adr_PostalCode.txt" );
+            var e = parser.Entities.First ();
+
+            Assert.That ( e.Defaults.Count () == 4 );
+            Assert.That ( e.Defaults.ElementAt ( 3 ).Token == "max_length" );
+            Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "10" );
+            Assert.That ( e.Defaults.ElementAt ( 4 ).Token == "validation_regex" );
+            Assert.That ( e.Defaults.ElementAt ( 4 ).Value.ToString () == "^[0-9]{4}-[0-9]{3}$" );
+
+            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Action == Grammar.MaxlengthDefaultClause );
+            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "4" );
+            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Reference == "GD_Adr_PostalCode" );
+            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.Last ().Action == Grammar.SetValidationRegexUnaryActionSymbol );
+            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.Last ().Value.ToString () == "^[0-9]{4}$" );
+            Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.Last ().Reference == "GD_Adr_PostalCode" );
+
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.First ().Action == Grammar.MaxlengthDefaultClause );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.First ().Value.ToString () == "5" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.First ().Reference == "GD_Adr_PostalCode" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.Last ().Action == Grammar.SetValidationRegexUnaryActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.Last ().Value.ToString () == "^[0-9]{5}$" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.Last ().Reference == "GD_Adr_PostalCode" );
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ResultActions.First ().Action == Grammar.MaxlengthDefaultClause );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ResultActions.First ().Value.ToString () == "8" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ResultActions.First ().Reference == "GD_Adr_PostalCode" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ResultActions.Last ().Action == Grammar.SetValidationRegexUnaryActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ResultActions.Last ().Value.ToString () == "^[0-9]{4}-[0-9]{3}$" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ResultActions.Last ().Reference == "GD_Adr_PostalCode" );
+
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Count () == 2 );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.First ().Action == Grammar.MaxlengthDefaultClause );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "4" );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Adr_PostalCode" );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.Last ().Action == Grammar.SetValidationRegexUnaryActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.Last ().Value.ToString () == "^(1[5-9][0-9]{2}){1}|((2|3)[0-9]{3}){1}|((8|9)[0-9]{3})$" );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.Last ().Reference == "GD_Adr_PostalCode" );
+
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Count () == 2 );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First ().Action == Grammar.MaxlengthDefaultClause );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "4" );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Adr_PostalCode" );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.Last ().Action == Grammar.SetValidationRegexUnaryActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.Last ().Value.ToString () == "^(1[3-4][0-9]{2}){1}|([4-7][0-9]{3})$" );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.Last ().Reference == "GD_Adr_PostalCode" );
+
+            Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Count () == 2 );
+            Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Action == Grammar.MaxlengthDefaultClause );
+            Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "4" );
+            Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Adr_PostalCode" );
+            Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.Last ().Action == Grammar.SetValidationRegexUnaryActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.Last ().Value.ToString () == "^(1[0-2][0-9]{2})$" );
+            Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.Last ().Reference == "GD_Adr_PostalCode" );
+
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.First ().Action == Grammar.MaxlengthDefaultClause );
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "5" );
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Adr_PostalCode" );
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.ElementAt ( 1 ).Action == Grammar.SetValidationRegexUnaryActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.ElementAt ( 1 ).Value.ToString () == "^[0-9]{5}$" );
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.ElementAt ( 1 ).Reference == "GD_Adr_PostalCode" );
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.ElementAt ( 2 ).Action == Grammar.SetValueActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.ElementAt ( 2 ).Value.ToString () == "substring(GD_Adr_PostalCode,2)" );
+            Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.ElementAt ( 2 ).Reference == "GD_Adr_Region" );
+
         }
 
 

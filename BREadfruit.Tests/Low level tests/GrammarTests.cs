@@ -12,6 +12,37 @@ namespace BREadfruit.Tests.Low_level_tests
     public class GrammarTests
     {
 
+        [Test]
+        public void GrammarEnumerateAllRegexes()
+        {
+            var props = from x in typeof ( Grammar ).GetProperties ()
+                         where x.Name.ToUpperInvariant ().Contains ( "REGEX" )
+                         select new
+                         {
+                             Name = x.Name,
+                             Ex = x.GetValue(null)
+                         };
+            var fields = from x in typeof ( Grammar ).GetFields ()
+                             where x.Name.ToUpperInvariant ().Contains ( "REGEX" )
+                             select new
+                             {
+                                 Name = x.Name,
+                                 Ex = x.GetValue ( null )
+                             };
+
+            var _s = new StringBuilder ();
+            foreach ( var _x in props )
+                _s.AppendFormat ( "{0} - {1}{2}", _x.Name, _x.Ex, Environment.NewLine );
+            foreach ( var _x in fields )
+                _s.AppendFormat ( "{0} - {1}{2}", _x.Name, _x.Ex, Environment.NewLine );
+
+            
+            Assert.That ( props.Count() > 0 );
+            Assert.That ( fields.Count() > 0 );
+
+
+        }
+
         [TestCase ( " WItH ", false, 5, false )]
         [TestCase ( "with", false, 5, true )]
         [TestCase ( "enable", true, 0, true )]

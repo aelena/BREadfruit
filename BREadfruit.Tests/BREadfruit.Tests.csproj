@@ -97,6 +97,7 @@
     <Content Include="sample files\single entity tests\File016.txt" />
     <Content Include="sample files\single entity tests\File017 - GD_Ctr_IsNaturalPerson.txt" />
     <Content Include="sample files\single entity tests\File018 - GD_Adr_Street2.txt" />
+    <Content Include="sample files\single entity tests\File019 - GD_Adr_PostalCode.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

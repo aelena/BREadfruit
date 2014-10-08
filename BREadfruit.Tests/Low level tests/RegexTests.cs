@@ -24,9 +24,9 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "'Any text goes here'", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "\"Any text goes here\"", Grammar.LabelDefaultValueRegex, Result = true )]
         [TestCase ( "invalid.naming", Grammar.LabelDefaultValueRegex, Result = true )]
-        public bool RegexTest_LabelDefaultClause(string line, string regex )
+        public bool RegexTest_LabelDefaultClause ( string line, string regex )
         {
-            return Regex.IsMatch ( line.ToUpperInvariant(), regex );
+            return Regex.IsMatch ( line.ToUpperInvariant (), regex );
         }
 
 
@@ -52,7 +52,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "WEBSERVICE.", Grammar.LoadDataFromValueRegex, Result = false )]
         [TestCase ( "DATASOURCE", Grammar.LoadDataFromValueRegex, Result = false )]
         [TestCase ( "WEBSERVICE", Grammar.LoadDataFromValueRegex, Result = false )]
-        public bool RegexTest_LoadDataFromClause(string line, string regex)
+        public bool RegexTest_LoadDataFromClause ( string line, string regex )
         {
             return Regex.IsMatch ( line, regex );
         }
@@ -61,7 +61,7 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        [TestCase ( "show this", Grammar.ShowElementLineRegex, Result =true )]
+        [TestCase ( "show this", Grammar.ShowElementLineRegex, Result = true )]
         [TestCase ( "show NAME_OF_DIV", Grammar.ShowElementLineRegex, Result = true )]
         [TestCase ( "show this      ", Grammar.ShowElementLineRegex, Result = true )]
         [TestCase ( "show NAME_OF_DIV   ", Grammar.ShowElementLineRegex, Result = true )]
@@ -70,9 +70,9 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( " show", Grammar.ShowElementLineRegex, Result = false )]
         [TestCase ( "show", Grammar.ShowElementLineRegex, Result = false )]
         [TestCase ( "show 'dudud'", Grammar.ShowElementLineRegex, Result = false )]
-        public bool ShouldDiscriminateShowElementsLineCorrectly( string line, string regex)
+        public bool ShouldDiscriminateShowElementsLineCorrectly ( string line, string regex )
         {
-             return Regex.IsMatch ( line, regex, RegexOptions.IgnoreCase );
+            return Regex.IsMatch ( line, regex, RegexOptions.IgnoreCase );
         }
 
 
@@ -132,6 +132,24 @@ namespace BREadfruit.Tests.Low_level_tests
             return Regex.IsMatch ( line, Grammar.WithArgumentsClauseLineRegex, RegexOptions.IgnoreCase );
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "substring ( ANYTHING.GOES, 4 )", Result = true )]
+        [TestCase ( "substring ( ANY566THING.GOES, 4 )", Result = true )]
+        [TestCase ( "substring ( ANYTHING.GOES, 4 ) ", Result = true )]
+        [TestCase ( "substring   (  ANYTHING.GOES, 4 ) ", Result = true )]
+        [TestCase ( "substring ( ANYTHING.GOES_HERE, 4 )", Result = true )]
+        [TestCase ( "substring ( ANYTHING.GOES.HERE_IS_ME, 14 ) ", Result = true )]
+        [TestCase ( "substring   (  \"ANYTHING.GOES\", 4 ) ", Result = true )]
+        [TestCase ( "substring ( '79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\"', 4 ) ", Result = true )]
+        [TestCase ( "substring ( 79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\", 4 ) ", Result = false )]
+        public bool SubStringExpressionRegexTests ( string line )
+        {
+            return Regex.IsMatch ( line, Grammar.SubStringExpressionRegex, RegexOptions.IgnoreCase );
+
+        }
 
     }
 }
