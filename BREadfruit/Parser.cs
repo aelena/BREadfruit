@@ -92,11 +92,13 @@ namespace BREadfruit
 
             foreach ( var line in lines )
             {
-
+                _currLine++;
                 if ( !( String.IsNullOrWhiteSpace ( line ) ) )
                 {
 
                     var lineInfo = ParseLine ( line );
+              
+
                     // if this is a full comment line, skip it
                     if ( lineInfo.Tokens.Count () == 0 )
                         continue;
@@ -344,6 +346,22 @@ namespace BREadfruit
                                 continue;
                             }
 
+                            if ( lineInfo.Tokens.First() == ( Grammar.MaxlengthDefaultClause ) )
+                            {
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),lineInfo.Tokens.Last ().Token, 
+                                    this.Entities.Last ().Name );
+                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                                continue;
+                            }
+
+                            if ( lineInfo.Tokens.First () == ( Grammar.SetValidationRegexUnaryActionSymbol ) )
+                            {
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace("\"", ""),
+                                    this.Entities.Last ().Name );
+                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                                continue;
+                            }
+
                         }
 
                         if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )
@@ -393,7 +411,6 @@ namespace BREadfruit
 
                 }
 
-                _currLine++;
 
             }
             return this.Entities;
