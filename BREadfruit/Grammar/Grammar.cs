@@ -246,24 +246,44 @@ namespace BREadfruit
         /// <summary>
         /// Validates an entire load data from line
         /// </summary>
-        public const string LoadDataFromLineRegex = @"^load_data_from[\t\s]*(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
+        public const string LoadDataFromLineRegex = @"^load_data_from[\t\s]+(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
         /// <summary>
         /// Validates the argument part of a load data from line 
         /// (that is, all that comes after the load data from instruction)
         /// </summary>
         public const string LoadDataFromValueRegex = @"^(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
+         /// <summary>
+        /// Validates the argument part of a load data from line 
+        /// (that is, all that comes after the load data from instruction)
+        /// </summary>
+        public const string ValidationRegexLineRegex = @"^validation_regex[\t\s]+(.)*[\t\s]*";
+        
 
-        public const string ClearValueLineRegex = @"^clear_element[\t\s]*([A-Za-z0-9'.'_])+[\t\s]*$";
+        public const string ClearValueLineRegex = @"^clear_element[\t\s]+([A-Za-z0-9'.'_])+[\t\s]*$";
 
         /// <summary>
         /// Validates a line that instructs to change the current form shown
         /// This is when there are no arguments to pass to the second form
         ///  
         /// </summary>
-        public const string ChangeFormNoArgumentsLineRegex = "^CHANGE_FORM_TO[\t\\s]*(((\"|')?(([A-Za-z0-9'.'_])+(\"|')?)){1}|((\"|'){1}(([A-Za-z0-9'.'_\\s])+(\"|'){1})){1})[\t\\s]*$";
+        public const string ChangeFormNoArgumentsLineRegex = "^CHANGE_FORM_TO[\t\\s]+(((\"|')?(([A-Za-z0-9'.'_])+(\"|')?)){1}|((\"|'){1}(([A-Za-z0-9'.'_\\s])+(\"|'){1})){1})[\t\\s]*$";
 
+        /// <summary>
+        /// Regular expression to validate a substring expression.
+        /// These are valid examples:
+        /// 
+        /// substring ( 'any value here including &(/&(/&=)?=", 4 )
+        /// 
+        /// or identifiers with no quotes
+        /// 
+        /// substring ( IDENTIFIER.MY_NAME, 9)
+        /// 
+        /// in which case, only numbers, letters, _ and . are allowed 
+        /// 
+        /// </summary>
+        public const string SubStringExpressionRegex = "^substring[\t\\s]+[(][\t\\s]*(([A-Za-z0-9'.'_])|(\"|'){1}(.)+(\"|'))+[\t\\s]*,[\t\\s]*[0-9]+[\t\\s]*[)][\t\\s]*$";
 
-        public const string WithArgumentsClauseLineRegex = "^WITH_ARGS[\t\\s]*{([\t\\s]*((\"|')?([A-Za-z0-9'.'_])+(\"|'))[\t\\s]*:[\t\\s]*((\"|')?(.)+(\"|'))[\t\\s]*),?}[\t\\s]*$";
+        public const string WithArgumentsClauseLineRegex = "^WITH_ARGS[\t\\s]+{([\t\\s]*((\"|')?([A-Za-z0-9'.'_])+(\"|'))[\t\\s]*:[\t\\s]*((\"|')?(.)+(\"|'))[\t\\s]*),?}[\t\\s]*$";
         /// <summary>
         /// Regular expression that validates the correct format of an 'entity' line.
         /// </summary>
@@ -281,6 +301,7 @@ namespace BREadfruit
         {
             get { return _constraintLineRegex; }
         }
+
         // ---------------------------------------------------------------------------------
 
 
@@ -290,14 +311,14 @@ namespace BREadfruit
         /// </summary>
         public const string WithLineRegex = "^\tWITH (DEFAULTS|TRIGGERS|CONSTRAINTS|RULES|ACTIONS){1}[\t' ']*$";
 
-        public const string MaxLengthLineRegex = @"^MAX_LENGTH[\t\s]*[0-9]+[\t\s]*$";
-        public const string MinLengthLineRegex = @"^MIN_LENGTH[\t\s]*[0-9]+[\t\s]*$";
+        public const string MaxLengthLineRegex = @"^MAX_LENGTH[\t\s]+[0-9]+[\t\s]*$";
+        public const string MinLengthLineRegex = @"^MIN_LENGTH[\t\s]+[0-9]+[\t\s]*$";
         public const string MandatoryLineRegex = @"^MANDATORY[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
         public const string EnabledLineRegex = @"^ENABLED[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
         public const string VisibleLineRegex = @"^VISIBLE[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
-        public const string FreeValueLineRegex = "^VALUE[\t\\s]*(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
-        public const string LabelDefaultLineRegex = "^LABEL[\t\\s]*(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$";
-        public const string LoadDataDefaultLineRegex = @"^LOAD_DATA_FROM[\t\s]*(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
+        public const string FreeValueLineRegex = "^VALUE[\t\\s]+(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
+        public const string LabelDefaultLineRegex = "^LABEL[\t\\s]+(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$";
+        public const string LoadDataDefaultLineRegex = @"^LOAD_DATA_FROM[\t\s]+(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
 
         /// <summary>
         /// Regex for lines such as 
@@ -312,7 +333,7 @@ namespace BREadfruit
         /// hide DIV_ADDITIONAL_INFO_NATURAL_PERSON	
         /// See tests in ShouldDiscriminateHideElementsLineCorrectly
         /// </summary>
-        public const string HideElementLineRegex = @"^hide[\t\s]*(this|([A-Za-z0-9_\.])+){1}[\t\s]*$";
+        public const string HideElementLineRegex = @"^hide[\t\s]+(this|([A-Za-z0-9_\.])+){1}[\t\s]*$";
 
 
 
@@ -394,10 +415,9 @@ namespace BREadfruit
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
         public static UnaryAction LoadDataUnaryActionSymbol = new UnaryAction ( "load_data_from", 2, true, new [] { "load data from" } );
         public static UnaryAction ChangeFormUnaryActionSymbol = new UnaryAction ( "change_form_to", 2, true, new [] { "change form to" } );
+        public static UnaryAction SetValidationRegexUnaryActionSymbol = new UnaryAction ( "validation_regex", 2, true, new [] { "validation regex", "validation" } );
 
         public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
-
-
 
         #endregion
 
@@ -483,7 +503,7 @@ namespace BREadfruit
         public static Operator EqualityOperator = new Operator ( "==", 2, false );
         public static Operator NonEqualityOperator = new Operator ( "!=", 2, false );
 
-
+        public static Operator SubStringOperator = new Operator ( "substring", 2, false );
 
         #endregion
 
@@ -496,6 +516,8 @@ namespace BREadfruit
         public static DefaultClause ValueDefaultClause = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
         public static DefaultClause LabelDefaultClause = new DefaultClause ( "label", LabelDefaultValueRegex );
         public static DefaultClause LoadDataDefaultClause = new DefaultClause ( "load_data_from", LoadDataFromValueRegex, new List<string> () { "load data from" } );
+        public static DefaultClause ValidationRegexDefaultClause = new DefaultClause ( "validation_regex", ValidationRegexLineRegex, new [] { "validation regex", "set validation", "validation" } );
+        
 
 
         // ---------------------------------------------------------------------------------
@@ -809,6 +831,7 @@ namespace BREadfruit
             Grammar._operators.Add ( IsNotNullOperator );
             Grammar._operators.Add ( EqualityOperator );
             Grammar._operators.Add ( NonEqualityOperator );
+            Grammar._operators.Add ( SubStringOperator );
 
 
             Grammar._unaryOperators.Add ( IsEmptyOperator );
@@ -900,6 +923,7 @@ namespace BREadfruit
             Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
             Grammar._symbols.Add ( LoadDataUnaryActionSymbol );
             Grammar._symbols.Add ( ChangeFormUnaryActionSymbol );
+            Grammar._symbols.Add ( SetValidationRegexUnaryActionSymbol );
 
             // result actions
             Grammar._symbols.Add ( SetValueActionSymbol );
@@ -936,6 +960,8 @@ namespace BREadfruit
             _defaultsTokens.Add ( ValueDefaultClause );
             _defaultsTokens.Add ( LabelDefaultClause );
             _defaultsTokens.Add ( LoadDataDefaultClause );
+            _defaultsTokens.Add ( ValidationRegexDefaultClause );
+            
 
             Grammar._symbols.Add ( MaxlengthDefaultClause );
             Grammar._symbols.Add ( MinLengthDefaultClause );
@@ -945,6 +971,8 @@ namespace BREadfruit
             Grammar._symbols.Add ( ValueDefaultClause );
             Grammar._symbols.Add ( LabelDefaultClause );
             Grammar._symbols.Add ( LoadDataDefaultClause );
+            Grammar._symbols.Add ( ValidationRegexDefaultClause );
+            
         }
 
 
