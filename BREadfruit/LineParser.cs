@@ -215,7 +215,7 @@ namespace BREadfruit
                      || op is Operator
                      || op is UnaryAction
                      && op.Aliases.Count () > 0
-                     let t = _fused.ContainsAny2 ( op.Aliases )
+                     let t = _fused.ContainsAny2 ( op.Aliases, true )
                      where t.Item1
                      orderby op.Token.Length descending
                      select new
@@ -228,7 +228,7 @@ namespace BREadfruit
 
 
             if ( _x != null && _x.Count () > 0 )
-                _x.ToList ().ForEach ( x => _replacedString = _replacedString.Replace ( x.Ocurrence, x.symbol.Token ) );
+                _x.ToList ().ForEach ( x => _replacedString = _replacedString.ReplaceWord ( x.Ocurrence, x.symbol.Token ) );
 
             _fused = _replacedString;
 
@@ -302,7 +302,7 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        public IEnumerable<Condition> ExtractConditions ( LineInfo lineInfo )
+        public IEnumerable<Condition> ExtractConditions ( LineInfo lineInfo, string entityName = null)
         {
             var _conds = new List<Condition> ();
             int __ands = 0, __ors = 0;
@@ -313,9 +313,13 @@ namespace BREadfruit
             __ands += __ors;
             for ( int i = 0; i < 3 * ( __ands + 1 ); )
             {
-                var _c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
-                                                   Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
-                                                   lineInfo.Tokens.ElementAt ( ++i ).Token );
+                var _operandToken = lineInfo.Tokens.ElementAt ( i ).Token;
+                if ( _operandToken.Trim ().ToLowerInvariant ().StartsWith ( "this." )  && entityName != null)
+                    _operandToken = _operandToken.Replace ( "this", entityName );
+
+                var _c = new Condition ( _operandToken,
+                                         Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
+                                         lineInfo.Tokens.ElementAt ( ++i ).Token );
 
                 if ( _c.Operator.In ( Grammar.UnaryOperators ) )
                     i -= 2;
