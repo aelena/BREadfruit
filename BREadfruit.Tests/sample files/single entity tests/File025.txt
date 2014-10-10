@@ -1,0 +1,12 @@
+﻿Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
+	with defaults
+		max length 6
+		mandatory false
+
+	with rules
+		; these rules are a bit special
+		; this field is imbricated with GD_Adr_POBox and with GD_Adr_POBoxLoc
+		; see code around lines 822 and following in MDM.aspx.cs
+		VENDOR_COUNTRY in { COUNTRIES.FRENCH_GUAYANA, COUNTRIES.GUADELOUPE, COUNTRIES.MARTINIQUE, COUNTRIES.REUNION, COUNTRIES.FRANCE, COUNTRIES.MAYOTTE, COUNTRIES.NEW_CALEDONIA, COUNTRIES.FRENCH_POLYNESIA, COUNTRIES.STPIERMIQUEL, COUNTRIES.WALLIS_FORTUNA, COUNTRIES.MONACO, COUNTRIES.FRENCH_TERRITORIES } then GD_Adr_POBoxPostalCode mandatory
+
+		VENDOR_COUNTRY is COUNTRIES.FRANCE then this max length 10

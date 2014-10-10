@@ -174,7 +174,7 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             var lineInfo = lineParser.ParseLine ( line );
             lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-            var _conds = lineParser.ExtractConditions ( lineInfo );
+            var _conds = lineParser.ExtractConditions ( lineInfo, "" );
             Assert.That ( _conds.First ().ToString ().Equals ( expected ) );
             Assert.That ( _conds.First ().SuffixLogicalOperator == null );
             return _conds.Count ();
@@ -211,7 +211,7 @@ namespace BREadfruit.Tests.Low_level_tests
         {
             var lineInfo = lineParser.ParseLine ( line );
             lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-            var _conds = lineParser.ExtractConditions ( lineInfo );
+            var _conds = lineParser.ExtractConditions ( lineInfo, "" );
             Assert.That ( _conds.First ().ToString ().Equals ( expected1 ) );
             Assert.That ( _conds.First ().SuffixLogicalOperator == "and" );
             Assert.That ( _conds.ElementAt ( 1 ).ToString ().Equals ( expected2 ) );

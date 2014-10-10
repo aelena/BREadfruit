@@ -1,0 +1,9 @@
+﻿Entity GD_Adr_Search is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+		max length 20
+		value  GD_Adr_Name1.Value
+
+	with rules
+		CURRENT_ROLE in {"UPM", "CPM", "RCO"} then disabled

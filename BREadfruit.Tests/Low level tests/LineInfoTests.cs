@@ -82,25 +82,25 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", "with args", Result = -1 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", "with_args", Result = -1 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", "with arguments", Result = -1 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with args", "with_args", Result = 2 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with_args", "with args", Result = 2 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with_args", "with arguments", Result = 2 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments", "with_args", Result = 2 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argments", "with_args", Result = -1 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", "with_args", Result = -1 )]
-        [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", "set enabled", Result = -1 )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", "set enabled", Result = -1 )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
-        [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
-        public int LineInfo_IndexOfSymbol_Tests1 ( string line, string token )
-        {
-            var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
-            return li.IndexOfSymbol ( Grammar.GetSymbolByToken ( token ) );
-        }
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", "with args", Result = -1 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", "with_args", Result = -1 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", "with arguments", Result = -1 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with args", "with_args", Result = 2 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with_args", "with args", Result = 2 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with_args", "with arguments", Result = 2 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments", "with_args", Result = 2 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argments", "with_args", Result = -1 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", "with_args", Result = -1 )]
+        //[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with argUments", "set enabled", Result = -1 )]
+        //[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", "set enabled", Result = -1 )]
+        //[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
+        //[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
+        //[TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", "enable", Result = 5 )]
+        //public int LineInfo_IndexOfSymbol_Tests1 ( string line, string token )
+        //{
+        //    var li = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
+        //    return li.IndexOfSymbol ( Grammar.GetSymbolByToken ( token ) );
+        //}
 
 
         // ---------------------------------------------------------------------------------

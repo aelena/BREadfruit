@@ -1,0 +1,26 @@
+﻿Entity GD_PVO_Question1 is DropDownList in frmMain
+	with defaults
+		visible false
+		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question1
+		mandatory false
+		value ''
+		load data from DATASOURCE.YES_NO
+
+	with rules
+		this.Value is "YES" then GD_PVO_Link1 visible
+		this.Value is "NO" then GD_PVO_Link1 not visible
+
+
+Entity GD_PVO_Question2 is DropDownList in frmMain
+	with defaults
+		visible false
+		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question2
+		mandatory false
+		value ''
+		; high risk country or low risk country
+		load data from DATASOURCE.COUNTRY_RISK_CLASSIFICATION
+
+	with rules
+		GD_PVO_Question2.Value is "HR" then GD_PVO_Link2 visible
+		GD_PVO_Question2.Value is "LR" then GD_PVO_Link2 not visible
+

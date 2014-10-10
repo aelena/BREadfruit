@@ -1,0 +1,5 @@
+﻿Entity GD_Procur_SuppliersName is TextBox in frmMain
+	with defaults
+		max length 32
+		visible true
+		enabled

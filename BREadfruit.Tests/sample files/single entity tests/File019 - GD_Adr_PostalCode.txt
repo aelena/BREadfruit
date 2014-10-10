@@ -7,7 +7,6 @@
 
 	with rules
 		
-		;	TODO: CREATE SPECIFIC TESTS FOR THIS CONTROL
 
 		;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4 (only numbers - Format: XXXX)
 		VENDOR.ACCOUNT_GROUP in {"YVT1", "YVT2"} then

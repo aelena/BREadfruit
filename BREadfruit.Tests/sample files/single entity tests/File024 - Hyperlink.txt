@@ -1,0 +1,5 @@
+﻿Entity GD_PVO_Link2 is HyperLink in frmMain
+	with defaults
+		label DICTIONARY.MDMFillDoc
+		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/2.-Corporate%20Responsibility%20Self%20Assessment.doc"
+		visible false

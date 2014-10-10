@@ -1,6 +1,6 @@
 ﻿; -- RULES FOR VENDOR SEARCH FORM 
 
-Entity TBVendorName is TextBox in "frmSearch"
+Entity TBVendorName is TextBox in frmSearch
 	with defaults
 		enabled true
 		visible
@@ -19,7 +19,7 @@ Entity TBVendorName is TextBox in "frmSearch"
 
 ; ----------------------------------------------------------------------------	
 
-Entity TBVendorCity is TextBox in "frmSearch"
+Entity TBVendorCity is TextBox in frmSearch
 	with defaults
 		visible true
 		value ""
@@ -35,7 +35,7 @@ Entity TBVendorCity is TextBox in "frmSearch"
 
 ; ----------------------------------------------------------------------------	
 
-Entity TBVendorNumber is TextBox in "frmSearch"
+Entity TBVendorNumber is TextBox in frmSearch
 	with defaults
 		visible true
 		value ''
@@ -62,7 +62,7 @@ Entity TBVendorNumber is TextBox in "frmSearch"
 			
 ; ----------------------------------------------------------------------------	
 
-Entity TBVendorIFA is TextBox in "frmSearch"
+Entity TBVendorIFA is TextBox in frmSearch
 	with defaults
 		visible true
 		value ''
@@ -84,7 +84,7 @@ Entity TBVendorIFA is TextBox in "frmSearch"
 ; ----------------------------------------------------------------------------	
 
 
- Entity DDLVDCountry is DropDownList in "frmSearch"
+ Entity DDLVDCountry is DropDownList in frmSearch
 	with defaults
 		visible true
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
@@ -110,7 +110,7 @@ Entity TBVendorIFA is TextBox in "frmSearch"
 
 ; ----------------------------------------------------------------------------	
 
-Entity TBVendorVAT is TextBox in "frmSearch"
+Entity TBVendorVAT is TextBox in frmSearch
 	with defaults
 		visible true
 		value ''
@@ -126,7 +126,7 @@ Entity TBVendorVAT is TextBox in "frmSearch"
 ; ----------------------------------------------------------------------------	
 
 
-Entity DDLCDCountry is DropDownList in "frmSearch"
+Entity DDLCDCountry is DropDownList in frmSearch
 	with defaults
 		visible true
 		; we need to define these things too, let's calle them "data constants" for now...
@@ -146,7 +146,7 @@ Entity DDLCDCountry is DropDownList in "frmSearch"
 ; ----------------------------------------------------------------------------	
 
 
-Entity DDLCDCompany is DropDownList in "frmSearch"
+Entity DDLCDCompany is DropDownList in frmSearch
 	with defaults
 		visible true
 		value USER_COST_LOCATION_UNIT			; another data constant
@@ -162,7 +162,7 @@ Entity DDLCDCompany is DropDownList in "frmSearch"
 ; ----------------------------------------------------------------------------	
 
 
-Entity DDLCDPurchOrg is DropDownList in "frmSearch"
+Entity DDLCDPurchOrg is DropDownList in frmSearch
 	with defaults
 		visible true
 		value ''
@@ -171,7 +171,7 @@ Entity DDLCDPurchOrg is DropDownList in "frmSearch"
 
 ; ----------------------------------------------------------------------------	
 
-Entity btnSearch is Button in "frmSearch"
+Entity btnSearch is Button in frmSearch
 	with defaults
 		visible true
 		label LABELS.BUTTONS.SEARCH
@@ -221,7 +221,7 @@ Entity btnSearch is Button in "frmSearch"
 
 ; ----------------------------------------------------------------------------	
 
-Entity btnCreateVendor is Button in "frmSearch"
+Entity btnCreateVendor is Button in frmSearch
 	with defaults
 		visible false
 		label LABELS.BUTTONS.CREATEVENDOR
@@ -241,13 +241,15 @@ Entity btnCreateVendor is Button in "frmSearch"
 
 ; ----------------------------------------------------------------------------	
 
-Entity vendorSearchResultGrid is Grid in "frmSearch"
+Entity vendorSearchResultGrid is Grid in frmSearch
 	with defaults
 		visible false
 	
 
 	; TODO: DEFINE CONVENTIONS FOR GRID BETTER
 
+; ----------------------------------------------------------------------------	
+; BEGIN MAIN FORM CONTROL DEFINITION
 ; ----------------------------------------------------------------------------	
 
 ; -- RULES FOR VENDOR MAIN FORM (MDM.ASPX)
@@ -259,10 +261,12 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		enabled true
 		visible true
 		value "00"
+		; only two values, 00 and 09
 		load data from DATASOURCE.RISK_CLASSIFICATIONS
+		label LABELS.VENDOR.RISK_CLASSIFICATION
 
 	with rules
-		role not in {"RCO","ENQ","CLERK"} then enabled false
+		CURRENT_ROLE not in {"RCO","ENQ","CLERK"} then enabled false
 
 	with triggers
 		; TODO FIND A BETTER WAY TO EXPRESS THIS....
@@ -277,19 +281,25 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		visible true
 		enabled false					; this control is always disabled
 		value USER.COUNTRY				; -- depends on country selected in search form, so this data has to be passed
+		load data from DATASOURCE.WORLD_COUNTRIES
+		mandatory true
+		label LABELS.GENERIC.COUNTRY
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Ctr_VendorClassification is DropDownList in "frmSearch"
+Entity GD_Ctr_VendorClassification is DropDownList in frmSearch
 
 	with defaults
 		visible true
 		enabled true
 		value "NG"
+		; values G  and NG
 		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
+		mandatory true
+		label LABELS.VENDOR.VENDOR_CLASSIFICATION
 
 	with rules
-		role in {"UPM", "CPM"} then enabled false
+		CURRENT_ROLE in {"UPM", "CPM"} then enabled false
 		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification
 		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_VendorClassification
 
@@ -302,6 +312,8 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		enabled true
 		value "NORM"
 		load data from DATASOURCE.BP_CLASSIFICATIONS
+		mandatory true
+		label LABELS.VENDOR.BP_CLASSIFICATION
 
 	with rules
 		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then AttachManager mandatory 
@@ -315,6 +327,7 @@ Entity GD_Damex is DropDownList in frmMain
 		value ''
 		load data from DATASOURCE.YES_NO
 		mandatory true
+		label LABELS.VENDOR.HAVE_YOU_DONE_THE_DAMEX
 
 	with rules
 		REQUEST.FLOWTYPE not in {"VC", "VC_CC"} then 
@@ -322,11 +335,20 @@ Entity GD_Damex is DropDownList in frmMain
 			GD_Damex not visible
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Ctr_IsNaturalPerson is DropDownList in frmMain
+Entity labGD_DamexNote is CheckBox in frmMain
 	with defaults
 		visible true
 		enabled true
-		value ''
+		value LABELS.VENDOR.labGD_DamexNote
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
+	with defaults
+		visible true
+		enabled true
+		value false		; unchecked
 
 	with rules
 		Vendor.AccountGroup in {"YVT4", "YVT5"} then
@@ -338,27 +360,208 @@ Entity GD_Ctr_IsNaturalPerson is DropDownList in frmMain
 
 		; CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
 
+; ----------------------------------------------------------------------------	
+
+Entity GD_Procur_SuppliersName is TextBox in frmMain
+	with defaults
+		; it seems to be 28 in the current application?!
+		max length 35
+		label DICTIONARY.LABELS.VENDOR.labGD_Procur_SuppliersName
 
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Procur_SuppliersName2 is TextBox in frmMain
 	with defaults
-		max length 32
+		max length 35
+		; actually they have no label text
+		label ''
 
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Procur_SuppliersName3 is TextBox in frmMain
 	with defaults
-		max length 32
+		max length 35
+		label ''
 
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Procur_SuppliersName4 is TextBox in frmMain
 	with defaults
-		max length 32
+		max length 35
+		label ''
 
 ; ----------------------------------------------------------------------------	
-; so far 21 entities up to now
+
+Entity GD_Procur_Reason_Justification is TextBox in frmMain
+	with defaults
+		max length 1000
+		mandatory true
+		label DICTIONARY.LABELS.VENDOR.labGD_Procur_Reason_Justification
+
+	with rules
+		; make not mandatory in case of modification
+		REQUEST.WORKFLOW_TYPE is REQUEST.REQUEST_TYPES.VM or REQUEST.WORKFLOW_TYPE is REQUEST.REQUEST_TYPES.VM_BLK then 
+			mandatory false
+			visible false
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Procur_MainActivity is TextBox in frmMain
+	with defaults
+		label DICTIONARY.LABELS.VENDOR.labGD_Procur_MainActivity
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Procur_Supplier_ExpectedPVO is DropDownList in frmMain
+	with defaults
+		label DICTIONARY.LABELS.VENDOR.labGD_Procur_Supplier_ExpectedPVO
+		mandatory true
+		; by default it shows the first item in the list which is blank
+		value ''
+		; the rest of values to show in the dropdown list are to be loaded from DB
+		; I think this is hardcoded now in the app itself...
+		load data from DATASOURCE.EXPECTED_PVO_RANGES
+
+	with rules
+		; 3 and 4 are the values for the last two values in the combo
+		; if the value is one of those, a series of other controls have to be shown (GD_PVO_Question 1 to 5)
+		GD_Procur_Supplier_ExpectedPVO.Value in {"3", "4"} then
+			GD_PVO_Question1 visible
+			GD_PVO_Question1 mandatory
+			GD_PVO_Question2 visible
+			GD_PVO_Question2 mandatory
+			GD_PVO_Question3 visible
+			GD_PVO_Question3 mandatory
+			GD_PVO_Question4 visible
+			GD_PVO_Question4 mandatory
+			GD_PVO_Question5 visible
+			GD_PVO_Question5 mandatory
+
+; ----------------------------------------------------------------------------
+
+Entity GD_PVO_Question1 is DropDownList in frmMain
+	with defaults
+		visible false
+		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question1
+		mandatory false
+		value ''
+		load data from DATASOURCE.YES_NO
+
+	with rules
+		GD_PVO_Question1.Value is "YES" then GD_PVO_Link1 visible
+		GD_PVO_Question1.Value is "NO" then GD_PVO_Link1 not visible
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_PVO_Question2 is DropDownList in frmMain
+	with defaults
+		visible false
+		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question2
+		mandatory false
+		value ''
+		; high risk country or low risk country
+		load data from DATASOURCE.COUNTRY_RISK_CLASSIFICATION
+
+	with rules
+		GD_PVO_Question2.Value is "HR" then GD_PVO_Link2 visible
+		GD_PVO_Question2.Value is "LR" then GD_PVO_Link2 not visible
+
+; ----------------------------------------------------------------------------	
+	
+Entity GD_PVO_Question3 is DropDownList in frmMain
+	with defaults
+		visible false
+		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question3
+		mandatory false
+		value ''
+		; high risk country or low risk country
+		load data from DATASOURCE.YES_NO
+
+	with rules
+		this.Value is "YES" then GD_PVO_Link3 visible
+		this.Value is "NO" then GD_PVO_Link3 not visible
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_PVO_Question4 is DropDownList in frmMain
+	with defaults
+		visible false
+		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question4
+		mandatory false
+		value ''
+		; values: low, average, high
+		load data from DATASOURCE.LOW_AVERAGE_HIGH
+
+	with rules
+		GD_PVO_Question4.Value is "HR" then GD_PVO_Link4 visible
+		GD_PVO_Question4.Value is not "HR" then GD_PVO_Link4 not visible
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_PVO_Question5 is DropDownList in frmMain
+	with defaults
+		visible false
+		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question5
+		mandatory false
+		value ''
+		; high risk country or low risk country
+		load data from DATASOURCE.YES_NO
+
+	with rules
+		GD_PVO_Question5.Value is "YES" then GD_PVO_Link5 visible
+		GD_PVO_Question5.Value is "NO" then GD_PVO_Link5 not visible
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_PVO_Link1 is HyperLink in frmMain
+	with defaults
+		label DICTIONARY.MDMFillDoc
+		value "~/Resources/MDM/Templates/1.-Basic%20Quality%20Requirements%20and%20Certificates.doc"
+		visible false
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_PVO_Link2 is HyperLink in frmMain
+	with defaults
+		label DICTIONARY.MDMFillDoc
+		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/2.-Corporate%20Responsibility%20Self%20Assessment.doc"
+		visible false
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_PVO_Link3 is HyperLink in frmMain
+	with defaults
+		label DICTIONARY.MDMFillDoc
+		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/3.-Security%20in%20the%20supply%20chain%20-%20customs%20security%20initiatives.doc"
+		visible false
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_PVO_Link4 is HyperLink in frmMain
+	with defaults
+		label DICTIONARY.MDMFillDoc
+		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/4.-Future%20influence%20in%20Siemens.xlsx"
+		visible false
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_PVO_Link5 is HyperLink in frmMain
+	with defaults
+		label DICTIONARY.MDMFillDoc
+		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/5.-Environmental%20Protection,%20Health%20Management%20and%20Safety.doc"
+		visible false
+
+; ----------------------------------------------------------------------------	
+
+
+
+Entity GD_Procur_GoodsToSiemens is TextBox in frmMain
+	with defaults
+		; bd field length
+		max length 250
+		mandatory true
+
 ; ----------------------------------------------------------------------------	
 
 
@@ -434,7 +637,7 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 ; 30 entities
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Adr_Region is TextBox in DropDownList in frmMain
+Entity GD_Adr_Region is DropDownList in frmMain
 	with defaults
 		enabled true
 		visible true
@@ -456,6 +659,19 @@ Entity GD_Adr_CountryGD is TextBox in frmMain
 
 
 ; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_City is TextBox in frmMain
+	with defaults
+		visible true		
+		enabled true
+		mandatory true
+		max length 35
+
+	with rules
+		VENDOR_COUNTRY is "GR" then GD_Adr_City2 visible
+
+; ----------------------------------------------------------------------------	
+
 
 Entity GD_Adr_City2 is TextBox in frmMain
 	with defaults
@@ -485,28 +701,22 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 
 Entity GD_Adr_Name3 is TextBox in frmMain
 	with defaults
-		enabled true
-		visible true
 		max length 32
 
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Com_Comment is TextBox in frmMain
 	with defaults
-		enabled true
-		visible true
+		max length 35
 
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_PostalCode is TextBox in frmMain
 	with defaults
-		enabled true
-		visible true
 		max length 10
+		mandatory true
 
 	with rules
-		
-		;	TODO: CREATE SPECIFIC TESTS FOR THIS CONTROL
 
 		;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4 (only numbers - Format: XXXX)
 		VENDOR.ACCOUNT_GROUP in {"YVT1", "YVT2"} then
@@ -554,8 +764,126 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+Entity GD_Adr_Search is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+		max length 20
+		value  GD_Adr_Name1.Value
+
+	with rules
+		CURRENT_ROLE in {"UPM", "CPM", "RCO"} then disabled
 
 
 ; ----------------------------------------------------------------------------	
 ; 40 entities
+; ----------------------------------------------------------------------------	
+
+; TODO: REVIEW THIS FIELD IN ACTUAL CODE - FIELD MAPPING JUST SAYS "IT WORKS CORRECTLY"
+; BECAUSE THE RULES ARE SO COMPLEX THEY DONT EVEN KNOW WHAT THE FUCK IS GOING ON
+Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+		max length 5
+		mandatory false
+
+	with rules
+		; these rules are a bit special
+		; this field is imbricated with GD_Adr_POBox and with GD_Adr_POBoxLoc
+		; see code around lines 822 and following in MDM.aspx.cs
+		VENDOR_COUNTRY in { COUNTRIES.FRENCH_GUAYANA, COUNTRIES.GUADELOUPE, COUNTRIES.MARTINIQUE, COUNTRIES.REUNION, COUNTRIES.FRANCE, COUNTRIES.MAYOTTE, COUNTRIES.NEW_CALEDONIA, COUNTRIES.FRENCH_POLYNESIA, COUNTRIES.STPIERMIQUEL, COUNTRIES.WALLIS_FORTUNA, COUNTRIES.MONACO, COUNTRIES.FRENCH_TERRITORIES } then GD_Adr_POBoxPostalCode mandatory
+
+		VENDOR_COUNTRY is COUNTRIES.FRANCE then this max length 10
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_POBoxLoc is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+		max length 35
+		mandatory false
+
+
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Com_LanguageCode is TextBox in DropDownList
+	with defaults
+		enabled true
+		visible true
+		mandatory true
+		; obtain the code for the vendor country, if there is no specific code, then 'EN' is default language
+		load data from DATASOURCE.GET_COUNTRY_LANGUAGE_CODE		
+
+
+	with rules
+		
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Com_Telebox is TextBox in DropDownList
+		enabled true
+		visible true
+		mandatory true
+		load data from DATASOURCE.TELEBOX_VALUES	; these are "ADM - ADM", "MAIL - Mail", "PRT - Print", "SES - eInvoice" (value and text respectively)
+		value 'PRT'		
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+; 45 entities
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+; 50 entities
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+; 55 entities
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+; 60 entities
 ; ----------------------------------------------------------------------------	

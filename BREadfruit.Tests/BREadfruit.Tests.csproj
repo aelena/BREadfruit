@@ -98,6 +98,12 @@
     <Content Include="sample files\single entity tests\File017 - GD_Ctr_IsNaturalPerson.txt" />
     <Content Include="sample files\single entity tests\File018 - GD_Adr_Street2.txt" />
     <Content Include="sample files\single entity tests\File019 - GD_Adr_PostalCode.txt" />
+    <Content Include="sample files\single entity tests\File020 - GD_Adr_Search.txt" />
+    <Content Include="sample files\single entity tests\File021 - Add Visible and Enabled by default if not indicated.txt" />
+    <Content Include="sample files\single entity tests\File022 - Don%27t add Visible and Enabled by default if already specified.txt" />
+    <Content Include="sample files\single entity tests\File023 - GD_PVO_Questions.txt" />
+    <Content Include="sample files\single entity tests\File024 - Hyperlink.txt" />
+    <Content Include="sample files\single entity tests\File025.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>
