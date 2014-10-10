@@ -97,7 +97,7 @@ namespace BREadfruit
                 {
 
                     var lineInfo = ParseLine ( line );
-              
+
 
                     // if this is a full comment line, skip it
                     if ( lineInfo.Tokens.Count () == 0 )
@@ -112,6 +112,7 @@ namespace BREadfruit
                     #region " --- entity block --- "
                     if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
                     {
+                        this.CheckIfVisibleAndEnabledDefaultsAreSet ();
                         _currentScope = ProcessEntityBlock ( _currLine, _currentScope, line, lineInfo );
                     }
                     #endregion
@@ -142,7 +143,7 @@ namespace BREadfruit
                     {
 
                         var _rule = new Rule ();
-                        var _conds = this._lineParser.ExtractConditions ( lineInfo );
+                        var _conds = this._lineParser.ExtractConditions ( lineInfo, this._entities.Last ().Name );
                         foreach ( var c in _conds )
                             _rule.AddCondition ( c );
 
@@ -163,8 +164,10 @@ namespace BREadfruit
                                 // check if it's a valid action
                                 if ( lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol )
                                 {
-                                    var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
+                                    var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
+                                        this.Entities.Last ().Name );
                                     _rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
+                                    continue;
                                 }
                                 // then it's a long result action line
                                 if ( lineInfo.Tokens.ElementAtFromLast ( 3 ) == Grammar.ThenSymbol )
@@ -182,9 +185,20 @@ namespace BREadfruit
                                 }
                                 if ( lineInfo.Tokens.ElementAtFromLast ( 4 ) == Grammar.ThenSymbol )
                                 {
+                                    ResultAction _ra = null;
                                     var thenClause = lineInfo.GetSymbolsAfterThen ();
-                                    var _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
-                                        thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
+                                    if ( thenClause.Any ( x => x == Grammar.ThisSymbol ) )
+                                    {
+                                        // this should be the value
+                                        var _index = thenClause.Where ( x => !Grammar.Symbols.Contains ( x ) ).First();
+                                        var _symbol = thenClause.Where ( x => Grammar.Symbols.Contains ( x ) ).First();
+                                        _ra = new ResultAction ( _symbol , _index, this._entities.Last().Name);
+                                    }
+                                    else
+                                    {
+                                        _ra = new ResultAction ( Grammar.GetSymbolByToken ( thenClause.First ().Token ),
+                                           thenClause.ElementAt ( 1 ).Token, thenClause.Last ().Token );
+                                    }
                                     _rule.Conditions.Last ().AddResultAction ( _ra );
                                     continue;
                                 }
@@ -256,7 +270,7 @@ namespace BREadfruit
                         {
                             if ( lineInfo.Tokens.Contains ( Grammar.WithArgumentsSymbol ) )
                             {
-                                var _r = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), 
+                                var _r = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
                                        lineInfo.Tokens.ElementAt ( 1 ).Token );
                                 var _args = lineInfo.Tokens.ElementAt ( 3 ).Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
                                 foreach ( var _a in _args )
@@ -283,7 +297,7 @@ namespace BREadfruit
                                 this._entities.Last ().AddUnaryAction ( _ua );
                             }
                             else
-                                throw new InvalidLineFoundException ( String.Format(Grammar.InvalidLineFoundExceptionDefaultTemplate, _currLine, line) );
+                                throw new InvalidLineFoundException ( String.Format ( Grammar.InvalidLineFoundExceptionDefaultTemplate, _currLine, line ) );
                         }
                     }
                     #endregion
@@ -340,23 +354,24 @@ namespace BREadfruit
                                 continue;
                             }
 
-                            if ( lineInfo.Tokens.Contains ( Grammar.NotVisibleUnaryActionSymbol))
+                            if ( lineInfo.Tokens.Contains ( Grammar.NotVisibleUnaryActionSymbol ) )
                             {
                                 ProcessUnaryAction ( lineInfo, Grammar.NotVisibleUnaryActionSymbol );
                                 continue;
                             }
 
-                            if ( lineInfo.Tokens.First() == ( Grammar.MaxlengthDefaultClause ) )
+                            if ( lineInfo.Tokens.First () == ( Grammar.MaxlengthDefaultClause ) )
                             {
-                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),lineInfo.Tokens.Last ().Token, 
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token,
                                     this.Entities.Last ().Name );
                                 this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
                                 continue;
                             }
 
-                            if ( lineInfo.Tokens.First () == ( Grammar.SetValidationRegexUnaryActionSymbol ) )
+                            if ( lineInfo.Tokens.First () == ( Grammar.SetValidationRegexUnaryActionSymbol ) ||
+                                 lineInfo.Tokens.First () == ( Grammar.ValidationRegexDefaultClause ) )
                             {
-                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace("\"", ""),
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
                                     this.Entities.Last ().Name );
                                 this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
                                 continue;
@@ -384,15 +399,15 @@ namespace BREadfruit
 
                         //if ( lineInfo.Tokens.Count () == 2 )
                         //{
-                            var _firstToken = lineInfo.Tokens.First ().Token;
-                            if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this" ) )
-                                _firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
-                            Trigger _trigger;
-                            if ( _x != null && _x.Count () > 0 )
-                                _trigger = new Trigger ( _firstToken, _x.First ().Token );
-                            else
-                                _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
-                            this._entities.Last ().AddTrigger ( _trigger );
+                        var _firstToken = lineInfo.Tokens.First ().Token;
+                        if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this" ) )
+                            _firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
+                        Trigger _trigger;
+                        if ( _x != null && _x.Count () > 0 )
+                            _trigger = new Trigger ( _firstToken, _x.First ().Token );
+                        else
+                            _trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
+                        this._entities.Last ().AddTrigger ( _trigger );
                         //}
                     }
                     #endregion
@@ -413,10 +428,43 @@ namespace BREadfruit
 
 
             }
+
+
+
+            this.CheckIfVisibleAndEnabledDefaultsAreSet ();
+
             return this.Entities;
 
 
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        private void CheckIfVisibleAndEnabledDefaultsAreSet ()
+        {
+            if ( this._entities.Count > 0 )
+            {
+                // CheckIfVisibleAndEnabledDefaultsAreSet ();
+                if ( !this._entities.Last ().Defaults.Any ( x => x.Token == Grammar.VisibleDefaultClause.Token ) )
+                {
+                    var clause = Grammar.GetDefaultClauseByToken ( Grammar.VisibleDefaultClause.Token, false );
+                    clause.SetValue ( true );
+                    this._entities.Last ().AddDefaultClause ( clause );
+                }
+                if ( !this._entities.Last ().Defaults.Any ( x => x.Token == Grammar.EnabledDefaultClause.Token ) )
+                {
+                    var clause = Grammar.GetDefaultClauseByToken ( Grammar.EnabledDefaultClause.Token, false );
+                    clause.SetValue ( true );
+                    this._entities.Last ().AddDefaultClause ( clause );
+                }
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         private void ProcessUnaryAction ( LineInfo lineInfo, Symbol symbol )
         {
@@ -457,7 +505,7 @@ namespace BREadfruit
                 this._entities.Add ( new Entity (
                     lineInfo.Tokens.ElementAt ( 1 ).Token,
                     lineInfo.Tokens.ElementAt ( 3 ).Token,
-                    lineInfo.Tokens.Last ().Token ) );               // last token in form's name where the entity belongs
+                    lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ).Replace ( "'", "" ) ) );               // last token in form's name where the entity belongs
             }
             else
                 // throw an exception if the regex validation fails 
@@ -547,6 +595,8 @@ namespace BREadfruit
             {
                 lineInfo = this._lineParser.TokenizeArgumentKeyValuePairs ( lineInfo );
             }
+
+
 
             var clause = Grammar.GetDefaultClauseByToken ( lineInfo.Tokens.First ().Token, false );
             if ( clause != null )
