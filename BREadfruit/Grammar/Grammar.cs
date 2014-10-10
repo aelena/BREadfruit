@@ -213,7 +213,7 @@ namespace BREadfruit
         public const string PositiveIntegerValueRegex = "^[0-9]*$";
         public const string IntegerValueRegex = "^[-]?[0-9]*$";
         public const string FloatValueRegex = "^[-]?[0-9]*[(.|,)]?[0-9]*$";
-        public const string BooleanValueRegex = "^(true|false){1}$";
+        public const string BooleanValueRegex = "^(True|true|false|False|TRUE|FALSE){1}$";
         /// <summary>
         /// This regex allows either setting ad hoc strings with single or double quotes, such as
         ///
@@ -257,6 +257,7 @@ namespace BREadfruit
         /// (that is, all that comes after the load data from instruction)
         /// </summary>
         public const string ValidationRegexLineRegex = @"^validation_regex[\t\s]+(.)*[\t\s]*";
+        public const string ValidationRegexValueRegex = @"^(.)+$";
         
 
         public const string ClearValueLineRegex = @"^clear_element[\t\s]+([A-Za-z0-9'.'_])+[\t\s]*$";
@@ -379,6 +380,7 @@ namespace BREadfruit
         public static Symbol DivSymbol = new Symbol ( "Div", 0, true );
         public static Symbol MultilineSymbol = new Symbol ( "Multiline", 0, true );
         public static Symbol GridSymbol = new Symbol ( "Grid", 0, true );
+        public static Symbol HyperLinkSymbol = new Symbol ( "HyperLink", 0, true );
         //public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
         //public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
@@ -516,7 +518,7 @@ namespace BREadfruit
         public static DefaultClause ValueDefaultClause = new DefaultClause ( "value", SetValueRegex, new List<string> () { "set value" } );
         public static DefaultClause LabelDefaultClause = new DefaultClause ( "label", LabelDefaultValueRegex );
         public static DefaultClause LoadDataDefaultClause = new DefaultClause ( "load_data_from", LoadDataFromValueRegex, new List<string> () { "load data from" } );
-        public static DefaultClause ValidationRegexDefaultClause = new DefaultClause ( "validation_regex", ValidationRegexLineRegex, new [] { "validation regex", "set validation", "validation" } );
+        public static DefaultClause ValidationRegexDefaultClause = new DefaultClause ( "validation_regex", ValidationRegexValueRegex, new [] { "validation regex", "set validation", "validation" } );
         
 
 
@@ -614,8 +616,9 @@ namespace BREadfruit
                      select s;
             }
             if ( _s != null && _s.Count () > 0 )
-                return _s.First ();
-
+            {
+                return _s.First ().Clone ();
+            }
             return null;
 
         }
@@ -789,6 +792,7 @@ namespace BREadfruit
             Grammar._entityTypes.Add ( GridSymbol );
             Grammar._entityTypes.Add ( DivSymbol );
             Grammar._entityTypes.Add ( MultilineSymbol );
+            Grammar._entityTypes.Add ( HyperLinkSymbol );
         }
 
 
@@ -881,6 +885,8 @@ namespace BREadfruit
             Grammar._symbols.Add ( ButtonSymbol );
             Grammar._symbols.Add ( DivSymbol );
             Grammar._symbols.Add ( MultilineSymbol );
+            Grammar._symbols.Add ( HyperLinkSymbol );
+
             Grammar._symbols.Add ( ThenSymbol );
             Grammar._symbols.Add ( ThisSymbol );
             Grammar._symbols.Add ( InSymbol );
