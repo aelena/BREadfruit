@@ -361,6 +361,15 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+
+        public Symbol Clone()
+        {
+            var _s = new Symbol ( this.Token, this.IndentLevel, this.IsTerminal, this._aliases );
+            _s._validChildren = this._validChildren;
+            return _s;
+        }
+
+
     }
 
 
