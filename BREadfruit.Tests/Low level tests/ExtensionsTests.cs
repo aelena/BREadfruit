@@ -333,6 +333,22 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
+        [TestCase ( "this is the message \"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\" that was said to me", 
+            "\"", "\"", Result = "the email is used generally for all the automatic communication with the supplier - e.g. payment advice" )]
+       [TestCase ( "this is the message \"the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice\" that was said to me", 
+            "\"", "\"", Result = "the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice" )]
+       [TestCase ( "and then, what about this text with no coincidences?",
+           "\"", "\"", Result = "" )]
+        public string TakeBetweenTests2 ( string original, string s1, string s2 )
+        {
+            return original.TakeBetween ( s1, s2 );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+
         [TestCase ( "{'P', 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
         [TestCase ( "{'P',     'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
         [TestCase ( "{'P', 'Q', '2', 'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]

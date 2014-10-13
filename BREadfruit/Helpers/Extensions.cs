@@ -483,11 +483,24 @@ namespace BREadfruit.Helpers
             if ( String.IsNullOrWhiteSpace ( value ) )
                 throw new ArgumentException ( "String cannot be null" );
 
-            var _index1 = value.IndexOf ( beginningString );
-            var _index2 = value.IndexOf ( endString );
+            int _index1 = 0;
+            int _index2 = 0;
+            if ( beginningString != endString )
+            {
+                _index1 = value.IndexOf ( beginningString );
+                _index2 = value.IndexOf ( endString );
+            }
+            else
+            {
+                _index1 = value.IndexOf ( beginningString );
+                _index2 = value.LastIndexOf ( endString );
+            }
 
             if ( _index2 < _index1 )
                 throw new Exception ( "End string cannot appear earlier than beginning string" );
+
+            if ( _index1 == -1 && _index2 == -1 )
+                return String.Empty;
 
             _index1 += beginningString.Length;
 

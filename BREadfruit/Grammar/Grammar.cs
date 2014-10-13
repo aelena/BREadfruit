@@ -519,6 +519,7 @@ namespace BREadfruit
         public static DefaultClause LabelDefaultClause = new DefaultClause ( "label", LabelDefaultValueRegex );
         public static DefaultClause LoadDataDefaultClause = new DefaultClause ( "load_data_from", LoadDataFromValueRegex, new List<string> () { "load data from" } );
         public static DefaultClause ValidationRegexDefaultClause = new DefaultClause ( "validation_regex", ValidationRegexValueRegex, new [] { "validation regex", "set validation", "validation" } );
+        public static DefaultClause ToolTipDefaultClause = new DefaultClause ( "tooltip", ValidationRegexValueRegex, new [] { "set tooltip" } );
         
 
 
@@ -967,6 +968,7 @@ namespace BREadfruit
             _defaultsTokens.Add ( LabelDefaultClause );
             _defaultsTokens.Add ( LoadDataDefaultClause );
             _defaultsTokens.Add ( ValidationRegexDefaultClause );
+            _defaultsTokens.Add ( ToolTipDefaultClause );
             
 
             Grammar._symbols.Add ( MaxlengthDefaultClause );
@@ -977,7 +979,9 @@ namespace BREadfruit
             Grammar._symbols.Add ( ValueDefaultClause );
             Grammar._symbols.Add ( LabelDefaultClause );
             Grammar._symbols.Add ( LoadDataDefaultClause );
-            Grammar._symbols.Add ( ValidationRegexDefaultClause );
+            Grammar._symbols.Add ( ValidationRegexDefaultClause );     
+            Grammar._symbols.Add ( ToolTipDefaultClause );
+
             
         }
 

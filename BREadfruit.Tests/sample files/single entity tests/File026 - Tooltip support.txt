@@ -1,0 +1,17 @@
+﻿; DO TESTS TO SUPPORT TOOLTIP
+Entity E_GD_VE_SmtpAddr is TextBox in frmMain
+	with defaults
+		; move the tooltip text to the real dictionary
+
+		; NOTE ABOUT THE TEST
+		; even when we add the same 'tooltip' twice, the second one is ignored. first found has precedence
+
+		
+		tooltip "the email is used generally for all the automatic communication with the supplier - e.g. payment advice"
+		set tooltip "2 the email is used generally for all the automatic communication with the supplier - e.g. payment advice"
+		label LABELS.labGD_VE_SmtpAddr
+		max length 241
+	
+	with rules
+		; check this is true
+		REQUEST.REQUEST_TYPE is "VC" then mandatory true

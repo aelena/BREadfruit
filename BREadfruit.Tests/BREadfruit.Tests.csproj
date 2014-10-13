@@ -104,6 +104,7 @@
     <Content Include="sample files\single entity tests\File023 - GD_PVO_Questions.txt" />
     <Content Include="sample files\single entity tests\File024 - Hyperlink.txt" />
     <Content Include="sample files\single entity tests\File025.txt" />
+    <Content Include="sample files\single entity tests\File026 - Tooltip support.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

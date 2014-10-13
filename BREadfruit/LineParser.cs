@@ -85,39 +85,54 @@ namespace BREadfruit
                 // now we need to detect and unify any tokens in between single or double quotes as one token
                 // so first let's just see if there are any sort of quotes in the line itself
                 // no quote should actually be fount at 0...
-                if ( line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
+                if ( _tokens.Count() > 0 && line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
                 {
-                    var _t1 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
-                    var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.EndsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
 
+
+                    //var _t1 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
+                    //var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
+
+                    var first = _tokens.First ( u => u.Token.StartsWith ( "\"" ) || u.Token.StartsWith ( "'" ) );
+                    var last = _tokens.Last ( u => u.Token.EndsWith ( "\"" ) || u.Token.EndsWith ( "'" ) );
+
+                    var _tokenList = _tokens.ToList ();
+                    var _fused = _tokens.JoinTogetherBetween ( _tokenList.IndexOf ( first ), _tokenList.IndexOf ( last ) );
+
+                    List<Symbol> replacedLineInfo = new List<Symbol> ();
+                    replacedLineInfo.AddRange ( _tokens.Take ( _tokenList.IndexOf ( first ) ) );
+                    replacedLineInfo.Add ( _fused );
+                    if ( ( _tokenList.IndexOf ( last ) + 1 ) < _tokens.Count() )
+                        replacedLineInfo.AddRange ( _tokens.Skip ( _tokenList.IndexOf ( last ) + 1 ) );
+
+                    return replacedLineInfo;
                     // count should be the same
-                    if ( _t1.Count () == _t2.Count () )
-                    {
-                        var _fusedSymbols = new List<Symbol> ();
-                        // now "fuse" the symbols that are within quotes
-                        // TODO: as this is valid for strings (user strings) any keywords here are considered just string
-                        for ( var i = 0; i < _t1.Count (); i++ )
-                            _fusedSymbols.Add ( _tokens.ToList ().GetRange ( _t1.ElementAt ( i ), ( _t2.ElementAt ( i ) - _t1.ElementAt ( i ) ) + 1 ).JoinTogether () );
+                    //if ( _t1.Count () == _t2.Count () )
+                    //{
+                    //    var _fusedSymbols = new List<Symbol> ();
+                    //    // now "fuse" the symbols that are within quotes
+                    //    // TODO: as this is valid for strings (user strings) any keywords here are considered just string
+                    //    for ( var i = 0; i < _t1.Count (); i++ )
+                    //        _fusedSymbols.Add ( _tokens.ToList ().GetRange ( _t1.ElementAt ( i ), ( _t2.ElementAt ( i ) + 1 - _t1.ElementAt ( i ) ) + 1 ).JoinTogether () );
 
-                        List<Symbol> replacedLineInfo = new List<Symbol> ();
-                        for ( int i = 0, j = 0; i < _tokens.Count (); i++ )
-                        {
-                            if ( _t1.Contains ( i ) )
-                            {
-                                replacedLineInfo.Add ( _fusedSymbols.ElementAt ( j ) );
-                                i = _t2.ElementAt ( j );    // move the index
-                                j++;
-                            }
-                            else
-                                replacedLineInfo.Add ( _tokens.ElementAt ( i ) );
-                        }
+                    //    List<Symbol> replacedLineInfo = new List<Symbol> ();
+                    //    for ( int i = 0, j = 0; i < _tokens.Count (); i++ )
+                    //    {
+                    //        if ( _t1.Contains ( i ) )
+                    //        {
+                    //            replacedLineInfo.Add ( _fusedSymbols.ElementAt ( j ) );
+                    //            i = _t2.ElementAt ( j );    // move the index
+                    //            j++;
+                    //        }
+                    //        else
+                    //            replacedLineInfo.Add ( _tokens.ElementAt ( i ) );
+                    //    }
 
-                        return replacedLineInfo;
-                    }
-                    else
-                    {
-                        throw new Exception ( String.Format ( "There seems to be a mismatch in the usage of quotes in line {0}", line ) );
-                    }
+                    //    return replacedLineInfo;
+                    //}
+                    //else
+                    //{
+                    //    throw new Exception ( String.Format ( "There seems to be a mismatch in the usage of quotes in line {0}", line ) );
+                    //}
                 }
 
                 return _tokens;
@@ -151,7 +166,7 @@ namespace BREadfruit
                 if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.ChangeFormUnaryActionSymbol.Token.ToUpperInvariant () ) )
                 {
                     if ( !line.HasSymbol ( Grammar.WithArgumentsSymbol ) )
-                        return Regex.IsMatch ( line.Representation.Trim(), Grammar.ChangeFormNoArgumentsLineRegex, RegexOptions.IgnoreCase );
+                        return Regex.IsMatch ( line.Representation.Trim (), Grammar.ChangeFormNoArgumentsLineRegex, RegexOptions.IgnoreCase );
                     else
                     {
                         // parse separately the beginning and the with arguments clause
@@ -166,10 +181,10 @@ namespace BREadfruit
 
                 if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.HideUnaryActionSymbol.Token.ToUpperInvariant () ) )
                 {
-                    return Regex.IsMatch ( line.Representation.Trim(), Grammar.HideElementLineRegex, RegexOptions.IgnoreCase );
+                    return Regex.IsMatch ( line.Representation.Trim (), Grammar.HideElementLineRegex, RegexOptions.IgnoreCase );
                 }
 
-                if(line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.LoadDataSymbol.Token.ToUpperInvariant () ))
+                if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.LoadDataSymbol.Token.ToUpperInvariant () ) )
                 {
                     return Regex.IsMatch ( line.Representation.Trim (), Grammar.LoadDataFromLineRegex, RegexOptions.IgnoreCase );
                 }
@@ -302,7 +317,7 @@ namespace BREadfruit
         // ---------------------------------------------------------------------------------
 
 
-        public IEnumerable<Condition> ExtractConditions ( LineInfo lineInfo, string entityName = null)
+        public IEnumerable<Condition> ExtractConditions ( LineInfo lineInfo, string entityName = null )
         {
             var _conds = new List<Condition> ();
             int __ands = 0, __ors = 0;
@@ -314,7 +329,7 @@ namespace BREadfruit
             for ( int i = 0; i < 3 * ( __ands + 1 ); )
             {
                 var _operandToken = lineInfo.Tokens.ElementAt ( i ).Token;
-                if ( _operandToken.Trim ().ToLowerInvariant ().StartsWith ( "this." )  && entityName != null)
+                if ( _operandToken.Trim ().ToLowerInvariant ().StartsWith ( "this." ) && entityName != null )
                     _operandToken = _operandToken.Replace ( "this", entityName );
 
                 var _c = new Condition ( _operandToken,

@@ -58,10 +58,10 @@ namespace BREadfruit.Tests
             Assert.IsTrue ( e.Defaults.ElementAt ( 2 ).Token == Grammar.LabelDefaultClause );
             Assert.IsTrue ( e.Defaults.ElementAt ( 3 ).Token == Grammar.MinLengthDefaultClause );
 
-            Assert.IsTrue ( e.Defaults.First () == Grammar.VisibleDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ) == Grammar.ValueDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ) == Grammar.LabelDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 3 ) == Grammar.MinLengthDefaultClause );
+            Assert.IsTrue ( e.Defaults.First ().Token == Grammar.VisibleDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ).Token == Grammar.ValueDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ).Token == Grammar.LabelDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 3 ).Token == Grammar.MinLengthDefaultClause );
 
             Assert.IsTrue ( e.ConditionlessActions.First ().Action == Grammar.HideUnaryActionSymbol );
             Assert.IsTrue ( e.ConditionlessActions.First () == Grammar.HideUnaryActionSymbol );
@@ -100,9 +100,9 @@ namespace BREadfruit.Tests
             Assert.That ( e.Triggers.Count () == 1 );
             Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed" );
 
-            Assert.IsTrue ( e.Defaults.First () == Grammar.VisibleDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ) == Grammar.ValueDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ) == Grammar.LabelDefaultClause );
+            Assert.IsTrue ( e.Defaults.First ().Token == Grammar.VisibleDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ).Token == Grammar.ValueDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ).Token == Grammar.LabelDefaultClause );
 
             Assert.IsTrue ( e.ConditionlessActions.First ().Action == Grammar.HideUnaryActionSymbol );
             Assert.IsTrue ( e.ConditionlessActions.First () == Grammar.HideUnaryActionSymbol );
@@ -141,11 +141,11 @@ namespace BREadfruit.Tests
             Assert.That ( e.Triggers.Count () == 1 );
             Assert.That ( e.Triggers.First ().ToString () == "DDLVDCountry.value changed" );
 
-            Assert.IsTrue ( e.Defaults.First () == Grammar.VisibleDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ) == Grammar.ValueDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ) == Grammar.MandatoryDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
-            Assert.IsTrue ( e.Defaults.ElementAt ( 4 ) == Grammar.LabelDefaultClause );
+            Assert.IsTrue ( e.Defaults.First ().Token == Grammar.VisibleDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 1 ).Token == Grammar.ValueDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 2 ).Token == Grammar.MandatoryDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 3 ).Token == Grammar.LoadDataDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 4 ).Token == Grammar.LabelDefaultClause );
 
             Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ) == Grammar.HideUnaryActionSymbol );
             Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ) == Grammar.HideUnaryActionSymbol );
@@ -179,7 +179,7 @@ namespace BREadfruit.Tests
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
             Assert.That ( e.Form == "frmSearch" );
-            Assert.That ( e.Defaults.Count () == 3);
+            Assert.That ( e.Defaults.Count () == 3 );
             Assert.That ( e.Defaults.First ().Arguments.Count () == 4 );
             Assert.That ( e.Defaults.First ().Arguments.First ().Key == "\"Active\"" );
             Assert.That ( e.Defaults.First ().Arguments.First ().Value == "true" );
@@ -188,7 +188,7 @@ namespace BREadfruit.Tests
             Assert.That ( e.Constraints.Count () == 1 );
             Assert.That ( e.Constraints.First ().Name == "only_numbers" );
 
-            Assert.IsTrue ( e.Defaults.ElementAt ( 0 ) == Grammar.LoadDataDefaultClause );
+            Assert.IsTrue ( e.Defaults.ElementAt ( 0 ).Token == Grammar.LoadDataDefaultClause );
             Assert.IsTrue ( e.Constraints.ElementAt ( 0 ) == Grammar.OnlyNumbersConstraintSymbol );
 
 
@@ -328,20 +328,20 @@ namespace BREadfruit.Tests
             Assert.That ( e.Defaults.Count () == 4 );
 
             Assert.That ( e.Defaults.ElementAt ( 0 ).ToString ().Equals ( "visible true" ) );
-            Assert.That ( e.Defaults.ElementAt ( 0 ) == Grammar.VisibleDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 0 ).Token == Grammar.VisibleDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 0 ).Value.ToString () == Grammar.TrueSymbol );
 
             Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Equals ( "enable true" ) );
-            Assert.That ( e.Defaults.ElementAt ( 1 ) == Grammar.EnabledDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.EnabledDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == Grammar.TrueSymbol );
 
             Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Equals ( "value \"NG\"" ) );
-            Assert.That ( e.Defaults.ElementAt ( 2 ) == Grammar.ValueDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 2 ).Token == Grammar.ValueDefaultClause );
             // the value is represented internally as an already quoted string
             Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == "\"NG\"" );
 
             Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Equals ( "load_data_from DATASOURCE.VENDOR_CLASSIFICATIONS" ) );
-            Assert.That ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 3 ).Token == Grammar.LoadDataDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "DATASOURCE.VENDOR_CLASSIFICATIONS" );
 
             Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Count () == 1 );
@@ -391,13 +391,13 @@ namespace BREadfruit.Tests
             var e = parser.Entities.First ();
             Assert.That ( e.Defaults.Count () == 3 );
             Assert.That ( e.Defaults.ElementAt ( 0 ).ToString ().Equals ( "visible true" ) );
-            Assert.That ( e.Defaults.ElementAt ( 0 ) == Grammar.VisibleDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 0 ).Token == Grammar.VisibleDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 0 ).Value.ToString () == Grammar.TrueSymbol );
             Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Equals ( "enable true" ) );
-            Assert.That ( e.Defaults.ElementAt ( 1 ) == Grammar.EnabledDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.EnabledDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == Grammar.TrueSymbol );
             Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Equals ( "value " ) );
-            Assert.That ( e.Defaults.ElementAt ( 2 ) == Grammar.ValueDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 2 ).Token == Grammar.ValueDefaultClause );
             // the value is represented internally as an already quoted string
             Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == "" );
 
@@ -464,19 +464,19 @@ namespace BREadfruit.Tests
             var e = parser.Entities.First ();
             Assert.That ( e.Defaults.Count () == 5 );
             Assert.That ( e.Defaults.ElementAt ( 0 ).ToString ().Equals ( "visible true" ) );
-            Assert.That ( e.Defaults.ElementAt ( 0 ) == Grammar.VisibleDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 0 ).Token == Grammar.VisibleDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 0 ).Value.ToString () == Grammar.TrueSymbol );
             Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Equals ( "enable true" ) );
-            Assert.That ( e.Defaults.ElementAt ( 1 ) == Grammar.EnabledDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.EnabledDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == Grammar.TrueSymbol );
             Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Equals ( "value " ) );
-            Assert.That ( e.Defaults.ElementAt ( 2 ) == Grammar.ValueDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 2 ).Token == Grammar.ValueDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == "" );
             Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Equals ( "load_data_from DATASOURCE.YES_NO" ) );
-            Assert.That ( e.Defaults.ElementAt ( 3 ) == Grammar.LoadDataDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 3 ).Token == Grammar.LoadDataDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "DATASOURCE.YES_NO" );
             Assert.That ( e.Defaults.ElementAt ( 4 ).ToString ().Equals ( "mandatory true" ) );
-            Assert.That ( e.Defaults.ElementAt ( 4 ) == Grammar.MandatoryDefaultClause );
+            Assert.That ( e.Defaults.ElementAt ( 4 ).Token == Grammar.MandatoryDefaultClause );
             Assert.That ( e.Defaults.ElementAt ( 4 ).Value.ToString () == "true" );
 
             Assert.That ( e.Rules.First ().Conditions.Count () == 2 );
@@ -708,8 +708,8 @@ namespace BREadfruit.Tests
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File020 - GD_Adr_Search.txt" );
             var e = parser.Entities.First ();
 
-            Assert.That ( e.Defaults.Count () == 4 );
-            Assert.That ( e.Defaults.Last ().Value.ToString() == "GD_Adr_Name1.Value" );
+            Assert.That ( e.Defaults.Count () == 4, "wrong default count" );
+            Assert.That ( e.Defaults.Last ().Value.ToString () == "GD_Adr_Name1.Value" );
             Assert.That ( e.Rules.First ().Conditions.First ().Results.First ().Reference == "GD_Adr_Search" );
 
 
@@ -727,7 +727,7 @@ namespace BREadfruit.Tests
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File021 - Add Visible and Enabled by default if not indicated.txt" );
             var e = parser.Entities.First ();
 
-            Assert.That ( e.Defaults.Count () == 3 );
+            Assert.That ( e.Defaults.Count () == 3, "wrong default count" );
             Assert.That ( e.Defaults.First ().Value.ToString () == "32" );
             Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.VisibleDefaultClause.Token );
             Assert.That ( e.Defaults.ElementAt ( 1 ).Value as Boolean? == true );
@@ -748,10 +748,10 @@ namespace BREadfruit.Tests
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File022 - Don't add Visible and Enabled by default if already specified.txt" );
             var e = parser.Entities.First ();
 
-            Assert.That ( e.Defaults.Count () == 3 );
+            Assert.That ( e.Defaults.Count () == 3, "wrong default count" );
             Assert.That ( e.Defaults.First ().Value.ToString () == "32" );
             Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.VisibleDefaultClause.Token );
-            Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString() == "true" );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == "true" );
             Assert.That ( e.Defaults.ElementAt ( 2 ).Token == Grammar.EnabledDefaultClause.Token );
             Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == "true" );
 
@@ -768,8 +768,8 @@ namespace BREadfruit.Tests
             var parser = new Parser ();
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File023 - GD_PVO_Questions.txt" );
             var e = parser.Entities.First ();
-            Assert.That ( e.Name == "GD_PVO_Question1" );
-            Assert.That ( e.Defaults.Count() == 6, "should have 6 defaults but has " + e.Defaults.Count() );
+            Assert.That ( e.Name == "GD_PVO_Question1", "Wrong entity name" );
+            Assert.That ( e.Defaults.Count () == 6, "should have 6 defaults but has " + e.Defaults.Count () );
             Assert.That ( e.Rules.Count () == 2, "should have 2 rules but has " + e.Rules.Count () );
             Assert.That ( e.Rules.All ( x => x.Conditions.First ().Operand == "GD_PVO_Question1.Value" ), "error in operands" );
             Assert.That ( e.Rules.All ( x => x.Conditions.First ().Operator == Grammar.IsOperator ), "shoud be IS operator" );
@@ -795,9 +795,9 @@ namespace BREadfruit.Tests
             var parser = new Parser ();
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File024 - Hyperlink.txt" );
             var e = parser.Entities.First ();
-            Assert.That ( e.Name == "GD_PVO_Link2" );
+            Assert.That ( e.Name == "GD_PVO_Link2", "Wrong entity name" );
             Assert.That ( e.Defaults.Count () == 4, "should have 4 defaults but has " + e.Defaults.Count () );
-            Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString() == "\"https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/2.-Corporate%20Responsibility%20Self%20Assessment.doc\"" );
+            Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == "\"https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/2.-Corporate%20Responsibility%20Self%20Assessment.doc\"" );
 
         }
 
@@ -810,13 +810,33 @@ namespace BREadfruit.Tests
             var parser = new Parser ();
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File025.txt" );
             var e = parser.Entities.First ();
-            Assert.That ( e.Name == "GD_Adr_POBoxPostalCode" );
+            Assert.That ( e.Name == "GD_Adr_POBoxPostalCode", "Wrong entity name" );
             Assert.That ( e.Defaults.Count () == 4, "should have 4 defaults but has " + e.Defaults.Count () );
 
-            Assert.That ( e.Rules.Count () == 2 );
+            Assert.That ( e.Rules.Count () == 2, "should have 2 rule(s) but has " + e.Rules.Count () );
         }
 
+
         // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile026 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File026 - Tooltip support.txt" );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Name == "E_GD_VE_SmtpAddr", "Wrong entity name" );
+            Assert.That ( e.Defaults.Count () == 5, "should have 5 defaults but has " + e.Defaults.Count () );
+            Assert.That ( e.Defaults.First ().Token == Grammar.ToolTipDefaultClause );
+            Assert.That ( e.Defaults.First ().Value.ToString() == "\"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\"" );
+
+            Assert.That ( e.Rules.Count () == 1, "should have 1 rule(s) but has " + e.Rules.Count () );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
 
         [Test]

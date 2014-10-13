@@ -513,6 +513,12 @@ Entity GD_PVO_Question5 is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+;  this.GD_PVO_Link1.HRef = "~/Resources/MDM/Templates/" + this.m_mdmSessionInfo.RegionalCountry + "/1.-Basic%20Quality%20Requirements%20and%20Certificates.doc";
+;            this.GD_PVO_Link2.HRef = "~/Resources/MDM/Templates/" + this.m_mdmSessionInfo.RegionalCountry + "/2.-Corporate%20Responsibility%20Self%20Assessment.doc";
+;            this.GD_PVO_Link3.HRef = "~/Resources/MDM/Templates/" + this.m_mdmSessionInfo.RegionalCountry + "/3.-Security%20in%20the%20supply%20chain%20-%20customs%20security%20initiatives.doc";
+;            this.GD_PVO_Link4.HRef = "~/Resources/MDM/Templates/" + this.m_mdmSessionInfo.RegionalCountry + "/4.-Future%20influence%20in%20Siemens.xlsx";
+;            this.GD_PVO_Link5.HRef = "~/Resources/MDM/Templates/" + this.m_mdmSessionInfo.RegionalCountry + "/5.-Environmental%20Protection,%20Health%20Management%20and%20Safety.doc";
+
 
 Entity GD_PVO_Link1 is HyperLink in frmMain
 	with defaults
@@ -600,6 +606,7 @@ Entity GD_Procur_ESNCode4 is TextBox in frmMain
 Entity GD_Adr_Name is TextBox in frmMain
 	with defaults
 		max length 32
+		label LABELS.labName
 
 ; ----------------------------------------------------------------------------	
 
@@ -612,6 +619,7 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 Entity GD_Adr_Street is TextBox in frmMain
 	with defaults
 		max length 32
+		label LABELS.labHouseNumber
 
 ; ----------------------------------------------------------------------------	
 
@@ -666,6 +674,7 @@ Entity GD_Adr_City is TextBox in frmMain
 		enabled true
 		mandatory true
 		max length 35
+		label LABELS.labCity
 
 	with rules
 		VENDOR_COUNTRY is "GR" then GD_Adr_City2 visible
@@ -676,6 +685,7 @@ Entity GD_Adr_City is TextBox in frmMain
 Entity GD_Adr_City2 is TextBox in frmMain
 	with defaults
 		visible false		; always disabled
+		label LABELS.labDistrict
 
 	with rules
 		VENDOR_COUNTRY is "GR" then GD_Adr_City2 visible
@@ -696,8 +706,7 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 
 
 ; ----------------------------------------------------------------------------	
-; 35 entities
-; ----------------------------------------------------------------------------	
+
 
 Entity GD_Adr_Name3 is TextBox in frmMain
 	with defaults
@@ -708,6 +717,7 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 Entity GD_Com_Comment is TextBox in frmMain
 	with defaults
 		max length 35
+		label LABELS.labComment
 
 ; ----------------------------------------------------------------------------	
 
@@ -715,6 +725,7 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 	with defaults
 		max length 10
 		mandatory true
+		label LABELS.labPostalCode
 
 	with rules
 
@@ -757,26 +768,19 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 
-Entity GD_Adr_PostalCode is TextBox in frmMain
-	with defaults
-		enabled true
-		visible true
-
-; ----------------------------------------------------------------------------	
-
 Entity GD_Adr_Search is TextBox in frmMain
 	with defaults
 		enabled true
 		visible true
 		max length 20
 		value  GD_Adr_Name1.Value
+		label LABELS.Search
+
 
 	with rules
 		CURRENT_ROLE in {"UPM", "CPM", "RCO"} then disabled
 
 
-; ----------------------------------------------------------------------------	
-; 40 entities
 ; ----------------------------------------------------------------------------	
 
 ; TODO: REVIEW THIS FIELD IN ACTUAL CODE - FIELD MAPPING JUST SAYS "IT WORKS CORRECTLY"
@@ -787,6 +791,7 @@ Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
 		visible true
 		max length 5
 		mandatory false
+		label LABELS.labBoxPostalCode
 
 	with rules
 		; these rules are a bit special
@@ -803,18 +808,18 @@ Entity GD_Adr_POBoxLoc is TextBox in frmMain
 		visible true
 		max length 35
 		mandatory false
-
-
+		label LABELS.labPoBoxLoc
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Com_LanguageCode is TextBox in DropDownList
+Entity GD_Com_LanguageCode is DropDownList in frmMain
 	with defaults
 		enabled true
 		visible true
 		mandatory true
 		; obtain the code for the vendor country, if there is no specific code, then 'EN' is default language
 		load data from DATASOURCE.GET_COUNTRY_LANGUAGE_CODE		
+		label LABELS.labLanguages
 
 
 	with rules
@@ -823,18 +828,243 @@ Entity GD_Com_LanguageCode is TextBox in DropDownList
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Com_Telebox is TextBox in DropDownList
-		enabled true
-		visible true
+Entity GD_Com_Telebox is DropDownList in frmMain
+	with defaults
+		max length 40
 		mandatory true
 		load data from DATASOURCE.TELEBOX_VALUES	; these are "ADM - ADM", "MAIL - Mail", "PRT - Print", "SES - eInvoice" (value and text respectively)
 		value 'PRT'		
+		label LABELS.labTelebox
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Com_URL is TextBox in frmMain
+	with defaults
+		max length 120
+		label LABELS.labURL
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Com_DataLine is TextBox in frmMain
+	with defaults
+		max length 14
+		label LABELS.labDataLine
+
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_Country is DropDownList in frmMain
+	with defaults
+		load data from ENTERPRISE.WORLD_COUNTRIES
+		value REQUEST.VENDOR_COUNTRY
+		
+
+; ----------------------------------------------------------------------------	
+
+;FOR VENDORS
+
+Entity P_GD_VT_Number is TextBox in frmMain
+	with defaults
+		max length 30
+		label LABELS.labGD_VT_Number
+
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_Extension is TextBox in frmMain
+	with defaults
+		max length 10
+		label LABELS.lablabGD_VT_Extension
+
+
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_Notes is TextBox in frmMain
+	with defaults
+		max length 50
+		label LABELS.labGD_VT_Notes
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_Default is TextBox in frmMain
+	with defaults
+		value false
+		label LABELS.labP_GD_VT_Default
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity F_GD_VF_Country is DropDownList in frmMain
+	with defaults
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
+		value REQUEST.VENDOR_COUNTRY
+
+	with actions
+		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
+	
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------	
+
+Entity F_GD_VF_Number is TextBox in frmMain
+	with defaults
+		max length 30
+		label LABELS.labGD_VF_Number
+		
+		
+; ----------------------------------------------------------------------------	
+
+
+Entity F_GD_VF_Notes is TextBox in frmMain
+	with defaults
+		max length 50
+		label LABELS.labGD_VF_Notes
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity F_GD_VF_Default is TextBox in frmMain
+	with defaults
+		value false
+		label LABELS.labGD_VF_Default
+		
+
+; ----------------------------------------------------------------------------	
+
+; DO TESTS TO SUPPORT TOOLTIP
+Entity E_GD_VE_SmtpAddr is TextBox in frmMain
+	with defaults
+		; move the tooltip text to the real dictionary
+		tooltip "the email is used generally for all the automatic communication with the supplier - e.g. payment advice"
+		label LABELS.labGD_VE_SmtpAddr
+		max length 241
+	
+	with rules
+		; check this is true
+		REQUEST.REQUEST_TYPE is "VC" then mandatory true
+		
+; ----------------------------------------------------------------------------	
+
+Entity E_GD_VE_Notes is TextBox in frmMain
+	with defaults
+		max length 50
+		label LABELS.labGD_VE_Notes
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity E_GD_VE_Default is TextBox in frmMain
+	with defaults
+		value false
+		label LABELS.labGD_VE_Default
+		
+; ----------------------------------------------------------------------------	
+
+Entity GD_NatP_DateOfBirth is Calendar in frmMain
+	with defaults
+		label LABELS.calBirthDate
+
+
+; ----------------------------------------------------------------------------	
+
+
+;BACKUP THIS WITH TESTS
+
+Entity GD_NatP_PlaceOfBirth is TextBox in frmMain
+	with defaults
+		max length 25
+		label LABELS.labPlaceOfBirth
+		
+	with rules
+		REQUEST.COMPANY_CODE is "5240" and GD_Ctr_NIF.Value starts with {"1","2"} or GD_Ctr_TaxCode1.Value starts with {"1","2"} then 
+			label "Nº Employees"
+			mandatory true
+		
+
+; ----------------------------------------------------------------------------	
+
+; TEST
+Entity GD_NatP_Profession is TextBox in frmMain
+	with defaults
+		max length 30
+		label LABELS.labProfession
+	
+	with rules
+		REQUEST.ACCOUNT_GROUP in {"YVT6", "YVT9"} then visible false
+
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_NatP_Sex is DropDownList in frmMain
+	with defaults
+		load data from DATASOURCE.GENERIC.MDM_Sex
+		value ''
+		label LABELS.labSex
+
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_NatP_Exemption is DropDownList in frmMain
+	with defaults
+		; PUT INTO DATABASE 
+		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "0 - No exemption", "0" ) );
+		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "2 - Exemption", "2" ) );
+		; does not exist in Customer
+		load data from DATASOURCE.GENERIC.MDM_NaturalPersonExemptions
+		value ''
+		label LABELS.labExemption
+
+; ----------------------------------------------------------------------------	
+
+; PREPARE TEST FOR THIS
+; THIS ENTITY HAS A LOT OF CODE AND NOTHING IN THE FIELD MAPPING
+Entity GD_Ctr_CustomerNumber is TextBox in frmMain
+	with defaults
+		max length 18
+		label LABELS.labCustomerNumber
+		
+	with rules
+		not REQUEST.CLOSED then 
+			enabled true
+			visible true
+		
+		not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then	
+			mandatory true	
+			
+		not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
+			mandatory true	
+			
+		not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is false then
+			mandatory false
+			
+		not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is not "VM" then
+			mandatory true	
 
 ; ----------------------------------------------------------------------------	
 
 
 ; ----------------------------------------------------------------------------	
-; 45 entities
+
+
+; ----------------------------------------------------------------------------	
+
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
 ; ----------------------------------------------------------------------------	
 
 
@@ -851,39 +1081,6 @@ Entity GD_Com_Telebox is TextBox in DropDownList
 
 
 ; ----------------------------------------------------------------------------	
-; 50 entities
-; ----------------------------------------------------------------------------	
 
 
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-; 55 entities
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-; 60 entities
 ; ----------------------------------------------------------------------------	

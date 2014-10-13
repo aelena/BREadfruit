@@ -132,6 +132,7 @@ namespace BREadfruit
                     // now, if we're in the scope of the defaults block
                     if ( _currentScope == CurrentScope.DEFAULTS_BLOCK )
                     {
+                     
                         // then try and parse a default clause
                         this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
                     }
