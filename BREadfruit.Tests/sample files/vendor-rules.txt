@@ -856,16 +856,28 @@ Entity P_GD_VT_Country is DropDownList in frmMain
 	with defaults
 		load data from ENTERPRISE.WORLD_COUNTRIES
 		value REQUEST.VENDOR_COUNTRY
-		
+		mandatory true
+	
+	with actions
+		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
+	
+	with triggers
+		this changes
 
 ; ----------------------------------------------------------------------------	
 
-;FOR VENDORS
+Entity P_GD_VT_CountryCode is TextBox in frmMain
+	with defaults
+		enabled false
+		mandatory true
+
+; ----------------------------------------------------------------------------	
 
 Entity P_GD_VT_Number is TextBox in frmMain
 	with defaults
 		max length 30
 		label LABELS.labGD_VT_Number
+		mandatory true
 
 ; ----------------------------------------------------------------------------	
 
@@ -887,9 +899,28 @@ Entity P_GD_VT_Notes is TextBox in frmMain
 
 Entity P_GD_VT_Default is TextBox in frmMain
 	with defaults
-		value false
+		; by defaults appears checked and disabled
+		value true
 		label LABELS.labP_GD_VT_Default
+		enabled false
 		
+
+; ----------------------------------------------------------------------------	
+
+; TEST FOR THIS
+; this name is going to be wrong
+Entity btnInsert is Button in frmMain
+	with defaults
+		value LABELS.GENERIC.labInsert
+
+	with actions
+		; TODO DEFINE ACTION SUCH AS
+		; save data to, similar to "load data from"
+		save data to DATASOURCE.MDM_Requests_PhoneEntry with arguments {"Phone" : "123456"}
+
+	with triggers
+		this clicked
+
 
 ; ----------------------------------------------------------------------------	
 
@@ -931,13 +962,14 @@ Entity F_GD_VF_Default is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; DO TESTS TO SUPPORT TOOLTIP
 Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 	with defaults
 		; move the tooltip text to the real dictionary
 		tooltip "the email is used generally for all the automatic communication with the supplier - e.g. payment advice"
 		label LABELS.labGD_VE_SmtpAddr
 		max length 241
+		mandatory true
+		; IT'S ALMOST IMPOSSIBLE TO DO THE RIGHT REGEX FOR EMAIL, SO FOR THE MOMENT WE PUT NOTHING HERE -
 	
 	with rules
 		; check this is true

@@ -829,7 +829,7 @@ namespace BREadfruit.Tests
             Assert.That ( e.Name == "E_GD_VE_SmtpAddr", "Wrong entity name" );
             Assert.That ( e.Defaults.Count () == 5, "should have 5 defaults but has " + e.Defaults.Count () );
             Assert.That ( e.Defaults.First ().Token == Grammar.ToolTipDefaultClause );
-            Assert.That ( e.Defaults.First ().Value.ToString() == "\"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\"" );
+            Assert.That ( e.Defaults.First ().Value.ToString () == "\"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\"" );
 
             Assert.That ( e.Rules.Count () == 1, "should have 1 rule(s) but has " + e.Rules.Count () );
         }
@@ -837,6 +837,46 @@ namespace BREadfruit.Tests
 
         // ---------------------------------------------------------------------------------
 
+
+        [Test]
+        public void ParseSampleFile027 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File027 - Save Data To.txt" );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Name == "btnInsert", "Wrong entity name" );
+            Assert.That ( e.Defaults.Count () == 3, "should have 3 defaults but has " + e.Defaults.Count () );
+            Assert.That ( e.Defaults.First ().Token == Grammar.ValueDefaultClause, "Expected other default clause, not " + e.Defaults.First ().Token );
+            Assert.That ( e.Defaults.First ().Value.ToString () == "LABELS.GENERIC.labInsert", "Expected  e.Defaults.First ().Token, not" + e.Defaults.First ().Value.ToString () );
+
+            Assert.That ( e.ConditionlessActions.Count () == 1, "should have 1 ConditionlessActions but has " + e.ConditionlessActions.Count () );
+            Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).ToString () == "save_data_to DATASOURCE.MDM_Requests_PhoneEntry this" );
+
+            Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.SaveDataUnaryActionSymbol );
+            Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).Reference == "this" );
+            Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
+
+            Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString() == "DATASOURCE.MDM_Requests_PhoneEntry" );
+            Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.Count () == 1 );
+            Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "Phone" );
+            Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value == "123456" );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        [ExpectedException ( ExpectedException = typeof ( DuplicateEntityFoundException ),
+            ExpectedMessage = "A duplicate declaration was found for Entity 'TBVendorCity' in line 9" )]
+        public void ParseSampleFile028 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File028 - No same entity name twice.txt" );
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
 
         [Test]

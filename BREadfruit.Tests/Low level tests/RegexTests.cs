@@ -151,5 +151,107 @@ namespace BREadfruit.Tests.Low_level_tests
 
         }
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        // TODO: PENDING TESTS FOR 
+        // ^save data to[\t\s]+(DATASOURCE|WEBSERVICE)(\.){1}[A-Za-z0-9_-]+[\t\s]+with arguments[\t\s]*{{1}[\t\s]*((\"|'){1}[A-Za-z0-9_-]+(\"|'){1}){1}[\t\s]*:[\t\s]*((\"|'){1}.+(\"|'){1}){1}[\t\s]*}{1}[\t\s]*$
+        // for example
+        // save data to DATASOURCE.MDM_Requests_PhoneEntry with arguments {"Phone":"123$·$·$·456"}
+        // and equivalent rule to detect those same instances which are neither "with argumetns" or between { and }
+
+
+        [TestCase ( "save data to DATASOURCE.MDM_Requests_PhoneEntry with arguments {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "SAVE DATA TO DATASOURCE.MDM_Requests_PhoneEntry with arguments {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "save data to WEBSERVICE.MDM_Requests_PhoneEntry with arguments     {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "save data to WEBSERVICE.MDM_Requests_PhoneEntry with arguments     {   \"Phone\":  \"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "SAVE DATA TO DATASOURCE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = true )]
+        [TestCase ( "save data to   WEBSERVICE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = true )]
+        [TestCase ( "SAVE DATA TOWEBSERVICE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = false )]
+        [TestCase ( "SAVE DATA TO WEBSERVICEMDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = false )]
+        [TestCase ( "SAVE DATA TO WEBSERVICEMDM_Requests_PhoneEntry with arguments 'Phone':'123$·$·$·456'", Result = false )]
+        [TestCase ( "save data to DATASOURCE.MDM_Requests_PhoneEntry with arguments \"Phone\":\"123$·$·$·456\"", Result = false )]
+
+        [TestCase ( "save_data_to DATASOURCE.MDM_Requests_PhoneEntry with arguments {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "SAVE_DATA_TO DATASOURCE.MDM_Requests_PhoneEntry with arguments {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "save_data_to WEBSERVICE.MDM_Requests_PhoneEntry with arguments     {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "save_data_to WEBSERVICE.MDM_Requests_PhoneEntry with arguments     {   \"Phone\":  \"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "SAVE_DATA_TO DATASOURCE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = true )]
+        [TestCase ( "save_data_to   WEBSERVICE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = true )]
+        [TestCase ( "SAVE_DATA_TOWEBSERVICE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = false )]
+        [TestCase ( "SAVE_DATA_TO WEBSERVICEMDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = false )]
+        [TestCase ( "SAVE_DATA_TO WEBSERVICEMDM_Requests_PhoneEntry with arguments 'Phone':'123$·$·$·456'", Result = false )]
+        [TestCase ( "save_data_to DATASOURCE.MDM_Requests_PhoneEntry with arguments \"Phone\":\"123$·$·$·456\"", Result = false )]
+        public bool SpecialRegexTests_IsArgumentArray (string line)
+        {
+            return Grammar.SaveDataToFullLineRegex.IsMatch ( line );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "load data from DATASOURCE.MDM_Requests_PhoneEntry with arguments {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "LOAD DATA FROM DATASOURCE.MDM_Requests_PhoneEntry with arguments {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "load data from WEBSERVICE.MDM_Requests_PhoneEntry with arguments     {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "load data from WEBSERVICE.MDM_Requests_PhoneEntry with arguments     {   \"Phone\":  \"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "LOAD DATA FROM DATASOURCE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = true )]
+        [TestCase ( "load data from   WEBSERVICE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = true )]
+        [TestCase ( "load DATA fromWEBSERVICE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = false )]
+        [TestCase ( "LOAD DATA FROM WEBSERVICEMDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = false )]
+        [TestCase ( "load DATA from WEBSERVICEMDM_Requests_PhoneEntry with arguments 'Phone':'123$·$·$·456'", Result = false )]
+        [TestCase ( "load data from DATASOURCE.MDM_Requests_PhoneEntry with arguments \"Phone\":\"123$·$·$·456\"", Result = false )]
+
+        [TestCase ( "load_data_from DATASOURCE.MDM_Requests_PhoneEntry with arguments {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "LOAD_DATA_from DATASOURCE.MDM_Requests_PhoneEntry with arguments {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "load_data_from WEBSERVICE.MDM_Requests_PhoneEntry with arguments     {\"Phone\":\"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "load_data_from WEBSERVICE.MDM_Requests_PhoneEntry with arguments     {   \"Phone\":  \"123$·$·$·456\"}", Result = true )]
+        [TestCase ( "LOAD_DATA_FROM DATASOURCE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = true )]
+        [TestCase ( "load_data_from   WEBSERVICE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = true )]
+        [TestCase ( "load_DATA_FROMWEBSERVICE.MDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = false )]
+        [TestCase ( "LOAD_DATA_FROM WEBSERVICEMDM_Requests_PhoneEntry with arguments {'Phone':'123$·$·$·456'}", Result = false )]
+        [TestCase ( "load_DATA_from WEBSERVICEMDM_Requests_PhoneEntry with arguments 'Phone':'123$·$·$·456'", Result = false )]
+        [TestCase ( "load_data_from DATASOURCE.MDM_Requests_PhoneEntry with arguments \"Phone\":\"123$·$·$·456\"", Result = false )]
+        public bool SpecialRegexTests_IsArgumentArray_2 ( string line )
+        {
+            return Grammar.LoadDataFromFullLineRegex.IsMatch ( line );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "this should be ok, since 'there are no outside brackets', right?", Result = true )]
+        [TestCase ( "this should be ok, since \"there are no outside brackets\", right?", Result = true )]
+        [TestCase ( "\"look ma, no brackets\"", Result = true )]
+        [TestCase ( "'look ma, no brackets'", Result = true )]
+        [TestCase ( "this should be ok, since 'the only { and } are inside a delimited quoted string', right?", Result = true )]
+        [TestCase ( "this should be ok, since \"the only { and } are inside a delimited quoted string\", right?", Result = true )]
+        [TestCase ( "In turn, the fact that { appears outside \"the quoted string\" makes this invalid", Result = false )]
+        [TestCase ( "In turn, the fact that { or } appear outside 'the quoted string' makes this invalid", Result = false )]
+        public bool LineWithQuotedStringAndNoOutsideBracketsTests ( string line )
+        {
+            return Grammar.LineWithQuotedStringAndNoOutsideBrackets.IsMatch ( line );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+        [TestCase ( "postpunk, darkwave, goth {\"neofolk\", \"darkfolk\", \"martial\"}, and other genres ...", Result = true )]
+        [TestCase ( "postpunk, darkwave, goth {'neofolk', 'darkfolk', 'martial'}, and other genres ...", Result = true )]
+        [TestCase ( "postpunk, darkwave, goth {\"neofolk, darkfolk, martial\"}, and other genres ...", Result = true )]
+        [TestCase ( "postpunk, darkwave, goth {'neofolk, darkfolk, martial}, and other genres ...", Result = true )]
+        [TestCase ( "postpunk, \"darkwave\", goth {'neofolk, darkfolk, martial}, and other genres ...", Result = false )]
+        [TestCase ( "postpunk, \"darkwave\", goth {\"neofolk\", \"darkfolk\", \"martial\"}, and other genres ...", Result = false )]
+        public bool LineWithOutsideBracketsAndNoOutsideQuotesTests ( string line )
+        {
+            return Grammar.LineWithOutsideBracketsAndNoOutsideQuotes.IsMatch ( line );
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+
     }
 }

@@ -1,0 +1,13 @@
+﻿; TEST FOR THIS
+; this name is going to be wrong
+Entity btnInsert is Button in frmMain
+	with defaults
+		value LABELS.GENERIC.labInsert
+
+	with actions
+		; TODO DEFINE ACTION SUCH AS
+		; save data to, similar to "load data from"
+		save data to DATASOURCE.MDM_Requests_PhoneEntry with arguments {"Phone" : "123456"}
+
+	with triggers
+		this clicked

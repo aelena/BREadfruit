@@ -1,0 +1,13 @@
+﻿; small file to test for change form to instructions
+Entity TBVendorCity is TextBox in frmSearch
+	with actions
+		change form to "frmMain"
+		change form to frmMain
+		change form to "frmMain" with arguments {"ARG1" : "hello world"}
+
+; small file to test for change form to instructions
+Entity TBVendorCity is TextBox in frmSearch
+	with actions
+		change form to "frmMain"
+		change form to frmMain
+		change form to "frmMain" with arguments {"ARG1" : "hello world"}
