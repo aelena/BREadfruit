@@ -333,12 +333,12 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        [TestCase ( "this is the message \"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\" that was said to me", 
+        [TestCase ( "this is the message \"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\" that was said to me",
             "\"", "\"", Result = "the email is used generally for all the automatic communication with the supplier - e.g. payment advice" )]
-       [TestCase ( "this is the message \"the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice\" that was said to me", 
-            "\"", "\"", Result = "the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice" )]
-       [TestCase ( "and then, what about this text with no coincidences?",
-           "\"", "\"", Result = "" )]
+        [TestCase ( "this is the message \"the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice\" that was said to me",
+             "\"", "\"", Result = "the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice" )]
+        [TestCase ( "and then, what about this text with no coincidences?",
+            "\"", "\"", Result = "" )]
         public string TakeBetweenTests2 ( string original, string s1, string s2 )
         {
             return original.TakeBetween ( s1, s2 );
@@ -427,6 +427,75 @@ namespace BREadfruit.Tests.Low_level_tests
 
         // ---------------------------------------------------------------------------------
 
+
+        [TestCase ( "let sleeping dogs lie", Result = "t sping dogs i" )]
+        public string ImprovedRemoveTests_1 ( string line )
+        {
+            return line.MultipleReplace ( new List<string> () { "l", "e" } );
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "'All the things she did' was a track performed by \"The Whatevers\"", Result = "All the things she did was a track performed by The Whatevers" )]
+        public string ImprovedRemoveTests_2 ( string line )
+        {
+            return line.MultipleReplace ( new List<string> () { "\"", "'" } );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "let sleeping dogs lie", "l", "", Result = "et sleeping dogs lie" )]
+        [TestCase ( "let sleeping dogs lie", "t", "", Result = "le sleeping dogs lie" )]
+        [TestCase ( "let sleeping dogs lie", "p", "", Result = "let sleeing dogs lie" )]
+
+        [TestCase ( "let sleeping dogs lie", "l", "@", Result = "@et sleeping dogs lie" )]
+        [TestCase ( "let sleeping dogs lie", "t", "KUZ", Result = "leKUZ sleeping dogs lie" )]
+        [TestCase ( "let sleeping dogs lie", "p", "1234567890", Result = "let slee1234567890ing dogs lie" )]
+        public string ReplaceFirstTests ( string line, string ocurrence, string replacement )
+        {
+            if ( String.IsNullOrEmpty ( replacement ) )
+                return line.ReplaceFirst ( ocurrence );
+            return line.ReplaceFirst ( ocurrence, replacement );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "let sleeping dogs lie", "l", "", Result = "let sleeping dogs ie" )]
+        [TestCase ( "let sleeping dogs lie", "t", "", Result = "le sleeping dogs lie" )]
+        [TestCase ( "let sleeping dogs lie", "i", "", Result = "let sleeping dogs le" )]
+
+        [TestCase ( "let sleeping dogs lie", "l", "@", Result = "let sleeping dogs @ie" )]
+        [TestCase ( "let sleeping dogs lie", "t", "KUZ", Result = "leKUZ sleeping dogs lie" )]
+        [TestCase ( "let sleeping dogs lie", "g", "KUZ", Result = "let sleeping doKUZs lie" )]
+        [TestCase ( "let sleeping dogs lie", "e", "1234567890", Result = "let sleeping dogs li1234567890" )]
+        public string ReplaceLastTests ( string line, string occurrence, string replacement )
+        {
+            if ( String.IsNullOrEmpty ( replacement ) )
+                return line.ReplaceLast ( occurrence );
+            return line.ReplaceLast ( occurrence, replacement );
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "let sleeping dogs lie", "l", "", Result = "et sleeping dogs ie" )]
+        [TestCase ( "let sleeping dogs lie", "l", "a588", Result = "a588et sleeping dogs a588ie" )]
+        [TestCase ( "She said several things, like \"yeah\", \"like\" and \"whatever\", I did not like her speech", "\"", "", 
+            Result = "She said several things, like yeah\", \"like\" and \"whatever, I did not like her speech" )]
+        [TestCase ( "She said \"yeah\"", "\"", "", Result = "She said yeah" )]
+        [TestCase ( "\"yeah, she said", "\"", "", Result = "yeah, she said" )]
+        public string ReplaceFirstAndLastOnlyTests ( string line, string occurrence, string replacement )
+        {
+            if ( String.IsNullOrEmpty ( replacement ) )
+                return line.ReplaceFirstAndLastOnly ( occurrence );
+
+            return line.ReplaceFirstAndLastOnly ( occurrence, replacement );
+        }
 
     }
 }

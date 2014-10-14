@@ -637,5 +637,111 @@ namespace BREadfruit.Helpers
         }
 
 
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static string MultipleReplace ( this string subject, IEnumerable<string> occurrencesToRemove )
+        {
+            if ( String.IsNullOrWhiteSpace ( subject ) )
+                throw new ArgumentException ( "String cannot be null (subject)" );
+
+            if ( occurrencesToRemove == null || occurrencesToRemove.Count () == 0 )
+                return subject;
+
+            foreach ( var o in occurrencesToRemove )
+                subject = subject.Replace ( o, "" );
+
+            return subject;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+        public static string Take ( this string subject, int index )
+        {
+            if ( String.IsNullOrWhiteSpace ( subject ) )
+                throw new ArgumentException ( "String cannot be null (subject)" );
+            if ( index < 0 )
+                throw new ArgumentException ( "Index cannot be zero or less than zero." );
+
+            return subject.Substring ( 0, index );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static string Skip ( this string subject, int index )
+        {
+            if ( String.IsNullOrWhiteSpace ( subject ) )
+                throw new ArgumentException ( "String cannot be null (subject)" );
+            if ( index < 0 )
+                throw new ArgumentException ( "Index cannot be zero or less than zero." );
+            if ( index > subject.Length )
+                throw new ArgumentException ( "Index cannot be bigger than actual string length" );
+
+            return subject.Substring ( index );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+        public static string ReplaceFirst ( this string subject, string occurrenceToRemove, string replacement = "" )
+        {
+
+            if ( String.IsNullOrWhiteSpace ( subject ) )
+                throw new ArgumentException ( "String cannot be null (subject)" );
+            if ( String.IsNullOrWhiteSpace ( occurrenceToRemove ) )
+                throw new ArgumentException ( "String cannot be null (occurrenceToRemove)" );
+
+            var i = subject.IndexOf ( occurrenceToRemove );
+
+            if ( i >= 0 )
+                return string.Format ( "{0}{1}{2}", subject.Take ( i ), replacement, subject.Skip ( i + occurrenceToRemove.Length ) );
+            return subject;
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static string ReplaceLast ( this string subject, string occurrenceToRemove, string replacement = "" )
+        {
+
+            if ( String.IsNullOrWhiteSpace ( subject ) )
+                throw new ArgumentException ( "String cannot be null (subject)" );
+            if ( String.IsNullOrWhiteSpace ( occurrenceToRemove ) )
+                throw new ArgumentException ( "String cannot be null (occurrenceToRemove)" );
+
+            var i = subject.LastIndexOf ( occurrenceToRemove );
+            if ( i >= 0 )
+                return string.Format ( "{0}{1}{2}", subject.Take ( i ), replacement, subject.Skip ( i + occurrenceToRemove.Length ) );
+            return subject;
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+        public static string ReplaceFirstAndLastOnly ( this string subject, string occurrenceToRemove, string replacement = "" )
+        {
+            if ( String.IsNullOrWhiteSpace ( subject ) )
+                throw new ArgumentException ( "String cannot be null (subject)" );
+            if ( String.IsNullOrWhiteSpace ( occurrenceToRemove ) )
+                throw new ArgumentException ( "String cannot be null (occurrenceToRemove)" );
+
+            subject = subject.ReplaceFirst ( occurrenceToRemove, replacement );
+            subject = subject.ReplaceLast ( occurrenceToRemove, replacement );
+
+            return subject;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+
     }
 }
