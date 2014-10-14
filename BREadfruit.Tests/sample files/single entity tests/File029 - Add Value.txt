@@ -1,0 +1,10 @@
+﻿Entity SomeControl is DropDownList  in frmMain
+	with defaults
+		label LABELS.GENERIC.COUNTRY
+
+	with actions
+		add value "BIT$ - Payment via BitCoin" in PaymentTermsOptions
+		add value 'BIT$ - Payment via BitCoin' in PaymentTermsOptions_2
+	
+	with triggers
+		this.value changes 

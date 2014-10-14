@@ -880,6 +880,35 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        public void ParseSampleFile029 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File029 - Add Value.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmMain" );
+            Assert.That ( e.Defaults.Count () == 3, "should have 3 defaults but has " + e.Defaults.Count () );
+
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ) == Grammar.AddValueActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ) == Grammar.AddValueActionSymbol );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ).IsResultAction );
+
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Reference == "PaymentTermsOptions" );
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1) ).Reference == "PaymentTermsOptions_2" );
+
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString() == "\"BIT$ - Payment via BitCoin\"" );
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Value.ToString () == "'BIT$ - Payment via BitCoin'" );
+
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Token == Grammar.AddValueActionSymbol );
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Token == Grammar.AddValueActionSymbol );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();
