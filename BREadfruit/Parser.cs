@@ -132,7 +132,7 @@ namespace BREadfruit
                     // now, if we're in the scope of the defaults block
                     if ( _currentScope == CurrentScope.DEFAULTS_BLOCK )
                     {
-                     
+
                         // then try and parse a default clause
                         this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
                     }
@@ -191,9 +191,9 @@ namespace BREadfruit
                                     if ( thenClause.Any ( x => x == Grammar.ThisSymbol ) )
                                     {
                                         // this should be the value
-                                        var _index = thenClause.Where ( x => !Grammar.Symbols.Contains ( x ) ).First();
-                                        var _symbol = thenClause.Where ( x => Grammar.Symbols.Contains ( x ) ).First();
-                                        _ra = new ResultAction ( _symbol , _index, this._entities.Last().Name);
+                                        var _index = thenClause.Where ( x => !Grammar.Symbols.Contains ( x ) ).First ();
+                                        var _symbol = thenClause.Where ( x => Grammar.Symbols.Contains ( x ) ).First ();
+                                        _ra = new ResultAction ( _symbol, _index, this._entities.Last ().Name );
                                     }
                                     else
                                     {
@@ -260,7 +260,7 @@ namespace BREadfruit
                                 foreach ( var _a in _args )
                                 {
                                     var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
-                                    _ra.AddArgument ( _argPair.First ().Trim (), _argPair.Last ().Trim () );
+                                    _ra.AddArgument ( _argPair.First ().Trim ().MultipleReplace ( Grammar.ValidQuoteSymbols ), _argPair.Last ().Trim ().ReplaceFirstAndLastOnly ( "\"" ) );
                                 }
 
                                 this._entities.Last ().AddResultAction ( _ra );
@@ -277,7 +277,7 @@ namespace BREadfruit
                                 foreach ( var _a in _args )
                                 {
                                     var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
-                                    _r.AddArgument ( _argPair.First ().Trim (), _argPair.Last ().Trim () );
+                                    _r.AddArgument ( _argPair.First ().Trim ().MultipleReplace ( Grammar.ValidQuoteSymbols ), _argPair.Last ().Trim ().ReplaceFirstAndLastOnly ( "\"" ) );
                                 }
                                 this._entities.Last ().AddResultAction ( _r );
                             }
@@ -503,6 +503,11 @@ namespace BREadfruit
             if ( this._lineParser.IsAValidSentence ( lineInfo ) )
             {
                 _currentScope = CurrentScope.NEW_ENTITY;
+
+                if ( this._entities.Any ( x => x.Name == lineInfo.Tokens.ElementAt ( 1 ).Token ) )
+                    throw new DuplicateEntityFoundException ( String.Format ( Grammar.DuplicateEntityFoundExceptionDefaultTemplate,
+                        lineInfo.Tokens.ElementAt ( 1 ).Token, _currLine ) );
+
                 this._entities.Add ( new Entity (
                     lineInfo.Tokens.ElementAt ( 1 ).Token,
                     lineInfo.Tokens.ElementAt ( 3 ).Token,
