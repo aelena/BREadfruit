@@ -85,26 +85,33 @@ namespace BREadfruit
                 // now we need to detect and unify any tokens in between single or double quotes as one token
                 // so first let's just see if there are any sort of quotes in the line itself
                 // no quote should actually be fount at 0...
-                if ( _tokens.Count() > 0 && line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
+                if ( _tokens.Count () > 0 && line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
                 {
 
 
                     //var _t1 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
-                    //var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
+                    //var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.EndsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
 
-                    var first = _tokens.First ( u => u.Token.StartsWith ( "\"" ) || u.Token.StartsWith ( "'" ) );
-                    var last = _tokens.Last ( u => u.Token.EndsWith ( "\"" ) || u.Token.EndsWith ( "'" ) );
+                    //if ( _t1.Count () == _t2.Count () )
+                    //{
 
-                    var _tokenList = _tokens.ToList ();
-                    var _fused = _tokens.JoinTogetherBetween ( _tokenList.IndexOf ( first ), _tokenList.IndexOf ( last ) );
+                    if ( Grammar.LineWithQuotedStringAndNoOutsideBrackets.IsMatch ( line ) )
+                    {
+                        var first = _tokens.First ( u => u.Token.StartsWith ( "\"" ) || u.Token.StartsWith ( "'" ) );
+                        var last = _tokens.Last ( u => u.Token.EndsWith ( "\"" ) || u.Token.EndsWith ( "'" ) );
 
-                    List<Symbol> replacedLineInfo = new List<Symbol> ();
-                    replacedLineInfo.AddRange ( _tokens.Take ( _tokenList.IndexOf ( first ) ) );
-                    replacedLineInfo.Add ( _fused );
-                    if ( ( _tokenList.IndexOf ( last ) + 1 ) < _tokens.Count() )
-                        replacedLineInfo.AddRange ( _tokens.Skip ( _tokenList.IndexOf ( last ) + 1 ) );
+                        var _tokenList = _tokens.ToList ();
+                        var _fused = _tokens.JoinTogetherBetween ( _tokenList.IndexOf ( first ), _tokenList.IndexOf ( last ) );
 
-                    return replacedLineInfo;
+                        List<Symbol> replacedLineInfo = new List<Symbol> ();
+                        replacedLineInfo.AddRange ( _tokens.Take ( _tokenList.IndexOf ( first ) ) );
+                        replacedLineInfo.Add ( _fused );
+                        if ( ( _tokenList.IndexOf ( last ) + 1 ) < _tokens.Count () )
+                            replacedLineInfo.AddRange ( _tokens.Skip ( _tokenList.IndexOf ( last ) + 1 ) );
+
+                        return replacedLineInfo;
+                    }
+                    //}
                     // count should be the same
                     //if ( _t1.Count () == _t2.Count () )
                     //{
