@@ -55,15 +55,6 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
-
-        /// <summary>
-        /// get tokens from string 
-        /// if the token exists in the grammar, then it adds the grammar-declared token
-        /// otherwise, as in the case of literals or other symbols,
-        /// instantiates a new Symbol and adds it to the collection.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
         protected internal IEnumerable<Symbol> ExtractTokens ( string line )
         {
             if ( line != null )
@@ -85,67 +76,137 @@ namespace BREadfruit
                 // now we need to detect and unify any tokens in between single or double quotes as one token
                 // so first let's just see if there are any sort of quotes in the line itself
                 // no quote should actually be fount at 0...
-                if ( _tokens.Count () > 0 && line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
+                if ( line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
                 {
+                    var _t1 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
+                    var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.EndsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
 
-
-                    //var _t1 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
-                    //var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.EndsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
-
-                    //if ( _t1.Count () == _t2.Count () )
-                    //{
-
-                    if ( Grammar.LineWithQuotedStringAndNoOutsideBrackets.IsMatch ( line ) )
+                    // count should be the same
+                    if ( _t1.Count () == _t2.Count () )
                     {
-                        var first = _tokens.First ( u => u.Token.StartsWith ( "\"" ) || u.Token.StartsWith ( "'" ) );
-                        var last = _tokens.Last ( u => u.Token.EndsWith ( "\"" ) || u.Token.EndsWith ( "'" ) );
-
-                        var _tokenList = _tokens.ToList ();
-                        var _fused = _tokens.JoinTogetherBetween ( _tokenList.IndexOf ( first ), _tokenList.IndexOf ( last ) );
+                        var _fusedSymbols = new List<Symbol> ();
+                        // now "fuse" the symbols that are within quotes
+                        // TODO: as this is valid for strings (user strings) any keywords here are considered just string
+                        for ( var i = 0; i < _t1.Count (); i++ )
+                            _fusedSymbols.Add ( _tokens.ToList ().GetRange ( _t1.ElementAt ( i ), ( _t2.ElementAt ( i ) - _t1.ElementAt ( i ) ) + 1 ).JoinTogether () );
 
                         List<Symbol> replacedLineInfo = new List<Symbol> ();
-                        replacedLineInfo.AddRange ( _tokens.Take ( _tokenList.IndexOf ( first ) ) );
-                        replacedLineInfo.Add ( _fused );
-                        if ( ( _tokenList.IndexOf ( last ) + 1 ) < _tokens.Count () )
-                            replacedLineInfo.AddRange ( _tokens.Skip ( _tokenList.IndexOf ( last ) + 1 ) );
+                        for ( int i = 0, j = 0; i < _tokens.Count (); i++ )
+                        {
+                            if ( _t1.Contains ( i ) )
+                            {
+                                replacedLineInfo.Add ( _fusedSymbols.ElementAt ( j ) );
+                                i = _t2.ElementAt ( j );    // move the index
+                                j++;
+                            }
+                            else
+                                replacedLineInfo.Add ( _tokens.ElementAt ( i ) );
+                        }
 
                         return replacedLineInfo;
                     }
-                    //}
-                    // count should be the same
-                    //if ( _t1.Count () == _t2.Count () )
-                    //{
-                    //    var _fusedSymbols = new List<Symbol> ();
-                    //    // now "fuse" the symbols that are within quotes
-                    //    // TODO: as this is valid for strings (user strings) any keywords here are considered just string
-                    //    for ( var i = 0; i < _t1.Count (); i++ )
-                    //        _fusedSymbols.Add ( _tokens.ToList ().GetRange ( _t1.ElementAt ( i ), ( _t2.ElementAt ( i ) + 1 - _t1.ElementAt ( i ) ) + 1 ).JoinTogether () );
-
-                    //    List<Symbol> replacedLineInfo = new List<Symbol> ();
-                    //    for ( int i = 0, j = 0; i < _tokens.Count (); i++ )
-                    //    {
-                    //        if ( _t1.Contains ( i ) )
-                    //        {
-                    //            replacedLineInfo.Add ( _fusedSymbols.ElementAt ( j ) );
-                    //            i = _t2.ElementAt ( j );    // move the index
-                    //            j++;
-                    //        }
-                    //        else
-                    //            replacedLineInfo.Add ( _tokens.ElementAt ( i ) );
-                    //    }
-
-                    //    return replacedLineInfo;
-                    //}
-                    //else
-                    //{
-                    //    throw new Exception ( String.Format ( "There seems to be a mismatch in the usage of quotes in line {0}", line ) );
-                    //}
+                    else
+                    {
+                        throw new Exception ( String.Format ( "There seems to be a mismatch in the usage of quotes in line {0}", line ) );
+                    }
                 }
 
                 return _tokens;
             }
             return null;
         }
+
+        /// <summary>
+        /// get tokens from string 
+        /// if the token exists in the grammar, then it adds the grammar-declared token
+        /// otherwise, as in the case of literals or other symbols,
+        /// instantiates a new Symbol and adds it to the collection.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        //protected internal IEnumerable<Symbol> ExtractTokens ( string line )
+        //{
+        //    if ( line != null )
+        //    {
+        //        // this poses the details of the last token being really the nontermoinal or not....
+        //        // maybe this need some more careful thinking
+        //        var _tokens = from t in line.Replace ( "\t", " " ).Split ( new [] { " " },
+        //                         StringSplitOptions.RemoveEmptyEntries )
+        //                      let grammarToken = Grammar.GetSymbolByToken ( t, false )
+        //                      select
+        //                         grammarToken == null ?
+        //                              new Symbol ( t, line.ToCharArray ().Where ( x => x == '\t' ).Count (), false )
+        //                              : grammarToken;
+
+        //        // parse comments out
+        //        // there are no multiline or inline comments but there can be trailing comments at the end of the line
+        //        _tokens = _tokens.TakeWhile ( z => !z.Token.StartsWith ( ";" ) );
+
+        //        // now we need to detect and unify any tokens in between single or double quotes as one token
+        //        // so first let's just see if there are any sort of quotes in the line itself
+        //        // no quote should actually be fount at 0...
+        //        if ( _tokens.Count () > 0 && line.IndexOfAny ( new char [] { '"', '\'' } ) >= 0 )
+        //        {
+
+
+        //            if ( Grammar.LineWithQuotedStringAndNoOutsideBrackets.IsMatch ( line ) )
+        //            {
+        //                var first = _tokens.First ( u => u.Token.StartsWith ( "\"" ) || u.Token.StartsWith ( "'" ) );
+        //                var last = _tokens.Last ( u => u.Token.EndsWith ( "\"" ) || u.Token.EndsWith ( "'" ) );
+
+        //                var _tokenList = _tokens.ToList ();
+        //                var _fused = _tokens.JoinTogetherBetween ( _tokenList.IndexOf ( first ), _tokenList.IndexOf ( last ) );
+
+        //                List<Symbol> replacedLineInfo = new List<Symbol> ();
+        //                replacedLineInfo.AddRange ( _tokens.Take ( _tokenList.IndexOf ( first ) ) );
+        //                replacedLineInfo.Add ( _fused );
+        //                if ( ( _tokenList.IndexOf ( last ) + 1 ) < _tokens.Count () )
+        //                    replacedLineInfo.AddRange ( _tokens.Skip ( _tokenList.IndexOf ( last ) + 1 ) );
+
+        //                return replacedLineInfo;
+        //            }
+
+        //            //var _t1 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.StartsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
+        //            //var _t2 = Enumerable.Range ( 0, _tokens.Count () ).Where ( x => _tokens.ElementAt ( x ).Token.EndsWith ( "'" ) || _tokens.ElementAt ( x ).Token.StartsWith ( "\"" ) );
+
+        //            //if ( _t1.Count () == _t2.Count () )
+        //            //{
+
+        //            //}
+        //            // count should be the same
+        //            //if ( _t1.Count () == _t2.Count () )
+        //            //{
+        //            //    var _fusedSymbols = new List<Symbol> ();
+        //            //    // now "fuse" the symbols that are within quotes
+        //            //    // TODO: as this is valid for strings (user strings) any keywords here are considered just string
+        //            //    for ( var i = 0; i < _t1.Count (); i++ )
+        //            //        _fusedSymbols.Add ( _tokens.ToList ().GetRange ( _t1.ElementAt ( i ), ( _t2.ElementAt ( i ) + 1 - _t1.ElementAt ( i ) ) + 1 ).JoinTogether () );
+
+        //            //    List<Symbol> replacedLineInfo = new List<Symbol> ();
+        //            //    for ( int i = 0, j = 0; i < _tokens.Count (); i++ )
+        //            //    {
+        //            //        if ( _t1.Contains ( i ) )
+        //            //        {
+        //            //            replacedLineInfo.Add ( _fusedSymbols.ElementAt ( j ) );
+        //            //            i = _t2.ElementAt ( j );    // move the index
+        //            //            j++;
+        //            //        }
+        //            //        else
+        //            //            replacedLineInfo.Add ( _tokens.ElementAt ( i ) );
+        //            //    }
+
+        //            //    return replacedLineInfo;
+        //            //}
+        //            //else
+        //            //{
+        //            //    throw new Exception ( String.Format ( "There seems to be a mismatch in the usage of quotes in line {0}", line ) );
+        //            //}
+        //        }
+
+        //        return _tokens;
+        //    }
+        //    return null;
+        //}
 
 
         // ---------------------------------------------------------------------------------

@@ -132,7 +132,26 @@ namespace BREadfruit
                     // now, if we're in the scope of the defaults block
                     if ( _currentScope == CurrentScope.DEFAULTS_BLOCK )
                     {
+                        if ( lineInfo.Tokens.First () == Grammar.ToolTipDefaultClause )
+                        {
+                            if ( Grammar.LineWithQuotedStringAndNoOutsideBrackets.IsMatch ( line ) )
+                            {
+                                var first = lineInfo.Tokens.First ( u => u.Token.StartsWith ( "\"" ) || u.Token.StartsWith ( "'" ) );
+                                var last = lineInfo.Tokens.Last ( u => u.Token.EndsWith ( "\"" ) || u.Token.EndsWith ( "'" ) );
 
+                                var _tokenList = lineInfo.Tokens.ToList ();
+                                var _fused = lineInfo.Tokens.JoinTogetherBetween ( _tokenList.IndexOf ( first ), _tokenList.IndexOf ( last ) );
+
+                                List<Symbol> replacedLineInfo = new List<Symbol> ();
+                                replacedLineInfo.AddRange ( lineInfo.Tokens.Take ( _tokenList.IndexOf ( first ) ) );
+                                replacedLineInfo.Add ( _fused );
+                                if ( ( _tokenList.IndexOf ( last ) + 1 ) < lineInfo.Tokens.Count () )
+                                    replacedLineInfo.AddRange ( lineInfo.Tokens.Skip ( _tokenList.IndexOf ( last ) + 1 ) );
+
+                                lineInfo.RemoveTokensFromIndex ( 0 );
+                                lineInfo.AddTokens ( replacedLineInfo );
+                            }
+                        }
                         // then try and parse a default clause
                         this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
                     }
@@ -596,13 +615,11 @@ namespace BREadfruit
         private DefaultClause ConfigureDefaultClause ( LineInfo lineInfo )
         {
 
-            lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
-            if ( this._lineParser.LineInfoContainsArgumentkeyValuePairs ( lineInfo ) )
-            {
-                lineInfo = this._lineParser.TokenizeArgumentKeyValuePairs ( lineInfo );
-            }
-
-
+            //lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+            //if ( this._lineParser.LineInfoContainsArgumentkeyValuePairs ( lineInfo ) )
+            //{
+            //    lineInfo = this._lineParser.TokenizeArgumentKeyValuePairs ( lineInfo );
+            //}
 
             var clause = Grammar.GetDefaultClauseByToken ( lineInfo.Tokens.First ().Token, false );
             if ( clause != null )
@@ -626,8 +643,6 @@ namespace BREadfruit
                         clause.AddArgumentsFromString ( lineInfo.Tokens.ElementAt ( lineInfo.IndexOfSymbol ( Grammar.WithArgumentsSymbol ) + 1 ).Token );
                     }
                 }
-
-
             }
             return clause;
         }

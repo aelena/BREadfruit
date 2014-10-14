@@ -9,6 +9,7 @@ Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 		
 		tooltip "the email is used generally for all the automatic communication with the supplier - e.g. payment advice"
 		set tooltip "2 the email is used generally for all the automatic communication with the supplier - e.g. payment advice"
+		tooltip LABELS.TOOLTIP_EXAMPLE
 		label LABELS.labGD_VE_SmtpAddr
 		max length 241
 	
