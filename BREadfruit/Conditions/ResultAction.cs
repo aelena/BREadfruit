@@ -62,7 +62,7 @@ namespace BREadfruit.Conditions
             this.Reference = reference;
         }
 
-        
+
         // ---------------------------------------------------------------------------------
 
 
@@ -94,7 +94,11 @@ namespace BREadfruit.Conditions
 
         public override string ToString ()
         {
-            return String.Format ( "{0} {1} {2}", this.Token, this.Value.ToString (), this.Reference );
+            if ( this.Value.ToString () != this.Reference )
+                return String.Format ( "{0} {1} {2}", this.Token, this.Value.ToString (), this.Reference );
+            else
+                return String.Format ( "{0} {1}", this.Token, this.Value.ToString () );
+
         }
 
 
