@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BREadfruit.Clauses;
 using BREadfruit.Conditions;
@@ -91,6 +92,7 @@ namespace BREadfruit
 
         private static List<Symbol> _triggerSymbols = new List<Symbol> ();
 
+        private static List<String> _validQuoteSymbols = new List<String> () { "\"", "'" };
 
 
         // ---------------------------------------------------------------------------------
@@ -202,6 +204,13 @@ namespace BREadfruit
         }
 
 
+        public static IEnumerable<String> ValidQuoteSymbols
+        {
+            get
+            {
+                return Grammar._validQuoteSymbols;
+            }
+        }
         #endregion
 
 
@@ -291,6 +300,14 @@ namespace BREadfruit
         private static string _entityLineRegex = "^ENTITY[\t\\s]+[A-Za-z0-9_]*[\t\\s]+(IS|is|Is|iS)?[\t\\s]+(###){1}[\t\\s]+(IN|in|In|iN)?[\t\\s]+(((\"|')?([A-Za-z0-9'.'_])+(\"|')?)){1}[\t\\s]*$";
         // prev value : "^ENTITY [A-Za-z0-9_]* (IS|is|Is|iS)? (###){1}[\t' ']*$";
         // ^ENTITY[\t\s]+[A-Za-z0-9_]*[\t\s]+(IS|is|Is|iS)?[\t\s]+(###){1}[\t\s]+in[\t\s]+(((\"|')([A-Za-z0-9'.'_])+(\"|'))){1}[\t\s]*$
+
+
+
+        public static Regex SaveDataToFullLineRegex = new Regex ( "^(save data to|save_data_to){1}[\t\\s]+(DATASOURCE|WEBSERVICE)(\\.){1}[A-Za-z0-9_-]+[\t\\s]+with arguments[\t\\s]*{{1}[\t\\s]*((\"|'){1}[A-Za-z0-9_-]+(\"|'){1}){1}[\t\\s]*:[\t\\s]*((\"|'){1}.+(\"|'){1}){1}[\t\\s]*}{1}[\t\\s]*$", RegexOptions.IgnoreCase );
+        public static Regex LoadDataFromFullLineRegex = new Regex ( "^(load_data_from|load data from){1}[\t\\s]+(DATASOURCE|WEBSERVICE)(\\.){1}[A-Za-z0-9_-]+[\t\\s]+with arguments[\t\\s]*{{1}[\t\\s]*((\"|'){1}[A-Za-z0-9_-]+(\"|'){1}){1}[\t\\s]*:[\t\\s]*((\"|'){1}.+(\"|'){1}){1}[\t\\s]*}{1}[\t\\s]*$", RegexOptions.IgnoreCase );
+        public static Regex LineWithQuotedStringAndNoOutsideBrackets = new Regex ( "^[^{}]*(\"|'){1}.*(\"|'){1}[^{}]*$", RegexOptions.IgnoreCase );
+        public static Regex LineWithOutsideBracketsAndNoOutsideQuotes = new Regex ( "^[^\"']*{{1}.*}{1}[^\"']*$", RegexOptions.IgnoreCase );
+
 
         public static string EntityLineRegex
         {
@@ -416,10 +433,12 @@ namespace BREadfruit
         public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show", 2, true, new [] { "show element" } );
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
         public static UnaryAction LoadDataUnaryActionSymbol = new UnaryAction ( "load_data_from", 2, true, new [] { "load data from" } );
+        public static UnaryAction SaveDataUnaryActionSymbol = new UnaryAction ( "save_data_to", 2, true, new [] { "save data to" } );
         public static UnaryAction ChangeFormUnaryActionSymbol = new UnaryAction ( "change_form_to", 2, true, new [] { "change form to" } );
         public static UnaryAction SetValidationRegexUnaryActionSymbol = new UnaryAction ( "validation_regex", 2, true, new [] { "validation regex", "validation" } );
 
         public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
+        public static ResultAction AddValueActionSymbol = new ResultAction ( "add_value", 2, true, new [] { "add value" } );
 
         #endregion
 
@@ -929,11 +948,13 @@ namespace BREadfruit
             //Grammar._symbols.Add ( HideElementUnaryActionSymbol );
             Grammar._symbols.Add ( ClearValueUnaryActionSymbol );
             Grammar._symbols.Add ( LoadDataUnaryActionSymbol );
+            Grammar._symbols.Add ( SaveDataUnaryActionSymbol );
             Grammar._symbols.Add ( ChangeFormUnaryActionSymbol );
             Grammar._symbols.Add ( SetValidationRegexUnaryActionSymbol );
 
             // result actions
             Grammar._symbols.Add ( SetValueActionSymbol );
+            Grammar._symbols.Add ( AddValueActionSymbol );
 
             Grammar._symbols.Add ( ANDSymbol );
             Grammar._symbols.Add ( ORSymbol );
@@ -1033,7 +1054,8 @@ namespace BREadfruit
         public static readonly string InvalidLineFoundExceptionDefaultTemplate = "Line {0} ('{1}') seems invalid or was not parsed correctly.";
         public static readonly string TokenNotFoundExceptionDefaultMessage = "Token not found";
         public static readonly string TokenNotFoundExceptionDefaultTemplate = "Token '{0}' was not found in line {1}";
-
+        public static readonly string DuplicateEntityFoundExceptionDefaultMessage = "Duplicate entity name found";
+        public static readonly string DuplicateEntityFoundExceptionDefaultTemplate = "A duplicate declaration was found for Entity '{0}' in line {1}";
 
 
 
