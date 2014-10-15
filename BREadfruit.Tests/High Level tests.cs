@@ -909,6 +909,33 @@ namespace BREadfruit.Tests
 
 
         [Test]
+        public void ParseSampleFile030 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File030 - Load Data in.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmMain" );
+            Assert.That ( e.Defaults.Count () == 2, "should have 2 defaults but has " + e.Defaults.Count () );
+
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.LoadDataUnaryActionSymbol.Token );
+            Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "COUNTRY" );
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value.ToString () == "F_GD_VF_Country.Value" );
+
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Reference == "F_GD_VF_CountryCode" );
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString () == "DATASOURCE.MDM_CountryTelephonePrefixes" );
+
+
+            Assert.That ( e.Triggers.Count () == 1, "should have 1 trigger(s)but has " + e.Triggers.Count () );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
         public void ShouldFindEntities ()
         {
             var parser = new Parser ();

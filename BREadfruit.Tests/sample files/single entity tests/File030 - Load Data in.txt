@@ -1,0 +1,7 @@
+﻿Entity F_GD_VF_Country is DropDownList in frmMain
+
+	with actions
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
+	
+	with triggers
+		this changes

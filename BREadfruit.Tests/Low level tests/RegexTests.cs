@@ -253,5 +253,34 @@ namespace BREadfruit.Tests.Low_level_tests
 
 
 
+        #region " --- problematic samples --- "
+
+        [TestCase ( "load_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\":F_GD_VF_Country.Value} in F_GD_VF_CountryCode", Result = true )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\": F_GD_VF_Country.Value} in F_GD_VF_CountryCode", Result = true )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\":     F_GD_VF_Country.Value}", Result = true )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args ", Result = false )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\":", Result = false )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\" :    F_GD_VF_Country.Value", Result = false)]
+
+        [TestCase ( "load_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\":\"F_GD_VF_Country.Value\"} in F_GD_VF_CountryCode", Result = true )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\":\"F_GD/&(%Country.Value\"} in F_GD_VF_CountryCode", Result = true )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\" : \"F_GD_VF_Country.Value\"}", Result = true )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes", Result = true )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes in ANOTHER.CONTROL", Result = true )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args ", Result = false )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args {\"COUNTRY\": ", Result = false )]
+        [TestCase ( "\t\tload_data_from DATASOURCE.MDM_CountryTelephonePrefixes with_args { \"COUNTRY\":     \"F_GD_V=)(!=)try.Value\"", Result = false )]
+
+        public bool FullLoadDataFromRegexTest (string line)
+        {
+          //string regex = "^load_data_from[\t\\s]+(WEBSERVICE|DATASOURCE){1}\\.[A-Za-z_\\.-]+[\t\\s]*([\t\\s]+with_args[\t\\s]*{[\t\\s]*(\"|')[A-Za-z_0-9.-]+(\"|')[\t\\s]*:[\t\\s]*(((\"|').+(\"|'))|([A-Za-z_0-9.-]*))})([\t\\s]+(in[\t\\s]+[A-Za-z_0-9.-]*))?[\t\\s]*";
+            //string regex = "^load_data_from[\t\\s]+((DATASOURCE|WEBSERVICE)\\.[A-Za-z0-9_\\.-]+){1}([\t\\s]+with_args[\t\\s]*{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)}[\t\\s]*)?([\t\\s]+in[\t\\s]*[A-Za-z09_\\.]+[\t\\s]*)?";
+            string regex = "^load_data_from[\t\\s]+((DATASOURCE|WEBSERVICE)\\.[A-Za-z0-9_\\.-]+){1}([\t\\s]+with_args[\t\\s]*{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)}[\t\\s]*)?([\t\\s]*in[\t\\s]*[A-Za-z0-9_\\.]+[\t\\s]*)?";
+            var r= Regex.IsMatch ( line.Trim (), regex, RegexOptions.IgnoreCase );
+            return r;
+        }
+
+        #endregion
+
     }
 }

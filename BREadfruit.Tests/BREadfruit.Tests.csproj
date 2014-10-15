@@ -108,6 +108,7 @@
     <Content Include="sample files\single entity tests\File026 - Tooltip support.txt" />
     <Content Include="sample files\single entity tests\File027 - Save Data To.txt" />
     <Content Include="sample files\single entity tests\File029 - Add Value.txt" />
+    <Content Include="sample files\single entity tests\File030 - Load Data in.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

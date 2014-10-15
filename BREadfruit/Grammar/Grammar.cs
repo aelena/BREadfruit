@@ -255,7 +255,8 @@ namespace BREadfruit
         /// <summary>
         /// Validates an entire load data from line
         /// </summary>
-        public const string LoadDataFromLineRegex = @"^load_data_from[\t\s]+(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
+        public const string LoadDataFromLineRegex = "^load_data_from[\t\\s]+((DATASOURCE|WEBSERVICE)\\.[A-Za-z0-9_\\.-]+){1}([\t\\s]+with_args[\t\\s]*{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)}[\t\\s]*)?([\t\\s]*in[\t\\s]*[A-Za-z0-9_\\.]+[\t\\s]*)?";
+        //public const string LoadDataFromLineRegex = @"^load_data_from[\t\s]+(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
         /// <summary>
         /// Validates the argument part of a load data from line 
         /// (that is, all that comes after the load data from instruction)
