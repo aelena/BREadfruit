@@ -382,6 +382,49 @@ namespace BREadfruit
                                 continue;
                             }
 
+                            if ( lineInfo.Tokens.First () == Grammar.EnabledDefaultClause )
+                            {
+                                // ProcessUnaryAction ( lineInfo, Grammar.EnabledDefaultClause );
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
+                                   this.Entities.Last ().Name );
+                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                                continue;
+                            }
+                            if ( lineInfo.Tokens.First () == Grammar.VisibleDefaultClause )
+                            {
+                                //ProcessUnaryAction ( lineInfo, Grammar.VisibleDefaultClause );
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
+                                   this.Entities.Last ().Name );
+                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                                continue;
+                            }
+
+                        }
+                        if ( lineInfo.Tokens.Count () == 3 )
+                        {
+                            if ( lineInfo.Tokens.First () == Grammar.EnabledDefaultClause )
+                            {
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
+                                   lineInfo.Tokens.ElementAt ( 1 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 1 ).Token );
+                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                                continue;
+                            }
+                            if ( lineInfo.Tokens.First () == Grammar.VisibleDefaultClause )
+                            {
+                                var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
+                                   lineInfo.Tokens.ElementAt ( 1 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 1 ).Token );
+                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                                continue;
+                            }
+                            if (lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause))
+                            {
+                                var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
+                                var _ra = new ResultAction ( Grammar.MandatoryDefaultClause, _booleanValue.Item2,
+                                            lineInfo.Tokens.ElementAt ( lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol ) ).Token == "this" ? 
+                                                 this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol ) ).Token );
+                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                                continue;
+                            }
                         }
 
                         if ( lineInfo.Tokens.Count () == 4 && lineInfo.Tokens.Contains ( Grammar.InSymbol ) )

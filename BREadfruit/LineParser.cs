@@ -394,7 +394,7 @@ namespace BREadfruit
             if ( lineInfo.Tokens.Contains ( Grammar.ORSymbol ) )
                 __ors = lineInfo.Tokens.Count ( x => x == Grammar.ORSymbol );
             __ands += __ors;
-            for ( int i = 0; i < 3 * ( __ands + 1 ); )
+            for ( int i = 0; i <= 3 * ( __ands + 1 ); )
             {
                 var _operandToken = lineInfo.Tokens.ElementAt ( i ).Token;
                 if ( _operandToken.Trim ().ToLowerInvariant ().StartsWith ( "this." ) && entityName != null )

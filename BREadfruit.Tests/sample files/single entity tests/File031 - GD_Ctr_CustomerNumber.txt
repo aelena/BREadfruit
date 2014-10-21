@@ -1,0 +1,22 @@
+﻿Entity GD_Ctr_CustomerNumber is TextBox in frmMain
+	with defaults
+		max length 18
+		label LABELS.labCustomerNumber
+		
+	with rules
+		REQUEST.STATUS is not REQUEST.CLOSED then
+			enabled true
+			visible true
+		
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
+			mandatory true
+			
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
+			this mandatory
+			
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is false then
+			this not mandatory
+			GD_Abc_DEMO mandatory
+			
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is not "VM" then
+			mandatory true	

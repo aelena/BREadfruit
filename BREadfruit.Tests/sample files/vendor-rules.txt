@@ -1057,21 +1057,23 @@ Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 		label LABELS.labCustomerNumber
 		
 	with rules
-		not REQUEST.CLOSED then 
+		REQUEST.STATUS is not REQUEST.CLOSED then
 			enabled true
 			visible true
 		
-		not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then	
-			mandatory true	
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
+			mandatory true
 			
-		not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
-			mandatory true	
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
+			this mandatory
 			
-		not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is false then
-			mandatory false
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is false then
+			this not mandatory
+			GD_Abc_DEMO mandatory
 			
-		not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is not "VM" then
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is not "VM" then
 			mandatory true	
+
 
 ; ----------------------------------------------------------------------------	
 

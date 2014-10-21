@@ -429,7 +429,8 @@ namespace BREadfruit
         public static UnaryAction VisibleUnaryActionSymbol = new UnaryAction ( "visible", 2, true, new [] { "set visible", "make visible" } );
         public static UnaryAction NotVisibleUnaryActionSymbol = new UnaryAction ( "not_visible", 2, true, new [] { "set not visible", "make not visible", "not visible" } );
         public static UnaryAction HideUnaryActionSymbol = new UnaryAction ( "hide", 2, true, new [] { "set hidden", "make hidden", "hidden" } );
-        public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory", "mandatory true" } );
+        //public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory", "mandatory true" } );
+        public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory" } );
         public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not_mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
         public static UnaryAction ShowElementUnaryActionSymbol = new UnaryAction ( "show", 2, true, new [] { "show element" } );
         public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );

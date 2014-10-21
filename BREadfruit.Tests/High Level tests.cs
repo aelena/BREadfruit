@@ -856,7 +856,7 @@ namespace BREadfruit.Tests
             Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).Reference == "this" );
             Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
 
-            Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString() == "DATASOURCE.MDM_Requests_PhoneEntry" );
+            Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString () == "DATASOURCE.MDM_Requests_PhoneEntry" );
             Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.Count () == 1 );
             Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "Phone" );
             Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value == "123456" );
@@ -895,9 +895,9 @@ namespace BREadfruit.Tests
             Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ).IsResultAction );
 
             Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Reference == "PaymentTermsOptions" );
-            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1) ).Reference == "PaymentTermsOptions_2" );
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Reference == "PaymentTermsOptions_2" );
 
-            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString() == "\"BIT$ - Payment via BitCoin\"" );
+            Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString () == "\"BIT$ - Payment via BitCoin\"" );
             Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Value.ToString () == "'BIT$ - Payment via BitCoin'" );
 
             Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Token == Grammar.AddValueActionSymbol );
@@ -928,6 +928,53 @@ namespace BREadfruit.Tests
 
 
             Assert.That ( e.Triggers.Count () == 1, "should have 1 trigger(s)but has " + e.Triggers.Count () );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile031 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File031 - GD_Ctr_CustomerNumber.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmMain" );
+            Assert.That ( e.Rules.Count () == 5, "should have 5 defaults but has " + e.Rules.Count () );
+
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().ToString () == "REQUEST.STATUS is_not REQUEST.CLOSED" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.ElementAt ( 0 ).ResultActions.Count () == 2 );
+
+
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 0 ).ToString () == "REQUEST.STATUS is_not REQUEST.CLOSED" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ToString () == "REQUEST.REQUEST_TYPE is \"VM\"" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 2 ).ToString () == "PO_ReturnsVendor.Checked is true" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 3 ).ToString () == "GD_Ctr_CustomerNumber.OldDisplayValue == \"\"" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 3 ).Results.Count () == 1 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 3 ).Results.First ().IsUnary );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 3 ).Results.First ().Token == Grammar.MakeMandatoryUnaryActionSymbol.Token );
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 0 ).ToString () == "REQUEST.STATUS is_not REQUEST.CLOSED" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ToString () == "REQUEST.REQUEST_TYPE is \"VM\"" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 2 ).ToString () == "PO_ReturnsVendor.Checked is true" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 3 ).ToString () == "GD_Ctr_CustomerNumber.OldDisplayValue != \"\"" );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 3 ).Results.Count () == 1 );
+
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 0 ).ToString () == "REQUEST.STATUS is_not REQUEST.CLOSED" );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).ToString () == "REQUEST.REQUEST_TYPE is \"VM\"" );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).ToString () == "PO_ReturnsVendor.Checked is false" );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).Results.Count () == 2 );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).Results.First ().Action == Grammar.MakeNonMandatoryUnaryActionSymbol );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).Results.First ().Reference == "GD_Ctr_CustomerNumber" );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 1 ).Action == Grammar.MakeMandatoryUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 1 ).Reference == "GD_Abc_DEMO" );
+
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 0 ).ToString () == "REQUEST.STATUS is_not REQUEST.CLOSED" );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 1 ).ToString () == "REQUEST.REQUEST_TYPE is_not \"VM\"" );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 1 ).Results.Count () == 1 );
 
         }
 
