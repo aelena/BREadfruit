@@ -1,0 +1,37 @@
+﻿Entity GD_Ctr_Industry is DropDownList in frmMain
+	with defaults
+		mandatory true
+		visible true
+		label LABELS.labIndustries
+		; if there are no specific data for this specific country, data for "EN" should be loaded
+		load data from VENDOR.ACCOUNT_GROUP with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
+
+	with rules
+		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "FR"}
+			; this equals to this line in original code
+			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
+			set value "FR" in REQUEST.INDUSTRY_COUNTRY
+
+		VENDOR.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
+			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "EN"}
+			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
+			set value "EN" in REQUEST.INDUSTRY_COUNTRY
+			mandatory false
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Ctr_GFORM is DropDownList in frmMain
+	with defaults
+		label LABELS.labLegalForm
+		visible false
+		; data source is same for vendors and customers
+		load data from DATASOURCE.MDM_LegalForms with arguments {"FlagActive" : true }
+
+	with rules
+		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+			visible true
+
+		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
+			mandatory true

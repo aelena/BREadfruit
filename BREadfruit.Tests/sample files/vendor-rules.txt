@@ -96,7 +96,7 @@ Entity TBVendorIFA is TextBox in frmSearch
 		set value '' in ErrorMessage
 		hide vendorSearchResultGrid
 		hide btnCreateVendor
-		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES ;{"Country":"ES","Active":true, "Age":30, "Title":"No reason to fear this" }
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES ;{"Country":"ES","Active":true }
 
 
 	with rules
@@ -351,7 +351,7 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 		value false		; unchecked
 
 	with rules
-		Vendor.AccountGroup in {"YVT4", "YVT5"} then
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YVT4", "YVT5"} then
 			show this
 			show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
 			; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
@@ -730,15 +730,15 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 	with rules
 
 		;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4 (only numbers - Format: XXXX)
-		VENDOR.ACCOUNT_GROUP in {"YVT1", "YVT2"} then
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YVT1", "YVT2"} then
 			max length 4
 			validation "^[0-9]{4}$"
 
-		VENDOR.ACCOUNT_GROUP in {"YVT3", "YVT5", "YVT7"} then
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YVT3", "YVT5", "YVT7"} then
 			max length 5
 			validation "^[0-9]{5}$"
 
-		VENDOR.ACCOUNT_GROUP is "YVT4" then
+		REQUEST.VENDOR.ACCOUNT_GROUP is "YVT4" then
 			max length 8
 			validation "^[0-9]{4}-[0-9]{3}$"
 
@@ -1022,7 +1022,7 @@ Entity GD_NatP_Profession is TextBox in frmMain
 		label LABELS.labProfession
 	
 	with rules
-		REQUEST.ACCOUNT_GROUP in {"YVT6", "YVT9"} then visible false
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YVT6", "YVT9"} then visible false
 
 
 ; ----------------------------------------------------------------------------	
@@ -1078,43 +1078,421 @@ Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 
+Entity GD_Ctr_Industry is DropDownList in frmMain
+	with defaults
+		mandatory false
+		visible true
+		label LABELS.labIndustries
+		; if there are no specific data for this specific country, data for "EN" should be loaded
+		load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
+
+	with rules
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "FR"}
+			; this equals to this line in original code
+			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
+			set value "FR" in REQUEST.INDUSTRY_COUNTRY
+			; can or should we do something like this?
+			set width 680px		
+
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
+			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "EN"}
+			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
+			set value "EN" in REQUEST.INDUSTRY_COUNTRY
+			mandatory false
+			; TODO: can or should we do something like this?
+			; set width 680px		
+			
 ; ----------------------------------------------------------------------------	
 
+Entity GD_Ctr_GFORM is DropDownList in frmMain
+	with defaults
+		label LABELS.labLegalForm
+		visible false
+		; data source is same for vendors and customers
+		load data from DATASOURCE.MDM_LegalForms with arguments {"FlagActive" : true }
+
+	with rules
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+			visible true
+
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
+			mandatory true
 
 ; ----------------------------------------------------------------------------	
 
+; this is one of the most sensitive and complex controls 
+; there are quite a few rules
+
+;	
+;	By default visible = false
+;	Label:Local Tax Code
+
+;	2) if vendor country France->maxlength 14, label = SIRET, visible true
+;	3)if vendor country france -> only numbers
+;	4) when PIVA postback: if vendor country belongs to YVT6-> complete piva wiht 0 on left until 14,tax code 1=piva, tax code 2=firts 9 digits of piva , vatnumber=tax code 2
+;	else -> if vendor country belongs to EU ->tax code 1 = PIVA
+;		if vendor country is not Spain->  vat registration number = tax code 2
+;		if regional country is France and vendor country belongs to YVT6->complete piva wiht 0 on left until 14,tax code 1=piva, tax code 2=firts 9 digits of piva , vatnumber=tax code 2
+;		if regional country is Greece and vendor country is Greece-> vatregistrationnumber = tax code 2 , tax code 2 remove letters
+;	5) If vendor country belongs to YVT6 and tax code1 is informed -> piva = tax code 1
+;	6)if vendor country Portugal->visible false
+;	7)if vendor country Italy->visible for  vendor creation from scratch and mandatory
+;	8)if vendor country Spain->visible false
+;	9)enabled for vendors creations from scratch
+;	10)if vendor country France->enabled
+;	11)if vendor creation from scratch and vendor country Belgium or Luxemburg->visible true and mandatory if role is not clerk
+;	12)if vendor country Greece ->maxlength 9
+;	13)if vendor country belongs to YVT1->maxlength 10
+;	14)if vendor country belongs to YVT2->maxlength 8
+;	15)if vendor country belongs to YVT3->maxlength 16
+;	16)if vendor country belongs to YVT4->maxlength 10
+;	17)if vendor country belongs to YVT5->maxlength 11
+;	18)if vendor country belongs to YVT6: 
+;		if cleck->mandatory false else mandatory for not natural person
+;		enabled for clerck and enquirer
+;	19)if vendor country belongs to YVT9:
+;		mandatory false
+;		enabled for clerk and enquirer
+
+Entity GD_Ctr_PIVA is TextBox in frmMain
+	with defaults
+		; I doubt this
+		visible false
+		label LABELS.labPIVA ;Local Tax Code
+		mandatory false
+
+	with rules
+		; this means companycode country
+		;	1) if regional country Greece and not vendor creation from scratch->NO mandatory else If vendor country doesn't belong to YVT6 or YVT9 -> mandatory
+		REQUEST.COUNTRY is "GR" and REQUEST.REQUEST_TYPE is not "VC"
+			mandatory false
+		REQUEST.COUNTRY is "GR" and REQUEST.REQUEST_TYPE is not "VC" and VENDOR.ACCOUNT_GROUP not in {"YVT6", "YVT9"} then
+			mandatory true
+		
+		; if vendor country France->maxlength 14, label = SIRET, visible true, only numbers
+		REQUEST.VENDOR_COUNTRY is "FR" then
+			visible true
+			label LABEL.labSIRET	; see this
+			max length 14
+			; validate with this regex
+			validation regex ^[0-9]{1,14}
+
+		REQUEST.VENDOR.ACCOUNT_GROUP is "YVT6" then
+			; new rule to be tested and parsed
+			; complete piva wiht 0 on left until 14
+			pad left 0,14
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			; new rule to be tested and parsed
+			set value substring GD_Ctr_PIVA.Value, 9 in GD_Ctr_TaxCode2
+			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
+
+		REQUEST.VENDOR_COUNTRY is "FR" and REQUEST.VENDOR.ACCOUNT_GROUP is "YVT6" then
+			pad left 0,14
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			set value substring GD_Ctr_PIVA.Value, 9 in GD_Ctr_TaxCode2
+			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
+
+		;any EU country ; finish the list....
+		REQUEST.VENDOR.ACCOUNT_GROUP is not "YVT6" and REQUEST.VENDOR_COUNTRY in {"ES", "IT", "PT", "GR" } then
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+
+		REQUEST.VENDOR_COUNTRY is not "ES" then
+			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
+
+		REQUEST.VENDOR_COUNTRY is "GR" and REQUEST.COUNTRY is "GR" then
+			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
+			remove letters GD_Ctr_TaxCode2.Value
+			
+
 
 
 ; ----------------------------------------------------------------------------	
 
+Entity GD_Ctr_NIF is TextBox in frmMain
+
+Entity GD_Ctr_CF is TextBox in frmMain
+
+Entity GD_Ctr_TaxCode1 is TextBox in frmMain
+
+Entity GD_Ctr_TaxCode2 is TextBox in frmMain
+
+Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
+
+Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
+
+Entity GD_Ctr_IFANumber is TextBox in frmMain
+
+Entity GD_Ctr_RepresentiveName is TextBox in frmMain
+
+Entity GD_Ctr_TaxNumber	is TextBox in frmMain
+
+Entity GD_Ctr_CreditInfoNo is TextBox in frmMain
+	
+Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
+
+Entity V_Country is DropDownList in frmMain
+
+Entity V_VATNumber	 is TextBox in frmMain
+
+Entity B_GD_VB_Country	is DropDownList in frmMain
+
+Entity B_GD_VB_BankKey	 is TextBox in frmMain
+
+Entity B_GD_VB_BankAccount	 is TextBox in frmMain
+
+Entity B_GD_VB_BankControlKey	 is TextBox in frmMain
+
+Entity B_GD_VB_IBAN	 is TextBox in frmMain
+
+Entity B_GD_VB_PartBankType	 is TextBox in frmMain
+
+Entity B_GD_VB_BankReferDetails	 is TextBox in frmMain
+
+Entity B_GD_VB_SWIFT	 is TextBox in frmMain
+
+Entity B_GD_VB_AccountHolder is TextBox in frmMain
+
+Entity CC_CO_ReconAccount	 is TextBox in frmMain
+
+Entity LFB1_LNRZE	 is TextBox in frmMain
+
+Entity LFB1_REPRF	 is TextBox in frmMain
+
+Entity CC_AM_SortKey	is DropDownList in frmMain
+
+Entity CC_AM_SubjectedToWHTax	is CheckBox in frmMain
+
+Entity CC_AM_WithholdingTaxCode	is DropDownList in frmMain
+
+Entity CC_AM_ExemptionNumber	 is TextBox in frmMain
+
+Entity CC_AM_ExemptionNumber	is DropDownList in frmMain
+
+Entity CC_PT_ValidityDate is Calendar in frmMain
+
+Entity CC_AM_CashManagementGroup	is DropDownList in frmMain
+
+Entity CC_PT_PaymentTerms	is DropDownList in frmMain
+
+Entity CC_PT_PaymentBlock	is DropDownList in frmMain
+
+Entity CC_PT_PaymentMethods	is DropDownList in frmMain
+
+Entity CC_PT_ClearingWithCustomer	is CheckBox in frmMain
+
+Entity CC_PT_AlternativePayee	Field with conversion routines
+
+Entity CC_PT_IndividualPayment	is CheckBox in frmMain
+
+Entity CC_PT_HouseBank	 is TextBox in frmMain
+
+Entity CC_PT_ForCreditMemos	is DropDownList in frmMain
+
+Entity CC_DD_DunningProcedure	is DropDownList in frmMain
+
+Entity CC_DD_LegalProceedings is Calendar in in frmMain
+
+Entity CC_DD_LastDunnedOn is Calendar in in frmMain
+
+Entity CC_DD_DunningBlock	is DropDownList in frmMain
+
+Entity CC_DD_Level is TextBox in frmMain
+
+Entity CC_DD_DunningClerk	is DropDownList in frmMain
+
+Entity CC_CO_AccountingClerk	is DropDownList in frmMain
+
+Entity CC_CO_AccountingClerkTel	is TextBox in in frmMain
+
+Entity CC_CO_AccountingClerkFax	is TextBox in in frmMain
+
+Entity CC_CO_AccountingClerkInternet	is TextBox in in frmMain
+
+Entity CC_CO_OurAccountWithVendor	is TextBox in in frmMain
+
+Entity PO_AutomaticGenerationPO	is CheckBox in frmMain
+
+Entity PO_OrderAcknowledgmentReq	is CheckBox in frmMain
+
+Entity PO_GRBasedInvoiceVerification	is CheckBox in frmMain
+
+Entity PO_ReturnsVendor	is TextBox in in frmMain
+
+Entity PO_PurchaseOrderCurrency	is DropDownList in frmMain
+
+Entity PO_TermsOfPaymentKey	is DropDownList in frmMain
+
+Entity PO_Incoterms	is DropDownList in frmMain
+
+Entity PO_IncotermsPart2 is DropDownList in frmMain
+
+Entity PO_ConfirmationControl is DropDownList in frmMain
+	with defaults
+		label LABELS.labConfirmationControl
+
+; SPECIAL KIND OF COMPOSITE CONTROL
+; TODO: DECIDE WHAT TO DO WITH THEM
+Entity Multiple_Purchase_Organizations is DropDownList in frmMain
+
+
+; --- CONTROLS IN BLOCKING DATA TAB -------------------------------------------
+
+; TODO: THE DATASOURCE INDICATED DOES NOT EXIST, CURRENTLY VALUES ARE LOADED IN CODE, SO THE DATASOURCE HAS TO BE CREATED
+; VALUES ARE
+; "", ""
+; "D - Unsubscribe", "D"
+; "V - Unsubscribed from CMD", "V"
+; which are the same as for GD_Ctr_UnsubscribeCMD
+Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
+	with defaults
+		label LABELS.labUnsubscribeCMD
+		load data from DATASOURCE.MDM_UnsubscribeCMD_Options
+
+	with actions
+		set value BLK_GD_Ctr_UnsubscribeCMD.Value in GD_Ctr_UnsubscribeCMD
+
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
+
+	with triggers
+		; when this controls change, change the value of GD_Ctr_UnsubscribeCMD
+		this changes
 
 ; ----------------------------------------------------------------------------	
 
+Entity BLK_CC_PT_PaymentBlock
+	with defaults
+		label LABELS.labPTPaymentBlock
+		load data from DATASOURCE.MDM_PaymentBlocks with arguments {"FlagActive" : true}
+
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
 
 ; ----------------------------------------------------------------------------	
 
+Entity BLK_CentralPO is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labCentralPostingBlock
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
 
 ; ----------------------------------------------------------------------------	
 
+; this was not even in the field mapping, but is visible false as default, 
+; so probably not used...
+Entity BLK_24_hour is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labUnBlockFor24Hours
+		visible false
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
 
 ; ----------------------------------------------------------------------------	
 
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
-
-; ----------------------------------------------------------------------------	
-
+;	1)Get data from SAP from field LFB1.SPERR
+;	2)SEND data to SAP in field SPERB_B
+Entity BLK_CompanyCode is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labUnBlockFor24Hours
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
 
 ; ----------------------------------------------------------------------------	
 
+;	1)Get data from SAP from field LFA1.SPERM
+;	2)SEND data to SAP in field SPERM_X
+Entity BLK_Central is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labCentrallyPurchasingBlock
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
 
 ; ----------------------------------------------------------------------------	
+
+;	1)Get data from SAP from field LFM1.SPERM
+;	2)SEND data to SAP in field SPERM_M
+Entity BLK_PO is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labPursachingBlockAtOrganization
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
+
+; ----------------------------------------------------------------------------	
+
+;	1)Get data from SAP from field LFA1.LOEVM
+;	2)SEND data to SAP in field LOEVM_X
+Entity BLK_MFD_Central is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labBLK_MFD_Central
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
+; ----------------------------------------------------------------------------	
+
+;	1)Get data from SAP from field LFB1.LOEVM
+;	2)SEND data to SAP in field LOEVM_B
+Entity BLK_MFD_CompanyCode is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labBLK_MFD_CompanyCode
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
+
+; ----------------------------------------------------------------------------	
+
+; LFA1.LOEVM
+; SEND TO SAP IN FIELD LOEVM_M
+Entity BLK_MFD_PO is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labBLK_MFD_PO
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
+; ----------------------------------------------------------------------------	
+
+; LFA1.NODEL
+Entity BLK_MFD_DeletionBlockCentral	is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labBLK_MFD_DeletionBlockCentral
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true
+; ----------------------------------------------------------------------------	
+
+; not sent to SAP, only retrieve from LFB1.NODEL
+Entity BLK_MFD_DeletionBlockCompanyCode	is CheckBox in frmMain
+	with defaults
+		enabled false
+		label LABELS.labBLK_MFD_DeletionBlockCompanyCode
+	
+	with rules
+		REQUEST.REQUEST_TYPE is "VM_BLK" then
+			enabled true	
+
+; --- the fucking end --------------------------------------------------------
