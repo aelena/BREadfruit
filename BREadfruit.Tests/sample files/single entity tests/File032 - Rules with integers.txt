@@ -1,0 +1,13 @@
+﻿Entity GD_Ctr_Fictitious is TextBox in frmMain
+	with defaults
+		value 1234
+
+	with rules
+		REQUEST.COMPANY_CODE is 5140 then
+			set value "FRANCE METROPOLITAINE" in PO_IncotermsPart2
+				
+		REQUEST.COMPANY_CODE in {5924, 592F} then
+			set value "SAINT DENIS" in PO_IncotermsPart2
+
+		REQUEST.COUNTRY is "ES" then
+			set value 3M60 in PO_TermsOfPaymentKey

@@ -1275,6 +1275,14 @@ Entity CC_AM_CashManagementGroup	is DropDownList in frmMain
 
 Entity CC_PT_PaymentTerms	is DropDownList in frmMain
 
+	with actions
+		set value CC_PT_PaymentTerms.Value in PO_TermsOfPaymentKey.Value
+
+	with triggers
+		this changes
+
+
+
 Entity CC_PT_PaymentBlock	is DropDownList in frmMain
 
 Entity CC_PT_PaymentMethods	is DropDownList in frmMain
@@ -1291,45 +1299,276 @@ Entity CC_PT_ForCreditMemos	is DropDownList in frmMain
 
 Entity CC_DD_DunningProcedure	is DropDownList in frmMain
 
-Entity CC_DD_LegalProceedings is Calendar in in frmMain
+Entity CC_DD_LegalProceedings is Calendar in frmMain
 
-Entity CC_DD_LastDunnedOn is Calendar in in frmMain
+Entity CC_DD_LastDunnedOn is Calendar in frmMain
 
 Entity CC_DD_DunningBlock	is DropDownList in frmMain
 
 Entity CC_DD_Level is TextBox in frmMain
 
-Entity CC_DD_DunningClerk	is DropDownList in frmMain
+; ----------------------------------------------------------------------------	
 
-Entity CC_CO_AccountingClerk	is DropDownList in frmMain
+; TODO: PENDING TESTS
+Entity CC_DD_DunningClerk is DropDownList in frmMain
+	with defaults
+		visible false
+		label LABELS.labDDDunningClerk
+		load data from DATASOURCE.MDM_AccountingClerks with arguments {"FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
 
-Entity CC_CO_AccountingClerkTel	is TextBox in in frmMain
+	with rules
+		REQUEST.COMPANY_CODE in {5101, 563M, 5109} then
+			set value 10 in CC_DD_DunningClerk.Value
+			this disabled
+			; show this
 
-Entity CC_CO_AccountingClerkFax	is TextBox in in frmMain
+		REQUEST.COUNTRY not in {PT, GR, IT, BE, LU} then
+			show this
 
-Entity CC_CO_AccountingClerkInternet	is TextBox in in frmMain
+; ----------------------------------------------------------------------------	
 
-Entity CC_CO_OurAccountWithVendor	is TextBox in in frmMain
+; TODO: THIS FIELD IS TOO COMPLICATED - REVIEW BETTER - SEE FIELDMAPPING FILE
+Entity CC_CO_AccountingClerk is DropDownList in frmMain
+	with defaults
+		visible false
+		label LABELS.labCOAccountingClerk
+		load data from DATASOURCE.MDM_AccountingClerks with arguments {"FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
+
+	with rules
+		REQUEST.VENDOR_COUNTRY in {PT, FR} then
+			show CC_CO_AccountingClerk
+
+		REQUEST.COMPANY_CODE in {5101, 563M} then
+			show CC_CO_AccountingClerk
+			
+
+; ----------------------------------------------------------------------------	
+
+; has to be saved and resent from SAP in any case
+Entity CC_CO_AccountingClerkTel	is TextBox in frmMain
+	with defaults
+		visible false
+
+; ----------------------------------------------------------------------------	
+
+; has to be saved and resent from SAP in any case
+Entity CC_CO_AccountingClerkFax	is TextBox in frmMain
+	with defaults
+		visible false
+
+; ----------------------------------------------------------------------------	
+
+; has to be saved and resent from SAP in any case
+Entity CC_CO_AccountingClerkInternet is TextBox in frmMain
+	with defaults
+		visible false
+
+; ----------------------------------------------------------------------------	
+
+
+Entity CC_CO_OurAccountWithVendor is TextBox in frmMain
+	with defaults
+		; this is only in schema
+		max length 50
+		label LABELS.labCOOurAccountWithVendor
+
+; ----------------------------------------------------------------------------	
 
 Entity PO_AutomaticGenerationPO	is CheckBox in frmMain
+	with defaults
+		visible true
+		label LABELS.labAutomaticGenerationPO
 
-Entity PO_OrderAcknowledgmentReq	is CheckBox in frmMain
+	with rules
+		REQUEST.COUNTRY is GR then
+			PO_AutomaticGenerationPO visible true
+			set value false in PO_AutomaticGenerationPO
 
-Entity PO_GRBasedInvoiceVerification	is CheckBox in frmMain
+		REQUEST.COUNTRY is not GR then
+			PO_AutomaticGenerationPO visible false
 
-Entity PO_ReturnsVendor	is TextBox in in frmMain
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} then
+			set value true in PO_OrderAcknowledgmentReq
+
+; ----------------------------------------------------------------------------	
+
+Entity PO_OrderAcknowledgmentReq is CheckBox in frmMain
+	with defaults
+		visible true
+		label LABELS.labOrderAcknowledgmentReq
+
+	with rules
+		; checkbox must be checked in these request types...
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} then
+			set value true in PO_OrderAcknowledgmentReq
+
+		REQUEST.COUNTRY is not GR then
+			PO_OrderAcknowledgmentReq visible false
+
+; ----------------------------------------------------------------------------	
+
+Entity PO_GRBasedInvoiceVerification is CheckBox in frmMain
+	with defaults
+		visible true
+		label LABELS.labPO_GRBasedInvoiceVerification
+
+; ----------------------------------------------------------------------------	
+
+Entity PO_ReturnsVendor	is CheckBox in frmMain
+	with defaults
+		visible true
+		label LABELS.labPO_ReturnsVendor
+
+	with rules
+		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
+			GD_Ctr_CustomerNumber mandatory
+			GD_Ctr_CustomerNumber enable true
+
+		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
+			GD_Ctr_CustomerNumber mandatory false
+			GD_Ctr_CustomerNumber enable false
+
+		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is false then
+			GD_Ctr_CustomerNumber enable false
+
+		REQUEST.REQUEST_TYPE is not "VM" and PO_ReturnsVendor.Value is true then
+			GD_Ctr_CustomerNumber mandatory
+
+		REQUEST.COUNTRY is GR then
+			set value false in PO_ReturnsVendor
+
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------	
 
 Entity PO_PurchaseOrderCurrency	is DropDownList in frmMain
+	with defaults
+		mandatory
+		label LABELS.labPurchaseOrderCurrency
+		; the company code country, not vendor's country
+		load data from DATASOURCE.MDM_Currencies with arguments {"FlagActive" : true }
+		value EUR
+
+
+; ----------------------------------------------------------------------------	
+
 
 Entity PO_TermsOfPaymentKey	is DropDownList in frmMain
+	with defaults
+		mandatory
+		label LABELS.lblPO_TermsOfPaymentKey
+		; the company code country, not vendor's country
+		load data from DATASOURCE.MDM_PaymentTerms with arguments {"FlagActive" : true, "Country" : REQUEST.COUNTRY}
+
+	with rules
+		REQUEST.COUNTRY is "ES" then
+			set value 3M60 in PO_TermsOfPaymentKey
+
+		REQUEST.COUNTRY is "IT" then
+			set value 5510 in PO_TermsOfPaymentKey
+	
+		REQUEST.COUNTRY is "LU" then
+			set value 1113 in PO_TermsOfPaymentKey
+	
+		REQUEST.COUNTRY is "BE" then
+			set value 1301 in PO_TermsOfPaymentKey
+
+		REQUEST.COUNTRY is "GR" then
+			set value 7A90 in PO_TermsOfPaymentKey
+
+		REQUEST.COUNTRY is "PT" and REQUEST.VENDOR_COUNTRY is "PT" then
+			set value 4217 in PO_TermsOfPaymentKey
+			
+		REQUEST.COUNTRY is "PT" and REQUEST.VENDOR_COUNTRY is not "PT" then
+			set value 4117 in PO_TermsOfPaymentKey
+
+; ----------------------------------------------------------------------------	
+
+;	"26.5.14(MI), please, GSS, can you confirm the business rule for RC Greece?...No value by default is implemented for RC Greece.
+;	05-06-2014(RG): rules confirmed
+;	
+;	04-07-2014 (MC)
+;	By default mandatory
+;	Values in dropdown are loaded hardcode
+;	1)if company code Spain -> default value DAP (if exists)
+;	2)if company code Italy -> default value EXW (if exists)
+;	3)if company code Portugal/Belgium/Luxemburg -> default value DDP (if exists)
+;	4)validation: if empty ->mandatory error message
+;	6)if regional country France:
+;	 if company 5140 -> DAP
+;	 if company 5924/592F->DAP 
+;	7)if comapny code 5150 -> CIF"
 
 Entity PO_Incoterms	is DropDownList in frmMain
+	with defaults
+		label LABELS.labIncoterms
+		load data from DATASOURCE.MDM_Incoterms with arguments {"FlagActive" : true}
+		mandatory true
 
-Entity PO_IncotermsPart2 is DropDownList in frmMain
+	with actions
+		; whenever the value of this dropdown list changes, copy the text, not the value to PO_IncotermsPart2
+		set value PO_Incoterms.Text in PO_IncotermsPart2
+
+	with rules
+		REQUEST.COUNTRY is "ES" then
+			set value "DAP" in PO_Incoterms
+
+		REQUEST.COUNTRY is "IT" then
+			set value "EXW" in PO_IncotermsPart2
+
+		REQUEST.COUNTRY in {"PT", "BE", "LU"} then
+			set value "DDP" in PO_IncotermsPart2
+
+		REQUEST.COMPANY_CODE is 5140 then
+			set value "FRANCE METROPOLITAINE" in PO_IncotermsPart2
+				
+		REQUEST.COMPANY_CODE in {5924, 592F} then
+			set value "SAINT DENIS" in PO_IncotermsPart2
+
+		REQUEST.COMPANY_CODE is 5150 then
+			set value "CIF" in PO_Incoterms
+			set value "Athens" in PO_IncotermsPart2
+
+			
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------	
+
+
+;	By default mandatory (enquirer can change)
+;	1)if regional country Spain -> default value DAP (same as incoterms)
+;	2)if regional country Italy -> default value EXW (same as incoterms)
+;	3)if regional country Portugal/Belgium/Luxemburg -> default value DDP (same as incoterms)
+;	4)validation: if empty ->mandatory error message
+;	5)if regional country France:
+;	 if company 5140 -> France Metropolitaine
+;	 if company 5924/5924->Saint Denis
+;	6.A)if regonal country Greece-> Athens
+;	6.b)when change district in adress-> incoterms2=city2 (district is only visible for company code  greece or vendor country greece)
+
+Entity PO_IncotermsPart2 is TextBox in frmMain
+	with defaults
+		label LABELS.labIncotermsPart2
+		mandatory true
+
+	with rules
+		REQUEST.COMPANY_CODE is 5150 then
+			set value "ATHENS" in PO_IncotermsPart2
+			
+
+; ----------------------------------------------------------------------------	
 
 Entity PO_ConfirmationControl is DropDownList in frmMain
 	with defaults
 		label LABELS.labConfirmationControl
+		visible false
+
+	with rules
+		REQUEST.COUNTRY is "FR" and PO_ConfirmationControl.Value is empty then
+			set value "Y601" in PO_ConfirmationControl
+			PO_ConfirmationControl visible true
 
 ; SPECIAL KIND OF COMPOSITE CONTROL
 ; TODO: DECIDE WHAT TO DO WITH THEM

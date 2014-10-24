@@ -345,7 +345,7 @@ namespace BREadfruit
 
         internal bool ValidateEntityStatement ( LineInfo line )
         {
-            return this.ValidateEntityStatement ( line.Representation.ToUpperInvariant () );
+            return this.ValidateEntityStatement ( line.Representation.Trim().ToUpperInvariant () );
         }
 
 

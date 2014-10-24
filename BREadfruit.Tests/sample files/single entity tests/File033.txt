@@ -1,0 +1,25 @@
+﻿Entity PO_ReturnsVendor	is CheckBox in frmMain
+	with defaults
+		visible true
+		label LABELS.labPO_ReturnsVendor
+
+	with rules
+		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
+			GD_Ctr_CustomerNumber mandatory
+			GD_Ctr_CustomerNumber enable true
+
+		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
+			GD_Ctr_CustomerNumber mandatory false
+			GD_Ctr_CustomerNumber enable false
+
+		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is false then
+			GD_Ctr_CustomerNumber enable false
+
+		REQUEST.REQUEST_TYPE is not "VM" and PO_ReturnsVendor.Value is true then
+			GD_Ctr_CustomerNumber mandatory
+
+		REQUEST.REQUEST_TYPE is "AAA" then
+			GD_Ctr_CustomerNumber visible false
+
+	with triggers
+		this changes

@@ -80,6 +80,7 @@
   <ItemGroup>
     <Content Include="sample files\customer-rules.txt" />
     <Content Include="sample files\samplerulefile01.txt" />
+    <Content Include="sample files\single entity tests\File032 - Rules with integers.txt" />
     <Content Include="sample files\single entity tests\File003.txt" />
     <Content Include="sample files\single entity tests\File002.txt" />
     <Content Include="sample files\single entity tests\File001.txt" />
@@ -111,6 +112,7 @@
     <Content Include="sample files\single entity tests\File029 - Add Value.txt" />
     <Content Include="sample files\single entity tests\File030 - Load Data in.txt" />
     <Content Include="sample files\single entity tests\File031 - GD_Ctr_CustomerNumber.txt" />
+    <Content Include="sample files\single entity tests\File033.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

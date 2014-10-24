@@ -416,13 +416,31 @@ namespace BREadfruit
                                 this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
                                 continue;
                             }
-                            if (lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause))
+                            if ( lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause ) )
                             {
-                                var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
-                                var _ra = new ResultAction ( Grammar.MandatoryDefaultClause, _booleanValue.Item2,
-                                            lineInfo.Tokens.ElementAt ( lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol ) ).Token == "this" ? 
-                                                 this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol ) ).Token );
-                                this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+                                //ResultAction _ra = null;
+                                //var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
+                                //var _indexOfThis = lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol );
+                                //if ( _indexOfThis > 0 )
+                                //    _ra = new ResultAction ( Grammar.MandatoryDefaultClause, _booleanValue.Item2,
+                                //               lineInfo.Tokens.ElementAt ( lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol ) ).Token == "this" ?
+                                //                    this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol ) ).Token );
+                                //else
+                                //    _ra = new ResultAction ( Grammar.MandatoryDefaultClause, _booleanValue.Item2, lineInfo.Tokens.First ().Token );
+
+                                //this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+
+                                AddTrueFalseAction ( lineInfo, Grammar.MakeMandatoryUnaryActionSymbol, Grammar.MakeNonMandatoryUnaryActionSymbol );
+                                continue;
+                            }
+                            if ( lineInfo.Tokens.Contains ( Grammar.EnabledDefaultClause ) )
+                            {
+                                AddTrueFalseAction ( lineInfo, Grammar.EnableUnaryActionSymbol, Grammar.DisableUnaryActionSymbol );
+                                continue;
+                            }
+                            if ( lineInfo.Tokens.Contains ( Grammar.VisibleDefaultClause ) )
+                            {
+                                AddTrueFalseAction ( lineInfo, Grammar.VisibleUnaryActionSymbol, Grammar.NotVisibleUnaryActionSymbol );
                                 continue;
                             }
                         }
@@ -485,6 +503,29 @@ namespace BREadfruit
 
 
         }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        private void AddTrueFalseAction ( LineInfo lineInfo, Symbol trueSymbol, Symbol falseSymbol )
+        {
+            var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
+            var _indexOfThis = lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol );
+            UnaryAction _ua = null;
+            if ( _booleanValue.Item2 == Grammar.TrueSymbol )
+                _ua = new UnaryAction ( trueSymbol,
+                    _indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
+            else
+                _ua = new UnaryAction ( falseSymbol,
+                _indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
+
+            this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
 
         private static void CheckForStringTokens ( string line, LineInfo lineInfo )
         {

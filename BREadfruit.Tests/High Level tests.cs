@@ -886,7 +886,7 @@ namespace BREadfruit.Tests
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File029 - Add Value.txt" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
-            Assert.That ( e.Form == "frmMain" );
+            Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
             Assert.That ( e.Defaults.Count () == 3, "should have 3 defaults but has " + e.Defaults.Count () );
 
             Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ) == Grammar.AddValueActionSymbol );
@@ -915,7 +915,7 @@ namespace BREadfruit.Tests
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File030 - Load Data in.txt" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
-            Assert.That ( e.Form == "frmMain" );
+            Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
             Assert.That ( e.Defaults.Count () == 2, "should have 2 defaults but has " + e.Defaults.Count () );
 
             Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.LoadDataUnaryActionSymbol.Token );
@@ -942,7 +942,7 @@ namespace BREadfruit.Tests
             parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File031 - GD_Ctr_CustomerNumber.txt" );
             Assert.That ( parser.Entities.Count () == 1 );
             var e = parser.Entities.First ();
-            Assert.That ( e.Form == "frmMain" );
+            Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
             Assert.That ( e.Rules.Count () == 5, "should have 5 defaults but has " + e.Rules.Count () );
 
             Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().ToString () == "REQUEST.STATUS is_not REQUEST.CLOSED" );
@@ -975,6 +975,63 @@ namespace BREadfruit.Tests
             Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 0 ).ToString () == "REQUEST.STATUS is_not REQUEST.CLOSED" );
             Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 1 ).ToString () == "REQUEST.REQUEST_TYPE is_not \"VM\"" );
             Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 1 ).Results.Count () == 1 );
+
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+        [Test]
+        public void ParseSampleFile032 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File032 - Rules with integers.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+            Assert.That ( e.Name == "GD_Ctr_Fictitious", "Entity name should be 'GD_Ctr_Fictitious' but is " + e.Name );
+
+            Assert.That ( Int32.Parse ( e.Defaults.First ().Value.ToString () ) == 1234 );
+
+            Assert.That ( Int32.Parse ( e.Rules.First ().Conditions.First ().Value.ToString () ) == 5140 );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Value.ToString () == "{5924,592F}" );
+
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().ResultActions.First ().Value.ToString() == "3M60" );
+
+        }
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Test]
+        public void ParseSampleFile033 ()
+        {
+            var parser = new Parser ();
+            parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File033.txt" );
+            Assert.That ( parser.Entities.Count () == 1 );
+            var e = parser.Entities.First ();
+            Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+            Assert.That ( e.Name == "PO_ReturnsVendor", "Entity name should be 'PO_ReturnsVendor' but is " + e.Name );
+
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 0 ).Action == Grammar.MakeMandatoryUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 0 ).Reference == "GD_Ctr_CustomerNumber" );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 1 ).Action == Grammar.EnableUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 1 ).Reference == "GD_Ctr_CustomerNumber" );
+
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 0 ).Action == Grammar.MakeNonMandatoryUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 0 ).Reference == "GD_Ctr_CustomerNumber" );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 1 ).Action == Grammar.DisableUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 1 ).Reference == "GD_Ctr_CustomerNumber" );
+
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).Results.ElementAt ( 0 ).Action == Grammar.DisableUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).Results.ElementAt ( 0 ).Reference == "GD_Ctr_CustomerNumber" );
+
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).Results.ElementAt ( 0 ).Action == Grammar.MakeMandatoryUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).Results.ElementAt ( 0 ).Reference == "GD_Ctr_CustomerNumber" );
+
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 0 ).Results.ElementAt ( 0 ).Action == Grammar.NotVisibleUnaryActionSymbol.Token );
+            Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 0 ).Results.ElementAt ( 0 ).Reference == "GD_Ctr_CustomerNumber" );
 
         }
 
