@@ -1,5 +1,7 @@
 ﻿; -- RULES FOR VENDOR SEARCH FORM 
-; -- PENDING PORTING UNEXPLICIT RULES SUCH AS THOSE IN METHOD ApplyAccountGroupRules
+; -- TODO: PENDING PORTING UNEXPLICIT RULES SUCH AS THOSE IN METHOD ApplyAccountGroupRules
+; -- TODO: MANY THINGS MISSING SUCH AS THE COMPOSITE CONTROLS, TEH ATTCHMENTS, buttons iN COMPOSITE CONTROLS....
+; 
 
 Entity TBVendorName is TextBox in frmSearch
 	with defaults
@@ -1210,20 +1212,72 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+; TODO: THIS IS A VERY SENSITIVE FIELD
+; DEDICATE SPECIFIC TIME TO THIS - ALSO THE PropagateNif METHOD
 Entity GD_Ctr_NIF is TextBox in frmMain
+	with defaults
+		label LABELS.labNIF
+		max length 9
+
+	with rules
+		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} then
+			this mandatory true
+
+; ----------------------------------------------------------------------------	
+
 
 Entity GD_Ctr_CF is TextBox in frmMain
 
+; ----------------------------------------------------------------------------	
+
 Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 
+; ----------------------------------------------------------------------------	
+
 Entity GD_Ctr_TaxCode2 is TextBox in frmMain
+
+; ----------------------------------------------------------------------------	
+
+
+; TODO: PENDING ANALYZE WHAT THE METHOD CalculateVATNumber DOES
+; 1) if vendor country france -> enabled
+; 2)if vendor country NOT belongs to YVT6/YVT9-> vatregnumber mandatory if vendor country has mandatory vatregnumber in table countries
+; 3)if vendor country NOT belongs to YVT6/YVT9-> enabled if mandatory and vendor creation from scratch
+; 4)if vendor country belgiun/luxemburg and role is clerk ->nor mandatory
+; 5)if regional country Greece->not mandatory and not enabled
+; 6)if regional country France->enabled
+; 7)enabled for creations from scratch
+; 8)if vendor country Portugal ->enable false, not mandatory
+; 9)if vendor country Italy ->enable false, not mandatory 
+; 10)if regional country Belgium/Luxemburg->if clerk and not request block/unblock-> enabled
+; 11)if vendor country Portugal-> enabled false, mandatory false
+; 12)if vendor country Italy-> enabled false, mandatory false
+; 13)if vendor country Portugal-> Vat registration number = PT+NIF
+; 14)if vendor country belongs to YVT6->maxlength 14,enabled, if not natural person and vendor creation from scratch->mandatory
+; 15)if vendor country belongs to YVT9->not mandatory,enabled
 
 Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 	with defaults
 		label LABELS.labVATRegistrationNumber
 
 	with rules
+		REQUEST.REQUEST_TYPE is VC and REQUEST.VAT_IS_MANDATORY_FOR_COUNTRY is true then
+			GD_Ctr_VATRegistrationNumber mandatory
+			GD_Ctr_VATRegistrationNumber enabled
 
+		REQUEST.COUNTRY in {BE, LU} and REQUEST.CURRENT_ROLE is MDM_CLERK then
+			GD_Ctr_VATRegistrationNumber mandatory false
+
+		REQUEST.COUNTRY is GR then
+			GD_Ctr_VATRegistrationNumber mandatory false
+			GD_Ctr_VATRegistrationNumber enabled false
+
+		REQUEST.COUNTRY is FR then
+			GD_Ctr_VATRegistrationNumber mandatory true
+			GD_Ctr_VATRegistrationNumber enabled true
+
+
+			
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
@@ -2187,5 +2241,36 @@ Entity BLK_MFD_DeletionBlockCompanyCode	is CheckBox in frmMain
 	with rules
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true	
+
+; --- BUTTON BLOCK -----------------------------------------------------------
+
+
+Entity GD_Ctr_CapCostNumber	is Button in frmMain
+	with defaults
+		label LABELS.btnCaptureCostumerNumber
+
+Entity btnSubmit is Button in frmMain
+	with defaults
+		label LABELS.btnSubmit
+
+Entity btnClose	is Button in frmMain
+	with defaults
+		label LABELS.btnClose
+
+Entity btnSCClose is Button in frmMain
+	with defaults
+		label LABELS.btnClose
+
+Entity btnBack2 is Button in frmMain
+	with defaults
+		label LABELS.btnBack
+
+Entity btnSave is Button in frmMain
+	with defaults
+		label LABELS.btnSave
+
+Entity btnCloseFinal is Button in frmMain
+	with defaults
+		label LABELS.btnClose
 
 ; --- the fucking end --------------------------------------------------------
