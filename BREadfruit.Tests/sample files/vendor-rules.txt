@@ -1,4 +1,5 @@
 ﻿; -- RULES FOR VENDOR SEARCH FORM 
+; -- PENDING PORTING UNEXPLICIT RULES SUCH AS THOSE IN METHOD ApplyAccountGroupRules
 
 Entity TBVendorName is TextBox in frmSearch
 	with defaults
@@ -1218,22 +1219,115 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 
 Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
+	with defaults
+		label LABELS.labVATRegistrationNumber
+
+	with rules
+
+; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
+	with defaults
+		max length 20
+		label LABELS.chkSales
+		visible false
+		value REQUEST.GD_Ctr_SalesPurTax_SAP
+	
+	with rules
+		REQUEST.REQUEST_TYPE is VM then
+			this visible true
+
+		REQUEST.ACCOUNT_GROUP in {YVT1, YVT3, YVT1} and REQUEST.COMPANY_CODE in {5101, 563M, 5109} then
+			set value true in GD_Ctr_SalesPurTax
+
+		REQUEST.ACCOUNT_GROUP in {YVT1, YVT1} then
+			show GD_Ctr_SalesPurTax
+			set value true in GD_Ctr_SalesPurTax
+
+; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_IFANumber is TextBox in frmMain
+	with defaults
+		max length 20
+		label LABELS.labIFANumber
+		visible false
+		enabled false
+	
+	with rules
+		REQUEST.REQUEST_TYPE is VM then
+			this visible true
+
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY in {BE, LU} then
+			this visible true
+			
+; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_RepresentiveName is TextBox in frmMain
+	with defaults
+		max length 10
+		label LABELS.labRepresenNumber
+		visible false
+	
+	with rules
+		REQUEST.REQUEST_TYPE is VM then
+			this visible true
+
+					
+; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_TaxNumber	is TextBox in frmMain
+	with defaults
+		visible false
+		label LABELS.labTaxNumber
+
+	with rules
+		REQUEST.REQUEST_TYPE is VM then
+			this visible true
+			
+; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_CreditInfoNo is TextBox in frmMain
-	
-Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
+	with defaults
+		max length 11
+		visible false
+		label LABELS.labCreditInfo
 
+	with rules
+		REQUEST.REQUEST_TYPE is VM then
+			this visible true
+	
+; ----------------------------------------------------------------------------	
+
+; TODO: THE DATASOURCE INDICATED DOES NOT EXIST, CURRENTLY VALUES ARE LOADED IN CODE, SO THE DATASOURCE HAS TO BE CREATED
+; VALUES ARE
+; "", ""
+; "D - Unsubscribe", "D"
+; "V - Unsubscribed from CMD", "V"
+Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
+	with defaults
+		label LABELS.labUnsubscribeCMD
+		load data from DATASOURCE.MDM_UnsubscribeCMD_Options
+
+	with actions
+		set value GD_Ctr_UnsubscribeCMD.Value in BLK_GD_Ctr_UnsubscribeCMD
+
+	with triggers
+		; when this controls change, change the value of BLK_GD_Ctr_UnsubscribeCMD
+		this changes
+
+
+; ----------------------------------------------------------------------------	
+
+; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
+; THIS IS THE VAT LIST
 Entity V_Country is DropDownList in frmMain
 
 Entity V_VATNumber	 is TextBox in frmMain
+
+; ----------------------------------------------------------------------------	
+
+; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
+; THIS IS THE BANK DETAILS
 
 Entity B_GD_VB_Country	is DropDownList in frmMain
 
@@ -1249,63 +1343,423 @@ Entity B_GD_VB_PartBankType	 is TextBox in frmMain
 
 Entity B_GD_VB_BankReferDetails	 is TextBox in frmMain
 
-Entity B_GD_VB_SWIFT	 is TextBox in frmMain
+Entity B_GD_VB_SWIFT is TextBox in frmMain
+	with defaults
+		label LABELS.labGD_VD_SWIFT
 
+; ----------------------------------------------------------------------------	
+
+; TODO: Actually this is not in frmMain itself but inside a composite control, then how to actually refer to these controls?
 Entity B_GD_VB_AccountHolder is TextBox in frmMain
+	with defaults
+		label LABELS.labGD_VD_AccountHolder
+		; default value but can be changed...
+		value GD_Adr_Name.Value
 
-Entity CC_CO_ReconAccount	 is TextBox in frmMain
+; ----------------------------------------------------------------------------	
 
-Entity LFB1_LNRZE	 is TextBox in frmMain
+; ALWAYS HIDDEN
+; TODO: DECIDE WHAT TO DO WITH THIS SORT OF FIELDS...
+Entity CC_CO_ReconAccount is TextBox in frmMain
+	with defaults
+		visible false
+		value REQUEST.CC_CO_ReconAccount_SAP
 
-Entity LFB1_REPRF	 is TextBox in frmMain
+; ----------------------------------------------------------------------------	
 
-Entity CC_AM_SortKey	is DropDownList in frmMain
+; ALWAYS HIDDEN
+; TODO: DECIDE WHAT TO DO WITH THIS SORT OF FIELDS...
+Entity LFB1_LNRZE is TextBox in frmMain
+	with defaults
+		visible false
+		value REQUEST.LFB1_LNRZE_SAP
 
-Entity CC_AM_SubjectedToWHTax	is CheckBox in frmMain
+; ----------------------------------------------------------------------------	
+
+; ALWAYS HIDDEN
+; TODO: DECIDE WHAT TO DO WITH THIS SORT OF FIELDS....
+Entity LFB1_REPRF is TextBox in frmMain
+	with defaults
+		visible false
+
+	with rules
+		REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			set value X in LFB1_REPRF
+
+		REQUEST.REQUEST_TYPE not in {VC, VC_CC} then
+			; in this case send the old value from SAP
+			set value REQUEST.LFB1_REPRF_SAP in LFB1_REPRF
+; ----------------------------------------------------------------------------	
+
+; TODO: CLARIFY - THE RULES ARE A TOTAL FUCKING MESS
+Entity CC_AM_SortKey is DropDownList in frmMain
+	with defaults
+		label LABELS.labAMSortKeys
+		load data from DATASOURCE.MDM_SortKeys with arguments {"FlagActive" : true}
+		mandatory
+
+	with rules
+		; this means the value that was retrieved from SAP
+		REQUEST.CC_AM_SortKey_SAP is not empty then
+			set value REQUEST.CC_AM_SortKey_SAP in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.VENDOR_COUNTRY is FR then
+			set value 003 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.VENDOR_COUNTRY is GR then
+			set value 001 in CC_AM_SortKey
+
+		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is FR
+			set value 003 in CC_AM_SortKey
+
+		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is GR
+			set value 001 in CC_AM_SortKey
+
+
+; ----------------------------------------------------------------------------	
+
+; TODO: TEST
+Entity CC_AM_SubjectedToWHTax is CheckBox in frmMain
+	with defaults
+		label LABELS.labAMSubjectedWithholdingTax
+
+	with rules
+
+		REQUEST.CURRENT_ROLE is REQUEST.ENQUIRER_ROLE and REQUEST.COUNTR in {ES, IT} then
+			CC_AM_WithholdingTaxCode mandatory CC_AM_SubjectedToWHTax.Checked
+
+		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked is true and REQUEST.REQUEST_TYPE is VM then
+			CC_AM_WithholdingTaxCode mandatory false
+
+		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked
+			set value true in CC_AM_SubjectedToWHTax
+
+; ----------------------------------------------------------------------------	
+
+; TODO: TEST
 
 Entity CC_AM_WithholdingTaxCode	is DropDownList in frmMain
+	with defaults
+		label LABELS.labAMWithholdingTaxCode
 
-Entity CC_AM_ExemptionNumber	 is TextBox in frmMain
+	with defaults
+		load data from DATASOURCE.MDM_WithholdingTaxCodes with arguments {"FlagActive" : true, "ClusterCountry" : REQUEST.COUNTRY}
 
-Entity CC_AM_ExemptionNumber	is DropDownList in frmMain
+	with rules
+
+		REQUEST.COUNTRY is ES then
+			set value E0 in CC_AM_SubjectedToWHTax 
+
+		REQUEST.CURRENT_ROLE is REQUEST.ENQUIRER_ROLE and REQUEST.COUNTR in {ES, IT} then
+			CC_AM_WithholdingTaxCode mandatory CC_AM_SubjectedToWHTax.Checked
+
+		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked is true and REQUEST.REQUEST_TYPE is VM then
+			CC_AM_WithholdingTaxCode mandatory false
+
+; ----------------------------------------------------------------------------	
+
+Entity CC_AM_ExemptionNumber is TextBox in frmMain
+	with defaults
+		label LABELS.labAMExemptionNumber
+		max length 20
+
+; ----------------------------------------------------------------------------	
+
+; Field is only needed when field NIF/ P.IVA/ Local tax code starts by ""1"" and ""2"", 
+; country from PT and Company code 5240. If so field becomes mandatory, label should be ""Social Security Situation"", 
+; field must appear in menu ""info add. For natural person"" in general data: 
+; and then a dropdownlist with the folloing values must be available: ""0_No exemption"" and 2_Exemption
+; 14-07-2014 (MC) the correct technical name is LFB1-QSBGR with DDL (2 options - 0 and 2) and only for company code PT"
+
+
+; TODO: CLARIFY THIS WITH STAKEHOLDERS_: 
+; 2) In case Greece company code, if this field is flagged, the field LFB1-QSSKZ is mandatory  but the DDL must have just the value D1- Dummy. 
+; This value D1 will be saved in SAP in the  fields LFBW-WITHT and LFBW-WT_WITHCD = D1 and LFBW-WT_SUBJCT flagged. 
+
+; TODO: TEST
+
+Entity GD_NatP_Exemption is DropDownList in frmMain
+	with defaults
+		label LABELS.labExemption
+		visible false
+		; load these values - "0_No exemption" and "2_Exemption"
+		load data from DATASOURCE.MDM_SOCIAL_SECURITY_SITUATIONS
+
+	with rules
+		REQUEST.VENDOR_COUNTRY is PT and GD_Ctr_NIF starts with 1 or GD_Ctr_NIF starts with 2 then
+			CC_AM_ExemptionNumber visible 
+			CC_AM_ExemptionNumber mandatory 
+			; change label to "Social Security Situation"
+			label LABELS.SOCIAL_SEC_SITUATION
+
+
+; ----------------------------------------------------------------------------	
 
 Entity CC_PT_ValidityDate is Calendar in frmMain
+	with defaults
+		label LABELS.labValidityDate
 
-Entity CC_AM_CashManagementGroup	is DropDownList in frmMain
+; ----------------------------------------------------------------------------	
 
-Entity CC_PT_PaymentTerms	is DropDownList in frmMain
+; TODO: TEST
+Entity CC_AM_CashManagementGroup is DropDownList in frmMain
+	with defaults
+		label LABELS.labAMCashManagementGroup
+		load data from DATASOURCE.MDM_CashManagementGroups with arguments {"FlagActive" : true}
 
+	with rules
+		REQUEST.VENDOR_COUNTRY is REQUEST.COUNTRY then
+			set value A1 in CC_AM_CashManagementGroup
+
+		REQUEST.VENDOR_COUNTRY is not REQUEST.COUNTRY then
+			; TODO: TEST THIS SHORTER SYNTAX
+			set value A2
+
+		REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC}
+			hide this
+			set value A1
+
+; ----------------------------------------------------------------------------	
+
+
+; 3) if a request type creation for purchase organization and the company code already exists, the value from SAP must be preserved
+; 1) default values (but enquirer can change)
+; if request type creation from scratch and/or for company:
+;   if company code Spain -> default value 3M60 
+;   if company code IT -> default value 5510 
+;   if company code LU -> default value 1113 
+;   if company code BE - >default value 1301 
+;   if company code 5140 - >default value 6115
+;   if company code 5924/592F -> default value 6000
+;   if company code PT =a)visible but not enable
+; if company code GR - > default value 7A90 
+; b) if partner country PT-> default value ""4217""
+; C) if partner country not PT -> default value ""4117""
+
+
+Entity CC_PT_PaymentTerms is DropDownList in frmMain
+	with defaults
+		load data from DATASOURCE.MDM_PaymentTerms with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
+		; 1) By default mandatory
+		mandatory
+		
 	with actions
 		set value CC_PT_PaymentTerms.Value in PO_TermsOfPaymentKey.Value
 
+	with rules
+		; 2) visible for all except for CoCd Portugal in creation from scratch and cocd is not visible
+		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			hide this
+			CC_PT_PaymentTerms mandatory false
+
+
+		REQUEST.COUNTRY is ES and REQUEST.REQUEST_TYPE is VC then
+			set value 3M60 in CC_PT_PaymentTerms
+
+		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is VC then
+			set value 5510 in CC_PT_PaymentTerms
+		
+		REQUEST.COUNTRY is LU and REQUEST.REQUEST_TYPE is VC then
+			set value 1113 in CC_PT_PaymentTerms
+
+		REQUEST.COUNTRY is BE and REQUEST.REQUEST_TYPE is VC then
+			set value 1301 in CC_PT_PaymentTerms
+
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is VC then
+			set value 7A90 in CC_PT_PaymentTerms
+
+		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE is VC then
+			set value 6115 in CC_PT_PaymentTerms
+
+		REQUEST.COMPANY_CODE in {5924, 592F} and REQUEST.REQUEST_TYPE is VC then
+			set value 6000 in CC_PT_PaymentTerms
+	
 	with triggers
 		this changes
 
+; ----------------------------------------------------------------------------	
+
+Entity CC_PT_PaymentBlock is DropDownList in frmMain
+	with defaults
+		label LABELS.labPTPaymentBlock
+		load data from DATASOURCE.MDM_PaymentBlocks with arguments {"FlagActive" : true}
+
+; ----------------------------------------------------------------------------	
 
 
-Entity CC_PT_PaymentBlock	is DropDownList in frmMain
+; "1) field visible and mandatory for all company codes
+; 2) If company code country and vendor country equal -> value G; except for company code PT, BE and LU;
+; 3) If company code country and vendor country different -> value Y; except for company code PT, BE and LU;
+; 4) For company code France:
+;     if bank country belongs to YVt6 (FR, GF, GP, RE, MQ and YT) and payment methods = Y->error:in Company Code Data it is not possible to inform Payment Methods with value 'Y - VIREMENT SFS - FRS'
+;     if bank country doesn't belong to YVT6 and payment methods = G->in Company Code Data it is not possible to informPayment Methods with value 'G - Domestic payments thru SFS' for foreign banks
+; 5) if company code Belgium/Luxemburg:  value GY and enabled false 
+; 6) if company code Portugal: value 2GHY and enabled false 
+; 4)if selected payment methods 2 and vendor country Spain and house bank empty-> mandatory inform house bank
+; "
 
+; TODO: TEST
 Entity CC_PT_PaymentMethods	is DropDownList in frmMain
+	with defaults
+		label LABELS.labPTPaymentMethods
+		mandatory
+		load data from DATASOURCE.MDM_PaymentMethods with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
 
-Entity CC_PT_ClearingWithCustomer	is CheckBox in frmMain
 
-Entity CC_PT_AlternativePayee	Field with conversion routines
+	with rules
+		REQUEST.VENDOR_COUNTRY is REQUEST.COUNTRY and REQUEST.COUNTRY not in {PT, BE, LU} then
+			set value G in CC_PT_PaymentMethods
+
+		REQUEST.VENDOR_COUNTRY is not REQUEST.COUNTRY and REQUEST.COUNTRY not in {PT, BE, LU} then
+			set value Y in CC_PT_PaymentMethods
+
+		REQUEST.COUNTRY is BE then
+			set value GY in CC_PT_PaymentMethods
+			disable this
+
+		REQUEST.COUNTRY is PT and this.Value is empty then
+			set value 2GHY in CC_PT_PaymentMethods
+			disable this
+
+		REQUEST.VENDOR_COUNTRY is ES and CC_PT_PaymentMethods.Value is 2 then
+			CC_PT_HouseBank mandatory
+			
+		
+; ----------------------------------------------------------------------------	
+
+Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
+	with defaults
+		label LABELS.labCC_PT_ClearingWithCustomer
+
+	with rules
+		REQUEST.COMPANY_CODE in {5101, 5109} then
+			; meaning, make it checked
+			set value true in CC_PT_ClearingWithCustomer
+
+; ----------------------------------------------------------------------------	
+
+Entity CC_PT_AlternativePayee is TextBox in frmMain
+	with defaults
+		label LABELS.labPTAlternativePayee
+
+; ----------------------------------------------------------------------------	
 
 Entity CC_PT_IndividualPayment	is CheckBox in frmMain
+	with defaults
+		label LABELS.labPTIndividualPayment
+		visible false
 
-Entity CC_PT_HouseBank	 is TextBox in frmMain
+	with rules
+		REQUEST.COUNTRY in {IT, BE, LU} then
+			show CC_PT_IndividualPayment
 
+
+; ----------------------------------------------------------------------------	
+
+; so far this is being loaded manually, must move to a datasource
+;			lic.Add ( new ListItem ( "BEC - Banesto", "BEC" ) );
+;            lic.Add ( new ListItem ( "BSB - Sabadell", "BSB" ) );
+;            lic.Add ( new ListItem ( "BCH - Santander", "BCH" ) );
+;            lic.Add ( new ListItem ( "JPM - JP Morgan", "JPM" ) );
+;            lic.Add ( new ListItem ( "DB - Deutsche Bank", "DB" ) );
+
+Entity CC_PT_HouseBank is DropDownList in frmMain
+	with defaults
+		label LABELS.labPTHouseBank
+		load data from DATASOURCE.MDM_HouseBanks with arguments {"FlagActive" : true}
+
+; ----------------------------------------------------------------------------	
+
+;1) Not visible to all company codes
+;2) Only used for company code 5240:
+;    value is always 4112 (is value from SAP different, do not maintain)
+; in fact control does not exist in form, just a field, always write 4112 for 5240
 Entity CC_PT_ForCreditMemos	is DropDownList in frmMain
+	with defaults
+		visible false
 
-Entity CC_DD_DunningProcedure	is DropDownList in frmMain
+	with rules
+		REQUEST.COMPANY_CODE is 5240 then
+			set value 4112 in CC_PT_ForCreditMemos
+
+; ----------------------------------------------------------------------------	
+
+
+Entity CC_DD_DunningProcedure is DropDownList in frmMain
+	with defaults
+		label LABELS.labDDDunningprocedure
+		load data from DATASOURCE.MDM_DunningProcedure with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
+
+	with rules
+		REQUEST.COUNTRY is BE then
+			set value Y1VE in CC_DD_DunningProcedure
+
+		REQUEST.COUNTRY is LU then
+			set value Y001 in CC_DD_DunningProcedure
+
+		REQUEST.COMPANY_CODE in {5101, 563M, 5109} then
+			set value 10 in CC_DD_DunningProcedure
+			CC_DD_DunningClerk enable false
+
+		REQUEST.COUNTRY is PT then 
+			hide this
+
+; ----------------------------------------------------------------------------	
+
 
 Entity CC_DD_LegalProceedings is Calendar in frmMain
+	with defaults
+		visible true
+		label LABELS.labLegalProceedings	
 
+	with rules
+		REQUEST.COUNTRY is ES and CC_DD_LastDunnedOn is not empty then
+			CC_DD_DunningProcedure mandatory
+
+		REQUEST.COUNTRY is ES and CC_DD_LegalProceedings is empty then
+			set value '' in CC_DD_DunningProcedure
+
+		REQUEST.COUNTRY is not ES and CC_DD_LegalProceedings is empty then
+			set value Y3PR in CC_DD_DunningProcedure
+
+; ----------------------------------------------------------------------------	
+
+; TODO: add test
 Entity CC_DD_LastDunnedOn is Calendar in frmMain
+	with defaults
+		visible true
+		label LABELS.labLastDunnedOn
 
-Entity CC_DD_DunningBlock	is DropDownList in frmMain
+	with rules
+		REQUEST.COUNTRY is PT then 
+			hide this
+
+		REQUEST.COUNTRY is ES and CC_DD_DunningProcedure is not empty then
+			CC_DD_LastDunnedOn mandatory
+
+		REQUEST.COUNTRY is ES and CC_DD_LegalProceedings is not empty then
+			CC_DD_LastDunnedOn mandatory
+
+; ----------------------------------------------------------------------------	
+
+Entity CC_DD_DunningBlock is DropDownList in frmMain
+	with defaults
+		visible true
+		label LABELS.labDDDunningBlock
+		load data from DATASOURCE.MDM_DunningBlocks with arguments {"FlagActive" : true}
+
+
+; ----------------------------------------------------------------------------	
+
 
 Entity CC_DD_Level is TextBox in frmMain
+	with defaults
+		visible true
+		label LABELS.labDDDunningLevel
+
+	with rules
+		REQUEST.COUNTRY is PT then 
+			hide CC_DD_Level
 
 ; ----------------------------------------------------------------------------	
 
@@ -1322,7 +1776,7 @@ Entity CC_DD_DunningClerk is DropDownList in frmMain
 			this disabled
 			; show this
 
-		REQUEST.COUNTRY not in {PT, GR, IT, BE, LU} then
+		REQUEST.COUNTRY is PT then
 			show this
 
 ; ----------------------------------------------------------------------------	

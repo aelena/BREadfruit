@@ -35,3 +35,28 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 
 		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
 			mandatory true
+
+
+
+Entity CC_DD_DunningProcedure is DropDownList in frmMain
+	with defaults
+		label LABELS.labDDDunningprocedure
+
+	with rules
+		REQUEST.COUNTRY is BE then
+			set value Y1VE in CC_DD_DunningProcedure
+
+		REQUEST.COUNTRY is LU then
+			set value Y001 in CC_DD_DunningProcedure
+
+		REQUEST.COMPANY_CODE is 5140 and GD_Ctr_CustomerClassification.Value is G then
+			set value Y601 in CC_DD_DunningProcedure
+	
+		REQUEST.COMPANY_CODE is 5140 and GD_Ctr_CustomerClassification.Value is NG then
+			set value Y602 in CC_DD_DunningProcedure
+			
+		REQUEST.COMPANY_CODE is 491E then
+			set value Y602 in CC_DD_DunningProcedure
+
+		REQUEST.VENDOR_COUNTRY is GR then
+			set value Y704 in CC_DD_DunningProcedure
