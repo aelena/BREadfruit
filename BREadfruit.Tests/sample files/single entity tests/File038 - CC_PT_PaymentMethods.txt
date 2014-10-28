@@ -1,0 +1,24 @@
+﻿Entity CC_PT_PaymentMethods	is DropDownList in frmMain
+	with defaults
+		label LABELS.labPTPaymentMethods
+		mandatory
+		load data from DATASOURCE.MDM_PaymentMethods with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
+
+
+	with rules
+		REQUEST.VENDOR_COUNTRY is REQUEST.COUNTRY and REQUEST.COUNTRY not in {PT, BE, LU} then
+			set value G
+
+		REQUEST.VENDOR_COUNTRY is not REQUEST.COUNTRY and REQUEST.COUNTRY not in {PT, BE, LU} then
+			set value Y
+
+		REQUEST.COUNTRY is BE then
+			set value GY
+			this disabled
+
+		REQUEST.COUNTRY is PT and this.Value is empty then
+			set value 2GHY
+			disable this
+
+		REQUEST.VENDOR_COUNTRY is ES and CC_PT_PaymentMethods.Value is 2 then
+			CC_PT_HouseBank mandatory

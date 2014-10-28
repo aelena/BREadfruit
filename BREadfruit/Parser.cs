@@ -463,6 +463,16 @@ namespace BREadfruit
 								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
 								continue;
 							}
+							if ( lineInfo.Tokens.Last () == Grammar.DisableUnaryActionSymbol || lineInfo.Tokens.First () == Grammar.DisableUnaryActionSymbol )
+							{
+								var _ua = new UnaryAction ( Grammar.DisableUnaryActionSymbol,
+									lineInfo.Tokens.First () == Grammar.DisableUnaryActionSymbol ?
+									lineInfo.Tokens.ElementAt ( 1 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 1 ).Token
+									: lineInfo.Tokens.ElementAt ( 0 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 0 ).Token );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+								continue;
+							
+							}
 
 							if ( lineInfo.Tokens.First () == Grammar.SetValueActionSymbol)
 							{

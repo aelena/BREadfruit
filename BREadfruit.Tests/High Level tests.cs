@@ -1139,7 +1139,7 @@ namespace BREadfruit.Tests
 
 
 			// REQUEST.VENDOR_COUNTRY is PT and GD_Ctr_NIF starts with 1 or GD_Ctr_NIF starts with 2
-			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "REQUEST.VENDOR_COUNTRY", "Operand should not be " + e.Rules.First ().Conditions.First ().Operand  );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "REQUEST.VENDOR_COUNTRY", "Operand should not be " + e.Rules.First ().Conditions.First ().Operand );
 			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.IsOperator, "Expected operator was " + Grammar.IsOperator.Token );
 			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "PT", "Unexpected Value found" );
 			Assert.That ( e.Rules.First ().Conditions.First ().SuffixLogicalOperator == Grammar.ANDSymbol, "Unexpected logical suffix" );
@@ -1187,9 +1187,9 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 0 ).ResultActions.First ().Value.ToString () == "A1" );
 			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 0 ).ResultActions.First ().Reference == "CC_AM_CashManagementGroup" );
 
-			Assert.That ( e.Rules.ElementAt(1).Conditions.ElementAt ( 0 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
-			Assert.That ( e.Rules.ElementAt(1).Conditions.ElementAt ( 0 ).ResultActions.First ().Value.ToString () == "A2" );
-			Assert.That ( e.Rules.ElementAt(1).Conditions.ElementAt ( 0 ).ResultActions.First ().Reference == "CC_AM_CashManagementGroup" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 0 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 0 ).ResultActions.First ().Value.ToString () == "A2" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 0 ).ResultActions.First ().Reference == "CC_AM_CashManagementGroup" );
 
 			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
 			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString () == "A1" );
@@ -1198,8 +1198,49 @@ namespace BREadfruit.Tests
 
 		}
 
+
 		// ---------------------------------------------------------------------------------
 
+
+		[Test]
+		public void ParseSampleFile038 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File038 - CC_PT_PaymentMethods.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "CC_PT_PaymentMethods", "Entity name should be 'CC_PT_PaymentMethods' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 5 );
+
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString () == "G" );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).ResultActions.First ().Reference == "CC_PT_PaymentMethods" );
+
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString () == "Y" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Reference == "CC_PT_PaymentMethods" );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 0 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 0 ).ResultActions.First ().Value.ToString () == "GY" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 0 ).ResultActions.First ().Reference == "CC_PT_PaymentMethods" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 0 ).Results.ElementAt ( 0 ).Action == Grammar.DisableUnaryActionSymbol );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 0 ).Results.ElementAt ( 0 ).Reference == "CC_PT_PaymentMethods" );
+
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString () == "2GHY" );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Reference == "CC_PT_PaymentMethods" );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).Results.ElementAt ( 0 ).Action == Grammar.DisableUnaryActionSymbol );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.ElementAt ( 1 ).Results.ElementAt ( 0 ).Reference == "CC_PT_PaymentMethods" );
+
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 1 ).Results.First ().Action == Grammar.MandatoryDefaultClause );
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.ElementAt ( 1 ).Results.First ().Reference == "CC_PT_HouseBank" );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 
 		[Test]

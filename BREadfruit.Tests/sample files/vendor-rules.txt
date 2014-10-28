@@ -1528,7 +1528,7 @@ Entity CC_PT_ValidityDate is Calendar in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TODO: TEST
+; backed by test 037
 Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 	with defaults
 		label LABELS.labAMCashManagementGroup
@@ -1625,7 +1625,7 @@ Entity CC_PT_PaymentBlock is DropDownList in frmMain
 ; 4)if selected payment methods 2 and vendor country Spain and house bank empty-> mandatory inform house bank
 ; "
 
-; TODO: TEST
+; backed by file File038 - CC_PT_PaymentMethods
 Entity CC_PT_PaymentMethods	is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTPaymentMethods
@@ -1635,17 +1635,17 @@ Entity CC_PT_PaymentMethods	is DropDownList in frmMain
 
 	with rules
 		REQUEST.VENDOR_COUNTRY is REQUEST.COUNTRY and REQUEST.COUNTRY not in {PT, BE, LU} then
-			set value G in CC_PT_PaymentMethods
+			set value G
 
 		REQUEST.VENDOR_COUNTRY is not REQUEST.COUNTRY and REQUEST.COUNTRY not in {PT, BE, LU} then
-			set value Y in CC_PT_PaymentMethods
+			set value Y
 
 		REQUEST.COUNTRY is BE then
-			set value GY in CC_PT_PaymentMethods
+			set value GY
 			disable this
 
 		REQUEST.COUNTRY is PT and this.Value is empty then
-			set value 2GHY in CC_PT_PaymentMethods
+			set value 2GHY
 			disable this
 
 		REQUEST.VENDOR_COUNTRY is ES and CC_PT_PaymentMethods.Value is 2 then
