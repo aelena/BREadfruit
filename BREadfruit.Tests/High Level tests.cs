@@ -1139,10 +1139,10 @@ namespace BREadfruit.Tests
 
 
 			// REQUEST.VENDOR_COUNTRY is PT and GD_Ctr_NIF starts with 1 or GD_Ctr_NIF starts with 2
-			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "REQUEST.VENDOR_COUNTRY" );
-			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.IsOperator );
-			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "PT" );
-			Assert.That ( e.Rules.First ().Conditions.First ().SuffixLogicalOperator == Grammar.ANDSymbol );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "REQUEST.VENDOR_COUNTRY", "Operand should not be " + e.Rules.First ().Conditions.First ().Operand  );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.IsOperator, "Expected operator was " + Grammar.IsOperator.Token );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "PT", "Unexpected Value found" );
+			Assert.That ( e.Rules.First ().Conditions.First ().SuffixLogicalOperator == Grammar.ANDSymbol, "Unexpected logical suffix" );
 
 			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).Operand == "GD_Ctr_NIF" );
 			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).Operator == Grammar.StartsWithOperator );
@@ -1167,6 +1167,39 @@ namespace BREadfruit.Tests
 
 
 		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile037 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File037 - CC_AM_CashManagementGroup.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "CC_AM_CashManagementGroup", "Entity name should be 'CC_AM_CashManagementGroup' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "REQUEST.VENDOR_COUNTRY", "Operand should not be " + e.Rules.First ().Conditions.First ().Operand );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.IsOperator, "Expected operator was " + Grammar.IsOperator.Token );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "REQUEST.COUNTRY", "Unexpected Value found" );
+
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 0 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 0 ).ResultActions.First ().Value.ToString () == "A1" );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 0 ).ResultActions.First ().Reference == "CC_AM_CashManagementGroup" );
+
+			Assert.That ( e.Rules.ElementAt(1).Conditions.ElementAt ( 0 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+			Assert.That ( e.Rules.ElementAt(1).Conditions.ElementAt ( 0 ).ResultActions.First ().Value.ToString () == "A2" );
+			Assert.That ( e.Rules.ElementAt(1).Conditions.ElementAt ( 0 ).ResultActions.First ().Reference == "CC_AM_CashManagementGroup" );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Action == Grammar.SetValueActionSymbol );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Value.ToString () == "A1" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).ResultActions.First ().Reference == "CC_AM_CashManagementGroup" );
+
+
+		}
+
+		// ---------------------------------------------------------------------------------
+
 
 
 		[Test]

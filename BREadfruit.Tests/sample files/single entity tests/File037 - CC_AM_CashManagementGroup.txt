@@ -1,0 +1,16 @@
+﻿Entity CC_AM_CashManagementGroup is DropDownList in frmMain
+	with defaults
+		label LABELS.labAMCashManagementGroup
+		load data from DATASOURCE.MDM_CashManagementGroups with arguments {"FlagActive" : true}
+
+	with rules
+		REQUEST.VENDOR_COUNTRY is REQUEST.COUNTRY then
+			set value A1 in CC_AM_CashManagementGroup
+
+		REQUEST.VENDOR_COUNTRY is not REQUEST.COUNTRY then
+			; TODO: TEST THIS SHORTER SYNTAX
+			set value A2
+
+		REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+			; hide this
+			set value A1

@@ -116,6 +116,7 @@
     <Content Include="sample files\single entity tests\File034 - GD_NatP_PlaceOfBirth.txt" />
     <Content Include="sample files\single entity tests\File035 - GD_NatP_Profession.txt" />
     <Content Include="sample files\single entity tests\File036.txt" />
+    <Content Include="sample files\single entity tests\File037 - CC_AM_CashManagementGroup.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>
