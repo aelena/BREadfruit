@@ -177,7 +177,7 @@ namespace BREadfruit
 								if ( lineInfo.Tokens.ElementAtFromLast ( 3 ) == Grammar.ThenSymbol )
 								{
 									var _resClause = GetClauseAfterThen ( lineInfo );
-									if ( _resClause.First() == Grammar.VisibleDefaultClause )
+									if ( _resClause.First () == Grammar.VisibleDefaultClause )
 									{
 										var _ra = new ResultAction ( _resClause.First (), _resClause.ElementAt ( 1 ), this.Entities.Last ().Name );
 										this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
@@ -185,7 +185,7 @@ namespace BREadfruit
 									}
 									if ( _resClause.First () == Grammar.ThisSymbol )
 									{
-										var _ra = new ResultAction ( _resClause.ElementAt (1), _resClause.ElementAt ( 2 ), this.Entities.Last ().Name );
+										var _ra = new ResultAction ( _resClause.ElementAt ( 1 ), _resClause.ElementAt ( 2 ), this.Entities.Last ().Name );
 										this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
 										continue;
 									}
@@ -208,7 +208,7 @@ namespace BREadfruit
 									var _resClause = GetClauseAfterThen ( lineInfo );
 									if ( _resClause.First () == Grammar.ThisSymbol )
 									{
-									    _ra = new ResultAction ( _resClause.ElementAt ( 1 ), _resClause.ElementAt ( 2 ), this.Entities.Last ().Name );
+										_ra = new ResultAction ( _resClause.ElementAt ( 1 ), _resClause.ElementAt ( 2 ), this.Entities.Last ().Name );
 										this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
 										continue;
 									}
@@ -338,7 +338,8 @@ namespace BREadfruit
 
 						if ( lineInfo.Tokens.First () == Grammar.LabelDefaultClause )
 						{
-							var _ra = new ResultAction ( Grammar.LabelDefaultClause, lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token.Replace ( "\"", "" ) );
+							var _ra = new ResultAction ( Grammar.LabelDefaultClause, lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token.Replace ( "\"", "" ),
+								 this.Entities.Last ().Name );
 							this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
 							continue;
 						}
@@ -389,14 +390,15 @@ namespace BREadfruit
 
 							if ( lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause ) )
 							{
-								var _ua = new UnaryAction ( Grammar.MandatoryDefaultClause );
+								var _ua = new UnaryAction ( Grammar.MandatoryDefaultClause, lineInfo.Tokens.First () == Grammar.ThisSymbol ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
 								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
 								continue;
 							}
 
 							if ( lineInfo.Tokens.Contains ( Grammar.MakeNonMandatoryUnaryActionSymbol ) )
 							{
-								var _ua = new UnaryAction ( Grammar.MakeNonMandatoryUnaryActionSymbol );
+								var _ua = new UnaryAction ( Grammar.MakeNonMandatoryUnaryActionSymbol,
+									lineInfo.Tokens.First ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
 								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
 								continue;
 							}
@@ -441,7 +443,26 @@ namespace BREadfruit
 								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
 								continue;
 							}
+							if ( lineInfo.Tokens.Last () == Grammar.VisibleDefaultClause )
+							{
+								var _ename = lineInfo.Tokens.First ().Token;
+								if ( lineInfo.Tokens.First () == Grammar.ThisSymbol )
+									_ename = this.Entities.Last ().Name;
 
+								var _ra = new ResultAction ( Grammar.VisibleDefaultClause, true, _ename );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								continue;
+							}
+							if ( lineInfo.Tokens.Last () == Grammar.MandatoryDefaultClause )
+							{
+								var _ename = lineInfo.Tokens.First ().Token;
+								if ( lineInfo.Tokens.First () == Grammar.ThisSymbol )
+									_ename = this.Entities.Last ().Name;
+
+								var _ra = new ResultAction ( Grammar.MandatoryDefaultClause, true, _ename );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								continue;
+							}
 						}
 						if ( lineInfo.Tokens.Count () == 3 )
 						{

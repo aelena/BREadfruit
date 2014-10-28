@@ -10,5 +10,5 @@
 		Request.FlowType not in {"VC", "VC_CC"} and User.Country is "ES" then 
 			GD_Damex not mandatory
 			ABCD mandatory
-			mandatory EFGH
+			EFGH mandatory
 			hide GD_Damex

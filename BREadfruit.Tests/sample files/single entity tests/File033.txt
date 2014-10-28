@@ -1,6 +1,7 @@
 ﻿Entity PO_ReturnsVendor	is CheckBox in frmMain
 	with defaults
 		visible true
+		value false
 		label LABELS.labPO_ReturnsVendor
 
 	with rules

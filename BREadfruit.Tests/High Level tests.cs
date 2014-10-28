@@ -1014,6 +1014,8 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
 			Assert.That ( e.Name == "PO_ReturnsVendor", "Entity name should be 'PO_ReturnsVendor' but is " + e.Name );
 
+			Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == "false" );
+
 			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 0 ).Action == Grammar.MakeMandatoryUnaryActionSymbol.Token );
 			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 0 ).Reference == "GD_Ctr_CustomerNumber" );
 			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.ElementAt ( 2 ).Results.ElementAt ( 1 ).Action == Grammar.EnableUnaryActionSymbol.Token );
@@ -1101,14 +1103,66 @@ namespace BREadfruit.Tests
 
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First () == Grammar.VisibleUnaryActionSymbol.Token );
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Reference == "GD_NatP_Profession" );
-			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "False" );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "false" );
 
 			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.First ().Action == Grammar.VisibleUnaryActionSymbol.Token );
-			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.First ().Value.ToString () == "False" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.First ().Value.ToString () == "false" );
 			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().ResultActions.First ().Reference == "GD_NatP_Profession" );
 
-			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Results.First ().Action == Grammar.VisibleUnaryActionSymbol.Token );
-			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Results.First ().Reference == "GD_NatP_Profession" );
+			// this rule was commented in the test file....
+			//Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Results.First ().Action == Grammar.VisibleUnaryActionSymbol.Token );
+			//Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Results.First ().Reference == "GD_NatP_Profession" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile036 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File036.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_NatP_Exemption", "Entity name should be 'GD_NatP_Exemption' but is " + e.Name );
+
+			Assert.That ( e.Defaults.ElementAt ( 0 ).Token == Grammar.LabelDefaultClause.Token );
+			Assert.That ( e.Defaults.ElementAt ( 0 ).Value.ToString () == "LABELS.labExemption" );
+			Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.VisibleDefaultClause.Token );
+			Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == "false" );
+			Assert.That ( e.Defaults.ElementAt ( 2 ).Token == Grammar.LoadDataDefaultClause.Token );
+			Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == "DATASOURCE.MDM_NaturalPersonExemptions" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Token == Grammar.ValueDefaultClause.Token );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Value.ToString () == "" );
+
+
+			// REQUEST.VENDOR_COUNTRY is PT and GD_Ctr_NIF starts with 1 or GD_Ctr_NIF starts with 2
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "REQUEST.VENDOR_COUNTRY" );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.IsOperator );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "PT" );
+			Assert.That ( e.Rules.First ().Conditions.First ().SuffixLogicalOperator == Grammar.ANDSymbol );
+
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).Operand == "GD_Ctr_NIF" );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).Operator == Grammar.StartsWithOperator );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).Value.ToString () == "1" );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 1 ).SuffixLogicalOperator == Grammar.ORSymbol );
+
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).Operand == "GD_Ctr_NIF" );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).Operator == Grammar.StartsWithOperator );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).Value.ToString () == "2" );
+
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).ResultActions.First ().Action == Grammar.VisibleUnaryActionSymbol.Token );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).ResultActions.First ().Value.ToString () == "True" );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).ResultActions.First ().Reference == "CC_AM_ExemptionNumber" );
+
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).ResultActions.ElementAt ( 1 ).Action == Grammar.LabelDefaultClause.Token );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).ResultActions.ElementAt ( 1 ).Value.ToString () == "LABELS.SOCIAL_SEC_SITUATION" );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).ResultActions.ElementAt ( 1 ).Reference == "GD_NatP_Exemption" );
+
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).Results.First ().Reference == "CC_AM_ExemptionNumber" );
+			Assert.That ( e.Rules.First ().Conditions.ElementAt ( 2 ).Results.First ().Token == Grammar.MakeMandatoryUnaryActionSymbol.Token );
 		}
 
 

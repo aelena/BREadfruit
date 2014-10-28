@@ -1009,7 +1009,6 @@ Entity GD_NatP_Profession is TextBox in frmMain
 	with rules
 		REQUEST.ACCOUNT_GROUP in {YVT6, YVT9} then this visible false
 
-
 ; ----------------------------------------------------------------------------	
 
 Entity GD_NatP_Sex is DropDownList in frmMain
@@ -1021,18 +1020,6 @@ Entity GD_NatP_Sex is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-
-Entity GD_NatP_Exemption is DropDownList in frmMain
-	with defaults
-		; PUT INTO DATABASE 
-		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "0 - No exemption", "0" ) );
-		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "2 - Exemption", "2" ) );
-		; does not exist in Customer
-		load data from DATASOURCE.GENERIC.MDM_NaturalPersonExemptions
-		value ''
-		label LABELS.labExemption
-
-; ----------------------------------------------------------------------------	
 
 ; PREPARE TEST FOR THIS
 ; THIS ENTITY HAS A LOT OF CODE AND NOTHING IN THE FIELD MAPPING
@@ -1514,12 +1501,16 @@ Entity CC_AM_ExemptionNumber is TextBox in frmMain
 
 ; TODO: TEST
 
+; --- backed by test 036
 Entity GD_NatP_Exemption is DropDownList in frmMain
 	with defaults
 		label LABELS.labExemption
 		visible false
-		; load these values - "0_No exemption" and "2_Exemption"
-		load data from DATASOURCE.MDM_SOCIAL_SECURITY_SITUATIONS
+		; PUT INTO DATABASE 
+		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "0 - No exemption", "0" ) );
+		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "2 - Exemption", "2" ) );
+		; does not exist in Customerload data from DATASOURCE.MDM_NaturalPersonExemptions
+		value ''
 
 	with rules
 		REQUEST.VENDOR_COUNTRY is PT and GD_Ctr_NIF starts with 1 or GD_Ctr_NIF starts with 2 then

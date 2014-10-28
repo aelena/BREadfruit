@@ -1,0 +1,17 @@
+﻿Entity GD_NatP_Exemption is DropDownList in frmMain
+	with defaults
+		label LABELS.labExemption
+		visible false
+		; PUT INTO DATABASE 
+		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "0 - No exemption", "0" ) );
+		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "2 - Exemption", "2" ) );
+		; does not exist in Customer
+		load data from DATASOURCE.MDM_NaturalPersonExemptions
+		value ''
+
+	with rules
+		REQUEST.VENDOR_COUNTRY is PT and GD_Ctr_NIF starts with 1 or GD_Ctr_NIF starts with 2 then
+			CC_AM_ExemptionNumber visible 
+			CC_AM_ExemptionNumber mandatory 
+			; change label to "Social Security Situation"
+			label LABELS.SOCIAL_SEC_SITUATION

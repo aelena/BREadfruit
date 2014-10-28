@@ -261,7 +261,7 @@ namespace BREadfruit
         /// Validates the argument part of a load data from line 
         /// (that is, all that comes after the load data from instruction)
         /// </summary>
-        public const string LoadDataFromValueRegex = @"^(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_]+)+$";
+		public const string LoadDataFromValueRegex = @"^(WEBSERVICE|DATASOURCE){1}\.[A-Za-z\d_]+(\.?[A-Za-z\d_]+)*$";
          /// <summary>
         /// Validates the argument part of a load data from line 
         /// (that is, all that comes after the load data from instruction)

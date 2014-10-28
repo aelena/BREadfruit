@@ -8,7 +8,7 @@
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
 
 		DDLVDCountry is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+		 	set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
 		
 		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
