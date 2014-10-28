@@ -910,22 +910,6 @@ Entity P_GD_VT_Default is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TEST FOR THIS
-; this name is going to be wrong
-Entity btnInsert is Button in frmMain
-	with defaults
-		value LABELS.GENERIC.labInsert
-
-	with actions
-		; TODO DEFINE ACTION SUCH AS
-		; save data to, similar to "load data from"
-		save data to DATASOURCE.MDM_Requests_PhoneEntry with arguments {"Phone" : "123456"}
-
-	with triggers
-		this clicked
-
-
-; ----------------------------------------------------------------------------	
 
 Entity F_GD_VF_Country is DropDownList in frmMain
 	with defaults
@@ -1002,30 +986,28 @@ Entity GD_NatP_DateOfBirth is Calendar in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-
-;BACKUP THIS WITH TESTS
-
+; backed by test 034
 Entity GD_NatP_PlaceOfBirth is TextBox in frmMain
 	with defaults
 		max length 25
 		label LABELS.labPlaceOfBirth
 		
 	with rules
-		REQUEST.COMPANY_CODE is "5240" and GD_Ctr_NIF.Value starts with {"1","2"} or GD_Ctr_TaxCode1.Value starts with {"1","2"} then 
+		REQUEST.COMPANY_CODE is "5240" and GD_Ctr_NIF.Value starts with {1,2} or GD_Ctr_TaxCode1.Value starts with {1,2} then 
 			label "Nº Employees"
-			mandatory true
+			make mandatory
 		
 
 ; ----------------------------------------------------------------------------	
 
-; TEST
+; backed by test 035
 Entity GD_NatP_Profession is TextBox in frmMain
 	with defaults
 		max length 30
 		label LABELS.labProfession
 	
 	with rules
-		REQUEST.VENDOR.ACCOUNT_GROUP in {"YVT6", "YVT9"} then visible false
+		REQUEST.ACCOUNT_GROUP in {YVT6, YVT9} then this visible false
 
 
 ; ----------------------------------------------------------------------------	
@@ -2272,5 +2254,26 @@ Entity btnSave is Button in frmMain
 Entity btnCloseFinal is Button in frmMain
 	with defaults
 		label LABELS.btnClose
+
+; ----------------------------------------------------------------------------	
+
+; TODO: TEST FOR THIS
+; this name is going to be wrong, we need to distinguish between each btnInsert that we have 
+; phones, faxes, emails, VAT, banks...
+; Entity btnInsert is Button in frmMain
+; plus we need to define the "delete" and "edit" functionalities too!!
+Entity btnInsert is Button in frmMain
+	with defaults
+		value LABELS.GENERIC.labInsert
+
+	with actions
+		; TODO DEFINE ACTION SUCH AS
+		; save data to, similar to "load data from"
+		save data to DATASOURCE.MDM_Requests_PhoneEntry with arguments {"Phone" : "123456"}
+
+	with triggers
+		this clicked
+
+
 
 ; --- the fucking end --------------------------------------------------------

@@ -1,0 +1,11 @@
+﻿Entity GD_NatP_PlaceOfBirth is TextBox in frmMain
+	with defaults
+		max length 25
+		label LABELS.labPlaceOfBirth
+		
+	with rules
+		REQUEST.COMPANY_CODE is "5240" and GD_Ctr_NIF.Value starts with {1,2} or GD_Ctr_TaxCode1.Value starts with {1,2} then 
+			label "Nº Employees"
+			; label "EY"
+			make mandatory
+			this mandatory true

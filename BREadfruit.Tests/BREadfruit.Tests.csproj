@@ -113,6 +113,8 @@
     <Content Include="sample files\single entity tests\File030 - Load Data in.txt" />
     <Content Include="sample files\single entity tests\File031 - GD_Ctr_CustomerNumber.txt" />
     <Content Include="sample files\single entity tests\File033.txt" />
+    <Content Include="sample files\single entity tests\File034 - GD_NatP_PlaceOfBirth.txt" />
+    <Content Include="sample files\single entity tests\File035 - GD_NatP_Profession.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

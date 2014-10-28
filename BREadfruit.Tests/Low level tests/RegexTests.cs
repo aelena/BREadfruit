@@ -282,5 +282,27 @@ namespace BREadfruit.Tests.Low_level_tests
 
         #endregion
 
+        
+        // ---------------------------------------------------------------------------------
+
+
+        [TestCase ( "myregex", Result = true )]
+        [TestCase ( "MYREGEX", Result = true )]
+        [TestCase ( "myRegEx", Result = true )]
+        public bool TestInsensitiveFlagInRegex (string testline)
+        {
+            return Regex.IsMatch ( testline, "^(?i)myregex$" );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        // does not seem to work.....
+        //[TestCase ( "...", Result = true )]
+        //public bool TestBlockEscape ( string testline )
+        //{
+        //    return Regex.IsMatch ( testline, "^\Q...\E$" );
+        //}
     }
 }
