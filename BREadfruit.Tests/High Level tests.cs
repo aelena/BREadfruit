@@ -1244,6 +1244,24 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		public void ParseSampleFile039 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File039 - Hide.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "CC_DD_Level", "Entity name should be 'CC_DD_Level' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 3 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
 		public void ShouldFindEntities ()
 		{
 			var parser = new Parser ();

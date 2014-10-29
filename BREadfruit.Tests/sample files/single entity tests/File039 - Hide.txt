@@ -1,0 +1,8 @@
+﻿Entity CC_DD_Level is TextBox in frmMain
+	with defaults
+		visible true
+		label LABELS.labDDDunningLevel
+
+	with rules
+		REQUEST.COUNTRY is PT then 
+			hide CC_DD_Level

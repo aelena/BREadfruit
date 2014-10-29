@@ -1,4 +1,52 @@
-﻿Entity GD_Ctr_Industry is DropDownList in frmMain
+﻿
+; ----------------------------------------------------------------------------	
+; BEGIN MAIN FORM CONTROL DEFINITION
+; ----------------------------------------------------------------------------	
+
+; -- RULES FOR CUSTOMER MAIN FORM (MDM.ASPX)
+
+
+Entity GD_Ctr_RiskClassification is DropDownList in frmMain
+
+	with defaults
+		enabled true
+		visible true
+		value "00"
+		; only two values, 00 and 09
+		load data from DATASOURCE.MDM_RiskClassifications
+		label LABELS.labGD_Ctr_RiskClassification
+
+	with rules
+		REQUEST.CURRENT_ROLE not in {"RCO","ENQ","CLERK"} then enabled false
+
+		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
+			this enabled 
+
+		GD_Ctr_RiskClassification.Value is '' then
+			GD_Ctr_RiskClassification enabled true
+
+		REQUEST.STATUS is REQUEST.CLOSED then
+			enabled false
+
+	with triggers
+		; TODO FIND A BETTER WAY TO EXPRESS THIS....
+		; BANK_INSERTED EVALUATE -----
+
+; ----------------------------------------------------------------------------	
+
+Entity GD_Adr_Country is DropDownList in frmMain
+	with defaults
+		visible true
+		enabled false					; this control is always disabled
+		value USER.COUNTRY				; -- depends on country selected in search form, so this data has to be passed
+		load data from DATASOURCE.MDMC_Countries
+		mandatory true
+		label LABELS.labGD_GD_Adr_Country
+
+; ----------------------------------------------------------------------------	
+
+
+Entity GD_Ctr_Industry is DropDownList in frmMain
 	with defaults
 		mandatory true
 		visible true
