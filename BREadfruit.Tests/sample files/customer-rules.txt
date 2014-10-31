@@ -1,5 +1,5 @@
 ﻿; ----------------------------------------------------------------------------
-  -- LIST OF ALL ENTITIES FOUND in MDMC_Search Form
+  -- LIST OF ALL ENTITIES FOUND 
 ; ----------------------------------------------------------------------------
 
 
@@ -28,82 +28,113 @@
 
 
 
-Entity TBCustomerName is mtextbox in __frm__
+Entity TBCustomerName is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerName
 
-Entity TBCustomerCity is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity TBCustomerCity is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerCity
 
-Entity TBCustomerNumber is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity TBCustomerNumber is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerNumber
 
-Entity TBCustomerIFA is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity TBCustomerIFA is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerIFA
 
-Entity DDLDCountry is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLDCountry is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labCountry
 
-Entity TBCustomerVAT is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity TBCustomerVAT is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerVAT
 
-Entity DDLCDCountry is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLCDCountry is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labCountry
 
-Entity DDLCDCompany is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLCDCompany is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labCompany
 
-Entity DDLCDSalesOrg is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLCDSalesOrg is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labSalesOrg
 
-Entity DDLCDDistribChannel is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLCDDistribChannel is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labDistribChannel
 
-Entity DDLCDivision is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLCDivision is DropDownList in frmSearch
 
 	with defaults
 		visible false
 		label LABELS.labDivision
 
-Entity btnSearch is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnSearch is Button in frmSearch
 
 	with defaults
 		label LABELS.btnSearch
 
-Entity btnCreateCustomer is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnCreateCustomer is Button in frmSearch
 
 	with defaults
 		label LABELS.btnCreateCustomer
 
-Entity LBLSearchResultMessage is MLabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity LBLSearchResultMessage is Label in frmSearch
 
 	with defaults
-		label LABELS.
+
+; ---------------------------------------------------------------------------- 
+
+
 
 
 
 ; ----------------------------------------------------------------------------
   -- LIST OF ALL ENTITIES FOUND in MDMC main FORM
 ; ----------------------------------------------------------------------------
+
+
 
 
 
@@ -280,888 +311,1196 @@ Entity LBLSearchResultMessage is MLabel in __frm__
 
 
 
-Entity labOpInfoCustomer is mlabel in __frm__
+Entity labOpInfoCustomer is Label in frmMain
 
 	with defaults
 		label LABELS.labOpInfoVendor
 
-Entity labOpInfoCountry is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labOpInfoCountry is Label in frmMain
 
 	with defaults
 		label LABELS.labOpInfoCountry
 
-Entity labOpInfoCC is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labOpInfoCC is Label in frmMain
 
 	with defaults
 		label LABELS.labOpInfoCC
 
-Entity labOpInfoSO is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labOpInfoSO is Label in frmMain
 
 	with defaults
 		label LABELS.labOpInfoPO
 
-Entity labOpInfoDC is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labOpInfoDC is Label in frmMain
 
 	with defaults
 		label LABELS.labOPInfoDC
 
-Entity GD_Adr_Name is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Name is TextBox in frmMain
 
 	with defaults
 		label LABELS.labName
 		mandatory true
 		max length 35
 
-Entity GD_Adr_Name2 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Name2 is TextBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity GD_Adr_Name3 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
 
-	with defaults
-		label LABELS.
-
-Entity GD_Adr_Name4 is mtextbox in __frm__
+Entity GD_Adr_Name3 is TextBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity GD_Adr_Search is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Name4 is TextBox in frmMain
+
+	with defaults
+
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Search is TextBox in frmMain
 
 	with defaults
 		label LABELS.Search
 		max length 20
 
-Entity GD_Com_Comment is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Com_Comment is TextBox in frmMain
 
 	with defaults
 		label LABELS.labComment
 		max length 255
 
-Entity GD_Adr_Street is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Street is TextBox in frmMain
 
 	with defaults
 		label LABELS.labHouseNumber
 		mandatory true
 
-Entity GD_Adr_Street2 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Street2 is TextBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity GD_Adr_Street3 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
 
-	with defaults
-		label LABELS.
-
-Entity GD_Adr_Street4 is mtextbox in __frm__
+Entity GD_Adr_Street3 is TextBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity GD_Adr_Street5 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Street4 is TextBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity GD_Adr_CountryGD is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Street5 is TextBox in frmMain
+
+	with defaults
+
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_CountryGD is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCountry
 		mandatory true
 		enable false
 
-Entity GD_Adr_Region is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Region is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labRegion
 
-Entity GD_Adr_City is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_City is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCity
 		mandatory true
 
-Entity GD_Adr_City2 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_City2 is TextBox in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labDistrict
 		mandatory true
 
-Entity GD_Adr_PostalCode is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_PostalCode is TextBox in frmMain
 
 	with defaults
 		label LABELS.labPostalCode
 		mandatory true
 
-Entity GD_Adr_POBox is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_POBox is TextBox in frmMain
 
 	with defaults
 		label LABELS.labPOBox
 		max length 10
 
-Entity GD_Adr_POBoxPostalCode is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
 
 	with defaults
 		label LABELS.labBoxPostalCode
 
-Entity GD_Adr_POBoxLoc is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_POBoxLoc is TextBox in frmMain
 
 	with defaults
 		label LABELS.labPoBoxLoc
 
-Entity GD_Com_LanguageCode is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Com_LanguageCode is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labLanguages
 		mandatory true
 
-Entity GD_Com_Telebox is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Com_Telebox is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labTelebox
 		mandatory true
 
-Entity GD_Com_DataLine is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Com_DataLine is TextBox in frmMain
 
 	with defaults
 		label LABELS.labDataLine
 
-Entity GD_Ctr_CustomerNumber is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labCustomerNumber
 
-Entity GD_Ctr_Industry is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_Industry is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labIndustries
 		mandatory true
 
-Entity GD_Ctr_UnsubscribeCMD is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labUnsubscribeCMD
 
-Entity GD_Ctr_GFORM is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_GFORM is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labLegalForm
 		mandatory false
 
-Entity GD_Ctr_PIVA is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_PIVA is TextBox in frmMain
 
 	with defaults
 		label LABELS.labPIVA
 
-Entity GD_Ctr_CF is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_CF is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCF
 
-Entity GD_Ctr_VendorNumber is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_VendorNumber is TextBox in frmMain
 
 	with defaults
 		label LABELS.labVendorNumber
 		enable false
 
-Entity GD_Ctr_IFANumber is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_IFANumber is TextBox in frmMain
 
 	with defaults
 		label LABELS.labIFANumber
 		enable false
 
-Entity GD_Ctr_TaxCode1 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 
 	with defaults
 		label LABELS.labTaxCode1
 
-Entity GD_Ctr_TaxCode2 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 
 	with defaults
 		label LABELS.labTaxCode2
 
-Entity GD_Ctr_VATRegistrationNumber is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 
 	with defaults
 		label LABELS.labVATRegistrationNumber
 
-Entity labGD_MainlyMilitary is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labGD_MainlyMilitary is Label in frmMain
 
 	with defaults
 		label LABELS.labGD_MainlyMilitary
 
-Entity labGD_MainlyCivilian is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labGD_MainlyCivilian is Label in frmMain
 
 	with defaults
 		label LABELS.labGD_MainlyCivilian
 
-Entity GD_Nuclear is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Nuclear is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labGD_Nuclear
 
-Entity labGD_FreeZone is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labGD_FreeZone is Label in frmMain
 
 	with defaults
 		label LABELS.labGD_FreeZone
 
-Entity labGD_Embassy is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labGD_Embassy is Label in frmMain
 
 	with defaults
 		label LABELS.labGD_Embassy
 
-Entity GD_Nat_NaturalPerson is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Nat_NaturalPerson is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labNaturalPerson
 
-Entity GD_Nat_BirthDate is mcalendar in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Nat_BirthDate is Calendar in frmMain
 
 	with defaults
 		label LABELS.calBirthDate
 
-Entity GD_Nat_PlaceOfBirth is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Nat_PlaceOfBirth is TextBox in frmMain
 
 	with defaults
 		label LABELS.labPlaceOfBirth
 
-Entity GD_Nat_Profession is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Nat_Profession is TextBox in frmMain
 
 	with defaults
 		label LABELS.labProfession
 
-Entity GD_Nat_Sex is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Nat_Sex is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labSex
 
-Entity CC_CO_ReconAccount is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_CO_ReconAccount is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labCC_CO_ReconAccount
 
-Entity CC_PT_PaymentTerms is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labPTPaymentTerms
 		mandatory true
 
-Entity CC_PT_PaymentMethods is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labPTPaymentMethods
 
-Entity CC_PT_ClearingWithCustomer is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labCC_PT_ClearingWithCustomer
 
-Entity CC_PT_IndividualPayment is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_PT_IndividualPayment is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labSinglePayment
 
-Entity CC_CO_AccountingClerk is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCC_CO_AccountingClerk
 
-Entity CC_DD_DunningProcedure is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_DD_DunningProcedure is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labDDDunningprocedure
 
-Entity CC_DD_DunningArea is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_DD_DunningArea is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labDunningArea
 
-Entity CC_AR_PledgeIndicator is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labARPledgeIndicator
 
-Entity KNVV_BZIRK is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_BZIRK is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labBZIRK
 
-Entity SO_CustomerGroup is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_CustomerGroup is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCustomerGroups
 		mandatory true
 
-Entity SO_SalesOffice is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_SalesOffice is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labSO_SalesOffice
 		mandatory true
 
-Entity KNVV_EIKTO is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_EIKTO is TextBox in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labEIKTO
 		mandatory true
 
-Entity KNVV_VKGRP is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_VKGRP is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labVKGRP
 
-Entity SO_SalesOrderCurrency is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_SalesOrderCurrency is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labSaleOrderCurrency
 		mandatory true
 
-Entity KNVV_KONDA is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_KONDA is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labkONDA
 
-Entity KNVV_PLTYP is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_PLTYP is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labPLTYP
 
-Entity SO_CustPricingProc is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_CustPricingProc is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCustPricProc
 		mandatory true
 
-Entity SO_CustomerStatsGroup is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_CustomerStatsGroup is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labStatusGroup
 		mandatory true
 
-Entity SO_CustomerShippingConditions is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_CustomerShippingConditions is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labShippingCond
 		mandatory true
 
-Entity KNVV_VWERK is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_VWERK is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labVWERK
 
-Entity KNVV_AUTLF is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_AUTLF is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labAUTLF
 
-Entity KNVV_ANTLF is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_ANTLF is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labANTLF
 
-Entity KNVV_LPRIO is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_LPRIO is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labLPRIO
 
-Entity KNVV_KZTLF is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_KZTLF is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labKZTLF
 
-Entity KNVV_PRFRE is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_PRFRE is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labPRFRE
 
-Entity SO_Incoterms is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_Incoterms is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labIncoterms
 		mandatory true
 
-Entity SO_IncotermsPart2 is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_IncotermsPart2 is TextBox in frmMain
 
 	with defaults
 		label LABELS.labIncotermsPart2
 		mandatory true
 
-Entity SO_TermsOfPaymentKey is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_TermsOfPaymentKey is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labTermsOfPaymentKey
 		mandatory true
 
-Entity KNVV_KTGRD is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_KTGRD is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labAccountAssimgnGroup
 		mandatory false
 
-Entity SO_TaxClassification is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SO_TaxClassification is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labTaxClassification
 		mandatory true
 
-Entity KNKK_SBGRP is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_SBGRP is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labCreditControlGroups
 
-Entity KNVV_KVGR1 is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_KVGR1 is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labKVGR1
 
-Entity KNVV_KVGR2 is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_KVGR2 is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labKVGR2
 
-Entity KNVV_KVGR3 is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_KVGR3 is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labKVGR3
 
-Entity KNVV_KVGR4 is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_KVGR4 is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labKVGR4
 
-Entity KNVV_KVGR5 is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNVV_KVGR5 is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labKVGR5
 
-Entity KNKK_KNKLI is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_KNKLI is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCreditAccount
 
-Entity KNKK_KLIMK is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_KLIMK is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCreditLimit
 
-Entity KNKK_CTLPC is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_CTLPC is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_Ctr_RiskClassification
 
-Entity KNKK_DTREV is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_DTREV is TextBox in frmMain
 
 	with defaults
 		label LABELS.labInternalReview
 
-Entity KNKK_NXTRV is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_NXTRV is TextBox in frmMain
 
 	with defaults
 		label LABELS.labNextInternalReview
 
-Entity KNKK_KRAUS is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_KRAUS is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCLimInfNumber
 
-Entity KNKK_DBRTG is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_DBRTG is TextBox in frmMain
 
 	with defaults
 		label LABELS.labRating
 
-Entity KNKK_REVDB is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_REVDB is TextBox in frmMain
 
 	with defaults
 		label LABELS.labLastReviewExt
 
-Entity KNKK_DBEKR is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity KNKK_DBEKR is TextBox in frmMain
 
 	with defaults
 		label LABELS.labRecClimit
 
-Entity btnBlockAll is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnBlockAll is Button in frmMain
 
 	with defaults
 		label LABELS.labBlockAll
 
-Entity btnUnblockAll is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnUnblockAll is Button in frmMain
 
 	with defaults
 		label LABELS.labUnblockAll
 
-Entity BLK_GD_Ctr_UnsubscribeCMD is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labUnsubscribeCMD
 
-Entity labCentralPostingBlock is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labCentralPostingBlock is Label in frmMain
 
 	with defaults
 		label LABELS.labCentralPostingBlock
 
-Entity BLK_CentralPostingBlock is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_CentralPostingBlock is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity labPostBlockingForCompanyCode is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labPostBlockingForCompanyCode is Label in frmMain
 
 	with defaults
 		label LABELS.labPostBlockingForCompanyCode
 
-Entity BLK_PostingBlockForCC is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_PostingBlockForCC is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity BLK_CentralSalesOrderBlock is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCentralSalesOrdersBlock
 
-Entity BLK_OrdersBlockAtSalesArea is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labOrdersBlockAtThisSalesArea
 
-Entity BLK_CentralDeliveriesBlock is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCentralDeliveriesBlock
 
-Entity BLK_DeliveriesBlockAtSalesArea is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labDeliveriesBlockAtThisSalesArea
 
-Entity BLK_CentralBillingBlock is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_CentralBillingBlock is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCentralBillingBlock
 
-Entity BLK_BillingBlockAtSalesArea is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_BillingBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labBillingBlockAtThisSalesArea
 
-Entity labCentralSalesSupportBlock is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labCentralSalesSupportBlock is Label in frmMain
 
 	with defaults
 		label LABELS.labCentralSalesSupportBlock
 
-Entity BLK_CentralSalesSupportBlock is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_CentralSalesSupportBlock is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity labCentralSalesSupportBlockAtThisSalesArea is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labCentralSalesSupportBlockAtThisSalesArea is Label in frmMain
 
 	with defaults
 		label LABELS.labCentralSalesSupportBlockAtThisSalesArea
 
-Entity BLK_CentralSalesSupportBlockAtSalesArea is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_CentralSalesSupportBlockAtSalesArea is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity labCentralDelMasterRecord is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labCentralDelMasterRecord is Label in frmMain
 
 	with defaults
 		label LABELS.labCentralDelMasterRecord
 
-Entity BLK_CentralDeletionFlagMasterRecord is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_CentralDeletionFlagMasterRecord is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity labDelFlagMasterCompanyCode is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labDelFlagMasterCompanyCode is Label in frmMain
 
 	with defaults
 		label LABELS.labDelFlagMasterCompanyCode
 
-Entity BLK_DeletionFlagMasterRecordCC is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_DeletionFlagMasterRecordCC is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity labDelFlagAtThisSalesArea is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labDelFlagAtThisSalesArea is Label in frmMain
 
 	with defaults
 		label LABELS.labDelFlagAtThisSalesArea
 
-Entity BLK_DeletionFlagMasterRecordSA is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_DeletionFlagMasterRecordSA is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity labCentralDelBlockMaster is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labCentralDelBlockMaster is Label in frmMain
 
 	with defaults
 		label LABELS.labCentralDelBlockMaster
 
-Entity BLK_CentralDeletionBlockMasterRecord is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_CentralDeletionBlockMasterRecord is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity labDelBlockMasterCompany is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labDelBlockMasterCompany is Label in frmMain
 
 	with defaults
 		label LABELS.labDelBlockMasterCompany
 
-Entity BLK_DeletionBlockMasterRecordCC is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity BLK_DeletionBlockMasterRecordCC is CheckBox in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity TS_IsUrgentRequest is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity TS_IsUrgentRequest is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labUrgentRequest
 
-Entity CostCenter is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CostCenter is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCostCenter
 
-Entity DDLDCReqAction is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLDCReqAction is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labSR_Action
 		mandatory true
 
-Entity GD_SAPNumber is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_SAPNumber is TextBox in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labSAPNumber
 
-Entity labNextRole is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labNextRole is DropDownList in frmMain
 
 	with defaults
 		label LABELS.NextRole
 		enable false
 
-Entity labNextAction is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labNextAction is DropDownList in frmMain
 
 	with defaults
-		label LABELS.
 		enable false
 
-Entity DDLDCComment is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLDCComment is TextBox in frmMain
 
 	with defaults
 		label LABELS.labComments
 
-Entity btnSubmit is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnSubmit is Button in frmMain
 
 	with defaults
 		label LABELS.btnSubmit
 
-Entity btnClose is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnClose is Button in frmMain
 
 	with defaults
 		label LABELS.btnClose
 
-Entity MADAM_ErrorMessage is mmessage in __frm__
+; ---------------------------------------------------------------------------- 
 
-	with defaults
-		label LABELS.
+; TODO: WHAT TO DO WITH "MESSAGES"
 
-Entity GD_Ctr_RiskClassification is mdropdownlist in __frm__
+;Entity MADAM_ErrorMessage is Message in frmMain
+;
+;	with defaults
+
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labGD_Ctr_RiskClassification
 
-Entity GD_Adr_Country is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Adr_Country is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labGD_Adr_Country
 		mandatory true
 		enable false
 
-Entity GD_Ctr_CustomerClassification is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labGD_Ctr_VendorClassification
 		mandatory true
 
-Entity CC_AM_BPClassification is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CC_AM_BPClassification is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCC_AM_BPClassification
 		mandatory true
 
-Entity GD_Damex is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Damex is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labGD_Damex
 
-Entity GD_Ctr_IsNaturalPerson is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labGD_Ctr_IsNaturalPerson
 
-Entity labGD_DamexNote is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labGD_DamexNote is Label in frmMain
 
 	with defaults
 		label LABELS.labGD_DamexNote
 
-Entity AttachManager is attachmentmanager in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity AttachManager is attachmentmanager in frmMain
 
 	with defaults
-		label LABELS.
 		mandatory true
 
-Entity AttachHistory is attachmenthistory in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity AttachHistory is attachmenthistory in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity SAP_Message is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SAP_Message is TextBox in frmMain
 
 	with defaults
 		label LABELS.labSAP_Message
 
-Entity TS_IsUrgentRequest is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity TS_IsUrgentRequest is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labUrgentRequest
 
-Entity CostCenter is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity CostCenter is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCostCenter
 
-Entity DDLDCReqAction is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLDCReqAction is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labSR_Action
 		mandatory true
 
-Entity GD_SAPNumber is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity GD_SAPNumber is TextBox in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labSAPNumber
 
-Entity labNextRole is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labNextRole is DropDownList in frmMain
 
 	with defaults
 		label LABELS.NextRole
 		enable false
 
-Entity labNextAction is mdropdownlist in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity labNextAction is DropDownList in frmMain
 
 	with defaults
-		label LABELS.
 		enable false
 
-Entity DDLDCComment is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity DDLDCComment is TextBox in frmMain
 
 	with defaults
 		label LABELS.labComments
 
-Entity btnSCClose is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnSCClose is Button in frmMain
 
 	with defaults
 		label LABELS.btnClose
 
-Entity SCMessage is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SCMessage is Label in frmMain
 
 	with defaults
-		label LABELS.
 
-Entity lbFMRelevantFor is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity lbFMRelevantFor is Label in frmMain
 
 	with defaults
 		label LABELS.labFMRelevantFor
 
-Entity lbOtherDependencies is mlabel in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity lbOtherDependencies is Label in frmMain
 
 	with defaults
 		label LABELS.labOtherDependecies
 
-Entity HF_RelevantForSUS is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity HF_RelevantForSUS is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labHF_RelevantForSUS
 		enable false
 
-Entity HF_MandatoryAttachment is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity HF_MandatoryAttachment is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labHF_MandatoryAttachment
 		enable false
 
-Entity HF_MandatoryComment is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity HF_MandatoryComment is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labHF_MandatoryComment
 		enable false
 
-Entity HF_RelevantForCO is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity HF_RelevantForCO is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labHF_RelevantForCO
 		enable false
 
-Entity HF_RelevantForClusterRCO is mcheckbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity HF_RelevantForClusterRCO is CheckBox in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labHF_RelevantForCL_RCO
 		enable false
 
-Entity txbNextRole is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity txbNextRole is TextBox in frmMain
 
 	with defaults
 		label LABELS.NextRole
 		enable false
 
-Entity SR_Comments is mtextbox in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity SR_Comments is TextBox in frmMain
 
 	with defaults
 		label LABELS.labSR_Comments
 
-Entity btnBack2 is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnBack2 is Button in frmMain
 
 	with defaults
 		label LABELS.btnBack
 
-Entity btnSave is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnSave is Button in frmMain
 
 	with defaults
 		label LABELS.btnSave
 
-Entity btnCloseFinal is mbutton in __frm__
+; ---------------------------------------------------------------------------- 
+
+Entity btnCloseFinal is Button in frmMain
 
 	with defaults
 		label LABELS.btnClose
 
-Entity SummaryErrorMessage is mmessage in __frm__
+; ---------------------------------------------------------------------------- 
 
-	with defaults
-		label LABELS.
+; TODO: WHAT TO DO WITH "MESSAGES"
+; Entity SummaryErrorMessage is Message in frmMain
+; 
+; 	with defaults
+
+; ---------------------------------------------------------------------------- 
+
+
 
 
 
