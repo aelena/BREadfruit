@@ -1550,14 +1550,39 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 	with defaults
 		label LABELS.labGD_Ctr_VendorClassification
 		mandatory true
+		visible true
+		enabled true
+		value "NG"
+		; values G  and NG
+		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
+
+	with rules
+		REQUEST.CURRENT_ROLE is SUS then enabled false
+		REQUEST.CUSTOMER_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_CustomerClassification
+		REQUEST.CUSTOMER_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_CustomerClassification
+
+		; TODO: RULE FOR FR
+		; For customer country France the value is set due to legal form selection, see sheet "Legal form(France)"  meaning what??????
+		
+		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
+			this enabled 
 
 ; ---------------------------------------------------------------------------- 
 
 Entity CC_AM_BPClassification is DropDownList in frmMain
 
 	with defaults
-		label LABELS.labCC_AM_BPClassification
+		visible true
+		enabled true
+		value "NORM"
+		load data from DATASOURCE.BP_CLASSIFICATIONS
 		mandatory true
+		label LABELS.labCC_AM_BPClassification
+	
+	with rules
+		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then AttachManager mandatory 
+		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
+			this enabled 
 
 ; ---------------------------------------------------------------------------- 
 
@@ -1565,6 +1590,14 @@ Entity GD_Damex is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labGD_Damex
+		value ''
+		load data from DATASOURCE.YES_NO
+		mandatory true
+	
+	with rules
+		REQUEST.FLOWTYPE not in {"CC", "CC_CC"} then 
+			GD_Damex not mandatory
+			GD_Damex not visible
 
 ; ---------------------------------------------------------------------------- 
 

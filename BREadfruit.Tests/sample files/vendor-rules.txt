@@ -333,12 +333,12 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 		enabled true
 		value "NG"
 		; values G  and NG
-		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
+		load data from DATASOURCE.labGD_Ctr_VendorClassification
 		mandatory true
 		label LABELS.VENDOR.VENDOR_CLASSIFICATION
 
 	with rules
-		CURRENT_ROLE in {"UPM", "CPM"} then enabled false
+		REQUEST.CURRENT_ROLE in {"UPM", "CPM"} then enabled false
 		REQUEST.VENDOR_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification
 		REQUEST.VENDOR_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_VendorClassification
 		
@@ -355,7 +355,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		value "NORM"
 		load data from DATASOURCE.BP_CLASSIFICATIONS
 		mandatory true
-		label LABELS.VENDOR.BP_CLASSIFICATION
+		label LABELS.labCC_AM_BPClassification
 
 	with rules
 		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then AttachManager mandatory 
@@ -371,7 +371,7 @@ Entity GD_Damex is DropDownList in frmMain
 		value ''
 		load data from DATASOURCE.YES_NO
 		mandatory true
-		label LABELS.VENDOR.HAVE_YOU_DONE_THE_DAMEX
+		label LABELS.VENDOR.labGD_Damex
 
 	with rules
 		REQUEST.FLOWTYPE not in {"VC", "VC_CC"} then 
