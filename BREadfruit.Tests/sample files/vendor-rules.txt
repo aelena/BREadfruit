@@ -48,7 +48,7 @@ Entity TBVendorCity is TextBox in frmSearch
 	with defaults
 		visible true
 		value ""
-		label LABELS.VENDOR.CITY
+		label LABELS.labVendorCity
 
 	with actions
 		hide btnCreateVendor
@@ -91,17 +91,16 @@ Entity TBVendorIFA is TextBox in frmSearch
 	with defaults
 		visible true
 		value ''
-		label LABELS.VENDOR.TAXCODE4
+		label LABELS.labVendorIFA
 
 	with actions
 		hide btnCreateVendor
-		set hidden vendorSearchResultGrid
+		hide vendorSearchResultGrid
 	
 	with rules
 		; should this be moved to rules for the btnSearch button? maybe.....
-		DDLVDCountry.value not is '' then DDLVDCountry not mandatory
-		DDLVDCountry.value is '' then DDLVDCountry mandatory
-
+		TBVendorIFA.value not is '' then DDLVDCountry not mandatory
+		TBVendorIFA.value is '' then DDLVDCountry mandatory
 
 	with triggers
 		this.value changes
@@ -121,8 +120,7 @@ Entity TBVendorIFA is TextBox in frmSearch
 		set value '' in ErrorMessage
 		hide vendorSearchResultGrid
 		hide btnCreateVendor
-		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES ;{"Country":"ES","Active":true }
-
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
 
 	with rules
 		DDLVDCountry.value in {"FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
@@ -139,7 +137,7 @@ Entity TBVendorVAT is TextBox in frmSearch
 	with defaults
 		visible true
 		value ''
-		label LABELS.GENERIC.VAT
+		label LABELS.labVendorVAT
 
 	with actions
 		hide btnCreateVendor
@@ -157,11 +155,11 @@ Entity DDLCDCountry is DropDownList in frmSearch
 		; we need to define these things too, let's calle them "data constants" for now...
 		value User.Country
 		load data from DATASOURCE.ACTIVE_COUNTRIES
-		label LABELS.GENERIC.COUNTRY
+		label LABELS.labCountry
 	
 	with actions
 		; load active companies for this country
-		load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
+		load data from DATASOURCE.MDM_ClusterCompanies with arguments {"Country" : this.value} in DDLCDCompany
 		; purge the data in this dropdownlist
 		clear DDLCDPurchOrg
 
@@ -175,11 +173,11 @@ Entity DDLCDCompany is DropDownList in frmSearch
 	with defaults
 		visible true
 		value USER_COST_LOCATION_UNIT			; another data constant
-		label LABELS.GENERIC.COMPANY
+		label LABELS.labCompany
 
 	with actions
 		; load active companies for this country
-		load data from DATASOURCES.ACTIVE_POs with arguments {"Arg1": this.value} in DDLCDPurchOrg 
+		load data from DATASOURCES.MDM_ClusterPurchaseOrganizations with arguments {"CompanyCode": this.value} in DDLCDPurchOrg 
 
 	with triggers
 		this.value changes
@@ -202,7 +200,7 @@ Entity btnSearch is Button in frmSearch
 		label LABELS.BUTTONS.SEARCH
 
 	with actions
-		; missing defining arguments here...
+		; TODO: missing defining arguments here...
 		load data from WEBSERVICE.SEARCH_VENDORS with arguments {"A" : "B"} in grid
 		; this means the database has to be asked to see if current user has permissions for the selected combination
 		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
@@ -249,11 +247,11 @@ Entity btnSearch is Button in frmSearch
 Entity btnCreateVendor is Button in frmSearch
 	with defaults
 		visible false
-		label LABELS.BUTTONS.CREATEVENDOR
+		label LABELS.btnCreateVendor
 
 	with actions
 		; transition to the main form
-		; guess we will have to pass some arguments here and map things to the conceptual model
+		; TODO: guess we will have to pass some arguments here and map things to the conceptual model
 		; this works already anyway
 		change form to frmMain with arguments {"A" : "B"}
 

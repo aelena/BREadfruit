@@ -26,33 +26,96 @@
 ; ----------------------------------------------------------------------------
 
 
+Entity rbSpiridon is RadioButton in frmSearch
+	with defaults
+		enabled false
+		label "Spiridon"
+		value true				; means checked
 
+; ----------------------------------------------------------------------------	
+
+Entity rbEPass is RadioButton in frmSearch
+	with defaults
+		enabled false
+		label "Epass"
+		value false				; means unchecked
+
+; ----------------------------------------------------------------------------
 
 Entity TBCustomerName is TextBox in frmSearch
-
 	with defaults
 		label LABELS.labCustomerName
+		value   ''
 
+	with actions
+		hide btnCreateCustomer
+		set hidden CustomerSearchResultGrid
+
+	with rules
+		
+	with triggers
+		TBCustomerName.Value changes
 ; ---------------------------------------------------------------------------- 
 
 Entity TBCustomerCity is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerCity
+		value   ''
 
+	with actions
+		hide btnCreateCustomer
+		set hidden CustomerSearchResultGrid
+
+	with rules
+		
+	with triggers
+		TBCustomerName.Value changes
 ; ---------------------------------------------------------------------------- 
 
 Entity TBCustomerNumber is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerNumber
+		value   ''
+		min length 10
+		max length 10
 
+	with actions
+		hide btnCreateCustomer
+		hide CustomerSearchResultGrid
+
+	with rules
+		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
+		TBCustomerNumber.text starts with '0' then
+			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in ErrorMessage
+		TBCustomerNumber.text not starts with '0' then
+			set value '' in ErrorMessage
+
+	with triggers
+		this.value changes
+
+	with constraints
+		only numbers
+			
 ; ---------------------------------------------------------------------------- 
 
 Entity TBCustomerIFA is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerIFA
+
+	with actions
+		hide btnCreateCustomer
+		hide CustomerSearchResultGrid
+	
+	with rules
+		; should this be moved to rules for the btnSearch button? maybe.....
+		TBCustomerIFA.value not is '' then DDLDCountry not mandatory
+		TBCustomerIFA.value is '' then DDLDCountry mandatory
+
+	with triggers
+		this.value changes
 
 ; ---------------------------------------------------------------------------- 
 
@@ -61,12 +124,35 @@ Entity DDLDCountry is DropDownList in frmSearch
 	with defaults
 		label LABELS.labCountry
 
+	with actions
+		set value '' in ErrorMessage
+		hide CustomerSearchResultGrid
+		hide btnCreateCustomer
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES 
+
+	with rules
+		DDLCDCountry.Value in {"FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
+		DDLCDCountry.Value in {"PT","ES"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.NIF in TBVendorVAT
+		DDLCDCountry.Value is "IT" then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
+		DDLCDCountry.Value not in {"PT","ES","IT","FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value "VAT" in TBVendorVAT
+	
+	with triggers
+		this.value changes 
+
 ; ---------------------------------------------------------------------------- 
 
 Entity TBCustomerVAT is TextBox in frmSearch
 
 	with defaults
+		value ''
 		label LABELS.labCustomerVAT
+
+	with actions
+		hide btnCreateCustomer
+		hide CustomerSearchResultGrid
+
+	with triggers
+		this.value changes
 
 ; ---------------------------------------------------------------------------- 
 
@@ -74,6 +160,20 @@ Entity DDLCDCountry is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labCountry
+		; we need to define these things too, let's calle them "data constants" for now...
+		value User.Country
+		load data from DATASOURCE.ACTIVE_COUNTRIES
+
+	with actions
+		; load active companies for this country
+		load data from DATASOURCE.MDM_ClusterCompanies with arguments {"Country" : this.value} in DDLCDCompany
+		; purge the data in this dropdownlist
+		clear DDLCDPurchOrg
+
+	with triggers
+		this.value changes
+
+
 
 ; ---------------------------------------------------------------------------- 
 
@@ -81,6 +181,16 @@ Entity DDLCDCompany is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labCompany
+		mandatory true
+		value USER_COST_LOCATION_UNIT			; another data constant
+
+
+	with actions
+		; load active companies for this country
+		load data from DATASOURCES.MDMC_ClusterSalesOrganizations with arguments {"Arg1": this.value} in DDLCDPurchOrg 
+
+	with triggers
+		this.value changes
 
 ; ---------------------------------------------------------------------------- 
 
@@ -88,6 +198,16 @@ Entity DDLCDSalesOrg is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labSalesOrg
+		mandatory true
+
+	with actions
+		; load active companies for this country
+		; this means the current ìmplementation needs to change a bit...
+		; TODO: REORGANIZE THE TABLE TO REFLECT THIS CHANGES IN TEH VALUES LOADED IN THIS DIST CHANNEL COMBO ISNTEAD OF REMOVING BY CODE
+		load data from DATASOURCES.MDMC_ClusterDistributionChannels with arguments {"FlagActive": true, "Country" : DDLCDCountry.Value} in DDLCDDistribChannel 
+
+	with triggers
+		this.value changes
 
 ; ---------------------------------------------------------------------------- 
 
@@ -103,6 +223,12 @@ Entity DDLCDivision is DropDownList in frmSearch
 	with defaults
 		visible false
 		label LABELS.labDivision
+		load data from DATASOURCE.MDMC_Divisions with arguments {"Country": DDLCDCountry.Value, "CompanyCode" : DDLCDCompany.Value, "SalesOrg" : DDLCDSalesOrg.Value, "FlagActive" : true }
+
+	; TODO: WHEN DOES THIS CONTROL BECOME VISIBLE
+	with rules
+		DDLCDivision.Visible and DDLCDivision is empty then
+			DDLCDivision mandatory
 
 ; ---------------------------------------------------------------------------- 
 
@@ -111,6 +237,53 @@ Entity btnSearch is Button in frmSearch
 	with defaults
 		label LABELS.btnSearch
 
+	with actions
+		; TODO: missing defining arguments here...
+		load data from WEBSERVICE.SEARCH_VENDORS with arguments {"A" : "B"} in grid
+		; this means the database has to be asked to see if current user has permissions for the selected combination
+		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
+		; show an error message or popup
+		; maybe this has to be defined a bit better
+		; would this be DATASOURCE or maybe WEBSERVICE call?
+		; what properties should be passed to identify the user? or shall this be somehow managed or injected by environment?
+		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {"User" : USER.USER_ID, "Country" : DDLCDCountry, "Company" : DDLCDCompany, "PurchaseOrg" : DDLCDPurchOrg} in ErrorMessage
+
+	with rules
+		TBCustomerIFA.value is not empty then DDLDCountry mandatory
+
+		DDLDCountry is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+		
+		TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+	
+		TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in ErrorMessage
+		
+		TBCustomerName is empty and TBCustomerCity is not empty and TBCustomerName is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+	
+		DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
+			; message: Fill fields Country, Company and Sales Organization
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in ErrorMessage
+		
+		TBCustomerName is not empty and DDLDCountry is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
+		DDLCDivision.Visible and DDLCDivision is empty then
+			; show this message : Fill the field of Division Country
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
+		; this Company is deactivated for the moment
+		;DDLCDCompany.Company is 563M and DDLCDCountry is empty or DDLCDCompany is empty then
+		;	; show this message : Fill fields Country and Company
+		;	set value MESSAGES.VALIDATIONS.SEARCH.FILL05 in ErrorMessage
+
+
+	with triggers
+
+		this on click	
+
 ; ---------------------------------------------------------------------------- 
 
 Entity btnCreateCustomer is Button in frmSearch
@@ -118,6 +291,17 @@ Entity btnCreateCustomer is Button in frmSearch
 	with defaults
 		label LABELS.btnCreateCustomer
 
+	with actions
+		; transition to the main form
+		; TODO : guess we will have to pass some arguments here and map things to the conceptual model
+		change form to frmMain with arguments {"A" : "B"}
+
+	with rules
+		; how to specify all that happens server side here?
+		; shall be express something like change form?
+
+	with triggers
+		this click
 ; ---------------------------------------------------------------------------- 
 
 Entity LBLSearchResultMessage is Label in frmSearch
@@ -126,9 +310,22 @@ Entity LBLSearchResultMessage is Label in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
+Entity CustomerSearchResultGrid is Grid in frmSearch
+	with defaults
+		visible false
+
+	; TODO: DEFINE CONVENTIONS FOR GRID BETTER
+
+	; MISSING ACTIOSN ON GRID BUTTONS
 
 
+; ----------------------------------------------------------------------------	
+;     END OF SEARCH FORM DEFINITION
+; ----------------------------------------------------------------------------	
 
+; ----------------------------------------------------------------------------	
+; BEGIN MAIN FORM CONTROL DEFINITION
+; ----------------------------------------------------------------------------	
 
 ; ----------------------------------------------------------------------------
   -- LIST OF ALL ENTITIES FOUND in MDMC main FORM
@@ -516,10 +713,25 @@ Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_Industry is DropDownList in frmMain
-
 	with defaults
-		label LABELS.labIndustries
 		mandatory true
+		visible true
+		label LABELS.labIndustries
+		; if there are no specific data for this specific country, data for "EN" should be loaded
+		load data from VENDOR.ACCOUNT_GROUP with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
+
+	with rules
+		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "FR"}
+			; this equals to this line in original code
+			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
+			set value "FR" in REQUEST.INDUSTRY_COUNTRY
+
+		VENDOR.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
+			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "EN"}
+			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
+			set value "EN" in REQUEST.INDUSTRY_COUNTRY
+			mandatory false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -531,11 +743,20 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_GFORM is DropDownList in frmMain
-
 	with defaults
-		visible false
 		label LABELS.labLegalForm
-		mandatory false
+		visible false
+		; data source is same for vendors and customers
+		load data from DATASOURCE.MDM_LegalForms with arguments {"FlagActive" : true }
+
+	with rules
+		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+			visible true
+
+		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
+			mandatory true
+
+
 
 ; ---------------------------------------------------------------------------- 
 
@@ -705,9 +926,28 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 ; ---------------------------------------------------------------------------- 
 
 Entity CC_DD_DunningProcedure is DropDownList in frmMain
-
 	with defaults
 		label LABELS.labDDDunningprocedure
+
+	with rules
+		REQUEST.COUNTRY is BE then
+			set value Y1VE in CC_DD_DunningProcedure
+
+		REQUEST.COUNTRY is LU then
+			set value Y001 in CC_DD_DunningProcedure
+
+		REQUEST.COMPANY_CODE is 5140 and GD_Ctr_CustomerClassification.Value is G then
+			set value Y601 in CC_DD_DunningProcedure
+	
+		REQUEST.COMPANY_CODE is 5140 and GD_Ctr_CustomerClassification.Value is NG then
+			set value Y602 in CC_DD_DunningProcedure
+			
+		REQUEST.COMPANY_CODE is 491E then
+			set value Y602 in CC_DD_DunningProcedure
+
+		REQUEST.VENDOR_COUNTRY is GR then
+			set value Y704 in CC_DD_DunningProcedure
+
 
 ; ---------------------------------------------------------------------------- 
 
@@ -1267,16 +1507,41 @@ Entity btnClose is Button in frmMain
 Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 	with defaults
+		enabled true
+		visible true
+		value "00"
+		; only two values, 00 and 09
+		load data from DATASOURCE.MDM_RiskClassifications
 		label LABELS.labGD_Ctr_RiskClassification
+
+	with rules
+		REQUEST.CURRENT_ROLE not in {"RCO","ENQ","CLERK"} then enabled false
+
+		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
+			this enabled 
+
+		GD_Ctr_RiskClassification.Value is '' then
+			GD_Ctr_RiskClassification enabled true
+
+		REQUEST.STATUS is REQUEST.CLOSED then
+			enabled false
+
+	with triggers
+		; TODO FIND A BETTER WAY TO EXPRESS THIS....
+		; BANK_INSERTED EVALUATE -----
+
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Country is DropDownList in frmMain
-
 	with defaults
-		label LABELS.labGD_Adr_Country
+		visible true
+		enabled false					; this control is always disabled
+		value USER.COUNTRY				; -- depends on country selected in search form, so this data has to be passed
+		load data from DATASOURCE.MDMC_Countries
 		mandatory true
-		enable false
+		label LABELS.labGD_GD_Adr_Country
+
 
 ; ---------------------------------------------------------------------------- 
 
@@ -1500,119 +1765,6 @@ Entity btnCloseFinal is Button in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-
-
-
-
-; ----------------------------------------------------------------------------	
-; BEGIN MAIN FORM CONTROL DEFINITION
-; ----------------------------------------------------------------------------	
-
-; -- RULES FOR CUSTOMER MAIN FORM (MDM.ASPX)
-
-
-Entity GD_Ctr_RiskClassification is DropDownList in frmMain
-
-	with defaults
-		enabled true
-		visible true
-		value "00"
-		; only two values, 00 and 09
-		load data from DATASOURCE.MDM_RiskClassifications
-		label LABELS.labGD_Ctr_RiskClassification
-
-	with rules
-		REQUEST.CURRENT_ROLE not in {"RCO","ENQ","CLERK"} then enabled false
-
-		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
-			this enabled 
-
-		GD_Ctr_RiskClassification.Value is '' then
-			GD_Ctr_RiskClassification enabled true
-
-		REQUEST.STATUS is REQUEST.CLOSED then
-			enabled false
-
-	with triggers
-		; TODO FIND A BETTER WAY TO EXPRESS THIS....
-		; BANK_INSERTED EVALUATE -----
-
-; ----------------------------------------------------------------------------	
-
-Entity GD_Adr_Country is DropDownList in frmMain
-	with defaults
-		visible true
-		enabled false					; this control is always disabled
-		value USER.COUNTRY				; -- depends on country selected in search form, so this data has to be passed
-		load data from DATASOURCE.MDMC_Countries
-		mandatory true
-		label LABELS.labGD_GD_Adr_Country
-
-; ----------------------------------------------------------------------------	
-
-
-Entity GD_Ctr_Industry is DropDownList in frmMain
-	with defaults
-		mandatory true
-		visible true
-		label LABELS.labIndustries
-		; if there are no specific data for this specific country, data for "EN" should be loaded
-		load data from VENDOR.ACCOUNT_GROUP with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
-
-	with rules
-		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
-			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "FR"}
-			; this equals to this line in original code
-			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
-			set value "FR" in REQUEST.INDUSTRY_COUNTRY
-
-		VENDOR.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
-			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "EN"}
-			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
-			set value "EN" in REQUEST.INDUSTRY_COUNTRY
-			mandatory false
-
-; ----------------------------------------------------------------------------	
-
-
-Entity GD_Ctr_GFORM is DropDownList in frmMain
-	with defaults
-		label LABELS.labLegalForm
-		visible false
-		; data source is same for vendors and customers
-		load data from DATASOURCE.MDM_LegalForms with arguments {"FlagActive" : true }
-
-	with rules
-		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
-			visible true
-
-		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
-			mandatory true
-
-
-
-Entity CC_DD_DunningProcedure is DropDownList in frmMain
-	with defaults
-		label LABELS.labDDDunningprocedure
-
-	with rules
-		REQUEST.COUNTRY is BE then
-			set value Y1VE in CC_DD_DunningProcedure
-
-		REQUEST.COUNTRY is LU then
-			set value Y001 in CC_DD_DunningProcedure
-
-		REQUEST.COMPANY_CODE is 5140 and GD_Ctr_CustomerClassification.Value is G then
-			set value Y601 in CC_DD_DunningProcedure
-	
-		REQUEST.COMPANY_CODE is 5140 and GD_Ctr_CustomerClassification.Value is NG then
-			set value Y602 in CC_DD_DunningProcedure
-			
-		REQUEST.COMPANY_CODE is 491E then
-			set value Y602 in CC_DD_DunningProcedure
-
-		REQUEST.VENDOR_COUNTRY is GR then
-			set value Y704 in CC_DD_DunningProcedure
 
 
 
