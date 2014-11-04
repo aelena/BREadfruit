@@ -332,8 +332,8 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ; ----------------------------------------------------------------------------
 
 
-
-
+; TODO: PENDING STUFF LIKE THE COMPOSITE CONTROLS-... FOR EXAMPLE CONTACT PERSONS ETC.....
+;		AND TELEPHONES, EMAIL, ETC
 
 
 ;	labOpInfoCustomer
@@ -502,10 +502,11 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 
 
 
+; SOME HIDDEN FIELDS - CC_AM_SortKey, CC_AM_InterestIndic, CC_AM_CashManagementGroup, KNB1.XZVER, CC_CO_AuthorizationGroup
+; TODO: THINK IF NEEDED IN REQUEST MODEL OR MAPPINGS....1277
+
 
 ; ----------------------------------------------------------------------------
-
-
 
 
 Entity labOpInfoCustomer is Label in frmMain
@@ -548,25 +549,38 @@ Entity GD_Adr_Name is TextBox in frmMain
 	with defaults
 		label LABELS.labName
 		mandatory true
-		max length 35
+		max length 32
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Name2 is TextBox in frmMain
 
 	with defaults
+		max length 32
+
+	with rules
+		; mandatory for ENQ and in 5150 (the only Greece CoCD)
+		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ENQ then 
+			GD_Adr_Name4 mandatory true
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Name3 is TextBox in frmMain
 
 	with defaults
+		max length 32
+
+	with rules
+		; mandatory for ENQ and in 5150 (the only Greece CoCD)
+		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ENQ then 
+			GD_Adr_Name4 mandatory true
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Name4 is TextBox in frmMain
 
 	with defaults
+		max length 32
 
 ; ---------------------------------------------------------------------------- 
 
@@ -575,6 +589,8 @@ Entity GD_Adr_Search is TextBox in frmMain
 	with defaults
 		label LABELS.Search
 		max length 20
+		; put here the first 20 characters of the name (which in creations comes from search screen)
+		value GD_Adr_Name1
 
 ; ---------------------------------------------------------------------------- 
 
@@ -582,7 +598,7 @@ Entity GD_Com_Comment is TextBox in frmMain
 
 	with defaults
 		label LABELS.labComment
-		max length 255
+		max length 35
 
 ; ---------------------------------------------------------------------------- 
 
@@ -591,30 +607,47 @@ Entity GD_Adr_Street is TextBox in frmMain
 	with defaults
 		label LABELS.labHouseNumber
 		mandatory true
+		max length 32
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Street2 is TextBox in frmMain
 
 	with defaults
+		max length 32
+
+	with rules
+		REQUEST.COUNTRY is FR then GD_Adr_Street2 not visible
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Street3 is TextBox in frmMain
 
 	with defaults
+		max length 32
+
+	with rules
+		REQUEST.COUNTRY is FR then GD_Adr_Street3 not visible
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Street4 is TextBox in frmMain
 
 	with defaults
+		max length 32
+
+	with rules
+		REQUEST.COUNTRY is FR then GD_Adr_Street4 not visible
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Street5 is TextBox in frmMain
 
 	with defaults
+		max length 32
+
+	with rules
+		REQUEST.COUNTRY is FR then GD_Adr_Street5 not visible
 
 ; ---------------------------------------------------------------------------- 
 
@@ -624,14 +657,42 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 		label LABELS.labCountry
 		mandatory true
 		enable false
+		; TODO: PENDING FINAL MODEL DEFINITION FROM FD
+		value SEARCH_FORM_VALUES.DDLVDCountry			; Vendor country, country of the company code!!!!
+ 
 
 ; ---------------------------------------------------------------------------- 
+
+;1) In customer creation from scratch MADAM has to check in table in sheet “Mandatory Region List” 
+;	if it is mandatory and MADAM has to show in DDL the values according to the customer country.
+;2) If customer country  belongs to YCT6 or YCT9 -> Region mandatory and the control generate postback
+;3) if customer country belongs to YCT1 -> region mandatory /if region = 01 -> language = NL/If region = 02 OR 03 -> language = FR
+;4) If customer country belongs to YCT6/YCT9: if region selected = "2A" -> Postal code begins with 20/
+;    if region selected = "2B" -> Postal code begins with 20 else Postal code begins with code region
+
+; TODO: I THINK THERE ARE MORE RULES
 
 Entity GD_Adr_Region is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labRegion
+		load data from DATASOURCE.MDM_Regions with arguments {"FlagActive" : true, "CountryCode" : REQUEST.VENDOR_COUNTRY }
 
+	with rules
+		REQUEST.ACCOUNT_GROUP in {YCT1, YCT6, YCT9} then
+			GD_Adr_Region mandatory true
+
+		REQUEST.ACCOUNT_GROUP is YCT1 and GD_Adr_Region.Value is 01 then
+			set value NL in GD_Com_Language
+
+		REQUEST.ACCOUNT_GROUP is YCT1 and GD_Adr_Region.Value in {02, 03} then
+			set value FR in GD_Com_Language
+
+		REQUEST.ACCOUNT_GROUP in {YCT6, YCT9} and GD_Adr_Region.Value is 2A then
+			set value 20 in GD_Adr_PostalCode
+
+
+			
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_City is TextBox in frmMain
@@ -639,6 +700,7 @@ Entity GD_Adr_City is TextBox in frmMain
 	with defaults
 		label LABELS.labCity
 		mandatory true
+		max length 35
 
 ; ---------------------------------------------------------------------------- 
 
@@ -647,17 +709,94 @@ Entity GD_Adr_City2 is TextBox in frmMain
 	with defaults
 		visible false
 		label LABELS.labDistrict
-		mandatory true
+
+	with rules
+		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is GR then
+			GD_Adr_City2 visible true
+
+		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is not GR then
+			GD_Adr_City2 mandatory true
 
 ; ---------------------------------------------------------------------------- 
+
+;	"25-07-2014(RG): 1)By default maxlength = 10
+;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4
+;	IF vendor country belongs to YVT3/YVT5 -> Maxlength = 5
+;	IF vendor country belongs to YVT4 -> Maxlength = 8
+;	IF vendor country belongs to YVT6/YVT9 -> Maxlength = 5 and control generate postback
+;	2) If vendor country belongs to YVT6/YVT9->region code = postal code firts digits (2)
+;	3)VALIDATIONS
+;	If vendor country belongs to YVT6/YVT9-> only numbers and fists digits must be equal with region
+;	If vendor country Spain-> only numbers and must be < 53000
+;	If vendor country Greece-> only numbers
+;	If vendor country Italy-> only numbers
+;	If vendor country Portugal-> format 9999-999
+;	If vendor country Luxemburg-> only numbers
+;	If vendor country Belgium-> only numbers and
+;	region 01 -> must be >=1500 and <=3999 OR >=8000 and <=9999
+;	region 02 -> must be >=1300 and <=1499 OR >=4000 and <=7999
+;	region 03 -> must be >=1000 and <=1299"
+
+; TODO: TERMINAR DE REVISAR TODAS LAS REGLAS EN CODIGO 
 
 Entity GD_Adr_PostalCode is TextBox in frmMain
 
 	with defaults
 		label LABELS.labPostalCode
 		mandatory true
+		max length 5
+
+	with rules
+		;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4 (only numbers - Format: XXXX)
+		REQUEST.ACCOUNT_GROUP in {YVT1, YVT2} then
+			max length 4
+			validation ^[0-9]{4}$
+
+		REQUEST.ACCOUNT_GROUP in {YVT3, YVT5, YVT7} then
+			max length 5
+			validation ^[0-9]{5}$
+
+		REQUEST.ACCOUNT_GROUP is YVT4 then
+			max length 8
+			validation ^[0-9]{4}-[0-9]{3}$
+
+		REQUEST.VENDOR_COUNTRY in {IT, GR} then
+			max length 5
+
+		REQUEST.VENDOR_COUNTRY is ES then
+			max length 5
+			validation ^[0-5]{1}[1-2]{1}[0-9]{3}$
+
+		; post code must be >=1500 and <=3999 OR >=8000 and <=9999
+		; the regular expression covers the ranges
+		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 01 then
+			max length 4
+			validation ^(1[5-9][0-9]{2}){1}|((2|3)[0-9]{3}){1}|((8|9)[0-9]{3})$
+		
+		; post code must be >=1300 and <=1499 OR >=4000 and <=7999
+		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 02 then
+			max length 4
+			validation ^(1[3-4][0-9]{2}){1}|([4-7][0-9]{3})$
+
+		; post code must be >=1000 and <=1299
+		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 03 then
+			max length 4
+			validation ^(1[0-2][0-9]{2})$
+
+		REQUEST.VENDOR_COUNTRY in {FR, GF, GP, MC, MQ, NC, PF, PM, RE, WF, YT} then
+			max length 5
+			validation ^[0-9]{5}$
+			set value substring(GD_Adr_PostalCode,2) in GD_Adr_Region
 
 ; ---------------------------------------------------------------------------- 
+
+;	1)If regional country = France -> maxlength = 10
+;	2) IF vendor country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT) and POBox is informed  -> POBoxPostalCode, POBox and POBox City mandatory
+;	else if POBox empty or informed with ""."" -> POBoxPostalCode, POBox and POBox City NOT mandatory
+;	3) If vendor country belongs to YVT7 -> maxlength = 5
+;	4) If vendor country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT)  -> maxlength = 10 and mandatory by default false and field do postback"
+
+;	TODO: REVISAR CODIGO
 
 Entity GD_Adr_POBox is TextBox in frmMain
 
@@ -665,52 +804,244 @@ Entity GD_Adr_POBox is TextBox in frmMain
 		label LABELS.labPOBox
 		max length 10
 
+	with rules
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is not empty then
+			GD_Adr_POBoxPostalCode mandatory true
+			GD_Adr_POBoxLoc mandatory true
+
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is empty then
+			GD_Adr_POBoxPostalCode mandatory false
+			GD_Adr_POBoxLoc mandatory false
+
+		REQUEST.ACCOUNT_GROUP is YVT7 then
+			max length 5
+
 ; ---------------------------------------------------------------------------- 
+
+;	Maxlength by default 10
+;	1)If regional country = France -> maxlength = 5
+;	2)IF vendor country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT) and POBox Postal code is informed -> PO Box city mandatory
+;	3) If vendor country belongs to YVT7 -> maxlength = 5
+;	4) has the same validations as postal code.
+;	5) IF vendor country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT) and POBox postal code is informed and PO box is empty-> set po box = "".""
+;	6)If vendor country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT)  -> maxlength = 5 and mandatory by default false and field do postback"
 
 Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
 
 	with defaults
 		label LABELS.labBoxPostalCode
+		max length 10
+
+	with rules
+		VENDOR.COUNTRY is FR or REQUEST.ACCOUNT_GROUP is YCT7 then
+			max length 5
 
 ; ---------------------------------------------------------------------------- 
+
+;	1) Maxlength 100
+;	2) If regional country France -> Maxlength 40
+;	3) If customer country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT): if P.O.Box == empty/""."" -> If P.O.Box Postal code != empty -> mandatory
+;	4) If customer country belongs to (SAP country code FR GF GP MC MQ NC PF PM RE WF YT): if P.O.Box == empty/""."" -> If P.O.Box other city != empty -> mandatory
+;	5) If customer country belongs to(SAP country code FR GF GP MC MQ NC PF PM RE WF YT): if P.O.Box != empty -> mandatory"
 
 Entity GD_Adr_POBoxLoc is TextBox in frmMain
 
 	with defaults
 		label LABELS.labPoBoxLoc
+		max length 100
+
+	with rules
+		REQUEST.COUNTRY is FR then
+			max length 40
 
 ; ---------------------------------------------------------------------------- 
+
+;	By default EN
+;	1) mandatory
+;	2) language = country of partner code
+;	3) If  partner country belongs to YCT6/YCT9 (SAP country code FR GF GP MC MQ NC PF PM RE WF YT)-> FR
+;	4) If vendor country belongs to YVT1 -> If region = 01-> NL /If region = 02 or 03 -> FR
 
 Entity GD_Com_LanguageCode is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labLanguages
 		mandatory true
+		load data from DATASOURCE.MDM_Languages	with arguments {"FlagActive" : true}	
+		value EN		; default is English
+
+	with rules
+		REQUEST.CUSTOMER_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} then
+			set value FR in GD_Com_LanguageCode
+
+		REQUEST.ACCOUNT_GROUP is YCT1 and GD_Adr_Region is 01 then
+			set value NL in GD_Com_LanguageCode
+	
+		REQUEST.ACCOUNT_GROUP is YCT1 and GD_Adr_Region in {02, 03} then
+			set value FR in GD_Com_LanguageCode
+
 
 ; ---------------------------------------------------------------------------- 
+
+;	1) by default PRT
+;	2) PRT is the only value available when a creation from scratch is requested" ; current madam does not work like this....
 
 Entity GD_Com_Telebox is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labTelebox
+		load data from DATASOURCE.MDMC_Telebox with arguments {"FlagActive" : true}
 		mandatory true
+		value PRT
 
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Com_DataLine is TextBox in frmMain
-
 	with defaults
 		label LABELS.labDataLine
+		max length 14
 
 ; ---------------------------------------------------------------------------- 
 
-Entity GD_Ctr_CustomerNumber is TextBox in frmMain
+Entity P_GD_VT_Country is DropDownList in frmMain
+	with defaults
+		load data from ENTERPRISE.WORLD_COUNTRIES
+		value REQUEST.VENDOR_COUNTRY
+		mandatory true
+	
+	with actions
+		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
+	
+	with triggers
+		this changes
 
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_CountryCode is TextBox in frmMain
+	with defaults
+		enabled false
+		mandatory true
+
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_Number is TextBox in frmMain
+	with defaults
+		max length 30
+		label LABELS.labGD_VT_Number
+		mandatory true
+
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_Extension is TextBox in frmMain
+	with defaults
+		max length 10
+		label LABELS.lablabGD_VT_Extension
+
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_Notes is TextBox in frmMain
+	with defaults
+		max length 50
+		label LABELS.labGD_VT_Notes
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity P_GD_VT_Default is TextBox in frmMain
+	with defaults
+		; by defaults appears checked and disabled
+		value true
+		label LABELS.labP_GD_VT_Default
+		enabled false
+		
+
+; ----------------------------------------------------------------------------	
+
+
+Entity F_GD_VF_Country is DropDownList in frmMain
+	with defaults
+		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
+		value REQUEST.VENDOR_COUNTRY
+
+	with actions
+		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
+	
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------	
+
+Entity F_GD_VF_Number is TextBox in frmMain
+	with defaults
+		max length 30
+		label LABELS.labGD_VF_Number
+		
+		
+; ----------------------------------------------------------------------------	
+
+
+Entity F_GD_VF_Notes is TextBox in frmMain
+	with defaults
+		max length 50
+		label LABELS.labGD_VF_Notes
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity F_GD_VF_Default is TextBox in frmMain
+	with defaults
+		value false
+		label LABELS.labGD_VF_Default
+		
+
+; ----------------------------------------------------------------------------	
+
+Entity E_GD_VE_SmtpAddr is TextBox in frmMain
+	with defaults
+		; move the tooltip text to the real dictionary
+		tooltip "the email is used generally for all the automatic communication with the supplier - e.g. payment advice"
+		label LABELS.labGD_VE_SmtpAddr
+		max length 241
+		mandatory true
+		; IT'S ALMOST IMPOSSIBLE TO DO THE RIGHT REGEX FOR EMAIL, SO FOR THE MOMENT WE PUT NOTHING HERE -
+	
+	with rules
+		; check this is true
+		REQUEST.REQUEST_TYPE is "VC" then mandatory true
+		
+; ----------------------------------------------------------------------------	
+
+Entity E_GD_VE_Notes is TextBox in frmMain
+	with defaults
+		max length 50
+		label LABELS.labGD_VE_Notes
+
+; ----------------------------------------------------------------------------	
+
+Entity E_GD_VE_Default is TextBox in frmMain
+	with defaults
+		value false
+		label LABELS.labGD_VE_Default
+		
+; ----------------------------------------------------------------------------	
+
+;	TODO: PENDING
+
+Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 	with defaults
 		visible false
 		label LABELS.labCustomerNumber
 
 ; ---------------------------------------------------------------------------- 
+
+
+;	field visible for all roles.
+;	2) field mandatory for  MD clerk in case account group YCT6. 
+;		(See APE list in sheet ""Other documents"" to display DDL to select the legal activity and translate from ISIC code in SAP). 
+;	3) for account group YCT5, use DDL the excel file attached called ""ISIC italian convertion"". 
+;		the DDL shown to the ENQ is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
+
+;	TODO: PENDING
 
 Entity GD_Ctr_Industry is DropDownList in frmMain
 	with defaults
@@ -742,20 +1073,72 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
+; THIS IS THE VAT LIST
+Entity V_Country is DropDownList in frmMain
+
+; ---------------------------------------------------------------------------- 
+
+Entity V_VATNumber is TextBox in frmMain
+
+; ----------------------------------------------------------------------------	
+
+; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
+; THIS IS THE BANK DETAILS
+
+Entity B_GD_VB_Country is DropDownList in frmMain
+
+Entity B_GD_VB_BankKey is TextBox in frmMain
+
+Entity B_GD_VB_BankAccount is TextBox in frmMain
+
+Entity B_GD_VB_BankControlKey is TextBox in frmMain
+
+Entity B_GD_VB_IBAN	is TextBox in frmMain
+
+Entity B_GD_VB_PartBankType	is TextBox in frmMain
+
+Entity B_GD_VB_BankReferDetails	is TextBox in frmMain
+
+Entity B_GD_VB_SWIFT is TextBox in frmMain
+	with defaults
+		label LABELS.labGD_VD_SWIFT
+
+; TODO: Actually this is not in frmMain itself but inside a composite control, then how to actually refer to these controls?
+Entity B_GD_VB_AccountHolder is TextBox in frmMain
+	with defaults
+		label LABELS.labGD_VD_AccountHolder
+		; default value but can be changed...
+		value GD_Adr_Name.Value
+
+Entity GD_VB_XEZER is TextBox in frmMain
+
+; ----------------------------------------------------------------------------	
+
+;	TODO: PENDING
+
+;	1) ) By default no visible
+;	2) If customer country belongs to YCT6(FR,GF,GP,RE,MQ,,YT)/YCT9(NC,PF,PM,WF,MC) -> visible and mandatory for role clerk
+;	3) when legal form is selected: load values from table
+;	MDMC_LegalForms for informing fields isnaturalperson and customerclassification and set dunning procedure with this data
+;	4) this field is not retrieved from SAP
+;	5) this field is sent to SAP
+;	6) this field is used to set values in creations from scratch, regional country France, in XKNKK.GRUPP, XKNKK.CTLPC and XKNKK.DBRTG with table MDMC_CreditLimitTemplate
+;	7) see attachment.
+
 Entity GD_Ctr_GFORM is DropDownList in frmMain
 	with defaults
 		label LABELS.labLegalForm
 		visible false
 		; data source is same for vendors and customers
-		load data from DATASOURCE.MDM_LegalForms with arguments {"FlagActive" : true }
+		load data from DATASOURCE.MDMC_LegalForms with arguments {"FlagActive" : true }
 
 	with rules
-		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+		VENDOR.ACCOUNT_GROUP in {YCT6, YVT6} then
 			visible true
 
-		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
+		VENDOR.ACCOUNT_GROUP in {YCT6, YVT6} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
 			mandatory true
-
 
 
 ; ---------------------------------------------------------------------------- 
@@ -774,6 +1157,15 @@ Entity GD_Ctr_CF is TextBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+;	1) before send data to SAP to create/modify supplier ->search if vendor exists with the same taxcode (STCD1), 
+;	       if exists get the number to send to SAP in KNA1.LIFNR. If it appears more than one code, 
+;	       select the first one and send a warning message to GSS Master Data stating that ""there are multiple partners"" if there are more than one code 
+;	1) Enabled =True
+;	2) not visible in case of creation from scratch
+;	4) Max length 10 digits
+
+;	TODO: PONER EN CONDICIONES
+
 Entity GD_Ctr_VendorNumber is TextBox in frmMain
 
 	with defaults
@@ -787,6 +1179,15 @@ Entity GD_Ctr_IFANumber is TextBox in frmMain
 	with defaults
 		label LABELS.labIFANumber
 		enable false
+		max length 20
+		enabled false
+
+	with rules
+		REQUEST.REQUEST_TYPE is CC then
+			GD_Ctr_IFANumber enabled false
+
+		REQUEST.REQUEST_TYPE is VM then
+			this visible true
 
 ; ---------------------------------------------------------------------------- 
 
@@ -811,17 +1212,39 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-Entity labGD_MainlyMilitary is Label in frmMain
+
+; TODO : SEVERAL THINGS PENDING HERE ... HOW TO REFER TO THE MODEL DATA, BOTH EXISTING SAP DATA AND THE NEW REQUEST
+; TODO : ALSO CHECK HOW TO SPECIFY OPERATIONS LIKE SUBSTRING....
+
+Entity GD_Com_TransportZone is TextBox in frmMain
+	with defaults
+		visible false
+
+	with rules
+		REQUEST.CUSTOMER_COUNTRY is ES and REQUEST.MDM_REQUESTSAP.GD_Com_TransportZone.VALUE is empty
+			set value substring(GD_Adr_PostalCode,2) in REQUEST.MDM_REQUESTS.GD_Com_TransportZone.Value 
+
+; ---------------------------------------------------------------------------- 
+
+Entity GD_MainlyMilitary is RadioButton in frmMain
 
 	with defaults
 		label LABELS.labGD_MainlyMilitary
 
+	with rules
+		REQUEST.REQUEST_TYPE is CC then
+			mandatory true
+
 ; ---------------------------------------------------------------------------- 
 
-Entity labGD_MainlyCivilian is Label in frmMain
+Entity GD_MainlyCivilian is RadioButton in frmMain
 
 	with defaults
 		label LABELS.labGD_MainlyCivilian
+
+	with rules
+		REQUEST.REQUEST_TYPE is CC then
+			mandatory true
 
 ; ---------------------------------------------------------------------------- 
 
@@ -889,18 +1312,76 @@ Entity CC_CO_ReconAccount is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+;	"2.6.14(MI) GSS, please, check and provide the business rule. For RC Greece... I don't undertand the meaning of ""if customer is na ICC""
+;	19-06-2014(RG)
+;	1) Default values for all type of requests (all types of creation, changes), independently if value from SAP is empty but enquirer can change:
+;	1.1) If company code 5140 and customer country ISO  (FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC) -> 6115
+;	1.2) If company code 5140 and customer country != ISO  (FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC) -> 6000
+;	1.3) if company code luxembourg -> 1113
+;	1.4) if company code Spain-> 3E60
+;	1.5) if company code Belgium and Luxembourg-> 1109
+;	1.6) if company code Portugal: If company code Portugal (5240) -> not visible
+;	1.7) if company code 5240 and customer country PT -> 4216
+;	1.8) if  company code 5240 and !=customer country PT -> 4116
+;	1,9) if company code greece (5150) and Italy (5180, 596G) value default blank
+
 Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labPTPaymentTerms
 		mandatory true
+		load data from DATASOURCE.MDMC_PaymentTerms with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
+
+	with rules
+
+		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			hide this
+			CC_PT_PaymentTerms mandatory false
+	
+		REQUEST.COUNTRY in {BE,LU} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			set value 1109 in CC_PT_PaymentTerms
+
+		REQUEST.COUNTRY is ES and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			set value 3M60 in CC_PT_PaymentTerms
+
+		REQUEST.COUNTRY is LU and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			set value 1113 in CC_PT_PaymentTerms
+
+		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} and REQUEST.CUSTOMER_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+			set value 6115 in CC_PT_PaymentTerms
+		
+		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} and REQUEST.CUSTOMER_COUNTRY not in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+			set value 6000 in CC_PT_PaymentTerms
+
+		REQUEST.COMPANY_CODE in {5150,5180,596G} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			set value '' in CC_PT_PaymentTerms
 
 ; ---------------------------------------------------------------------------- 
+
+;	"2.6.14(MI) GSS, please, check and provide the business rule. Additionally, CR ""IA_SEPA_payment methods"" ispending on clarification in your side yet
+;	19-06-2014(RG): 1) Field visible for all company codes and enquirer can choose
+;	1) If company code Spain (All), France (5140) -> mandatory
+;	2) if company code Italy (5180,596G) and ENQ chooses Payment Methods ""L"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
+;	3) if company code Portugal (5240) and ENQ chooses Payment Methods ""P"" or ""M"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
+;	4) if company code France (5140) and ENQ chooses Payment Methods ""M"" or ""A"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
 
 Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labPTPaymentMethods
+
+	with rules
+		REQUEST.COUNTRY in {ES, FR} then
+			this mandatory true
+
+		REQUEST.COUNTRY is IT and CC_PT_PaymentMethods.Value is L then
+			B_GD_VB_BankKey mandatory true
+
+		REQUEST.COUNTRY is PT and CC_PT_PaymentMethods.Value in {P, M}
+			B_GD_VB_BankKey mandatory true
+			
+		REQUEST.COUNTRY is FR and CC_PT_PaymentMethods.Value in {M, A}
+			B_GD_VB_BankKey mandatory true
 
 ; ---------------------------------------------------------------------------- 
 
@@ -916,37 +1397,77 @@ Entity CC_PT_IndividualPayment is CheckBox in frmMain
 	with defaults
 		label LABELS.labSinglePayment
 
+	with rules
+		REQUEST.COMPANY_CODE in {5101, 5109} then
+			set value true in CC_PT_IndividualPayment
+
 ; ---------------------------------------------------------------------------- 
+
+;"2.6.14(MI) Pending on CR 101707213 MADAM:Credit Responsible Group
+;04-07-2014 (FM): 
+;1) field visible for all company code 
+;2) if company code France -> mandatory only for MDClerk
+;3)Default values for creations from scratch and company code:
+;   if company code Spain, Portugal and Belux-> see file: Sales areas _accounting clerks BE_PTand ES in sheet ""other documents""
+;4) if company code IT and GR -> not mandatory 
 
 Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCC_CO_AccountingClerk
 
+	with rules
+		REQUEST.COUNTRY is FR and REQUEST.CURRENT_ROLE is MDMC_CLERK then
+			this mandatory true
+
+		REQUEST.COUNTRY in {IT, GR} then
+			this mandatory false
+
+		; TODO: PENDING THIS ----> if company code Spain, Portugal and Belux-> see file: Sales areas _accounting clerks BE_PTand ES in sheet ""other documents""
+
+
 ; ---------------------------------------------------------------------------- 
+
+;"For creation from scratch and company code -> hidden except RC France.
+;For remaining actions -> visible for all RCs
+; If creation from scratch/company code:
+;  if regional country Spain-> Y302
+;  if regional country Italy-> Y502 (only value available)
+;  if regional country Portugal-> Y400
+;  if regional country Belgium ->if customer classification NG->Y104 else ->Y102
+;  if regional country Luxemburg->Y203
+;  if regional country Greece -> Y704
+
 
 Entity CC_DD_DunningProcedure is DropDownList in frmMain
 	with defaults
 		label LABELS.labDDDunningprocedure
 
 	with rules
-		REQUEST.COUNTRY is BE then
-			set value Y1VE in CC_DD_DunningProcedure
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is not FR then
+			this visible false
+
+		REQUEST.COUNTRY is ES then
+			set value Y302 in CC_DD_DunningProcedure
+
+		REQUEST.COUNTRY is IT then
+			set value Y502 in CC_DD_DunningProcedure
+
+		REQUEST.COUNTRY is PT then
+			set value Y400 in CC_DD_DunningProcedure
+
+		REQUEST.COUNTRY is BE and GD_Ctr_CustomerClassification.Value is NG then
+			set value Y104 in CC_DD_DunningProcedure
+		REQUEST.COUNTRY is BE and GD_Ctr_CustomerClassification.Value is G then
+			set value Y102 in CC_DD_DunningProcedure
 
 		REQUEST.COUNTRY is LU then
-			set value Y001 in CC_DD_DunningProcedure
-
-		REQUEST.COMPANY_CODE is 5140 and GD_Ctr_CustomerClassification.Value is G then
-			set value Y601 in CC_DD_DunningProcedure
-	
-		REQUEST.COMPANY_CODE is 5140 and GD_Ctr_CustomerClassification.Value is NG then
-			set value Y602 in CC_DD_DunningProcedure
-			
-		REQUEST.COMPANY_CODE is 491E then
-			set value Y602 in CC_DD_DunningProcedure
+			set value Y203 in CC_DD_DunningProcedure
 
 		REQUEST.VENDOR_COUNTRY is GR then
 			set value Y704 in CC_DD_DunningProcedure
+
+		; TODO: ;5)specific rules for company 5140 see attachemnt RulesDunningArea5140 and sheet ""Dunning Procedure"" in sheet “Other documents”
 
 
 ; ---------------------------------------------------------------------------- 
@@ -959,10 +1480,29 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+;	For RC Italy (company codes (5180, 596G)) values WA and WC should NOT be showed in DDL of Madam
+
 Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labARPledgeIndicator
+		load data from DATASOURCE.MDMC_ARPledgeIndicators with arguments {"FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
+
+	with rules
+		REQUEST.COMPANY_CODE in { 5109, 4297, 461D, 596G, 596G } then
+			this visible false
+
+		; TODO: EVALUATION ORDER IS IMPORTANT IN A CASE LIKE THIS...
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} then
+			set value 'WE' in CC_AR_PledgeIndicator
+
+		REQUEST.COUNTRY in {ES,FR,GR} then
+			set value '' in CC_AR_PledgeIndicator
+
+		REQUEST.COMPANY_CODE is 5101 then
+			set value '' in CC_AR_PledgeIndicator
+		
 
 ; ---------------------------------------------------------------------------- 
 
@@ -1599,12 +2139,28 @@ Entity GD_Damex is DropDownList in frmMain
 			GD_Damex not mandatory
 			GD_Damex not visible
 
+		REQUEST.COUNTRY is FR then
+			mandatory false
+
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labGD_Ctr_IsNaturalPerson
+
+	with rules
+		; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
+		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {P, Q, S} then 
+			set value false in GD_Ctr_IsNaturalPerson
+			set value G in GD_Ctr_CustomerClassification
+
+		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {X, 1,2,3,4,5,6,7,8,9} then 
+			set value true in GD_Ctr_IsNaturalPerson 
+			set value NG in GD_Ctr_CustomerClassification
+			
+		REQUEST.CURRENT_ROLE is RCO then
+			GD_Ctr_IsNaturalPerson enabled true
 
 ; ---------------------------------------------------------------------------- 
 

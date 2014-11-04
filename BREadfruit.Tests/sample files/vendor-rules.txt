@@ -391,19 +391,24 @@ Entity GD_DamexNote is CheckBox in frmMain
 
 Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 	with defaults
-		visible true
-		enabled true
 		value false		; unchecked
+		label LABELS.labGD_Ctr_IsNaturalPerson
+
 
 	with rules
 		REQUEST.VENDOR.ACCOUNT_GROUP in {YVT4, YVT5} then
 			show this
 			show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
 			; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
-		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with {"P", "Q", "S"} then set value false GD_Ctr_IsNaturalPerson.Checked
-		Vendor.Country is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value true GD_Ctr_IsNaturalPerson.Checked 
+
+		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {P, Q, S} then
+			set value false in GD_Ctr_IsNaturalPerson
+
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
+
+		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {X,1,2,3,4,5,6,7,8,9} then 
+			set value true in GD_Ctr_IsNaturalPerson 
 
 		; CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
 
@@ -868,6 +873,10 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
 
+		; mandatory for ENQ and in 5150 (the only Greece CoCD)
+		COMPANY_CODE is 5150 and CURRENT_ROLE is "ENQ" then 
+			GD_Adr_Name4 mandatory true
+
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Name4 is TextBox in frmMain
@@ -879,9 +888,12 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 
 	with rules
 		; for any company 
-		CURRENT_ROLE is "MDM_CLERK" then mandatory true
+		REQUEST.CURRENT_ROLE is "MDM_CLERK" then mandatory true
+		
 		; mandatory for ENQ and in 5150 (the only Greece CoCD)
-		COMPANY_CODE is 5150 and CURRENT_ROLE is "ENQ" then mandatory true
+		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ENQ then 
+			GD_Adr_Name4 mandatory true
+		
 		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			mandatory true
 
@@ -904,9 +916,10 @@ Entity GD_Adr_Street2 is TextBox in frmMain
 		max length 35
 
 	with rules
-		REGIONAL_COUNTRY is "FR" then GD_Adr_Street2 not visible
+		REGIONAL_COUNTRY is FR then GD_Adr_Street2 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
+
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Street3 is TextBox in frmMain
@@ -914,6 +927,7 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 		max length 35
 
 	with rules
+		REGIONAL_COUNTRY is FR then GD_Adr_Street3 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
 
@@ -924,16 +938,18 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 		max length 35
 
 	with rules
+		REGIONAL_COUNTRY is FR then GD_Adr_Street4 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
 
-		
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Street5 is TextBox in frmMain
 	with defaults
 		max length 35
 
+	with rules
+		REGIONAL_COUNTRY is FR then GD_Adr_Street5 not visible
 		
 ; ----------------------------------------------------------------------------	
 
@@ -942,6 +958,7 @@ Entity GD_Adr_Region is DropDownList in frmMain
 	with defaults
 		enabled true
 		visible true
+		load data from DATASOURCE.MDM_Regions with arguments {"FlagActive" : true, "CountryCode" : REQUEST.VENDOR_COUNTRY }
 
 	; "16-07-2014(RG): 1) In customer creation from scratch MADAM has to check in table in sheet “Mandatory Region List” if it is mandatory and MADAM has to show in DDL the values according to the customer country.
 	 
@@ -965,8 +982,12 @@ Entity GD_Adr_Region is DropDownList in frmMain
 
 
 Entity GD_Adr_CountryGD is TextBox in frmMain
+
 	with defaults
+		label LABELS.labCountry
+		mandatory true
 		enabled false		; always disabled
+		; TODO: PENDING FINAL MODEL DEFINITION FROM FD
 		value SEARCH_FORM_VALUES.DDLVDCountry			; Vendor country, country of the company code!!!!
 
 
@@ -993,15 +1014,13 @@ Entity GD_Adr_City2 is TextBox in frmMain
 		max length 35
 
 	with rules
-		VENDOR_COUNTRY is GR then GD_Adr_City2 visible
+		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is GR then
+			GD_Adr_City2 visible true
+
+		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is not GR then
+			GD_Adr_City2 mandatory true
 
 ; ----------------------------------------------------------------------------	
-
-
-
-
-; ----------------------------------------------------------------------------	
-
 
 Entity GD_Com_Comment is TextBox in frmMain
 	with defaults
@@ -1019,41 +1038,46 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 	with rules
 
 		;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4 (only numbers - Format: XXXX)
-		REQUEST.VENDOR.ACCOUNT_GROUP in {"YVT1", "YVT2"} then
+		REQUEST.ACCOUNT_GROUP in {YVT1, YVT2} then
 			max length 4
-			validation "^[0-9]{4}$"
+			validation ^[0-9]{4}$
 
-		REQUEST.VENDOR.ACCOUNT_GROUP in {YVT3, YVT5, "YVT7"} then
+		REQUEST.ACCOUNT_GROUP in {YVT3, YVT5, YVT7} then
 			max length 5
-			validation "^[0-9]{5}$"
+			validation ^[0-9]{5}$
 
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT4 then
+		REQUEST.ACCOUNT_GROUP is YVT4 then
 			max length 8
-			validation "^[0-9]{4}-[0-9]{3}$"
+			validation ^[0-9]{4}-[0-9]{3}$
+
+		REQUEST.VENDOR_COUNTRY is ES then
+			max length 5
+			validation ^[0-5]{1}[1-2]{1}[0-9]{3}$
+
+		REQUEST.VENDOR_COUNTRY in {IT, GR} then
+			max length 5
 
 		; post code must be >=1500 and <=3999 OR >=8000 and <=9999
 		; the regular expression covers the ranges
-		REQUEST.VENDOR_COUNTRY is "BE" and GD_Adr_Region is "01" then
+		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 01 then
 			max length 4
-			validation "^(1[5-9][0-9]{2}){1}|((2|3)[0-9]{3}){1}|((8|9)[0-9]{3})$"
+			validation ^(1[5-9][0-9]{2}){1}|((2|3)[0-9]{3}){1}|((8|9)[0-9]{3})$
 		
 		; post code must be >=1300 and <=1499 OR >=4000 and <=7999
-		REQUEST.VENDOR_COUNTRY is "BE" and GD_Adr_Region is "02" then
+		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 02 then
 			max length 4
-			validation "^(1[3-4][0-9]{2}){1}|([4-7][0-9]{3})$"
+			validation ^(1[3-4][0-9]{2}){1}|([4-7][0-9]{3})$
 
 		; post code must be >=1000 and <=1299
-		REQUEST.VENDOR_COUNTRY is "BE" and GD_Adr_Region is "03" then
+		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 03 then
 			max length 4
-			validation "^(1[0-2][0-9]{2})$"
+			validation ^(1[0-2][0-9]{2})$
 
-		REQUEST.VENDOR_COUNTRY in {"FR", "GF", "GP", "MC", "MQ", "NC", "PF", "PM", "RE", "WF", "YT"} then
+		REQUEST.VENDOR_COUNTRY in {FR, GF, GP, MC, MQ, NC, PF, PM, RE, WF, YT} then
 			max length 5
-			validation "^[0-9]{5}$"
+			validation ^[0-9]{5}$
 			set value substring(GD_Adr_PostalCode,2) in GD_Adr_Region
 
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT1 then
-			max length 4
 
 ; ----------------------------------------------------------------------------	
 
@@ -1100,19 +1124,22 @@ Entity GD_Adr_POBoxLoc is TextBox in frmMain
 	with defaults
 		enabled true
 		visible true
-		max length 35
 		mandatory false
 		label LABELS.labPoBoxLoc
+		max length 100
+
+
+	with rules
+		REQUEST.COUNTRY is FR then
+			max length 40
 
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Com_LanguageCode is DropDownList in frmMain
 	with defaults
-		enabled true
-		visible true
 		mandatory true
 		; obtain the code for the vendor country, if there is no specific code, then 'EN' is default language
-		load data from DATASOURCE.GET_COUNTRY_LANGUAGE_CODE		
+		load data from DATASOURCE.MDM_Languages	with arguments {"FlagActive" : true}	
 		label LABELS.labLanguages
 
 
@@ -1124,10 +1151,9 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 
 Entity GD_Com_Telebox is DropDownList in frmMain
 	with defaults
-		max length 40
 		mandatory true
-		load data from DATASOURCE.TELEBOX_VALUES	; these are "ADM - ADM", "MAIL - Mail", "PRT - Print", "SES - eInvoice" (value and text respectively)
-		value 'PRT'		
+		load data from DATASOURCE.MDMC_Telebox with arguments {"FlagActive" : true}
+		value PRT
 		label LABELS.labTelebox
 
 ; ----------------------------------------------------------------------------	
@@ -1909,6 +1935,7 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 	with defaults
 		load data from DATASOURCE.MDM_PaymentTerms with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
 		; 1) By default mandatory
+		label LABELS.labPTPaymentTerms
 		mandatory
 		
 	with actions
@@ -1921,25 +1948,25 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 			CC_PT_PaymentTerms mandatory false
 
 
-		REQUEST.COUNTRY is ES and REQUEST.REQUEST_TYPE is VC then
+		REQUEST.COUNTRY is ES and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 3M60 in CC_PT_PaymentTerms
 
-		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is VC then
+		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 5510 in CC_PT_PaymentTerms
 		
-		REQUEST.COUNTRY is LU and REQUEST.REQUEST_TYPE is VC then
+		REQUEST.COUNTRY is LU and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 1113 in CC_PT_PaymentTerms
 
-		REQUEST.COUNTRY is BE and REQUEST.REQUEST_TYPE is VC then
+		REQUEST.COUNTRY is BE and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 1301 in CC_PT_PaymentTerms
 
-		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is VC then
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 7A90 in CC_PT_PaymentTerms
 
-		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE is VC then
+		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 6115 in CC_PT_PaymentTerms
 
-		REQUEST.COMPANY_CODE in {5924, 592F} and REQUEST.REQUEST_TYPE is VC then
+		REQUEST.COMPANY_CODE in {5924, 592F} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 6000 in CC_PT_PaymentTerms
 	
 	with triggers
