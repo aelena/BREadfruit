@@ -1262,6 +1262,26 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		public void ParseSampleFile040 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File040 - Count.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_SalesOffice", "Entity name should be 'SO_SalesOffice' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "SO_SalesOffice.Items.Count" );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.GreaterThanOperator );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "0" );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
 		public void ShouldFindEntities ()
 		{
 			var parser = new Parser ();

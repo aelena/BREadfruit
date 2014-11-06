@@ -119,6 +119,7 @@
     <Content Include="sample files\single entity tests\File037 - CC_AM_CashManagementGroup.txt" />
     <Content Include="sample files\single entity tests\File038 - CC_PT_PaymentMethods.txt" />
     <Content Include="sample files\single entity tests\File039 - Hide.txt" />
+    <Content Include="sample files\single entity tests\File040 - Count.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

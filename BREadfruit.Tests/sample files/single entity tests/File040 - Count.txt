@@ -1,0 +1,5 @@
+﻿Entity SO_SalesOffice is DropDownList in frmMain
+
+	with rules
+		this.Items.Count > 0 then
+			SO_SalesOffice visible true
