@@ -399,6 +399,8 @@ namespace BREadfruit
 		public static Symbol MultilineSymbol = new Symbol ( "Multiline", 0, true );
 		public static Symbol GridSymbol = new Symbol ( "Grid", 0, true );
 		public static Symbol HyperLinkSymbol = new Symbol ( "HyperLink", 0, true );
+		public static Symbol ListBoxSymbol = new Symbol ( "ListBox", 0, true );
+		
 		//public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
 		//public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
@@ -821,6 +823,8 @@ namespace BREadfruit
 			Grammar._entityTypes.Add ( DivSymbol );
 			Grammar._entityTypes.Add ( MultilineSymbol );
 			Grammar._entityTypes.Add ( HyperLinkSymbol );
+			Grammar._entityTypes.Add ( ListBoxSymbol );
+		
 		}
 
 
@@ -920,6 +924,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( DivSymbol );
 			Grammar._symbols.Add ( MultilineSymbol );
 			Grammar._symbols.Add ( HyperLinkSymbol );
+			Grammar._symbols.Add ( ListBoxSymbol );
 
 			Grammar._symbols.Add ( ThenSymbol );
 			Grammar._symbols.Add ( ThisSymbol );

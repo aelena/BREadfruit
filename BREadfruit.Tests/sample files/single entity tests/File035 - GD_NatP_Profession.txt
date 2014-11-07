@@ -1,0 +1,10 @@
+﻿Entity GD_NatP_Profession is TextBox in frmMain
+	with defaults
+		max length 30
+		label LABELS.labProfession
+	
+	with rules
+		VENDOR.ACCOUNT_GROUP in {YVT6, YVT9} then visible false
+		VENDOR.ACCOUNT_GROUP in {YVT6, YVT9} then this visible false
+		; TODO: DECIDE WHAT TO DO WITH THIS HIDE THING....
+		; VENDOR.ACCOUNT_GROUP in {YVT6, YVT9} then hide this

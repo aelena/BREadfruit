@@ -1281,6 +1281,22 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+
+		[Test]
+		public void ParseSampleFile041 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File041 - ListBox.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_lbxSODSalesOrganization1", "Entity name should be 'SO_lbxSODSalesOrganization1' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.ListBoxSymbol.Token, "Entity name should be " + Grammar.ListBoxSymbol.Token + " but is " + e.TypeDescription );
+		}
+
+		// ---------------------------------------------------------------------------------
+
+
 		[Test]
 		public void ShouldFindEntities ()
 		{

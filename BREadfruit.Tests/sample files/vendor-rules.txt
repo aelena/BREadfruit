@@ -1222,10 +1222,14 @@ Entity P_GD_VT_Default is TextBox in frmMain
 		value true
 		label LABELS.labP_GD_VT_Default
 		enabled false
-		
 
 ; ----------------------------------------------------------------------------	
 
+Entity P_GD_VT_btnInsert is Button in frmMain
+	with defaults
+		label LABELS.labInsert
+
+; ----------------------------------------------------------------------------	
 
 Entity F_GD_VF_Country is DropDownList in frmMain
 	with defaults
@@ -1240,28 +1244,44 @@ Entity F_GD_VF_Country is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+Entity F_GD_VF_CountryCode is TextBox in frmMain
+	with defaults
+		enabled false
+		mandatory true
+
+; ----------------------------------------------------------------------------	
+
 Entity F_GD_VF_Number is TextBox in frmMain
 	with defaults
 		max length 30
 		label LABELS.labGD_VF_Number
 		
-		
 ; ----------------------------------------------------------------------------	
 
+Entity F_GD_VF_Extension is TextBox in frmMain
+	with defaults
+		max length 10
+		label LABELS.labGD_VF_CountryCode
+
+; ----------------------------------------------------------------------------	
 
 Entity F_GD_VF_Notes is TextBox in frmMain
 	with defaults
 		max length 50
 		label LABELS.labGD_VF_Notes
 		
-
 ; ----------------------------------------------------------------------------	
 
 Entity F_GD_VF_Default is TextBox in frmMain
 	with defaults
 		value false
 		label LABELS.labGD_VF_Default
-		
+
+; ----------------------------------------------------------------------------	
+
+Entity F_GD_VF_btnInsert is Button in frmMain
+	with defaults
+		label LABELS.labInsert
 
 ; ----------------------------------------------------------------------------	
 
@@ -1293,6 +1313,12 @@ Entity E_GD_VE_Default is TextBox in frmMain
 		value false
 		label LABELS.labGD_VE_Default
 		
+; ----------------------------------------------------------------------------	
+
+Entity E_GD_VE_btnInsert is Button in frmMain
+	with defaults
+		label LABELS.labInsert
+
 ; ----------------------------------------------------------------------------	
 
 Entity GD_NatP_DateOfBirth is Calendar in frmMain
@@ -1709,44 +1735,123 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
-; THIS IS THE VAT LIST
+
+; ---------------------------------------------------------------------------- 
+
+; this is the ORDER which is kept in a hidden textbox
+; TODO: Decide if we need to do this or not
+Entity V_OrderID is TextBox in frmMain
+	with defaults
+		label LABELS.labOrderID
+		visible false
+
+; ---------------------------------------------------------------------------- 
+
 Entity V_Country is DropDownList in frmMain
+	with defaults
+		label LABELS.labCountry
 
-Entity V_VATNumber	 is TextBox in frmMain
+; ---------------------------------------------------------------------------- 
 
-; ----------------------------------------------------------------------------	
+Entity V_VATNumber is TextBox in frmMain
+	with defaults
+		label LABELS.labNumber
+
+; ---------------------------------------------------------------------------- 
+
+Entity V_btnInsert is Button in frmMain
+	with defaults
+		label LABELS.labInsert
+
+; ---------------------------------------------------------------------------- 
 
 ; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
 ; THIS IS THE BANK DETAILS
 
-Entity B_GD_VB_Country	is DropDownList in frmMain
+Entity B_OrderID is TextBox in frmMain
 
-Entity B_GD_VB_BankKey	 is TextBox in frmMain
+	with defaults
+		visible false
+		label LABELS.labOrderID
 
-Entity B_GD_VB_BankAccount	 is TextBox in frmMain
+; ---------------------------------------------------------------------------- 
 
-Entity B_GD_VB_BankControlKey	 is TextBox in frmMain
+Entity B_GD_VB_Country is DropDownList in frmMain
 
-Entity B_GD_VB_IBAN	 is TextBox in frmMain
+	with defaults
+		label LABELS.labCountry
 
-Entity B_GD_VB_PartBankType	 is TextBox in frmMain
+; ---------------------------------------------------------------------------- 
 
-Entity B_GD_VB_BankReferDetails	 is TextBox in frmMain
+Entity B_GD_VB_BankKey is TextBox in frmMain
+
+	with defaults
+		label LABELS.labGD_VD_BankKey
+
+; ---------------------------------------------------------------------------- 
+
+Entity B_GD_VB_BankAccount is TextBox in frmMain
+
+	with defaults
+		label LABELS.labGD_VD_BankAccount
+
+; ---------------------------------------------------------------------------- 
+
+Entity B_GD_VB_BankControlKey is TextBox in frmMain
+
+	with defaults
+		label LABELS.labGD_VD_BankControlKey
+
+; ---------------------------------------------------------------------------- 
+
+Entity B_GD_VB_IBAN is TextBox in frmMain
+
+	with defaults
+		label LABELS.labGD_VD_IBAN
+
+; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_SWIFT is TextBox in frmMain
+
 	with defaults
 		label LABELS.labGD_VD_SWIFT
 
-; ----------------------------------------------------------------------------	
+; ---------------------------------------------------------------------------- 
 
-; TODO: Actually this is not in frmMain itself but inside a composite control, then how to actually refer to these controls?
 Entity B_GD_VB_AccountHolder is TextBox in frmMain
+
 	with defaults
 		label LABELS.labGD_VD_AccountHolder
-		; default value but can be changed...
-		value GD_Adr_Name.Value
 
-; ----------------------------------------------------------------------------	
+; ---------------------------------------------------------------------------- 
+
+Entity B_GD_VB_BankCity is MTextBox in frmMain
+
+	with defaults
+		label LABELS.labGD_VD_BankCity
+
+; ---------------------------------------------------------------------------- 
+
+Entity B_GD_VB_PartBankType is TextBox in frmMain
+
+	with defaults
+		label LABELS.labGD_VB_PartBankType
+
+; ---------------------------------------------------------------------------- 
+
+Entity B_GD_VB_BankReferDetails is TextBox in frmMain
+
+	with defaults
+		label LABELS.labGD_VB_BankReferDetails
+
+; ---------------------------------------------------------------------------- 
+
+Entity B_GD_VB_btnInsert is Button in frmMain
+
+	with defaults
+		label LABELS.btnInsert
+
+; ---------------------------------------------------------------------------- 
 
 ; ALWAYS HIDDEN
 ; TODO: DECIDE WHAT TO DO WITH THIS SORT OF FIELDS...
@@ -2689,7 +2794,7 @@ Entity btnCloseFinal is Button in frmMain
 ; plus we need to define the "delete" and "edit" functionalities too!!
 Entity btnInsert is Button in frmMain
 	with defaults
-		value LABELS.GENERIC.labInsert
+		value LABELS.labInsert
 
 	with actions
 		; TODO DEFINE ACTION SUCH AS
@@ -2747,10 +2852,49 @@ Entity labNextAction is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; --- SPECIAL CONTROLS -------------------------------------------------------
+; --- LIST OF PURCHASE ORGANIZATION SELECTION IN THE PURCHASE ORG TAB --------
+
+Entity PO_lbxPODPursacheOrganization1 is ListBox in frmMain
+	with defaults
+		; this means load all purchase organizations for the company code except the current purchase organization
+		; which is already loaded
+		load data from DATASOURCE.MDM_ClusterPurchaseOrganizations with arguments {"CompanyCode" : REQUEST.COMPANY_CODE, "ExcludePurchaseOrganization" : REQUEST.PURCHASE_ORGANIZATION}
+
+; ----------------------------------------------------------------------------	
+
+Entity PO_lbxPODPursacheOrganization2 is ListBox in frmMain
+
+; ----------------------------------------------------------------------------	
+
+Entity btnPODAll is Button in frmMain
+	with defaults
+		label LABELS.lab_____		; this label is actually this -->    >>
+
+; ----------------------------------------------------------------------------	
+
+Entity PO_btnPODSelect is Button in frmMain
+	with defaults
+		label LABELS.lab_____		; this label is actually this -->    >
+
+; ----------------------------------------------------------------------------	
+
+Entity PO_btnPODRemove is Button in frmMain
+	with defaults
+		label LABELS.lab_____		; this label is actually this -->    <
+
+; ----------------------------------------------------------------------------	
+
+Entity btnPOClear is Button in frmMain
+	with defaults
+		label LABELS.lab_____		; this label is actually this -->    <<
+
+; ----------------------------------------------------------------------------	
+
 
 ; --- attachments 
 ; Entity AttachManager is ______________ in frmMain
+
+; ----------------------------------------------------------------------------	
 
 
 ; --- the fucking end --------------------------------------------------------

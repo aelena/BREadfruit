@@ -1,0 +1,5 @@
+﻿Entity SO_lbxSODSalesOrganization1 is ListBox in frmMain
+	with defaults
+		; this means load all purchase organizations for the company code except the current purchase organization
+		; which is already loaded
+		load data from DATASOURCE.MDM_ClusterPurchaseOrganizations with arguments {"CompanyCode" : REQUEST.COMPANY_CODE, "ExcludePurchaseOrganization" : REQUEST.PURCHASE_ORGANIZATION}
