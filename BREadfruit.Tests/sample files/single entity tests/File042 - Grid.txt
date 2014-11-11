@@ -1,0 +1,8 @@
+﻿Entity P_GD_VT_Grid is Grid in frmMain
+	with defaults
+		define column GRID_P_GD_VT_Country with arguments {ControlType : DropDownList, DataField : XYZ, Header : LABELS.labXYZ}
+
+	with triggers
+		on row inserted
+		row deleted
+		on row updated

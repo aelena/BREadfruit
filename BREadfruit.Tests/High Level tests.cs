@@ -1294,6 +1294,44 @@ namespace BREadfruit.Tests
 			Assert.That ( e.TypeDescription == Grammar.ListBoxSymbol.Token, "Entity name should be " + Grammar.ListBoxSymbol.Token + " but is " + e.TypeDescription );
 		}
 
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile042 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File042 - Grid.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "P_GD_VT_Grid", "Entity name should be 'P_GD_VT_Grid' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.GridSymbol.Token, "Entity name should be " + Grammar.GridSymbol.Token + " but is " + e.TypeDescription );
+
+			Assert.That ( e.Defaults.Count () == 3, "there should be 3 default clauses, but there are " + e.Defaults.Count () );
+
+			Assert.That ( e.Defaults.First ().Token == Grammar.DefineColumnDefaultClause.Token );
+			Assert.That ( e.Defaults.First ().Value.ToString () == "GRID_P_GD_VT_Country" );
+			Assert.That ( e.Defaults.First ().Arguments.Count () == 3 );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 0 ).Key == "ControlType" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 0 ).Value == "DropDownList" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 1 ).Key == "DataField" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 1 ).Value == "XYZ" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 2 ).Key == "Header" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 2 ).Value == "LABELS.labXYZ" );
+
+			Assert.That ( e.Triggers.Count () == 3 );
+			Assert.That ( e.Triggers.First ().Event == Grammar.RowInsertedEventSymbol );
+			Assert.That ( e.Triggers.First ().Target == e.Name );
+			Assert.That ( e.Triggers.ElementAt ( 1 ).Event == Grammar.RowDeletedEventSymbol );
+			Assert.That ( e.Triggers.ElementAt ( 1 ).Target == e.Name );
+			Assert.That ( e.Triggers.ElementAt ( 2 ).Event == Grammar.RowUpdatedEventSymbol );
+			Assert.That ( e.Triggers.ElementAt ( 2 ).Target == e.Name );
+
+		}
+
+
 		// ---------------------------------------------------------------------------------
 
 

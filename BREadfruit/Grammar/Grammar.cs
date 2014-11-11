@@ -400,7 +400,7 @@ namespace BREadfruit
 		public static Symbol GridSymbol = new Symbol ( "Grid", 0, true );
 		public static Symbol HyperLinkSymbol = new Symbol ( "HyperLink", 0, true );
 		public static Symbol ListBoxSymbol = new Symbol ( "ListBox", 0, true );
-		
+
 		//public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
 		//public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
@@ -441,6 +441,7 @@ namespace BREadfruit
 		public static UnaryAction ChangeFormUnaryActionSymbol = new UnaryAction ( "change_form_to", 2, true, new [] { "change form to" } );
 		public static UnaryAction SetValidationRegexUnaryActionSymbol = new UnaryAction ( "validation_regex", 2, true, new [] { "validation regex", "validation" } );
 
+
 		public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
 		public static ResultAction AddValueActionSymbol = new ResultAction ( "add_value", 2, true, new [] { "add value" } );
 
@@ -453,6 +454,10 @@ namespace BREadfruit
 		public static Symbol BlurredEventSymbol = new Symbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
 		public static Symbol ClickedEventSymbol = new Symbol ( "clicked", 2, true, new List<string> { "click", "onclick", "on_click", "on click", "on clicked", "on_clicked", "onclicked" } );
 		public static Symbol LoadedEventSymbol = new Symbol ( "loaded", 2, true, new List<string> { "on loads", "on load", "loads" } );
+
+		public static Symbol RowInsertedEventSymbol = new Symbol ( "row_inserted", 2, true, new List<string> { "on row inserted", "row inserted" } );
+		public static Symbol RowDeletedEventSymbol = new Symbol ( "row_deleted", 2, true, new List<string> { "on row deleted", "row deleted" } );
+		public static Symbol RowUpdatedEventSymbol = new Symbol ( "row_updated", 2, true, new List<string> { "on row updated", "row updated" } );
 
 
 		#endregion
@@ -549,6 +554,8 @@ namespace BREadfruit
 		public static DefaultClause LoadDataDefaultClause = new DefaultClause ( "load_data_from", LoadDataFromValueRegex, new List<string> () { "load data from" } );
 		public static DefaultClause ValidationRegexDefaultClause = new DefaultClause ( "validation_regex", ValidationRegexValueRegex, new [] { "validation regex", "set validation", "validation" } );
 		public static DefaultClause ToolTipDefaultClause = new DefaultClause ( "tooltip", ValidationRegexValueRegex, new [] { "set tooltip" } );
+
+		public static DefaultClause DefineColumnDefaultClause = new DefaultClause ( "define_column", ".", new List<string> () { "define column" } );
 
 
 
@@ -824,7 +831,7 @@ namespace BREadfruit
 			Grammar._entityTypes.Add ( MultilineSymbol );
 			Grammar._entityTypes.Add ( HyperLinkSymbol );
 			Grammar._entityTypes.Add ( ListBoxSymbol );
-		
+
 		}
 
 
@@ -894,7 +901,9 @@ namespace BREadfruit
 			Grammar._triggerSymbols.Add ( BlurredEventSymbol );
 			Grammar._triggerSymbols.Add ( ClickedEventSymbol );
 			Grammar._triggerSymbols.Add ( LoadedEventSymbol );
-
+			Grammar._triggerSymbols.Add ( RowInsertedEventSymbol );
+			Grammar._triggerSymbols.Add ( RowDeletedEventSymbol );
+			Grammar._triggerSymbols.Add ( RowUpdatedEventSymbol );
 		}
 
 
@@ -990,6 +999,10 @@ namespace BREadfruit
 			Grammar._symbols.Add ( ClickedEventSymbol );
 			Grammar._symbols.Add ( LoadedEventSymbol );
 
+			Grammar._symbols.Add ( RowInsertedEventSymbol );
+			Grammar._symbols.Add ( RowDeletedEventSymbol );
+			Grammar._symbols.Add ( RowUpdatedEventSymbol );
+
 			Grammar._symbols.Add ( OnlyAsciiConstraintSymbol );
 			Grammar._symbols.Add ( OnlyNumbersConstraintSymbol );
 			Grammar._symbols.Add ( OnlyLettersConstraintSymbol );
@@ -1016,7 +1029,7 @@ namespace BREadfruit
 			_defaultsTokens.Add ( LoadDataDefaultClause );
 			_defaultsTokens.Add ( ValidationRegexDefaultClause );
 			_defaultsTokens.Add ( ToolTipDefaultClause );
-
+			_defaultsTokens.Add ( DefineColumnDefaultClause );
 
 			Grammar._symbols.Add ( MaxlengthDefaultClause );
 			Grammar._symbols.Add ( MinLengthDefaultClause );
@@ -1028,7 +1041,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( LoadDataDefaultClause );
 			Grammar._symbols.Add ( ValidationRegexDefaultClause );
 			Grammar._symbols.Add ( ToolTipDefaultClause );
-
+			Grammar._symbols.Add ( DefineColumnDefaultClause );
 
 		}
 

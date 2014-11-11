@@ -209,7 +209,7 @@ namespace BREadfruit.Tests.Low_level_tests
         [Test]
         public void GrammarShouldHaveCorrectNumberOfTriggerSymbols ()
         {
-            Assert.That ( Grammar.TriggerSymbols.Count () == 4 );
+            Assert.That ( Grammar.TriggerSymbols.Count () == 5 );
         }
 
 

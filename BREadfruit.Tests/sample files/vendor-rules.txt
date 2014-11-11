@@ -308,7 +308,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 			enabled false
 
 	with triggers
-		; TODO FIND A BETTER WAY TO EXPRESS THIS....
+		; TODO: FIND A BETTER WAY TO EXPRESS THIS....
 		; BANK_INSERTED EVALUATE -----
 
 ; ----------------------------------------------------------------------------	
@@ -1228,6 +1228,31 @@ Entity P_GD_VT_Default is TextBox in frmMain
 Entity P_GD_VT_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.labInsert
+
+; ----------------------------------------------------------------------------	
+
+
+; --- TENTATIVE GRID DEFINITION AND CONVENTIONS
+
+Entity P_GD_VT_Grid is Grid in frmMain
+	with defaults
+		; TODO: how to define or set the controls inside? the row definition?
+		define column GRID_P_GD_VT_Country with arguments {"ControlType" : DropDownList, "DataField" : XYZ, "Header" : LABELS.labXYZ}
+
+
+	with actions
+		
+
+	with rules
+		load data from DATASOURCE.MDM_Request_VendorPhoneDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
+			
+
+	; when one of these trigger, then reevaluate actions and rules
+	with triggers
+		on row inserted
+		on row deleted
+		on row updated
+
 
 ; ----------------------------------------------------------------------------	
 
