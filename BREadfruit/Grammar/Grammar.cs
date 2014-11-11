@@ -1095,6 +1095,8 @@ namespace BREadfruit
 		public static readonly string TokenNotFoundExceptionDefaultTemplate = "Token '{0}' was not found in line {1}";
 		public static readonly string DuplicateEntityFoundExceptionDefaultMessage = "Duplicate entity name found";
 		public static readonly string DuplicateEntityFoundExceptionDefaultTemplate = "A duplicate declaration was found for Entity '{0}' in line {1}";
+		public static readonly string UnexpectedDefaultClauseExceptionDefaultMessage = "An unexpected clause was found";
+		public static readonly string UnexpectedDefaultClauseExceptionDefaultTemplate = "An unexpected clause clause was found. Entity of type '{0}' does not accept {1}";
 
 
 

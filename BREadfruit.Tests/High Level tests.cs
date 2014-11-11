@@ -1336,6 +1336,32 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		[ExpectedException ( ExpectedException = typeof ( UnexpectedClauseException ),
+			ExpectedMessage = "An unexpected clause was found" + "\r\n" + "Cannot define a default column in an Entity that is not a grid." )]
+		public void ParseSampleFile043 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File043 - InvalidGrid.txt" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( UnexpectedClauseException ),
+			ExpectedMessage = "An unexpected clause was found" + "\r\n" + "Cannot define a row trigger in an Entity that is not a grid." )]
+		public void ParseSampleFile044 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File044 - InvalidGrid2.txt" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
 		public void ShouldFindEntities ()
 		{
 			var parser = new Parser ();

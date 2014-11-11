@@ -45,6 +45,7 @@
     <Compile Include="Conditions\UnaryAction.cs" />
     <Compile Include="Conditions\Rule.cs" />
     <Compile Include="Constraint.cs" />
+    <Compile Include="Exceptions\UnexpectedDefaultClauseException.cs" />
     <Compile Include="Exceptions\InvalidHideStatementClauseException.cs" />
     <Compile Include="Exceptions\InvalidShowStatementClauseException.cs" />
     <Compile Include="Exceptions\DuplicateEntityFoundException.cs" />

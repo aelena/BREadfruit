@@ -1,0 +1,7 @@
+﻿; a textbox cannot accept define column clauses or the grid-specific triggers
+Entity P_GD_VT_Grid is TextBox in frmMain
+
+	with triggers
+		on row inserted
+		row deleted
+		on row updated

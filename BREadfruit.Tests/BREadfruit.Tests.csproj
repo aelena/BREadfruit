@@ -121,6 +121,8 @@
     <Content Include="sample files\single entity tests\File039 - Hide.txt" />
     <Content Include="sample files\single entity tests\File040 - Count.txt" />
     <Content Include="sample files\single entity tests\File041 - ListBox.txt" />
+    <Content Include="sample files\single entity tests\File043 - InvalidGrid.txt" />
+    <Content Include="sample files\single entity tests\File044 - InvalidGrid2.txt" />
     <Content Include="sample files\single entity tests\File042 - Grid.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
