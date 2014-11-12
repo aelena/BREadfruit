@@ -167,7 +167,7 @@ namespace BREadfruit.Clauses
             var _df = new DefaultClause ( this.Token, this.RegexPattern, this._aliases );
             _df.IndentLevel = this.IndentLevel;
             _df.IsTerminal = this.IsTerminal;
-            _df._arguments = this._arguments;
+			//_df._arguments = this._arguments;
             _df._value = this._value;
             return _df;
         }

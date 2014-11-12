@@ -159,13 +159,23 @@ namespace BREadfruit
             if ( defaultClause == null )
                 throw new ArgumentNullException ( "Default clause cannot be null." );
 
-            if ( !this._defaults.Contains ( defaultClause ) )
-            {
-                this._defaults.Add ( defaultClause );
-                return true;
-            }
+			// cannot add duplicate default clauses except if we are talking column definitions for grids
+			if ( defaultClause.Token == Grammar.DefineColumnDefaultClause )
+			{
+				this._defaults.Add ( defaultClause );
+				return true;
+			}
+			else
+			{
+				if ( !this._defaults.Contains ( defaultClause ) )
+				{
+					this._defaults.Add ( defaultClause );
+					return true;
+				}
+			}
 
             return false;
+
         }
 
 

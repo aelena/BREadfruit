@@ -1,8 +1,21 @@
 ﻿Entity P_GD_VT_Grid is Grid in frmMain
 	with defaults
-		define column GRID_P_GD_VT_Country with arguments {ControlType : DropDownList, DataField : XYZ, Header : LABELS.labXYZ}
+		; TODO: how to define or set the controls inside? the row definition?
+		define column GRID_P_GD_VT_Country		with arguments {ControlType : DropDownList, DataField : GD_VT_Country,		Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries}
+		define column GRID_P_GD_VT_CountryCode	with arguments {ControlType : TextBox,		DataField : GD_VT_CountryCode,	Header : LABELS.labPrefix, Enabled : false}
+		define column GRID_P_GD_VT_Number		with arguments {ControlType : TextBox,		DataField : GD_VT_Number,		Header : LABELS.labNumber, Constraints : Only_Numbers}
+		define column GRID_P_GD_VT_Extension	with arguments {ControlType : TextBox,		DataField : GD_VT_Extension,	Header : LABELS.labExtension, Constraints : Only_Numbers}
+		define column GRID_P_GD_VT_Notes		with arguments {ControlType : TextBox,		DataField : GD_VT_Notes,		Header : LABELS.labNotes}
+		define column GRID_P_GD_VT_Default		with arguments {ControlType : CheckBox,		DataField : GD_VT_Default,		Header : LABELS.labDefault, Constraints : Only_Numbers}
+		define column GRID_P_GD_VT_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VT_ConsNumber,   Visible : true}
+
+	with rules
+		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+			load data from DATASOURCE.MDM_Request_VendorPhoneDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+			load data from DATASOURCE.MDM_Request_VendorPhoneDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
 		on row inserted
-		row deleted
+		on row deleted
 		on row updated

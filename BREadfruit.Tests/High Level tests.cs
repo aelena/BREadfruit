@@ -1309,18 +1309,29 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Name == "P_GD_VT_Grid", "Entity name should be 'P_GD_VT_Grid' but is " + e.Name );
 			Assert.That ( e.TypeDescription == Grammar.GridSymbol.Token, "Entity name should be " + Grammar.GridSymbol.Token + " but is " + e.TypeDescription );
 
-			Assert.That ( e.Defaults.Count () == 3, "there should be 3 default clauses, but there are " + e.Defaults.Count () );
+			Assert.That ( e.Defaults.Count () == 9, "there should be 9 default clauses, but there are " + e.Defaults.Count () );
 
 			Assert.That ( e.Defaults.First ().Token == Grammar.DefineColumnDefaultClause.Token );
 			Assert.That ( e.Defaults.First ().Value.ToString () == "GRID_P_GD_VT_Country" );
-			Assert.That ( e.Defaults.First ().Arguments.Count () == 3 );
+			Assert.That ( e.Defaults.First ().Arguments.Count () == 4 );
 			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 0 ).Key == "ControlType" );
 			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 0 ).Value == "DropDownList" );
 			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 1 ).Key == "DataField" );
-			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 1 ).Value == "XYZ" );
-			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 2 ).Key == "Header" );
-			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 2 ).Value == "LABELS.labXYZ" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 1 ).Value == "GD_VT_Country" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 2 ).Key == "DataSource" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 2 ).Value == "DATASOURCE.MDM_Countries" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 3 ).Key == "Header" );
+			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 3 ).Value == "LABELS.labCountry" );
 
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 0 ).Key == "constraints" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 0 ).Value == "Only_Numbers" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 1 ).Key == "ControlType" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 1 ).Value == "TextBox" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 2 ).Key == "DataField" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 2 ).Value == "GD_VT_Extension" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 3 ).Key == "Header" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 3 ).Value == "LABELS.labExtension" );
+			
 			Assert.That ( e.Triggers.Count () == 3 );
 			Assert.That ( e.Triggers.First ().Event == Grammar.RowInsertedEventSymbol );
 			Assert.That ( e.Triggers.First ().Target == e.Name );

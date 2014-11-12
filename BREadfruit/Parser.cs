@@ -137,7 +137,7 @@ namespace BREadfruit
 							CheckForStringTokens ( line, lineInfo );
 						}
 						// then try and parse a default clause
-						if ( lineInfo.Tokens.First () == Grammar.DefineColumnDefaultClause && this._entities.Last ().TypeDescription != Grammar.GridSymbol )
+						if ( lineInfo.Tokens.First () == Grammar.DefineColumnDefaultClause && this._entities.Last ().TypeDescription != Grammar.GridSymbol.Token )
 							throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a default column in an Entity that is not a grid." );
 						this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
 					}
@@ -569,7 +569,7 @@ namespace BREadfruit
 						else
 						{
 							if ( lineInfo.Tokens.First ().In ( new List<Symbol> { Grammar.RowDeletedEventSymbol, Grammar.RowInsertedEventSymbol, Grammar.RowUpdatedEventSymbol } )
-								&& this._entities.Last ().TypeDescription != Grammar.GridSymbol )
+								&& this._entities.Last ().TypeDescription != Grammar.GridSymbol.Token )
 								throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a row trigger in an Entity that is not a grid." );
 							_trigger = new Trigger ( this._entities.Last ().Name, lineInfo.Tokens.First ().Token );
 						}
