@@ -545,17 +545,15 @@ namespace BREadfruit
 					#region " --- trigger block --- "
 					if ( _currentScope == CurrentScope.TRIGGERS_BLOCK )
 					{
+						var _x = from op in Grammar.TriggerSymbols
+								 where op.Aliases.Count () > 0
+								 && op.Aliases.Contains ( lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token )
+								 select op;
 
 						Trigger _trigger = null;
 
 						if ( lineInfo.Tokens.Count () == 2 && lineInfo.Tokens.First () == Grammar.ThisSymbol )
 						{
-
-							var _x = from op in Grammar.TriggerSymbols
-									 where op.Aliases.Count () > 0
-									 && op.Aliases.Contains ( lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token )
-									 select op;
-
 							var _firstToken = lineInfo.Tokens.First ().Token;
 							if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this" ) )
 								_firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
@@ -568,10 +566,25 @@ namespace BREadfruit
 						}
 						else
 						{
-							if ( lineInfo.Tokens.First ().In ( new List<Symbol> { Grammar.RowDeletedEventSymbol, Grammar.RowInsertedEventSymbol, Grammar.RowUpdatedEventSymbol } )
-								&& this._entities.Last ().TypeDescription != Grammar.GridSymbol.Token )
-								throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a row trigger in an Entity that is not a grid." );
-							_trigger = new Trigger ( this._entities.Last ().Name, lineInfo.Tokens.First ().Token );
+							if ( lineInfo.Tokens.Count () == 2 )
+							{
+								var _firstToken = lineInfo.Tokens.First ().Token;
+								if ( lineInfo.Tokens.First ().Token.Trim ().StartsWith ( "this" ) )
+									_firstToken = _firstToken.Replace ( "this", this._entities.Last ().Name );
+
+								if ( _x.Count () > 0 )
+									_trigger = new Trigger ( _firstToken, _x.First ().Token );
+								else
+									_trigger = new Trigger ( _firstToken, lineInfo.Tokens.ElementAt ( 1 ).Token );
+
+							}
+							if ( lineInfo.Tokens.Count () == 1 )
+							{
+								if ( lineInfo.Tokens.First ().In ( new List<Symbol> { Grammar.RowDeletedEventSymbol, Grammar.RowInsertedEventSymbol, Grammar.RowUpdatedEventSymbol } )
+									&& this._entities.Last ().TypeDescription != Grammar.GridSymbol.Token )
+									throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a row trigger in an Entity that is not a grid." );
+								_trigger = new Trigger ( this._entities.Last ().Name, lineInfo.Tokens.First ().Token );
+							}
 						}
 
 						this._entities.Last ().AddTrigger ( _trigger );

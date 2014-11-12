@@ -452,7 +452,7 @@ namespace BREadfruit
 		public static Symbol ChangedEventSymbol = new Symbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes" } );
 		public static Symbol FocusEventSymbol = new Symbol ( "entered", 2, true, new List<string> { "on entered", "on enter", "enters", "on focus", "focus" } );
 		public static Symbol BlurredEventSymbol = new Symbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
-		public static Symbol ClickedEventSymbol = new Symbol ( "clicked", 2, true, new List<string> { "click", "onclick", "on_click", "on click", "on clicked", "on_clicked", "onclicked" } );
+		public static Symbol ClickedEventSymbol = new Symbol ( "clicked", 2, true, new List<string> { "on click", "onclick", "on_click", "on clicked", "on_clicked", "onclicked", "click" } );
 		public static Symbol LoadedEventSymbol = new Symbol ( "loaded", 2, true, new List<string> { "on loads", "on load", "loads" } );
 
 		public static Symbol RowInsertedEventSymbol = new Symbol ( "row_inserted", 2, true, new List<string> { "on row inserted", "row inserted" } );

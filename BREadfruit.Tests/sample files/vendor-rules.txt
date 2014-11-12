@@ -1142,10 +1142,7 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 		load data from DATASOURCE.MDM_Languages	with arguments {"FlagActive" : true}	
 		label LABELS.labLanguages
 
-
 	with rules
-		
-		
 
 ; ----------------------------------------------------------------------------	
 
@@ -1212,7 +1209,6 @@ Entity P_GD_VT_Notes is TextBox in frmMain
 	with defaults
 		max length 50
 		label LABELS.labGD_VT_Notes
-		
 
 ; ----------------------------------------------------------------------------	
 
@@ -1232,18 +1228,18 @@ Entity P_GD_VT_btnInsert is Button in frmMain
 ; ----------------------------------------------------------------------------	
 
 
-; --- TENTATIVE GRID DEFINITION AND CONVENTIONS
+; --- TODO: TENTATIVE GRID DEFINITION AND CONVENTIONS
 
 Entity P_GD_VT_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_P_GD_VT_Country		with arguments {ControlType : DropDownList, DataField : GD_VT_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries}
-		define column GRID_P_GD_VT_CountryCode	with arguments {ControlType : TextBox,		DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false}
-		define column GRID_P_GD_VT_Number		with arguments {ControlType : TextBox,		DataField : GD_VT_Number, Header : LABELS.labNumber, Constraints : Only_Numbers}
-		define column GRID_P_GD_VT_Extension	with arguments {ControlType : TextBox,		DataField : GD_VT_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers}
-		define column GRID_P_GD_VT_Notes		with arguments {ControlType : TextBox,		DataField : GD_VT_Notes, Header : LABELS.labNotes}
-		define column GRID_P_GD_VT_Default		with arguments {ControlType : CheckBox,		DataField : GD_VT_Default, Header : LABELS.labDefault, Constraints : Only_Numbers}
-		define column GRID_P_GD_VT_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VT_ConsNumber, Visible : true}
+		define column GRID_P_GD_VT_Country		with arguments {ControlType : DropDownList, DataField : GD_VT_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+		define column GRID_P_GD_VT_CountryCode	with arguments {ControlType : TextBox,		DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_P_GD_VT_Number		with arguments {ControlType : TextBox,		DataField : GD_VT_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_Extension	with arguments {ControlType : TextBox,		DataField : GD_VT_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_Notes		with arguments {ControlType : TextBox,		DataField : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_P_GD_VT_Default		with arguments {ControlType : CheckBox,		DataField : GD_VT_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VT_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
@@ -1312,6 +1308,33 @@ Entity F_GD_VF_btnInsert is Button in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+; --- TODO: TENTATIVE GRID DEFINITION AND CONVENTIONS
+
+Entity F_GD_VF_Grid is Grid in frmMain
+	with defaults
+		; TODO: how to define or set the controls inside? the row definition?
+		define column GRID_F_GD_VF_Country		with arguments {ControlType : DropDownList, DataField : GD_VF_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+		define column GRID_F_GD_VF_CountryCode	with arguments {ControlType : TextBox,		DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_F_GD_VF_Number		with arguments {ControlType : TextBox,		DataField : GD_VF_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_Extension	with arguments {ControlType : TextBox,		DataField : GD_VF_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_Notes		with arguments {ControlType : TextBox,		DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_F_GD_VF_Default		with arguments {ControlType : CheckBox,		DataField : GD_VF_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VF_ConsNumber, Visible : false}
+
+	with rules
+		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+			load data from DATASOURCE.MDM_Request_VendorFaxDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+			load data from DATASOURCE.MDM_Request_VendorFaxDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
+
+	with triggers
+		on row inserted
+		on row deleted
+		on row updated
+
+; ----------------------------------------------------------------------------	
+
+
 Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 	with defaults
 		; move the tooltip text to the real dictionary
@@ -1345,6 +1368,27 @@ Entity E_GD_VE_Default is TextBox in frmMain
 Entity E_GD_VE_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.labInsert
+
+; ----------------------------------------------------------------------------	
+
+Entity E_GD_VE_Grid is Grid in frmMain
+	with defaults
+		; TODO: how to define or set the controls inside? the row definition?
+		define column GRID_E_GD_VE_SmtpAddr		with arguments {ControlType : TextBox,		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_E_GD_VE_Notes		with arguments {ControlType : TextBox,		DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_E_GD_VE_Default		with arguments {ControlType : CheckBox,		DataField : GD_VE_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_E_GD_VE_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VE_ConsNumber, Visible : false}
+
+	with rules
+		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+			load data from DATASOURCE.MDM_Request_VendorEmailDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+			load data from DATASOURCE.MDM_Request_VendorEmailDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
+
+	with triggers
+		on row inserted
+		on row deleted
+		on row updated
 
 ; ----------------------------------------------------------------------------	
 
@@ -1792,6 +1836,27 @@ Entity V_btnInsert is Button in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+Entity V_Grid is Grid in frmMain
+	with defaults
+		; TODO: do we need this column also to keep track of the ID in the grid?
+		; TODO: define column GRID_V_RequestID		with arguments {ControlType : TextBox,		DataField : RequestID, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : false}
+		define column GRID_V_OrderID		with arguments {ControlType : TextBox,		DataField : OrderID, Constraints : Only_Numbers, Visible : false}
+		define column GRID_V_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+		define column GRID_V_VATNumber		with arguments {ControlType : TextBox,		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
+		
+	with rules
+		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+			load data from DATASOURCE.MDM_Request_VendorVAT with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+			load data from DATASOURCE.MDM_Request_VendorVATSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
+
+	with triggers
+		on row inserted
+		on row deleted
+		on row updated
+
+; ----------------------------------------------------------------------------	
+
 ; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
 ; THIS IS THE BANK DETAILS
 
@@ -1879,6 +1944,38 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 		label LABELS.btnInsert
 
 ; ---------------------------------------------------------------------------- 
+
+Entity B_GD_VB_Grid is Grid in frmMain
+	with defaults
+		; TODO: do we need this column also to keep track of the ID in the grid?
+		; TODO: define column GRID_V_RequestID		with arguments {ControlType : TextBox,		DataField : RequestID, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : false}
+	
+		define column GRID_B_GD_VB_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+		define column GRID_B_GD_VB_BankKey		with arguments {ControlType : TextBox,		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
+		define column GRID_B_GD_VB_BankAccount	with arguments {ControlType : TextBox,	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
+		define column GRID_B_GD_VB_BankControlKey	with arguments {ControlType : TextBox,	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
+		define column GRID_B_GD_VB_IBAN			with arguments {ControlType : TextBox,	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
+		define column GRID_B_GD_VB_SWIFT		with arguments {ControlType : TextBox,	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : true}
+		define column GRID_B_GD_VB_NameOfBank	with arguments {ControlType : TextBox,	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
+		define column GRID_B_GD_VB_AccountHolder	with arguments {ControlType : TextBox,	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
+		define column GRID_B_GD_VB_BankCity	with arguments {ControlType : TextBox,	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
+		define column GRID_B_GD_VB_PartBankType	with arguments {ControlType : TextBox,	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
+		define column GRID_B_GD_VB_BankReferDetails	with arguments {ControlType : TextBox,	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
+		define column GRID_RelevantFlag	with arguments {ControlType : CheckBox,	DataField : RelevantFlag, Visible : false}
+
+		
+	with rules
+		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+			load data from DATASOURCE.MDM_Request_VendorBankDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+			load data from DATASOURCE.MDM_Request_VendorBankDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
+
+	with triggers
+		on row inserted
+		on row deleted
+		on row updated
+
+; ----------------------------------------------------------------------------	
 
 ; ALWAYS HIDDEN
 ; TODO: DECIDE WHAT TO DO WITH THIS SORT OF FIELDS...
