@@ -2885,6 +2885,154 @@ Entity btnSubmit is Button in frmMain
 			this visible false
 			this enabled false
 		
+		; --- validations when submitting
+
+		DDLDCReqAction is empty then
+			set value MESSAGES.ERRsubmitRequestAction in MESSAGE_POPUP
+
+		
+		REQUEST.CURRENT_ROLE in {ENQ,CLERK} and CC_PT_PaymentMethods.Value is 2 and REQUEST.BANK_DETAILS is empty then		; 2 means CONFIRMING
+			set value MESSAGES.ERRsubmitRequestGDFieldBank in MESSAGE_POPUP
+
+		GD_Ctr_IsNaturalPerson.Value is true and GD_Adr_Country.Value is IT and GD_NatP_DateOfBirth.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldData in MESSAGE_POPUP
+	
+		GD_Ctr_IsNaturalPerson.Value is true and GD_Adr_Country.Value is IT and GD_NatP_PlaceOfBirth.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldPlace in MESSAGE_POPUP
+
+		; TODO: GD_NatP_Exemption.Visible is true or GD_NatP_Exemption is visible?
+		GD_Ctr_IsNaturalPerson.Value is true and GD_Adr_Country.Value is IT and GD_NatP_Exemption.Value and GD_NatP_Exemption.Visible is true is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldExemption in MESSAGE_POPUP
+		
+		REQUEST.PHONE_DETAILS is empty and REQUEST.COUNTRY is not BE then
+			set value MESSAGES.ERRsubmitRequestGDFieldTelephone in MESSAGE_POPUP
+			
+		; TODO: HOW TO DEFINE THIS?
+		REQUEST.PHONE_DETAILS is not empty and REQUEST.PHONE_DETAILS.NO_DEFAULT_ENTRY then
+			set value MESSAGES.ERRsubmitRequestGDFieldPhone in MESSAGE_POPUP
+
+		PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldCustomerNum in MESSAGE_POPUP
+
+		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question1.Value is 0 then
+			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 1 is empty' in MESSAGE_POPUP
+
+		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question2.Value is 0 then
+			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 2 is empty' in MESSAGE_POPUP
+			
+		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question3.Value is 0 then
+			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 3 is empty' in MESSAGE_POPUP
+	
+		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question4.Value is 0 then
+			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 4 is empty' in MESSAGE_POPUP
+	
+		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question5.Value is 0 then
+			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 5 is empty' in MESSAGE_POPUP
+
+		REQUEST.VENDOR_COUNTRY in {FR,GP,YT,MC,RE,MQ,GF} and REQUEST.BANK_DETAILS > 0 and REQUEST.BANK_DETAILS.FIRST.GD_VB_COUNTRY in {FR,GP,YT,MC,RE,MQ,GF} and CC_PT_PaymentMethods.Value is Y then
+			set value ERRsubmitRequestCCFieldPaymentMethodInvalid in MESSAGE_POPUP
+	
+		REQUEST.VENDOR_COUNTRY in {FR,GP,YT,MC,RE,MQ,GF} and REQUEST.BANK_DETAILS > 0 and REQUEST.BANK_DETAILS.FIRST.GD_VB_COUNTRY not in {FR,GP,YT,MC,RE,MQ,GF} and CC_PT_PaymentMethods.Value is G then
+			set value ERRsubmitRequestCCFieldInformPaymentInvalid in MESSAGE_POPUP
+
+		REQUEST.VENDOR_COUNTRY not in {FR,GP,YT,MC,RE,MQ,GF} and CC_PT_PaymentMethods.Value is G then
+			set value ERRsubmitRequestCCFieldInformPaymentInvalid in MESSAGE_POPUP
+
+		CC_PT_ValidityDate.Value is not empty and CC_PT_ValidityDate.Value < DATE.TODAY then
+			set value ERRsubmitRequestCCFielddateInv in MESSAGE_POPUP
+
+		GD_Adr_Country.Value is IT and GD_Ctr_CF is not empty and GD_Ctr_CF.Length < 9
+			set value ERRsubmitRequestGDFieldCFShort in MESSAGE_POPUP
+
+		GD_Adr_Country.Value is PT and GD_Ctr_CF is not empty and GD_Ctr_CF.Length < 9
+			set value ERRsubmitRequestGDFieldNIFShort in MESSAGE_POPUP
+
+		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_CF is empty and REQUEST.REQUEST_TYPE is VC then
+			set value ERRsubmitRequestGDFieldCFEmpty in MESSAGE_POPUP
+					   
+		GD_Ctr_VendorClassification.Value is empty then
+			set value ERRsubmitRequestRHFieldVClass in MESSAGE_POPUP
+					   
+		REQUEST.REQUEST_TYPE in {VC,CC} and GD_Procur_SuppliersName is empty then			   
+			set value ERRsubmitRequestRHFieldName in MESSAGE_POPUP
+		
+		REQUEST.REQUEST_TYPE in {VC,CC} and GD_Procur_ESNCode is empty then		   
+			set value ERRsubmitRequestRHFieldESN in MESSAGE_POPUP			   
+		
+		REQUEST.REQUEST_TYPE in {VC,CC} and GD_Procur_Reason_Justification is empty then		   
+			set value ERRsubmitRequestRHFieldJustification in MESSAGE_POPUP
+
+		REQUEST.REQUEST_TYPE in {VC,CC} and GD_Procur_GoodsToSiemens is empty then		   
+			set value ERRsubmitRequestRHFieldGoods in MESSAGE_POPUP
+		
+		REQUEST.REQUEST_TYPE in {VC,CC} and GD_Procur_Supplier_ExpectedPVO is empty then		   
+			set value ERRsubmitRequestRHFieldExpected in MESSAGE_POPUP			   
+		
+		REQUEST.REQUEST_TYPE in {VC,CC} and GD_Procur_Supplier_IsOneTimeVendor is empty then		   
+			set value ERRsubmitRequestRHFieldOccasionalV in MESSAGE_POPUP			   
+
+		REQUEST.REQUEST_TYPE in {VC,CC} and E_GD_VE_Grid is empty then		   
+			set value ERRsubmitRequestRHFieldOccasionalV in MESSAGE_POPUP			   
+		
+		; REQUEST.CURRENT_ROLE in {ENQ,CLERK}
+
+		GD_Adr_Name.Value is empty then
+			set value ERRsubmitRequestGDFieldVName in MESSAGE_POPUP	
+					   
+		GD_Adr_Street.Value is empty then
+			set value ERRsubmitRequestGDFieldVStreet in MESSAGE_POPUP
+						   
+		GD_Adr_Region.Value is empty then
+			set value ERRsubmitRequestGDFieldVRegion in MESSAGE_POPUP		
+				   
+		GD_Adr_City.Value is empty then
+			set value ERRsubmitRequestGDFieldVCity in MESSAGE_POPUP			   
+		
+		GD_Com_LanguageCode.Value is empty then
+			set value ERRsubmitRequestGDFieldLanguage in MESSAGE_POPUP			   
+		
+		GD_Com_Telebox.Value is empty and REQUEST.VENDOR_COUNTRY is WF then
+			set value 'To submit the request fill all the mandatory fields: in General Data view the field Telebox is empty' in MESSAGE_POPUP			   
+		
+		GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YCT6, YVT6} and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsFieldMandatory and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} then
+			set value ERRsubmitRequestGDFieldTaxCode1 in MESSAGE_POPUP			   
+		
+		GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 then
+			set value ERRsubmitRequestGDFieldTaxCode1Inv in MESSAGE_POPUP			   
+		
+		GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 and REQUEST.COMPANY_CODE is 5240 and GD_Ctr_NIF.Value starts with {1,2} then
+			; TODO: change label GD_Ctr_TaxCode2 to "NISS"
+			; TODO: change label GD_NatP_PlaceOfBirth to "Nº Employees"
+			set value ERRsubmitRequestRHFieldOccasionalV in MESSAGE_POPUP			   
+		
+		GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 and REQUEST.COMPANY_CODE is 5240 and GD_Ctr_NIF.Value starts with {1,2} and GD_Ctr_TaxCode2 is empty then
+			set value ERRsubmitRequestGDFieldNISS in MESSAGE_POPUP
+
+		; TODO:                 if ( String.IsNullOrEmpty ( this.GD_NatP_PlaceOfBirth.Text ) || !int.TryParse ( this.GD_NatP_PlaceOfBirth.Text, out i ) )
+        ;                       Error = Error + ( "To submit the request fill all the mandatory fields: in General Data view the field Nº Employees is mandatory and must be numeric.<br/> " );
+
+		GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode2 is empty and GD_Ctr_TaxCode2 is mandatory then
+			set value ERRsubmitRequestGDFieldTaxCode2Empty in MESSAGE_POPUP
+
+		GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_VATRegistrationNumber is empty and GD_Ctr_VATRegistrationNumber is mandatory then
+			set value ERRsubmitRequestGDFieldVatReg in MESSAGE_POPUP
+
+		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true then
+			GD_Ctr_TaxCode1 mandatory true
+			GD_Ctr_TaxCode2 mandatory false
+
+		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Value is empty then
+			set value ERRsubmitRequestGDFieldTaxCode1Empty in MESSAGE_POPUP			   
+
+		; TODO: how to include this WEBSERVICE call in a condition like this?
+		GD_Adr_POBox.Value is not empty and WEBSERVICES.VALIDATE_POSTAL_CODE with arguments {} and GD_Adr_Country.Value is not GR and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} then
+			set value ERRsubmitRequestGDPOinv in MESSAGE_POPUP			   
+		
+		GD_Adr_Name.Value is empty then
+			set value ERRsubmitRequestRHFieldOccasionalV in MESSAGE_POPUP			   
+
+
+
 ; ----------------------------------------------------------------------------	
 		
 
@@ -3022,3 +3170,8 @@ Entity btnPOClear is Button in frmMain
 
 
 ; --- the fucking end --------------------------------------------------------
+
+
+
+
+

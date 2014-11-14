@@ -536,10 +536,10 @@ namespace BREadfruit
 
 		public static Operator SubStringOperator = new Operator ( "substring", 2, false );
 
-		public static Operator GreaterThanOperator = new Operator ( ">", 2, false );
-		public static Operator LowerThanOperator = new Operator ( "<", 2, false );
-		public static Operator GreaterEqualThanOperator = new Operator ( ">=", 2, false );
-		public static Operator LowerEqualThanOperator = new Operator ( "<=", 2, false );
+		public static Operator GreaterThanOperator = new Operator ( ">", 2, false, new [] { "greater than", "bigger than" } );
+		public static Operator LowerThanOperator = new Operator ( "<", 2, false, new [] { "less than", "smaller than", "lower than" } );
+		public static Operator GreaterEqualThanOperator = new Operator ( ">=", 2, false, new [] { "greater or equal than", "bigger or equal than" } );
+		public static Operator LowerEqualThanOperator = new Operator ( "<=", 2, false, new [] { "less or equal than", "smaller or equal than", "lower or equal than"  } );
 
 		#endregion
 

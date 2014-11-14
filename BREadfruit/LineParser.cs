@@ -410,6 +410,10 @@ namespace BREadfruit
 										 Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
 										 lineInfo.Tokens.ElementAt ( ++i ).Token );
 
+				// need to purge in the case of unary operator conditions
+				if ( _c.Operator.In ( new [] { Grammar.IsEmptyOperator, Grammar.IsMandatoryOperator, Grammar.IsMandatoryOperator, Grammar.IsNotMandatoryOperator } ) )
+					_c.ChangeValue ( "" );
+
 				if ( _c.Operator.In ( Grammar.UnaryOperators ) )
 					i -= 2;
 

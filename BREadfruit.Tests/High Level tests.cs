@@ -1373,6 +1373,54 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		public void ParseSampleFile045 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File045 - ArithOps.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "xARKANEx", "Entity name should be 'xARKANEx' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.TextBoxSymbol.Token, "Entity name should be " + Grammar.TextBoxSymbol.Token + " but is " + e.TypeDescription );
+
+			Assert.That ( e.Rules.Count () == 10, "there should be 8 rules" );
+
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Operator == Grammar.GreaterThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator == Grammar.GreaterThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator == Grammar.GreaterEqualThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First ().Operator == Grammar.GreaterEqualThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.First ().Operator == Grammar.LowerThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.First ().Operator == Grammar.LowerThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.First ().Operator == Grammar.LowerThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 7 ).Conditions.First ().Operator == Grammar.LowerEqualThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 8 ).Conditions.First ().Operator == Grammar.LowerEqualThanOperator );
+			Assert.That ( e.Rules.ElementAt ( 9 ).Conditions.First ().Operator == Grammar.LowerEqualThanOperator );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile046 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File046 - Is_Mandatory.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "xARKANEx", "Entity name should be 'xARKANEx' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.TextBoxSymbol.Token, "Entity name should be " + Grammar.TextBoxSymbol.Token + " but is " + e.TypeDescription );
+
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
 		public void ShouldFindEntities ()
 		{
 			var parser = new Parser ();

@@ -1,0 +1,31 @@
+﻿Entity xARKANEx is TextBox in frmMain
+	with rules
+		AAA greater than 1 then
+			set value POPO in AAA
+
+		AAA bigger than 1 then
+			set value POPO in AAA
+		
+		AAA greater or equal than then
+			set value POPO in AAA
+
+		AAA bigger or equal than then
+			set value POPO in AAA
+		
+		AAA less than 1 then
+			set value POPO in AAA
+		
+		AAA smaller than 1 then
+			set value POPO in AAA
+
+		AAA lower than 1 then
+			set value POPO in AAA
+		
+		AAA less or equal than 1 then
+			set value POPO in AAA
+		
+		AAA smaller or equal than 1 then
+			set value POPO in AAA
+
+		AAA lower or equal than 1 then
+			set value POPO in AAA

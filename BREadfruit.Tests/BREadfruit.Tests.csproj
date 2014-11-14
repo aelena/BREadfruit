@@ -124,6 +124,8 @@
     <Content Include="sample files\single entity tests\File043 - InvalidGrid.txt" />
     <Content Include="sample files\single entity tests\File044 - InvalidGrid2.txt" />
     <Content Include="sample files\single entity tests\File042 - Grid.txt" />
+    <Content Include="sample files\single entity tests\File045 - ArithOps.txt" />
+    <Content Include="sample files\single entity tests\File046 - Is_Mandatory.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

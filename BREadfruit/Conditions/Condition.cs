@@ -27,7 +27,7 @@ namespace BREadfruit.Conditions
             get { return _operator; }
         }
 
-        private readonly Object _value;
+        private Object _value;
         /// <summary>
         /// Value of the condition.
         /// </summary>
@@ -157,5 +157,10 @@ namespace BREadfruit.Conditions
 
         // ---------------------------------------------------------------------------------
 
+
+		protected internal void ChangeValue ( object value )
+		{
+			this._value = value;
+		}
     }
 }

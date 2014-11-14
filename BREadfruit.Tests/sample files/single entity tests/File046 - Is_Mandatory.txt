@@ -1,0 +1,7 @@
+﻿Entity xARKANEx is TextBox in frmMain
+
+	with rules
+
+		; GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode2 is empty and GD_Ctr_TaxCode2 is mandatory then
+		GD_Ctr_TaxCode2 is empty and GD_Ctr_TaxCode2 is mandatory then
+			set value ERRsubmitRequestGDFieldTaxCode2Empty in MESSAGE_POPUP
