@@ -371,6 +371,13 @@ namespace BREadfruit
 
 		#region " --- terminals --- "
 
+		public static Symbol OpeningCurlyBracket = new Symbol ( "{", 2, true );
+		public static Symbol ClosingCurlyBracket = new Symbol ( "}", 2, true );
+		public static Symbol OpeningSquareBracket = new Symbol ( "[", 2, true );
+		public static Symbol ClosingSquareBracket = new Symbol ( "]", 2, true );
+
+
+
 		public static readonly Symbol TrueSymbol = new Symbol ( "true", 2, true );
 		public static readonly Symbol FalseSymbol = new Symbol ( "false", 2, true );
 
@@ -539,7 +546,7 @@ namespace BREadfruit
 		public static Operator GreaterThanOperator = new Operator ( ">", 2, false, new [] { "greater than", "bigger than" } );
 		public static Operator LowerThanOperator = new Operator ( "<", 2, false, new [] { "less than", "smaller than", "lower than" } );
 		public static Operator GreaterEqualThanOperator = new Operator ( ">=", 2, false, new [] { "greater or equal than", "bigger or equal than" } );
-		public static Operator LowerEqualThanOperator = new Operator ( "<=", 2, false, new [] { "less or equal than", "smaller or equal than", "lower or equal than"  } );
+		public static Operator LowerEqualThanOperator = new Operator ( "<=", 2, false, new [] { "less or equal than", "smaller or equal than", "lower or equal than" } );
 
 		#endregion
 
@@ -1006,6 +1013,13 @@ namespace BREadfruit
 			Grammar._symbols.Add ( OnlyAsciiConstraintSymbol );
 			Grammar._symbols.Add ( OnlyNumbersConstraintSymbol );
 			Grammar._symbols.Add ( OnlyLettersConstraintSymbol );
+
+			Grammar._symbols.Add ( OpeningCurlyBracket );
+			Grammar._symbols.Add ( ClosingCurlyBracket );
+			Grammar._symbols.Add ( OpeningSquareBracket );
+			Grammar._symbols.Add ( ClosingSquareBracket );
+
+
 		}
 
 
