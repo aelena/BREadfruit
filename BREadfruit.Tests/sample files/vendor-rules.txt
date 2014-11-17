@@ -373,11 +373,16 @@ Entity GD_Damex is DropDownList in frmMain
 		mandatory true
 		label LABELS.VENDOR.labGD_Damex
 
+	with actions
+		AttachManager mandatory true
+
 	with rules
-		REQUEST.FLOWTYPE not in {"VC", "VC_CC"} then 
+		REQUEST.FLOWTYPE not in {VC, VC_CC} then 
 			GD_Damex not mandatory
 			GD_Damex not visible
 
+	with triggers
+		this changes
 ; ----------------------------------------------------------------------------	
 
 Entity GD_DamexNote is CheckBox in frmMain
@@ -906,9 +911,16 @@ Entity GD_Adr_Street is TextBox in frmMain
 		max length 35
 		label LABELS.labHouseNumber
 
+	with actions
+		AttachManager mandatory true
+
 	with rules
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
+
+	with triggers
+		this changes
+
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Street2 is TextBox in frmMain
@@ -1078,6 +1090,15 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 			validation ^[0-9]{5}$
 			set value substring(GD_Adr_PostalCode,2) in GD_Adr_Region
 
+		GD_Adr_CountryGD.Value is ES then
+			tooltip "Spanish postal code is composed by 5 digits"
+
+		GD_Adr_CountryGD.Value is PT then
+			tooltip "Italian postal code is composed by 5 digits"
+
+		GD_Adr_CountryGD.Value is IT then
+			tooltip "Portuguese postal code must have this format 9999-999"
+
 
 ; ----------------------------------------------------------------------------	
 
@@ -1090,9 +1111,14 @@ Entity GD_Adr_Search is TextBox in frmMain
 		value  GD_Adr_Name1.Value
 		label LABELS.Search
 
+	with actions
+		AttachManager mandatory true
 
 	with rules
 		CURRENT_ROLE in {"UPM", "CPM", "RCO"} then disabled
+
+	with triggers
+		this changes
 
 
 ; ----------------------------------------------------------------------------	
@@ -1346,7 +1372,7 @@ Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 	
 	with rules
 		; check this is true
-		REQUEST.REQUEST_TYPE is "VC" then mandatory true
+		REQUEST.REQUEST_TYPE is VC then mandatory true
 		
 ; ----------------------------------------------------------------------------	
 
@@ -1550,9 +1576,9 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 	with rules
 		; this means companycode country
 		;	1) if regional country Greece and not vendor creation from scratch->NO mandatory else If vendor country doesn't belong to YVT6 or YVT9 -> mandatory
-		REQUEST.COUNTRY is "GR" and REQUEST.REQUEST_TYPE is not "VC"
+		REQUEST.COUNTRY is "GR" and REQUEST.REQUEST_TYPE is not VC
 			mandatory false
-		REQUEST.COUNTRY is "GR" and REQUEST.REQUEST_TYPE is not "VC" and VENDOR.ACCOUNT_GROUP not in {"YVT6", "YVT9"} then
+		REQUEST.COUNTRY is "GR" and REQUEST.REQUEST_TYPE is not VC and VENDOR.ACCOUNT_GROUP not in {"YVT6", "YVT9"} then
 			mandatory true
 		
 		; if vendor country France->maxlength 14, label = SIRET, visible true, only numbers
@@ -1907,7 +1933,13 @@ Entity B_GD_VB_SWIFT is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_SWIFT
+		visible false
 
+	with rules
+		REQUEST.REQUEST_TYPE is VC then
+			this visible true
+			
+			
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_AccountHolder is TextBox in frmMain

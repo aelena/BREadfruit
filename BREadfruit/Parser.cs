@@ -345,6 +345,13 @@ namespace BREadfruit
 							this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
 							continue;
 						}
+						if ( lineInfo.Tokens.First () == Grammar.ToolTipDefaultClause)
+						{
+							var _ra = new ResultAction ( Grammar.ToolTipDefaultClause, lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token.Replace ( "\"", "" ),
+								 this.Entities.Last ().Name );
+							this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+							continue;
+						}
 
 						if ( lineInfo.Tokens.Count () == 1 )
 						{

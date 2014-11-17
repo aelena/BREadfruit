@@ -14,5 +14,12 @@ Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 		max length 241
 	
 	with rules
-		; check this is true
-		REQUEST.REQUEST_TYPE is "VC" then mandatory true
+
+		GD_Adr_CountryGD.Value is ES then
+			tooltip "Spanish postal code is composed by 5 digits"
+
+		GD_Adr_CountryGD.Value is PT then
+			tooltip "Italian postal code is composed by 5 digits"
+
+		GD_Adr_CountryGD.Value is IT then
+			tooltip "Portuguese postal code must have this format 9999-999"

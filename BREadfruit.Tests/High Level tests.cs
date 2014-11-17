@@ -831,7 +831,8 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.First ().Token == Grammar.ToolTipDefaultClause );
 			Assert.That ( e.Defaults.First ().Value.ToString () == "\"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\"" );
 
-			Assert.That ( e.Rules.Count () == 1, "should have 1 rule(s) but has " + e.Rules.Count () );
+			Assert.That ( e.Rules.Count () == 3, "should have 3 rule(s) but has " + e.Rules.Count () );
+			Assert.That ( e.Rules.All ( x => x.Conditions.First ().ResultActions.First ().Action == Grammar.ToolTipDefaultClause.Token ) );
 		}
 
 
@@ -1331,7 +1332,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 2 ).Value == "GD_VT_Extension" );
 			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 3 ).Key == "Header" );
 			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 3 ).Value == "LABELS.labExtension" );
-			
+
 			Assert.That ( e.Triggers.Count () == 3 );
 			Assert.That ( e.Triggers.First ().Event == Grammar.RowInsertedEventSymbol );
 			Assert.That ( e.Triggers.First ().Target == e.Name );

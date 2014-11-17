@@ -1307,6 +1307,14 @@ Entity B_GD_VB_SWIFT is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_SWIFT
+		visible false
+
+	with rules
+		REQUEST.REQUEST_TYPE is CC then
+			this visible true
+
+		CC_PT_PaymentMethods.Value is 2 then
+			this visible true
 
 ; ---------------------------------------------------------------------------- 
 
@@ -3067,6 +3075,8 @@ Entity CP_Department is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCP_Department
+		load data from DATASOURCE.MDMC_Department with arguments {COLUMN.FlagActive : true, OrderBy : DisplayName}
+
 
 ; ---------------------------------------------------------------------------- 
 
