@@ -413,6 +413,8 @@ namespace BREadfruit
 
 		#endregion
 
+		public static Symbol EmptySymbol = new Symbol ( "", 2, true );
+
 		public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
 		public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
 		public static Symbol InSymbol = new Symbol ( "in", 2, false );
