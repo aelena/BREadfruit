@@ -64,7 +64,7 @@ namespace BREadfruit
             get { return _tokens; }
         }
 
-        private readonly string _representation;
+        private string _representation;
 
         public string Representation
         {
@@ -277,6 +277,7 @@ namespace BREadfruit
                 this._tokens = new List<Symbol> ();
             this._tokens.Add ( s );
             this._numberOfTokens = this._tokens.Count ();
+			this._representation = this.Tokens.JoinTogether ().Token;
             return this.Tokens;
         }
 
@@ -294,7 +295,8 @@ namespace BREadfruit
                 this._tokens = new List<Symbol> ();
             this._tokens.AddRange ( symbols );
             this._numberOfTokens = this._tokens.Count ();
-            return this.Tokens;
+			this._representation = this.Tokens.JoinTogether ().Token;
+			return this.Tokens;
         }
 
 
@@ -313,7 +315,8 @@ namespace BREadfruit
             {
                 this._tokens = this._tokens.Take ( index ).ToList ();
                 this._numberOfTokens = this._tokens.Count ();
-                return this.Tokens;
+				this._representation = this.Tokens.JoinTogether ().Token;
+				return this.Tokens;
             }
             else
                 throw new ArgumentException ( "You cannot remove all tokens or specify a negative index.", "index" );
@@ -340,6 +343,7 @@ namespace BREadfruit
                 this._tokens = this._tokens.Take ( includeCurrentToken ? index + 1 : index ).ToList ();
 
             this._numberOfTokens = this._tokens.Count ();
+			this._representation = this.Tokens.JoinTogether ().Token;
 
             return this.Tokens;
 
@@ -348,6 +352,43 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+
+		public void RemoveTokensAfter ( Func<Symbol, bool> func )
+		{
+			int i = 0;
+			foreach ( var l in this.Tokens )
+			{
+				if ( func ( l ) )
+				{
+					this._tokens = this.Tokens.Take ( ++i ).ToList ();
+					this._representation = this.Tokens.JoinTogether ().Token;
+					this._numberOfTokens = this.Tokens.Count ();
+				}
+				i++;
+			}
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public void RemoveTokensFrom ( Func<Symbol, bool> func )
+		{
+			int i = 0;
+			foreach ( var l in this.Tokens )
+			{
+				if ( func ( l ) )
+				{
+					this._tokens = this.Tokens.Take ( i ).ToList ();
+					this._representation = this.Tokens.JoinTogether ().Token;
+					this._numberOfTokens = this.Tokens.Count ();
+				}
+				i++;
+			}
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
         /// <summary>
         /// 
@@ -366,6 +407,7 @@ namespace BREadfruit
 
             this._tokens = this._tokens.Take ( from ).Concat ( this._tokens.Skip ( to ) ).ToList ();
             this._numberOfTokens = this._tokens.Count ();
+			this._representation = this.Tokens.JoinTogether ().Token;
 
         }
 

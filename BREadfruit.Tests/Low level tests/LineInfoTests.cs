@@ -147,5 +147,20 @@ namespace BREadfruit.Tests.Low_level_tests
 
 
 
+		[TestCase ( "", Result = "" )]
+		[TestCase ( "[]", Result = "[]" )]
+		[TestCase ( "[", Result = "[" )]
+		[TestCase ( "set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber", Result = "set value [LU + GD_Ctr_PIVA.Value]" )]
+		[TestCase ( "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber", Result = "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber" )]
+		public string RemoveAfterTest ( string sut )
+		{
+			LineInfo li = new LineInfo ( sut );
+			li.RemoveTokensAfter ( x => x.Token.EndsWith ( Grammar.ClosingSquareBracket.Token ) );
+			return li.Representation;
+		}
+
+		// ---------------------------------------------------------------------------------
+
+
     }
 }
