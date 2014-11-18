@@ -1,0 +1,5 @@
+﻿Entity xARKANEx is TextBox in frmMain
+
+	with rules
+		REQUEST.ACCOUNT_GROUP is YVT2 then
+			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber

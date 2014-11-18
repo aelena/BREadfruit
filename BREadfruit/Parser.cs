@@ -103,6 +103,10 @@ namespace BREadfruit
 					if ( lineInfo.Tokens.Count () == 0 )
 						continue;
 					lineInfo = ParseLine ( this._lineParser.TokenizeMultiplePartOperators ( lineInfo ) );
+
+					if ( lineInfo.Tokens.First () != Grammar.ValidationRegexDefaultClause )
+						lineInfo = this._lineParser.TokenizeBracketExpression ( lineInfo );
+					
 					// we need to check the indent level to make sure we set the right scope
 					// this is for conditions with several action lines
 					if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK && lineInfo.IndentLevel == 2 )

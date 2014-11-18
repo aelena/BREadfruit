@@ -4,6 +4,20 @@
 ; 
 
 
+; -- AccountGroup	DisplayName
+;	 YVT1	Belgium/Belgique
+;	 YVT2	Luxembourg
+;	 YVT3	Spain/Espagne
+;	 YVT4	Portugal/Portugal
+;	 YVT5	Italy/Italie
+;	 YVT6	Reunion/Réunion
+;	 YVT6	Martinique/Martinique
+;	 YVT6	France Metropolitaine
+;	 YVT6	French Guayana/Guyane franç.
+;	 YVT6	Guadeloupe
+;	 YVT7	Greece/Grèce
+
+
 ; ----------------------------------------------------------------------------	
 ;     SEARCH FORM 
 ; ----------------------------------------------------------------------------	
@@ -1576,10 +1590,25 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 	with rules
 		; this means companycode country
 		;	1) if regional country Greece and not vendor creation from scratch->NO mandatory else If vendor country doesn't belong to YVT6 or YVT9 -> mandatory
-		REQUEST.COUNTRY is "GR" and REQUEST.REQUEST_TYPE is not VC
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is not VC
 			mandatory false
-		REQUEST.COUNTRY is "GR" and REQUEST.REQUEST_TYPE is not VC and VENDOR.ACCOUNT_GROUP not in {"YVT6", "YVT9"} then
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is not VC and VENDOR.ACCOUNT_GROUP not in {YVT6, YVT9} then
 			mandatory true
+
+		; YVT1 is BELGIUM
+		REQUEST.ACCOUNT_GROUP is YVT1 then
+			validation regex ^[0-9]{10}$			; always 10 digits
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			set value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
+			; TODO: how to do "BE" + GD_Ctr_VATRegistrationNumber
+			
+		REQUEST.ACCOUNT_GROUP is YVT2 then
+			validation regex ^[0-9]{8}$			; always 10 digits
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			GD_Ctr_TaxCode2 enabled false
+			; TODO: how to do "LU" + GD_Ctr_PIVA.Value
+			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+
 		
 		; if vendor country France->maxlength 14, label = SIRET, visible true, only numbers
 		REQUEST.VENDOR_COUNTRY is FR then
@@ -1587,21 +1616,21 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			label LABEL.labSIRET	; see this
 			max length 14
 			; validate with this regex
-			validation regex ^[0-9]{1,14}
+			validation regex ^[0-9]{1,14}$
 
-		REQUEST.VENDOR.ACCOUNT_GROUP is "YVT6" then
+		REQUEST.ACCOUNT_GROUP is YVT6 then
 			; new rule to be tested and parsed
 			; complete piva wiht 0 on left until 14
 			pad left 0,14
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			; new rule to be tested and parsed
-			set value substring GD_Ctr_PIVA.Value, 9 in GD_Ctr_TaxCode2
+			set value substring(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
 		REQUEST.VENDOR_COUNTRY is FR and REQUEST.VENDOR.ACCOUNT_GROUP is YVT6 then
 			pad left 0,14
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
-			set value substring GD_Ctr_PIVA.Value, 9 in GD_Ctr_TaxCode2
+			set value substring(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
 		;any EU country ; finish the list....
@@ -1611,7 +1640,7 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 		REQUEST.VENDOR_COUNTRY is not "ES" then
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
-		REQUEST.VENDOR_COUNTRY is "GR" and REQUEST.COUNTRY is "GR" then
+		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is "GR" then
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 			remove letters GD_Ctr_TaxCode2.Value
 		
@@ -1653,14 +1682,6 @@ Entity GD_Ctr_CF is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Ctr_PIVA is TextBox in fmrMain
-	with defaults
-		label LABELS.labPIVA
-
-	with rules
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT1 then
-			max length 10
-; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 

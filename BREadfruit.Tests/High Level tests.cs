@@ -1422,6 +1422,24 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		public void ParseSampleFile047 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File047 - [].txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "xARKANEx", "Entity name should be 'xARKANEx' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString() == "LU + GD_Ctr_PIVA.Value" );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
 		public void ShouldFindEntities ()
 		{
 			var parser = new Parser ();
