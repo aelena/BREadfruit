@@ -324,6 +324,10 @@ namespace BREadfruit
 			return li.Representation;
 		}
 
+
+		// ---------------------------------------------------------------------------------
+
+
 		private static void CheckForValueListsInCondition ( LineInfo li )
 		{
 			var _conditionValueList = li.TokenizeValueListInCondition ();
@@ -477,6 +481,30 @@ namespace BREadfruit
 			// if there were such tokens, preserve them again in the new instance
 			if ( _trailingTokensToBePreserved != null )
 				lineInfo.AddTokens ( _trailingTokensToBePreserved );
+			return lineInfo;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		protected internal LineInfo TokenizeBracketExpression ( LineInfo lineInfo )
+		{
+
+			if ( lineInfo.Representation.Contains ( new [] { Grammar.OpeningSquareBracket.Token, Grammar.ClosingSquareBracket.Token } ) )
+			{
+				var _argsAsString = lineInfo.Representation.TakeBetween ( Grammar.OpeningSquareBracket.Token, Grammar.ClosingSquareBracket.Token, trimResults: true );
+				// check for tokens that might be after the token ending with }
+				var _trailingTokensToBePreserved = lineInfo.Tokens.TakeAfter ( x => x.Token.EndsWith ( Grammar.ClosingSquareBracket.Token ) );
+				if ( !String.IsNullOrWhiteSpace ( _argsAsString ) )
+				{
+					lineInfo.RemoveTokensFrom ( x => x.Token.StartsWith ( Grammar.OpeningSquareBracket.Token ) );
+					lineInfo.AddToken ( new Symbol ( _argsAsString, 2, true ) );
+				}
+				// if there were such tokens, preserve them again in the new instance
+				if ( _trailingTokensToBePreserved != null )
+					lineInfo.AddTokens ( _trailingTokensToBePreserved );
+			}
 			return lineInfo;
 		}
 

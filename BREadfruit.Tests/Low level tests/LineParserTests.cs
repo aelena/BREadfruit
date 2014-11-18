@@ -276,5 +276,21 @@ namespace BREadfruit.Tests.Low_level_tests
 
         // ---------------------------------------------------------------------------------
 
+
+		[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments [\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" ]", Result = 4 )]
+		[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments [\"Country\":\"ES\"]", Result = 4 )]
+		[TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments ", Result = 3 )]
+		[TestCase ( "			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber", Result = 4 )]
+		[TestCase ( "set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber", Result = 4 )]
+		public int TokenizeBracketExpressionTests ( string line )
+		{
+			var lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );
+			var newLine = lineParser.TokenizeBracketExpression ( lineInfo );
+			return newLine.Tokens.Count ();
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
     }
 }
