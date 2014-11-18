@@ -403,7 +403,7 @@ namespace BREadfruit.Helpers
 		// ---------------------------------------------------------------------------------
 
 
-		public static IEnumerable<T> RemoveAfter<T> ( this IEnumerable<T> list, Func<T, bool> func )
+		public static IEnumerable<T> TakeUntil<T> ( this IEnumerable<T> list, Func<T, bool> func )
 		{
 			int i = 0;
 			foreach ( var l in list )
@@ -421,6 +421,22 @@ namespace BREadfruit.Helpers
 		// ---------------------------------------------------------------------------------
 
 
+		public static void RemoveAfter<T> ( this IEnumerable<T> list, Func<T, bool> func )
+		{
+			int i = 0;
+			foreach ( var l in list )
+			{
+				if ( func ( l ) )
+				{
+					var _list = list.Take ( ++i );
+					list = _list;
+				}
+				i++;
+			}
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 		/// <summary>
 		/// This extension removes n number of characters starting from the end of the string.

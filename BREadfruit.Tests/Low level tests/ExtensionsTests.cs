@@ -520,12 +520,31 @@ namespace BREadfruit.Tests.Low_level_tests
 		[TestCase ( "[", Result = "[" )]
 		[TestCase ( "set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber", Result = "set value [LU + GD_Ctr_PIVA.Value]" )]
 		[TestCase ( "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber", Result = "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber" )]
-		public string RemoveAfterTest(string sut)
+		public string TakeUntilTests( string sut )
 		{
 			LineInfo li = new LineInfo ( sut );
-			var reduced = li.Tokens.RemoveAfter ( x => x.Token.EndsWith ( Grammar.ClosingSquareBracket.Token ) );
+			var reduced = li.Tokens.TakeUntil ( x => x.Token.EndsWith ( Grammar.ClosingSquareBracket.Token ) );
 			return reduced.JoinTogether ().Token;
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		//[TestCase ( "", Result = "" )]
+		//[TestCase ( "[]", Result = "[]" )]
+		//[TestCase ( "[", Result = "[" )]
+		//[TestCase ( "set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber", Result = "set value [LU + GD_Ctr_PIVA.Value]" )]
+		//[TestCase ( "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber", Result = "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber" )]
+		//public string RemoveAfterTest ( string sut )
+		//{
+		//	LineInfo li = new LineInfo ( sut );
+		//	li.Tokens.RemoveAfter ( x => x.Token.EndsWith ( Grammar.ClosingSquareBracket.Token ) );
+		//	return li.Tokens.JoinTogether ().Token;
+		//}
+
+
+		// ---------------------------------------------------------------------------------
 
 	}
 }
