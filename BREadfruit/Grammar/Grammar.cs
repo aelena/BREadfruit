@@ -255,13 +255,13 @@ namespace BREadfruit
 		/// <summary>
 		/// Validates an entire load data from line
 		/// </summary>
-		public const string LoadDataFromLineRegex = "^load_data_from[\t\\s]+((DATASOURCE|WEBSERVICE)\\.[A-Za-z0-9_\\.-]+){1}([\t\\s]+with_args[\t\\s]*{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)}[\t\\s]*)?([\t\\s]*in[\t\\s]*[A-Za-z0-9_\\.]+[\t\\s]*)?";
+		public const string LoadDataFromLineRegex = "^load_data_from[\t\\s]+((JAVASCRIPT|DATASOURCE|WEBSERVICE)\\.[A-Za-z0-9_\\.-]+){1}([\t\\s]+with_args[\t\\s]*{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)}[\t\\s]*)?([\t\\s]*in[\t\\s]*[A-Za-z0-9_\\.]+[\t\\s]*)?";
 		//public const string LoadDataFromLineRegex = @"^load_data_from[\t\s]+(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
 		/// <summary>
 		/// Validates the argument part of a load data from line 
 		/// (that is, all that comes after the load data from instruction)
 		/// </summary>
-		public const string LoadDataFromValueRegex = @"^(WEBSERVICE|DATASOURCE){1}\.[A-Za-z\d_]+(\.?[A-Za-z\d_]+)*$";
+		public const string LoadDataFromValueRegex = @"^(JAVASCRIPT|WEBSERVICE|DATASOURCE){1}\.[A-Za-z\d_]+(\.?[A-Za-z\d_]+)*$";
 		/// <summary>
 		/// Validates the argument part of a load data from line 
 		/// (that is, all that comes after the load data from instruction)
@@ -304,8 +304,8 @@ namespace BREadfruit
 
 
 
-		public static Regex SaveDataToFullLineRegex = new Regex ( "^(save data to|save_data_to){1}[\t\\s]+(DATASOURCE|WEBSERVICE)(\\.){1}[A-Za-z0-9_-]+[\t\\s]+with arguments[\t\\s]*{{1}[\t\\s]*((\"|'){1}[A-Za-z0-9_-]+(\"|'){1}){1}[\t\\s]*:[\t\\s]*((\"|'){1}.+(\"|'){1}){1}[\t\\s]*}{1}[\t\\s]*$", RegexOptions.IgnoreCase );
-		public static Regex LoadDataFromFullLineRegex = new Regex ( "^(load_data_from|load data from){1}[\t\\s]+(DATASOURCE|WEBSERVICE)(\\.){1}[A-Za-z0-9_-]+[\t\\s]+with arguments[\t\\s]*{{1}[\t\\s]*((\"|'){1}[A-Za-z0-9_-]+(\"|'){1}){1}[\t\\s]*:[\t\\s]*((\"|'){1}.+(\"|'){1}){1}[\t\\s]*}{1}[\t\\s]*$", RegexOptions.IgnoreCase );
+		public static Regex SaveDataToFullLineRegex = new Regex ( "^(save data to|save_data_to){1}[\t\\s]+(JAVASCRIPT|DATASOURCE|WEBSERVICE)(\\.){1}[A-Za-z0-9_-]+[\t\\s]+with arguments[\t\\s]*{{1}[\t\\s]*((\"|'){1}[A-Za-z0-9_-]+(\"|'){1}){1}[\t\\s]*:[\t\\s]*((\"|'){1}.+(\"|'){1}){1}[\t\\s]*}{1}[\t\\s]*$", RegexOptions.IgnoreCase );
+		public static Regex LoadDataFromFullLineRegex = new Regex ( "^(load_data_from|load data from){1}[\t\\s]+(JAVASCRIPT|DATASOURCE|WEBSERVICE)(\\.){1}[A-Za-z0-9_-]+[\t\\s]+with arguments[\t\\s]*{{1}[\t\\s]*((\"|'){1}[A-Za-z0-9_-]+(\"|'){1}){1}[\t\\s]*:[\t\\s]*((\"|'){1}.+(\"|'){1}){1}[\t\\s]*}{1}[\t\\s]*$", RegexOptions.IgnoreCase );
 		public static Regex LineWithQuotedStringAndNoOutsideBrackets = new Regex ( "^[^{}]*(\"|'){1}.*(\"|'){1}[^{}]*$", RegexOptions.IgnoreCase );
 		public static Regex LineWithOutsideBracketsAndNoOutsideQuotes = new Regex ( "^[^\"']*{{1}.*}{1}[^\"']*$", RegexOptions.IgnoreCase );
 
@@ -337,7 +337,7 @@ namespace BREadfruit
 		public const string VisibleLineRegex = @"^VISIBLE[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
 		public const string FreeValueLineRegex = "^VALUE[\t\\s]+(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
 		public const string LabelDefaultLineRegex = "^LABEL[\t\\s]+(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$";
-		public const string LoadDataDefaultLineRegex = @"^LOAD_DATA_FROM[\t\s]+(WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
+		public const string LoadDataDefaultLineRegex = @"^LOAD_DATA_FROM[\t\s]+(JAVASCRIPT|WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
 
 		/// <summary>
 		/// Regex for lines such as 
@@ -427,6 +427,7 @@ namespace BREadfruit
 
 		public static Symbol DataSourceSymbol = new Symbol ( "DATASOURCE", 2, false );
 		public static Symbol WebServiceSymbol = new Symbol ( "WEBSERVICE", 2, false );
+		public static Symbol JavascriptSymbol = new Symbol ( "JAVASCRIPT", 2, false );
 		public static Symbol FileObjectSymbol = new Symbol ( "FILE", 2, false );
 
 

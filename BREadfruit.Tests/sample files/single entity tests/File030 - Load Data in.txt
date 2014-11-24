@@ -2,6 +2,7 @@
 
 	with actions
 		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
+		load data from JAVASCRIPT.FUNCTION_NAME with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
 	
 	with triggers
 		this changes

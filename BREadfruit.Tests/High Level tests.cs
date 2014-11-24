@@ -927,6 +927,13 @@ namespace BREadfruit.Tests
 			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Reference == "F_GD_VF_CountryCode" );
 			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString () == "DATASOURCE.MDM_CountryTelephonePrefixes" );
 
+			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ).Action == Grammar.LoadDataUnaryActionSymbol.Token );
+			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ).IsResultAction );
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Arguments.First ().Key == "COUNTRY" );
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Arguments.First ().Value.ToString () == "F_GD_VF_Country.Value" );
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Reference == "F_GD_VF_CountryCode" );
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Value.ToString () == "JAVASCRIPT.FUNCTION_NAME" );
+
 
 			Assert.That ( e.Triggers.Count () == 1, "should have 1 trigger(s)but has " + e.Triggers.Count () );
 
