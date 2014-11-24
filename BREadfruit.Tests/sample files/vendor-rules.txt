@@ -1901,14 +1901,6 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; this is the ORDER which is kept in a hidden textbox
-; TODO: Decide if we need to do this or not
-Entity V_OrderID is TextBox in frmMain
-	with defaults
-		label LABELS.labOrderID
-		visible false
-
-; ---------------------------------------------------------------------------- 
 
 Entity V_Country is DropDownList in frmMain
 	with defaults
@@ -1930,9 +1922,6 @@ Entity V_btnInsert is Button in frmMain
 
 Entity V_Grid is Grid in frmMain
 	with defaults
-		; TODO: do we need this column also to keep track of the ID in the grid?
-		; TODO: define column GRID_V_RequestID		with arguments {ControlType : TextBox,		DataField : RequestID, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : false}
-		define column GRID_V_OrderID		with arguments {ControlType : TextBox,		DataField : OrderID, Constraints : Only_Numbers, Visible : false}
 		define column GRID_V_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
 		define column GRID_V_VATNumber		with arguments {ControlType : TextBox,		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
@@ -1949,16 +1938,7 @@ Entity V_Grid is Grid in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
 ; THIS IS THE BANK DETAILS
-
-Entity B_OrderID is TextBox in frmMain
-
-	with defaults
-		visible false
-		label LABELS.labOrderID
-
-; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_Country is DropDownList in frmMain
 

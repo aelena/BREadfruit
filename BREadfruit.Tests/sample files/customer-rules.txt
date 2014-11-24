@@ -1194,16 +1194,6 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
-; THIS IS THE VAT LIST
-
-Entity V_OrderID is TextBox in frmMain
-
-	with defaults
-		label LABELS.labOrderID
-		visible false
-
-; ---------------------------------------------------------------------------- 
 		
 Entity V_Country is DropDownList in frmMain
 
@@ -1226,7 +1216,6 @@ Entity V_btnInsert is Button in frmMain
 
 Entity V_Grid is Grid in frmMain
 	with defaults
-		define column GRID_V_OrderID		with arguments {ControlType : TextBox,		DataField : OrderID, Constraints : Only_Numbers, Visible : false}
 		define column GRID_V_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
 		define column GRID_V_VATNumber		with arguments {ControlType : TextBox,		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
@@ -1243,16 +1232,6 @@ Entity V_Grid is Grid in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
-; THIS IS THE BANK DETAILS
-
-Entity B_OrderID is TextBox in frmMain
-
-	with defaults
-		visible false
-		label LABELS.labOrderID
-
-; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_Country is DropDownList in frmMain
 
@@ -2999,14 +2978,6 @@ Entity btnCloseFinal is Button in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-Entity PF_OrderID is TextBox in frmMain
-
-	with defaults
-		visible false
-		label LABELS.labOrderID
-
-; ---------------------------------------------------------------------------- 
-
 Entity PF_PartnerFunction is DropDownList in frmMain
 
 	with defaults
@@ -3030,7 +3001,6 @@ Entity PF_btnInsert is Button in frmMain
 
 Entity PF_Grid is Grid in frmMain
 	with defaults
-		define column GRID_PF_OrderID			with arguments {ControlType : Label, DataField : OrderID, Header : LABELS.labName, MaxLength : 100, Visible : false}
 		define column GRID_PF_PartnerFunction	with arguments {ControlType : DropDownList, DataField : PartnerFunction, Header : LABELS.labSurname, Visible : true}
 		define column GRID_PF_Number			with arguments {ControlType : Label, DataField : Number, Header : LABELS.labNumber, Visible : true, MaxLength : 15}
 		define column GRID_PF_Default			with arguments {ControlType : CheckBox,	DataField : IsDefault, Visible : true}
