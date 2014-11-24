@@ -137,10 +137,10 @@ Entity TBVendorIFA is TextBox in frmSearch
 		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
 
 	with rules
-		DDLVDCountry.value in {"FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
-		DDLVDCountry.value in {"PT","ES"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.NIF in TBVendorVAT
-		DDLVDCountry.value is "IT" then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
-		DDLVDCountry.value not in {"PT","ES","IT","FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value "VAT" in TBVendorVAT
+		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
+		DDLVDCountry.value in {PT,ES} then set value LABELS.VENDOR.SPECIFICLOCALIZED.NIF in TBVendorVAT
+		DDLVDCountry.value is IT then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
+		DDLVDCountry.value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value VAT in TBVendorVAT
 	
 	with triggers
 		this.value changes 
@@ -310,7 +310,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		label LABELS.labGD_Ctr_RiskClassification
 
 	with rules
-		REQUEST.CURRENT_ROLE not in {"RCO","ENQ","CLERK"} then enabled false
+		REQUEST.CURRENT_ROLE not in {ROLES.RCO,ROLES.ENQ,ROLES.CLERK} then enabled false
 
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
@@ -352,7 +352,7 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 		label LABELS.VENDOR.VENDOR_CLASSIFICATION
 
 	with rules
-		REQUEST.CURRENT_ROLE in {"UPM", "CPM"} then enabled false
+		REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM} then enabled false
 		REQUEST.VENDOR_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification
 		REQUEST.VENDOR_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_VendorClassification
 		
@@ -892,8 +892,8 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
 
-		; mandatory for ENQ and in 5150 (the only Greece CoCD)
-		COMPANY_CODE is 5150 and CURRENT_ROLE is "ENQ" then 
+		; mandatory for ROLES.ENQ and in 5150 (the only Greece CoCD)
+		COMPANY_CODE is 5150 and CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
 
 ; ----------------------------------------------------------------------------	
@@ -907,10 +907,10 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 
 	with rules
 		; for any company 
-		REQUEST.CURRENT_ROLE is "MDM_CLERK" then mandatory true
+		REQUEST.CURRENT_ROLE is ROLES.CLERK then mandatory true
 		
-		; mandatory for ENQ and in 5150 (the only Greece CoCD)
-		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ENQ then 
+		; mandatory for ROLES.ENQ and in 5150 (the only Greece CoCD)
+		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
 		
 		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
@@ -1129,7 +1129,7 @@ Entity GD_Adr_Search is TextBox in frmMain
 		AttachManager mandatory true
 
 	with rules
-		CURRENT_ROLE in {"UPM", "CPM", "RCO"} then disabled
+		CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then disabled
 
 	with triggers
 		this changes
@@ -1282,9 +1282,9 @@ Entity P_GD_VT_Grid is Grid in frmMain
 		define column GRID_P_GD_VT_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VT_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDM_Request_VendorPhoneDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDM_Request_VendorPhoneDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -1362,9 +1362,9 @@ Entity F_GD_VF_Grid is Grid in frmMain
 		define column GRID_F_GD_VF_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VF_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDM_Request_VendorFaxDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDM_Request_VendorFaxDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -1420,9 +1420,9 @@ Entity E_GD_VE_Grid is Grid in frmMain
 		define column GRID_E_GD_VE_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VE_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDM_Request_VendorEmailDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDM_Request_VendorEmailDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -1541,7 +1541,7 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
 			visible true
 
-		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
+		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is ROLES.CLERK then
 			mandatory true
 
 ; ----------------------------------------------------------------------------	
@@ -1566,7 +1566,7 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 ;	8)if vendor country Spain->visible false
 ;	9)enabled for vendors creations from scratch
 ;	10)if vendor country France->enabled
-;	11)if vendor creation from scratch and vendor country Belgium or Luxemburg->visible true and mandatory if role is not clerk
+;	11)if vendor creation from scratch and vendor country Belgium or Luxemburg->visible true and mandatory if role is not ROLES.CLERK
 ;	12)if vendor country Greece ->maxlength 9
 ;	13)if vendor country belongs to YVT1->maxlength 10
 ;	14)if vendor country belongs to YVT2->maxlength 8
@@ -1575,10 +1575,10 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 ;	17)if vendor country belongs to YVT5->maxlength 11
 ;	18)if vendor country belongs to YVT6: 
 ;		if cleck->mandatory false else mandatory for not natural person
-;		enabled for clerck and enquirer
+;		enabled for clerck and ROLES.ENQuirer
 ;	19)if vendor country belongs to YVT9:
 ;		mandatory false
-;		enabled for clerk and enquirer
+;		enabled for ROLES.CLERK and ROLES.ENQuirer
 
 Entity GD_Ctr_PIVA is TextBox in frmMain
 	with defaults
@@ -1600,15 +1600,28 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			validation regex ^[0-9]{10}$			; always 10 digits
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
-			; TODO: how to do "BE" + GD_Ctr_VATRegistrationNumber
+			set value [BE + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 			
 		REQUEST.ACCOUNT_GROUP is YVT2 then
-			validation regex ^[0-9]{8}$			; always 10 digits
+			validation regex ^[0-9]{10}$			; always 10 digits
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			GD_Ctr_TaxCode2 enabled false
-			; TODO: how to do "LU" + GD_Ctr_PIVA.Value
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 
+		REQUEST.ACCOUNT_GROUP is YVT3 then
+			validation regex ^[A-Za-z0-9]{9}$
+			set value [ES + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+		
+		REQUEST.ACCOUNT_GROUP is YVT3 and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then
+			validation regex ^[A-Za-z0-9]{9}$
+			set value [ES + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			set value G in GD_Ctr_VendorClassification
+	
+		REQUEST.ACCOUNT_GROUP is YVT3 and GD_Ctr_TaxCode1.Text starts with "X" then
+			validation regex ^[A-Za-z0-9]{9}$
+			set value [ES + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			set value NG in GD_Ctr_VendorClassification
 		
 		; if vendor country France->maxlength 14, label = SIRET, visible true, only numbers
 		REQUEST.VENDOR_COUNTRY is FR then
@@ -1644,14 +1657,32 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 			remove letters GD_Ctr_TaxCode2.Value
 		
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT4 then
-			max length 10
-
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT5 then
-			max length 11
-
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 then
+		REQUEST.ACCOUNT_GROUP is YVT4 then
 			max length 9
+			validation regex ^[0-9]{9}$			; always 9 digits
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			set value [PT + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+
+		REQUEST.ACCOUNT_GROUP is YVT4 and  GD_Ctr_PIVA.Value starts with {1,2,3} then
+			set value true in GD_Ctr_IsNaturalPerson
+			GD_Ctr_TaxCode2 mandatory true
+			GD_Ctr_TaxCode2 enabled true
+			; TODO: HOW TO SET VALIDATION REGEX for antoher control?
+
+		REQUEST.ACCOUNT_GROUP is YVT5 then
+			max length 16
+			validation regex ^[A-Za-z0-9]{16}$
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode2
+			set value [IT + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+
+		REQUEST.ACCOUNT_GROUP is YVT5 and GD_Ctr_PIVA.Value is 00000000000 then
+			set value '' in GD_Ctr_VATRegistrationNumber
+			
+		REQUEST.ACCOUNT_GROUP is YVT7 then
+			max length 9
+			validation regex ^[0-9]{9}$			; always 9 digits
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode2
+			set value [GR + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 
 ; ----------------------------------------------------------------------------	
 
@@ -1689,8 +1720,15 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 		REQUEST.VENDOR_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with {1,2,3,4,5,6,7,8,9,X} then
 			set value true in GD_Ctr_IsNaturalPerson			; check the checkbox
 
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT1 then
-			max length 10
+		REQUEST.ACCOUNT_GROUP is YVT1 then
+			validation regex ^[0-9]{10}$			; always 10 digits
+			set value [BE + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			mandatory true
+
+		REQUEST.ACCOUNT_GROUP is YVT2 then
+			mandatory true
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 
 		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 then
 			mandatory false
@@ -1698,6 +1736,7 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 
 		REQUEST.VENDOR.ACCOUNT_GROUP is YVT5 then
 			max length 16
+
 
 ; ----------------------------------------------------------------------------	
 
@@ -1709,6 +1748,8 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 			max length 9
 		REQUEST.VENDOR.ACCOUNT_GROUP is YVT5 then
 			max length 11
+		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
+			enabled false
 
 ; ----------------------------------------------------------------------------	
 
@@ -1717,13 +1758,13 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 ; 1) if vendor country france -> enabled
 ; 2)if vendor country NOT belongs to YVT6/YVT9-> vatregnumber mandatory if vendor country has mandatory vatregnumber in table countries
 ; 3)if vendor country NOT belongs to YVT6/YVT9-> enabled if mandatory and vendor creation from scratch
-; 4)if vendor country belgiun/luxemburg and role is clerk ->nor mandatory
+; 4)if vendor country belgiun/luxemburg and role is ROLES.CLERK ->nor mandatory
 ; 5)if regional country Greece->not mandatory and not enabled
 ; 6)if regional country France->enabled
 ; 7)enabled for creations from scratch
 ; 8)if vendor country Portugal ->enable false, not mandatory
 ; 9)if vendor country Italy ->enable false, not mandatory 
-; 10)if regional country Belgium/Luxemburg->if clerk and not request block/unblock-> enabled
+; 10)if regional country Belgium/Luxemburg->if ROLES.CLERK and not request block/unblock-> enabled
 ; 11)if vendor country Portugal-> enabled false, mandatory false
 ; 12)if vendor country Italy-> enabled false, mandatory false
 ; 13)if vendor country Portugal-> Vat registration number = PT+NIF
@@ -1739,10 +1780,14 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 			GD_Ctr_VATRegistrationNumber mandatory
 			GD_Ctr_VATRegistrationNumber enabled
 
-		REQUEST.COUNTRY in {BE, LU} and REQUEST.CURRENT_ROLE is MDM_CLERK then
-			GD_Ctr_VATRegistrationNumber mandatory false
+		REQUEST.COUNTRY in {BE, LU} and REQUEST.CURRENT_ROLE is MDM_ROLES.CLERK then
+			GD_Ctr_VATRegistrationNumber mandatory true
+			GD_Ctr_VATRegistrationNumber enabled true
 
-		REQUEST.COUNTRY is GR then
+		REQUEST.COUNTRY in {BE, LU} and REQUEST.REQUEST_TYPE is VM then
+			enabled false
+
+		REQUEST.COUNTRY in {GR,ES} then
 			GD_Ctr_VATRegistrationNumber mandatory false
 			GD_Ctr_VATRegistrationNumber enabled false
 
@@ -1892,9 +1937,9 @@ Entity V_Grid is Grid in frmMain
 		define column GRID_V_VATNumber		with arguments {ControlType : TextBox,		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDM_Request_VendorVAT with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDM_Request_VendorVATSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -2018,9 +2063,9 @@ Entity B_GD_VB_Grid is Grid in frmMain
 
 		
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDM_Request_VendorBankDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDM_Request_VendorBankDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -2097,7 +2142,7 @@ Entity CC_AM_SubjectedToWHTax is CheckBox in frmMain
 
 	with rules
 
-		REQUEST.CURRENT_ROLE is REQUEST.ENQUIRER_ROLE and REQUEST.COUNTR in {ES, IT} then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.COUNTRY in {ES, IT} then
 			CC_AM_WithholdingTaxCode mandatory CC_AM_SubjectedToWHTax.Checked
 
 		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked is true and REQUEST.REQUEST_TYPE is VM then
@@ -2115,14 +2160,14 @@ Entity CC_AM_WithholdingTaxCode	is DropDownList in frmMain
 		label LABELS.labAMWithholdingTaxCode
 
 	with defaults
-		load data from DATASOURCE.MDM_WithholdingTaxCodes with arguments {"FlagActive" : true, "ClusterCountry" : REQUEST.COUNTRY}
+		load data from DATASOURCE.MDM_WithholdingTaxCodes with arguments {"FlagActive" : true, "ClusteROLES.RCOuntry" : REQUEST.COUNTRY}
 
 	with rules
 
 		REQUEST.COUNTRY is ES then
 			set value E0 in CC_AM_SubjectedToWHTax 
 
-		REQUEST.CURRENT_ROLE is REQUEST.ENQUIRER_ROLE and REQUEST.COUNTR in {ES, IT} then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.COUNTRY in {ES, IT} then
 			CC_AM_WithholdingTaxCode mandatory CC_AM_SubjectedToWHTax.Checked
 
 		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked is true and REQUEST.REQUEST_TYPE is VM then
@@ -2199,7 +2244,7 @@ Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 
 
 ; 3) if a request type creation for purchase organization and the company code already exists, the value from SAP must be preserved
-; 1) default values (but enquirer can change)
+; 1) default values (but ROLES.ENQ can change)
 ; if request type creation from scratch and/or for company:
 ;   if company code Spain -> default value 3M60 
 ;   if company code IT -> default value 5510 
@@ -2668,7 +2713,7 @@ Entity PO_Incoterms	is DropDownList in frmMain
 ; ----------------------------------------------------------------------------	
 
 
-;	By default mandatory (enquirer can change)
+;	By default mandatory (ROLES.ENQuirer can change)
 ;	1)if regional country Spain -> default value DAP (same as incoterms)
 ;	2)if regional country Italy -> default value EXW (same as incoterms)
 ;	3)if regional country Portugal/Belgium/Luxemburg -> default value DDP (same as incoterms)
@@ -2944,7 +2989,7 @@ Entity btnSubmit is Button in frmMain
 			set value MESSAGES.ERRsubmitRequestAction in MESSAGE_POPUP
 
 		
-		REQUEST.CURRENT_ROLE in {ENQ,CLERK} and CC_PT_PaymentMethods.Value is 2 and REQUEST.BANK_DETAILS is empty then		; 2 means CONFIRMING
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ,ROLES.CLERK} and CC_PT_PaymentMethods.Value is 2 and REQUEST.BANK_DETAILS is empty then		; 2 means CONFIRMING
 			set value MESSAGES.ERRsubmitRequestGDFieldBank in MESSAGE_POPUP
 
 		GD_Ctr_IsNaturalPerson.Value is true and GD_Adr_Country.Value is IT and GD_NatP_DateOfBirth.Value is empty then
@@ -2967,19 +3012,19 @@ Entity btnSubmit is Button in frmMain
 		PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.Value is empty then
 			set value MESSAGES.ERRsubmitRequestGDFieldCustomerNum in MESSAGE_POPUP
 
-		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question1.Value is 0 then
+		REQUEST.CURRENT_ROLE is ROLES.CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question1.Value is 0 then
 			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 1 is empty' in MESSAGE_POPUP
 
-		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question2.Value is 0 then
+		REQUEST.CURRENT_ROLE is ROLES.CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question2.Value is 0 then
 			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 2 is empty' in MESSAGE_POPUP
 			
-		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question3.Value is 0 then
+		REQUEST.CURRENT_ROLE is ROLES.CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question3.Value is 0 then
 			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 3 is empty' in MESSAGE_POPUP
 	
-		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question4.Value is 0 then
+		REQUEST.CURRENT_ROLE is ROLES.CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question4.Value is 0 then
 			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 4 is empty' in MESSAGE_POPUP
 	
-		REQUEST.CURRENT_ROLE is CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question5.Value is 0 then
+		REQUEST.CURRENT_ROLE is ROLES.CLERK and GD_Procur_Supplier_ExpectedPVO >= 3 and REQUEST.COUNTRY is not IT and GD_PVO_Question5.Value is 0 then
 			set value 'To submit the request fill all the mandatory fields: in General Data view the Procurement Data question 5 is empty' in MESSAGE_POPUP
 
 		REQUEST.VENDOR_COUNTRY in {FR,GP,YT,MC,RE,MQ,GF} and REQUEST.BANK_DETAILS > 0 and REQUEST.BANK_DETAILS.FIRST.GD_VB_COUNTRY in {FR,GP,YT,MC,RE,MQ,GF} and CC_PT_PaymentMethods.Value is Y then
@@ -3027,7 +3072,7 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_TYPE in {VC,CC} and E_GD_VE_Grid is empty then		   
 			set value ERRsubmitRequestRHFieldOccasionalV in MESSAGE_POPUP			   
 		
-		; REQUEST.CURRENT_ROLE in {ENQ,CLERK}
+		; REQUEST.CURRENT_ROLE in {ROLES.ENQ,ROLES.CLERK}
 
 		GD_Adr_Name.Value is empty then
 			set value ERRsubmitRequestGDFieldVName in MESSAGE_POPUP	
@@ -3084,6 +3129,24 @@ Entity btnSubmit is Button in frmMain
 		GD_Adr_Name.Value is empty then
 			set value ERRsubmitRequestRHFieldOccasionalV in MESSAGE_POPUP			   
 
+
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.CLERK} and F_GD_VF_Grid.HasRows is true and F_GD_VF_Grid.HasDefaultRow is false then
+			; TODO: DEFINE THESE THINGS
+			; meaning, there must be one selected default row in the grid if there are rowsLERKC and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_PIVA.Value is empty and 	GD_Ctr_PIVA is mandatory then
+			set value ERRsubmitRequestGDFieldSIRET in MESSAGE_POPUP
+
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.REQUEST_TYPE is VC and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_PIVA.Length is not 14 then
+			set value ERRsubmitRequestGDFieldSIRET_14 in MESSAGE_POPUP
+
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.REQUEST_TYPE is VC and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_VATRegistrationNumber.Value is empty and GD_Ctr_VATRegistrationNumber is mandatory then
+			set value "To submit the request fill all the mandatory fields: in General Data view the field VAT number is empty" in MESSAGE_POPUP
+
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.REQUEST_TYPE is VC and GD_Adr_POBoxLoc.Value is empty and GD_Adr_POBoxLoc is mandatory then
+			set value ERRsubmitRequestPOBOXinformed in MESSAGE_POPUP
+
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.CURRENT_ROLE is ROLES.CLERK and GD_Ctr_GFORM.Value is empty and GD_Ctr_GFORM is mandatory then
+			set value ERRsubmitRequestFieldLegalForm in MESSAGE_POPUP
+			
 
 
 ; ----------------------------------------------------------------------------	
@@ -3148,7 +3211,7 @@ Entity DDLDCReqAction is DropDownList in frmMain
 
 		REQUEST.COUNTRY is LU or REQUEST.COUNTRY is IT then
 			; this needs a TEST and inclusion in the GRAMMAR
-			; remove value 'Info Requested to CPM' from DDLDCReqAction
+			; remove value 'Info Requested to ROLES.UPM' from DDLDCReqAction
 
 ; ----------------------------------------------------------------------------	
 

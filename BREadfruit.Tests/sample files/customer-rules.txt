@@ -129,10 +129,10 @@ Entity DDLDCountry is DropDownList in frmSearch
 		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES 
 
 	with rules
-		DDLCDCountry.Value in {"FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
-		DDLCDCountry.Value in {"PT","ES"} then set value LABELS.VENDOR.SPECIFICLOCALIZED.NIF in TBVendorVAT
-		DDLCDCountry.Value is "IT" then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
-		DDLCDCountry.Value not in {"PT","ES","IT","FR","GF","GP","RE","MQ","YT","NC","PF","PM","WF","MC"} then set value "VAT" in TBVendorVAT
+		DDLCDCountry.Value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
+		DDLCDCountry.Value in {PT,ES} then set value LABELS.VENDOR.SPECIFICLOCALIZED.NIF in TBVendorVAT
+		DDLCDCountry.Value is IT then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
+		DDLCDCountry.Value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value VAT in TBVendorVAT
 	
 	with triggers
 		this.value changes 
@@ -557,8 +557,8 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 		max length 32
 
 	with rules
-		; mandatory for ENQ and in 5150 (the only Greece CoCD)
-		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ENQ then 
+		; mandatory for ROLES.ENQ and in 5150 (the only Greece CoCD)
+		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
 
 ; ---------------------------------------------------------------------------- 
@@ -569,8 +569,8 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 		max length 32
 
 	with rules
-		; mandatory for ENQ and in 5150 (the only Greece CoCD)
-		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ENQ then 
+		; mandatory for ROLES.ENQ and in 5150 (the only Greece CoCD)
+		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
 
 ; ---------------------------------------------------------------------------- 
@@ -983,9 +983,9 @@ Entity P_GD_VT_Grid is Grid in frmMain
 		define column GRID_P_GD_VT_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VT_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.RCO, ROLES.SUS, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerPhoneDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDMC_Request_CustomerPhoneDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -1071,9 +1071,9 @@ Entity F_GD_VF_Grid is Grid in frmMain
 		define column GRID_F_GD_VF_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VF_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerFaxDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDMC_Request_CustomerFaxDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -1134,9 +1134,9 @@ Entity E_GD_VE_Grid is Grid in frmMain
 		define column GRID_E_GD_VE_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VE_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS,  ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerEmailDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDMC_Request_CustomerEmailDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -1160,7 +1160,7 @@ Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 ;	2) field mandatory for  MD clerk in case account group YCT6. 
 ;		(See APE list in sheet ""Other documents"" to display DDL to select the legal activity and translate from ISIC code in SAP). 
 ;	3) for account group YCT5, use DDL the excel file attached called ""ISIC italian convertion"". 
-;		the DDL shown to the ENQ is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
+;		the DDL shown to the ROLES.ENQ is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
 
 ;	TODO: PENDING
 
@@ -1231,9 +1231,9 @@ Entity V_Grid is Grid in frmMain
 		define column GRID_V_VATNumber		with arguments {ControlType : TextBox,		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerVAT with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDMC_Request_CustomerVATSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -1360,9 +1360,9 @@ Entity B_GD_VB_Grid is Grid in frmMain
 
 		
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerBankDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDMC_Request_CustomerBankDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -1394,7 +1394,7 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		VENDOR.ACCOUNT_GROUP in {YCT6, YVT6} then
 			visible true
 
-		VENDOR.ACCOUNT_GROUP in {YCT6, YVT6} and REQUEST.ROLE is REQUEST.ROLES.CLERK then
+		VENDOR.ACCOUNT_GROUP in {YCT6, YVT6} and REQUEST.ROLE is ROLES.CLERK then
 			mandatory true
 
 
@@ -1618,9 +1618,9 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 ;	"2.6.14(MI) GSS, please, check and provide the business rule. Additionally, CR ""IA_SEPA_payment methods"" ispending on clarification in your side yet
 ;	19-06-2014(RG): 1) Field visible for all company codes and enquirer can choose
 ;	1) If company code Spain (All), France (5140) -> mandatory
-;	2) if company code Italy (5180,596G) and ENQ chooses Payment Methods ""L"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
-;	3) if company code Portugal (5240) and ENQ chooses Payment Methods ""P"" or ""M"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
-;	4) if company code France (5140) and ENQ chooses Payment Methods ""M"" or ""A"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
+;	2) if company code Italy (5180,596G) and ROLES.ENQ chooses Payment Methods ""L"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
+;	3) if company code Portugal (5240) and ROLES.ENQ chooses Payment Methods ""P"" or ""M"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
+;	4) if company code France (5140) and ROLES.ENQ chooses Payment Methods ""M"" or ""A"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
 
 Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
@@ -1674,13 +1674,13 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 		label LABELS.labCC_CO_AccountingClerk
 
 	with rules
-		REQUEST.COUNTRY is FR and REQUEST.CURRENT_ROLE is MDMC_CLERK then
+		REQUEST.COUNTRY is FR and REQUEST.CURRENT_ROLE is ROLES.CLERK then
 			this mandatory true
 
 		REQUEST.COUNTRY in {IT, GR} then
 			this mandatory false
 
-		; TODO: PENDING THIS ----> if company code Spain, Portugal and Belux-> see file: Sales areas _accounting clerks BE_PTand ES in sheet ""other documents""
+		; TODO: PENDING THIS ----> if company code Spain, Portugal and Belux-> see file: Sales areas _accounting clerks BE_PT and ES in sheet ""other documents""
 
 		REQUEST.COUNTRY is ES then
 			set value 81 in CC_CO_AccountingClerk
@@ -2121,7 +2121,7 @@ Entity SO_Incoterms is DropDownList in frmMain
 ;	if company code spain -> Y30  - carriage  paid
 ;	if company code Italy -> Franco domicilio
 ;	if company code Belgium and Luxembuorg -> Destination
-;	if comapany code Greece -> Blank and ENQ must choose"
+;	if comapany code Greece -> Blank and ROLES.ENQ must choose"
 
 Entity SO_IncotermsPart2 is TextBox in frmMain
 	with defaults
@@ -2233,7 +2233,7 @@ Entity SO_TaxClassification is DropDownList in frmMain
 
 ;	"04-08-2014(RG): 1)By default not visible except company code italy and france
 ;	2)Default values per request creation from scratch and company code:
-;	3) If french company code, -> get credit control by filter company/country/region from file ""FR- SBGRP-Region Code"" in sheet “Other documents”. In modifications or creations of sales ares this rule should not applied as the ENQ can choose other values
+;	3) If french company code, -> get credit control by filter company/country/region from file ""FR- SBGRP-Region Code"" in sheet “Other documents”. In modifications or creations of sales ares this rule should not applied as the ROLES.ENQ can choose other values
 ;	4) for belux company codes there is a file  “Sales Org and Accounting Clerk
 ;	“ in sheet “Other documents” with default values
 ;	 5) for portuguese company codes there is a file  “Sales Org and Accounting Clerk
@@ -2700,7 +2700,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		label LABELS.labGD_Ctr_RiskClassification
 
 	with rules
-		REQUEST.CURRENT_ROLE not in {"RCO","ENQ","CLERK"} then enabled false
+		REQUEST.CURRENT_ROLE not in {ROLES.RCO,ROLES.ENQ,ROLES.CLERK} then enabled false
 
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
@@ -2742,9 +2742,9 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
 
 	with rules
-		REQUEST.CURRENT_ROLE is SUS then enabled false
-		REQUEST.CUSTOMER_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_CustomerClassification
-		REQUEST.CUSTOMER_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_CustomerClassification
+		REQUEST.CURRENT_ROLE is ROLES.SUS then enabled false
+		REQUEST.CUSTOMER_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_CustomerClassification
+		REQUEST.CUSTOMER_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_CustomerClassification
 
 		; TODO: RULE FOR FR
 		; For customer country France the value is set due to legal form selection, see sheet "Legal form(France)"  meaning what??????
@@ -2804,7 +2804,7 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 			set value true in GD_Ctr_IsNaturalPerson 
 			set value NG in GD_Ctr_CustomerClassification
 			
-		REQUEST.CURRENT_ROLE is RCO then
+		REQUEST.CURRENT_ROLE is ROLES.RCO then
 			GD_Ctr_IsNaturalPerson enabled true
 
 ; ---------------------------------------------------------------------------- 
@@ -3036,9 +3036,9 @@ Entity PF_Grid is Grid in frmMain
 		define column GRID_PF_Default			with arguments {ControlType : CheckBox,	DataField : IsDefault, Visible : true}
 		
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerPartnerFunction with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDMC_Request_CustomerPartnerFunctionSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
@@ -3135,9 +3135,9 @@ Entity CP_Grid is Grid in frmMain
 		define column GRID_CP_Default			with arguments {ControlType : CheckBox,	DataField : Default, Visible : true}
 		
 	with rules
-		REQUEST.CURRENT_ROLE in {UPM, CPM, RCO, CLERK} then
+		REQUEST.CURRENT_ROLE in {ROLES.UPM, CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_ContactPersons with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE is not VC then
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDMC_Request_ContactPersonsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
