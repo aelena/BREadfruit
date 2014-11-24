@@ -472,7 +472,7 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ;	GD_Damex
 ;	GD_Ctr_IsNaturalPerson
 ;	labGD_DamexNote
-;	AttachManager
+;	ATTACHMENT
 ;	AttachHistory
 ;	SAP_Message
 ;	TS_IsUrgentRequest
@@ -1321,9 +1321,6 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 
 Entity B_GD_VB_Grid is Grid in frmMain
 	with defaults
-		; TODO: do we need this column also to keep track of the ID in the grid?
-		; TODO: define column GRID_V_RequestID		with arguments {ControlType : TextBox,		DataField : RequestID, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : false}
-	
 		define column GRID_B_GD_VB_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
 		define column GRID_B_GD_VB_BankKey		with arguments {ControlType : TextBox,		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
 		define column GRID_B_GD_VB_BankAccount	with arguments {ControlType : TextBox,	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
@@ -2744,7 +2741,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		label LABELS.labCC_AM_BPClassification
 	
 	with rules
-		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then AttachManager mandatory 
+		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then ATTACHMENT mandatory 
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
 
@@ -2795,7 +2792,7 @@ Entity labGD_DamexNote is Label in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-Entity AttachManager is attachmentmanager in frmMain
+Entity ATTACHMENT is attachmentmanager in frmMain
 
 	with defaults
 		mandatory true
