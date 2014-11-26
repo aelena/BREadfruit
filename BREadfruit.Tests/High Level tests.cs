@@ -1485,6 +1485,35 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+
+		[Test]
+		public void ParseSampleFile049 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File049 - InRange.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "Sample", "Entity name should be 'Sample' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 2, "Should have 2 default clauses, but has" + e.Defaults.Count () );
+			Assert.That ( e.Rules.Count() == 2, "Should have 2 rules, but has" + e.Rules.Count () );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.InRangeOperator, "Operator Error" );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString() == "{723,1332}" );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First () == Grammar.SetValueActionSymbol );
+
+			Assert.That ( e.Rules.Last ().Conditions.First ().Operator == Grammar.NotInRangeOperator );
+			Assert.That ( e.Rules.Last ().Conditions.First ().Value.ToString () == "{100,200}" );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First () == Grammar.SetValueActionSymbol );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
 		[Test]
 		public void ShouldFindEntities ()
 		{

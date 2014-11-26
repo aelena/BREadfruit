@@ -3221,23 +3221,29 @@ Entity btnSubmit is Button in frmMain
 		GD_Adr_PostalCode.Value is empty and REQUEST.ACCOUNT_GROUP in {YVT6,YVT9,YCT6,YCT9} and GD_Adr_Region.Value in {2A, 2B} and SUBSTRING(GD_Adr_PostalCode.Value,0,2) is not 20 then
 			set value ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
 
-		GD_Adr_CountryGD.Value is ES and GD_Adr_PostalCode.Length is not 5 and GD_Adr_PostalCode.Value >= 53000
+		GD_Adr_CountryGD.Value is ES and GD_Adr_PostalCode.Length is not 5 and GD_Adr_PostalCode.Value >= 53000 then
 			set value ERRspanishPostalCode in MESSAGE_POPUP
 
-		GD_Adr_CountryGD.Value is GR and GD_Adr_PostalCode.Length is not 5 
+		GD_Adr_CountryGD.Value is GR and GD_Adr_PostalCode.Length is not 5  then
 			set value ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
 		
-		GD_Adr_CountryGD.Value is GR and GD_Adr_PostalCode.Length is not 5 
+		GD_Adr_CountryGD.Value is GR and GD_Adr_PostalCode.Length is not 5 then 
 			set value ERRitalianPostalCode in MESSAGE_POPUP
 
-		GD_Adr_CountryGD.Value is PT and GD_Adr_PostalCode.Length is not 8
+		GD_Adr_CountryGD.Value is PT and GD_Adr_PostalCode.Length is not 8 then
 			set value ERRportughesePostalCode in MESSAGE_POPUP
 
 		; TODO: HOW TO EXPRESS PORTUGAL POST CODE 9999-999 other than with regulat expressions
 		; TODO: something like 
-		; GD_Adr_CountryGD.Value is PT and GD_Adr_PostalCode.Length is not 8
+		; GD_Adr_CountryGD.Value is PT and GD_Adr_PostalCode.Length is not 8 then
 
-		 GD_Adr_CountryGD.Value is BE and GD_Adr_Region.Value is 01
+		; TODO: THINK ABOUT THIS ONE ADD IN_RANGE OPERATOR?
+		GD_Adr_CountryGD.Value is BE and GD_Adr_Region.Value is 01 and GD_Adr_PostalCode.Value is number and GD_Adr_PostalCode.Value not in range {1,3} or GD_Adr_PostalCode.Value not in range {4,6} then 
+
+		GD_Adr_CountryGD.Value is LU and GD_Adr_PostalCode.Length is not 4 then
+			set value ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
+		
+
 ; ----------------------------------------------------------------------------	
 		
 

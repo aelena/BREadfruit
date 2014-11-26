@@ -1,0 +1,8 @@
+﻿Entity Sample is TextBox in frmMain
+	with rules
+
+		GD_Adr_PostalCode.Value in range {723,1332} then 
+			set value ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
+		
+		GD_Adr_PostalCode.Value not in range {100,200} then 
+			set value ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
