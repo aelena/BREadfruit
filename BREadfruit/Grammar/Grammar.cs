@@ -544,6 +544,12 @@ namespace BREadfruit
 		public static Operator EqualityOperator = new Operator ( "==", 2, false );
 		public static Operator NonEqualityOperator = new Operator ( "!=", 2, false );
 
+		public static Operator IsIntegerOperator = new Operator ( "is_number", 2, false, new [] { "is number", "is digit", "is integer" } );
+		public static Operator IsNotNumberOperator = new Operator ( "is_not_number", 2, false, new [] { "is not number", "is not a number", "is not a digit", "is not integer", "is not an integer" } );
+		public static Operator IsDecimalOperator = new Operator ( "is_decimal", 2, false, new [] { "is decimal" } );
+		public static Operator IsNotDecimalOperator = new Operator ( "is_not_decimal", 2, false, new [] { "is not decimal" } );
+		public static Operator IsAplhaOperator = new Operator ( "is_alpha", 2, false, new [] { "is alphanumeric", "is alpha" } );
+
 		public static Operator SubStringOperator = new Operator ( "substring", 2, false );
 
 		public static Operator GreaterThanOperator = new Operator ( ">", 2, false, new [] { "greater than", "bigger than" } );
@@ -886,6 +892,12 @@ namespace BREadfruit
 			Grammar._operators.Add ( NonEqualityOperator );
 			Grammar._operators.Add ( SubStringOperator );
 
+			Grammar._operators.Add ( IsIntegerOperator );
+			Grammar._operators.Add ( IsNotNumberOperator );
+			Grammar._operators.Add ( IsDecimalOperator );
+			Grammar._operators.Add ( IsNotDecimalOperator );
+			Grammar._operators.Add ( IsAplhaOperator );
+
 			Grammar._operators.Add ( GreaterThanOperator );
 			Grammar._operators.Add ( LowerThanOperator );
 			Grammar._operators.Add ( GreaterEqualThanOperator );
@@ -897,6 +909,12 @@ namespace BREadfruit
 			Grammar._unaryOperators.Add ( IsNotNullOperator );
 			Grammar._unaryOperators.Add ( EqualityOperator );
 			Grammar._unaryOperators.Add ( NonEqualityOperator );
+
+			Grammar._unaryOperators.Add ( IsIntegerOperator );
+			Grammar._unaryOperators.Add ( IsNotNumberOperator );
+			Grammar._unaryOperators.Add ( IsDecimalOperator );
+			Grammar._unaryOperators.Add ( IsNotDecimalOperator );
+			Grammar._unaryOperators.Add ( IsAplhaOperator );
 
 		}
 
@@ -974,6 +992,12 @@ namespace BREadfruit
 			Grammar._symbols.Add ( IsNotNullOperator );
 			Grammar._symbols.Add ( EqualityOperator );
 			Grammar._symbols.Add ( NonEqualityOperator );
+
+			Grammar._symbols.Add ( IsAplhaOperator );
+			Grammar._symbols.Add ( IsDecimalOperator );
+			Grammar._symbols.Add ( IsNotDecimalOperator);
+			Grammar._symbols.Add ( IsIntegerOperator );
+			Grammar._symbols.Add ( IsNotNumberOperator );
 
 			Grammar._symbols.Add ( GreaterThanOperator );
 			Grammar._symbols.Add ( LowerThanOperator );

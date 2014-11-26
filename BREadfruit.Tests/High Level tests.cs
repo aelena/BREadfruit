@@ -1437,8 +1437,47 @@ namespace BREadfruit.Tests
 			var e = parser.Entities.First ();
 			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
 			Assert.That ( e.Name == "xARKANEx", "Entity name should be 'xARKANEx' but is " + e.Name );
+			Assert.That ( e.Defaults.Count () == 2,"Should have 2 default clauses, but has" + e.Defaults.Count () );
 
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString() == "LU + GD_Ctr_PIVA.Value" );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile048 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File048 - IsNumber etc.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "Sample", "Entity name should be 'Sample' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 2, "Should have 2 default clauses, but has" + e.Defaults.Count () );
+
+			Assert.That ( e.Rules.Count () == 12, "Should have 12 rules, but has" + e.Rules.Count () );
+
+
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Operator.Token == Grammar.IsIntegerOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator.Token == Grammar.IsIntegerOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator.Token == Grammar.IsIntegerOperator.Token );
+
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First ().Operator.Token == Grammar.IsNotNumberOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.First ().Operator.Token == Grammar.IsNotNumberOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.First ().Operator.Token == Grammar.IsNotNumberOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.First ().Operator.Token == Grammar.IsNotNumberOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 7 ).Conditions.First ().Operator.Token == Grammar.IsNotNumberOperator.Token );
+
+			Assert.That ( e.Rules.ElementAt ( 8 ).Conditions.First ().Operator.Token == Grammar.IsDecimalOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 9 ).Conditions.First ().Operator.Token == Grammar.IsNotDecimalOperator.Token );
+
+			Assert.That ( e.Rules.ElementAt ( 10 ).Conditions.First ().Operator.Token == Grammar.IsAplhaOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 11 ).Conditions.First ().Operator.Token == Grammar.IsAplhaOperator.Token );
+
 
 		}
 

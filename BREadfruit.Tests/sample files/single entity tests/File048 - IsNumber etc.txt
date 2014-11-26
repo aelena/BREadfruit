@@ -1,0 +1,18 @@
+﻿Entity Sample is TextBox in frmMain
+	with rules
+
+		TBVendorIFA.value is number then DDLVDCountry not mandatory
+		TBVendorIFA.value is digit then DDLVDCountry not mandatory
+		TBVendorIFA.value is integer then DDLVDCountry not mandatory
+
+		TBVendorIFA.value is not number then DDLVDCountry not mandatory
+		TBVendorIFA.value is not a number then DDLVDCountry not mandatory
+		TBVendorIFA.value is not a digit then DDLVDCountry not mandatory
+		TBVendorIFA.value is not integer then DDLVDCountry not mandatory
+		TBVendorIFA.value is not an integer then DDLVDCountry not mandatory
+
+		TBVendorIFA.value is decimal then DDLVDCountry not mandatory
+		TBVendorIFA.value is not decimal then DDLVDCountry not mandatory
+
+		TBVendorIFA.value is alpha then DDLVDCountry not mandatory
+		TBVendorIFA.value is alphanumeric then DDLVDCountry not mandatory

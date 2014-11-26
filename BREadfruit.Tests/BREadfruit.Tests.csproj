@@ -127,6 +127,7 @@
     <Content Include="sample files\single entity tests\File045 - ArithOps.txt" />
     <Content Include="sample files\single entity tests\File046 - Is_Mandatory.txt" />
     <Content Include="sample files\single entity tests\File047 - [].txt" />
+    <Content Include="sample files\single entity tests\File048 - IsNumber etc.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>

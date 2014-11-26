@@ -137,6 +137,28 @@ namespace BREadfruit.Tests.Low_level_tests
         }
 
 
+		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( "is_number", "is number" )]
+		[TestCase ( "is_number", "is digit" )]
+		[TestCase ( "is_number", "is integer" )]
+		[TestCase ( "is_not_number", "is not number" )]
+		[TestCase ( "is_not_number", "is not a number" )]
+		[TestCase ( "is_not_number", "is not a digit" )]
+		[TestCase ( "is_not_number", "is not an integer" )]
+		[TestCase ( "is_decimal", "is decimal" )]
+		[TestCase ( "is_alpha", "is alphanumeric" )]
+		[TestCase ( "is_alpha", "is alpha" )]
+		public void ShouldFindSymbolByAlias2 ( string mainAlias, string aliasToken )
+		{
+			var _op = Grammar.GetSymbolByToken ( aliasToken );
+			Assert.That ( _op != null );
+			if ( _op.Aliases.Count () > 0 )
+				Assert.That ( _op.Aliases.Contains ( aliasToken ) );
+			Assert.That ( _op.Token == mainAlias );
+		}
+
         // ---------------------------------------------------------------------------------
 
         [TestCase ( "is", "is" )]
@@ -153,6 +175,28 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( _op.Aliases.Contains ( token ) );
             Assert.That ( _op.Token == mainAlias );
         }
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( "is_number", "is number" )]
+		[TestCase ( "is_number", "is digit" )]
+		[TestCase ( "is_number", "is integer" )]
+		[TestCase ( "is_not_number", "is not number" )]
+		[TestCase ( "is_not_number", "is not a number" )]
+		[TestCase ( "is_not_number", "is not a digit" )]
+		[TestCase ( "is_not_number", "is not an integer" )]
+		[TestCase ( "is_decimal", "is decimal" )]
+		[TestCase ( "is_alpha", "is alphanumeric" )]
+		[TestCase ( "is_alpha", "is alpha" )]
+		public void ShouldFindOperator2 ( string mainAlias, string token )
+		{
+			var _op = Grammar.GetOperator ( token );
+			Assert.That ( _op != null );
+			Assert.That ( _op.Aliases.Contains ( token ) );
+			Assert.That ( _op.Token == mainAlias );
+		}
 
 
         // ---------------------------------------------------------------------------------
