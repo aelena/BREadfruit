@@ -555,7 +555,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 		mandatory true
 		max length 32
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -568,7 +568,7 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 		; mandatory for ROLES.ENQ and in 5150 (the only Greece CoCD)
 		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -581,7 +581,7 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 		; mandatory for ROLES.ENQ and in 5150 (the only Greece CoCD)
 		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -590,7 +590,7 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 	with defaults
 		max length 32
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -602,7 +602,7 @@ Entity GD_Adr_Search is TextBox in frmMain
 		; put here the first 20 characters of the name (which in creations comes from search screen)
 		value GD_Adr_Name1
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -612,7 +612,7 @@ Entity GD_Com_Comment is TextBox in frmMain
 		label LABELS.labComment
 		max length 35
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -623,7 +623,7 @@ Entity GD_Adr_Street is TextBox in frmMain
 		mandatory true
 		max length 32
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -634,7 +634,7 @@ Entity GD_Adr_Street2 is TextBox in frmMain
 
 	with rules
 		REQUEST.COUNTRY is FR then GD_Adr_Street2 not visible
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -645,7 +645,7 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 
 	with rules
 		REQUEST.COUNTRY is FR then GD_Adr_Street3 not visible
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -656,7 +656,7 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 
 	with rules
 		REQUEST.COUNTRY is FR then GD_Adr_Street4 not visible
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -667,7 +667,7 @@ Entity GD_Adr_Street5 is TextBox in frmMain
 
 	with rules
 		REQUEST.COUNTRY is FR then GD_Adr_Street5 not visible
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -681,7 +681,7 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 		value SEARCH_FORM_VALUES.DDLVDCountry			; Vendor country, country of the company code!!!!
  
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 
 ; ---------------------------------------------------------------------------- 
@@ -714,7 +714,7 @@ Entity GD_Adr_Region is DropDownList in frmMain
 		REQUEST.ACCOUNT_GROUP in {YCT6, YCT9} and GD_Adr_Region.Value is 2A then
 			set value 20 in GD_Adr_PostalCode
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 
 			
@@ -728,7 +728,7 @@ Entity GD_Adr_City is TextBox in frmMain
 		max length 35
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -745,7 +745,7 @@ Entity GD_Adr_City2 is TextBox in frmMain
 		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is not GR then
 			GD_Adr_City2 mandatory true
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -778,7 +778,7 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 
 	with rules
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 		
 		;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4 (only numbers - Format: XXXX)
@@ -839,7 +839,7 @@ Entity GD_Adr_POBox is TextBox in frmMain
 		max length 10
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 			
 		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is not empty then
@@ -888,7 +888,7 @@ Entity GD_Adr_POBoxLoc is TextBox in frmMain
 		max length 100
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 		REQUEST.COUNTRY is FR then
 			max length 40
@@ -910,7 +910,7 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 		value EN		; default is English
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 		REQUEST.CUSTOMER_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} then
 			set value FR in GD_Com_LanguageCode
@@ -936,7 +936,7 @@ Entity GD_Com_Telebox is DropDownList in frmMain
 		value PRT
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -945,7 +945,7 @@ Entity GD_Com_DataLine is TextBox in frmMain
 		label LABELS.labDataLine
 		max length 14
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -958,7 +958,7 @@ Entity P_GD_VT_Country is DropDownList in frmMain
 	with actions
 		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 	with triggers
 		this changes
@@ -971,7 +971,7 @@ Entity P_GD_VT_CountryCode is TextBox in frmMain
 		label LABELS.labGD_VT_CountryCode
 		enable false
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -981,7 +981,7 @@ Entity P_GD_VT_Number is TextBox in frmMain
 		label LABELS.labGD_VT_Number
 		mandatory true
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ----------------------------------------------------------------------------	
 
@@ -990,7 +990,7 @@ Entity P_GD_VT_Extension is TextBox in frmMain
 		max length 10
 		label LABELS.lablabGD_VT_Extension
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ----------------------------------------------------------------------------	
 
@@ -999,7 +999,7 @@ Entity P_GD_VT_Notes is TextBox in frmMain
 		max length 50
 		label LABELS.labGD_VT_Notes
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
@@ -1009,7 +1009,7 @@ Entity P_GD_VT_ConsNumber is TextBox in frmMain
 		visible false
 		label LABELS.labGD_VT_ConsNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -1020,7 +1020,7 @@ Entity P_GD_VT_Default is TextBox in frmMain
 		label LABELS.labP_GD_VT_Default
 		enabled false
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false		
 ; ----------------------------------------------------------------------------	
 
@@ -1029,7 +1029,7 @@ Entity P_GD_VT_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.btnInsert
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
@@ -1047,7 +1047,7 @@ Entity P_GD_VT_Grid is Grid in frmMain
 		define column GRID_P_GD_VT_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VT_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.RCO, ROLES.SUS, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerPhoneDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
@@ -1070,7 +1070,7 @@ Entity F_GD_VF_Country is DropDownList in frmMain
 		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 
 	with triggers
@@ -1084,7 +1084,7 @@ Entity F_GD_VF_CountryCode is TextBox in frmMain
 		label LABELS.labGD_VF_CountryCode
 		enable false
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1093,7 +1093,7 @@ Entity F_GD_VF_Number is TextBox in frmMain
 		max length 30
 		label LABELS.labGD_VF_Number
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false			
 ; ----------------------------------------------------------------------------	
 
@@ -1102,7 +1102,7 @@ Entity F_GD_VF_Extension is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_VF_Extension
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
@@ -1111,7 +1111,7 @@ Entity F_GD_VF_Notes is TextBox in frmMain
 		max length 50
 		label LABELS.labGD_VF_Notes
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false			
 
 ; ----------------------------------------------------------------------------	
@@ -1121,7 +1121,7 @@ Entity F_GD_VF_Default is TextBox in frmMain
 		value false
 		label LABELS.labGD_VF_Default
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false			
 ; ----------------------------------------------------------------------------	
 
@@ -1131,7 +1131,7 @@ Entity F_GD_VF_ConsNumber is TextBox in frmMain
 		visible false
 		label LABELS.labGD_VF_ConsNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1140,7 +1140,7 @@ Entity F_GD_VF_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.btnInsert
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1156,7 +1156,7 @@ Entity F_GD_VF_Grid is Grid in frmMain
 		define column GRID_F_GD_VF_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VF_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerFaxDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
@@ -1179,7 +1179,7 @@ Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 		; IT'S ALMOST IMPOSSIBLE TO DO THE RIGHT REGEX FOR EMAIL, SO FOR THE MOMENT WE PUT NOTHING HERE -
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		; check this is true
 		REQUEST.REQUEST_TYPE is "VC" then mandatory true
@@ -1191,7 +1191,7 @@ Entity E_GD_VE_Notes is TextBox in frmMain
 		max length 50
 		label LABELS.labGD_VE_Notes
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
@@ -1200,7 +1200,7 @@ Entity E_GD_VE_Default is TextBox in frmMain
 		value false
 		label LABELS.labGD_VE_Default
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false			
 ; ----------------------------------------------------------------------------	
 
@@ -1210,7 +1210,7 @@ Entity E_GD_VE_ConsNumber is TextBox in frmMain
 		visible false
 		label LABELS.labGD_VE_ConsNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1218,7 +1218,7 @@ Entity E_GD_VE_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.labIinsert
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this visible false		
 ; ---------------------------------------------------------------------------- 
 
@@ -1231,7 +1231,7 @@ Entity E_GD_VE_Grid is Grid in frmMain
 		define column GRID_E_GD_VE_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VE_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS,  ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerEmailDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
@@ -1272,7 +1272,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		load data from VENDOR.ACCOUNT_GROUP with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
 			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "FR"}
@@ -1294,7 +1294,7 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 		label LABELS.labUnsubscribeCMD
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1305,7 +1305,7 @@ Entity V_Country is DropDownList in frmMain
 		label LABELS.labCountry
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1313,7 +1313,7 @@ Entity V_VATNumber is TextBox in frmMain
 	with defaults
 		label LABELS.labNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
@@ -1321,7 +1321,7 @@ Entity V_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.labInsert
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this visible false	
 ; ----------------------------------------------------------------------------	
 
@@ -1331,7 +1331,7 @@ Entity V_Grid is Grid in frmMain
 		define column GRID_V_VATNumber		with arguments {ControlType : TextBox,		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerVAT with arguments {"RequestID" : REQUEST.REQUEST_ID}
@@ -1351,7 +1351,7 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 	with defaults
 		label LABELS.labCountry
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1360,7 +1360,7 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_VD_BankKey
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1369,7 +1369,7 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_VD_BankAccount
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1378,7 +1378,7 @@ Entity B_GD_VB_BankControlKey is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_VD_BankControlKey
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1387,7 +1387,7 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_VD_IBAN
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1396,7 +1396,7 @@ Entity B_GD_VB_PartBankType is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_VB_PartBankType
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1405,7 +1405,7 @@ Entity B_GD_VB_BankReferDetails is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_VB_BankReferDetails
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1416,7 +1416,7 @@ Entity B_GD_VB_SWIFT is TextBox in frmMain
 		visible false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 
 		REQUEST.REQUEST_TYPE is CC then
@@ -1434,7 +1434,7 @@ Entity B_GD_VB_AccountHolder is TextBox in frmMain
 		; default value but can be changed...
 		value GD_Adr_Name.Value
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1443,7 +1443,7 @@ Entity B_GD_VB_BankCity is MTextBox in frmMain
 	with defaults
 		label LABELS.labGD_VD_BankCity
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1451,7 +1451,7 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.labInsert
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this visible false	
 ; ----------------------------------------------------------------------------	
 
@@ -1472,7 +1472,7 @@ Entity B_GD_VB_Grid is Grid in frmMain
 
 		
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerBankDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
@@ -1505,7 +1505,7 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_LegalForms with arguments {"FlagActive" : true }
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		VENDOR.ACCOUNT_GROUP in {YCT6, YVT6} then
 			visible true
@@ -1521,8 +1521,16 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 	with defaults
 		label LABELS.labPIVA
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		REQUEST.REQUEST_TYPE is CC then
+			this enable true
+		REQUEST.COUNTRY is FR then
+			this enable true
+		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is CC then
+			this visible true
+		
+		
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_CF is TextBox in frmMain
@@ -1530,8 +1538,11 @@ Entity GD_Ctr_CF is TextBox in frmMain
 	with defaults
 		label LABELS.labCF
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		REQUEST.COUNTRY is FR and REQUEST.REQUEST_TYPE is CC then
+			this enable true
+			this visible true
 ; ---------------------------------------------------------------------------- 
 
 ;	1) before send data to SAP to create/modify supplier ->search if vendor exists with the same taxcode (STCD1), 
@@ -1549,7 +1560,7 @@ Entity GD_Ctr_VendorNumber is TextBox in frmMain
 		label LABELS.labVendorNumber
 		enable false
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1562,7 +1573,7 @@ Entity GD_Ctr_IFANumber is TextBox in frmMain
 		enabled false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.REQUEST_TYPE is CC then
 			GD_Ctr_IFANumber enabled false
@@ -1577,8 +1588,10 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 	with defaults
 		label LABELS.labTaxCode1
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		REQUEST.COUNTRY is IT then
+			this enable false
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_TaxCode2 is TextBox in frmMain
@@ -1586,8 +1599,10 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 	with defaults
 		label LABELS.labTaxCode2
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		REQUEST.COUNTRY is IT then
+			this enable false
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
@@ -1595,8 +1610,15 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 	with defaults
 		label LABELS.labVATRegistrationNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		REQUEST.COUNTRY is IT then
+			this enable false
+		REQUEST.COUNTRY is ES then
+			this enable false
+		REQUEST.COUNTRY is IT and REQUEST.CURRENT_ROLE is ROLES.CLERK and REQUEST.REQUEST_TYPE is CC then
+			this enable true
+
 ; ---------------------------------------------------------------------------- 
 
 
@@ -1608,7 +1630,7 @@ Entity GD_Com_TransportZone is TextBox in frmMain
 		visible false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.CUSTOMER_COUNTRY is ES and REQUEST.MDM_REQUESTSAP.GD_Com_TransportZone.VALUE is empty
 			set value substring(GD_Adr_PostalCode,2) in REQUEST.MDM_REQUESTS.GD_Com_TransportZone.Value 
@@ -1621,7 +1643,7 @@ Entity GD_MainlyMilitary is RadioButton in frmMain
 		label LABELS.labGD_MainlyMilitary
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.REQUEST_TYPE is CC then
 			mandatory true
@@ -1634,7 +1656,7 @@ Entity GD_MainlyCivilian is RadioButton in frmMain
 		label LABELS.labGD_MainlyCivilian
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.REQUEST_TYPE is CC then
 			mandatory true
@@ -1646,7 +1668,7 @@ Entity GD_Nuclear is CheckBox in frmMain
 	with defaults
 		label LABELS.labGD_Nuclear
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1655,7 +1677,7 @@ Entity labGD_FreeZone is Label in frmMain
 	with defaults
 		label LABELS.labGD_FreeZone
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1664,7 +1686,7 @@ Entity labGD_Embassy is Label in frmMain
 	with defaults
 		label LABELS.labGD_Embassy
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1673,7 +1695,7 @@ Entity GD_Nat_NaturalPerson is DropDownList in frmMain
 	with defaults
 		label LABELS.labNaturalPerson
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1682,7 +1704,7 @@ Entity GD_Nat_BirthDate is Calendar in frmMain
 	with defaults
 		label LABELS.calBirthDate
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1691,7 +1713,7 @@ Entity GD_Nat_PlaceOfBirth is TextBox in frmMain
 	with defaults
 		label LABELS.labPlaceOfBirth
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1700,7 +1722,7 @@ Entity GD_Nat_Profession is TextBox in frmMain
 	with defaults
 		label LABELS.labProfession
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1709,7 +1731,7 @@ Entity GD_Nat_Sex is DropDownList in frmMain
 	with defaults
 		label LABELS.labSex
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1719,7 +1741,7 @@ Entity CC_CO_ReconAccount is DropDownList in frmMain
 		visible false
 		label LABELS.labCC_CO_ReconAccount
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1744,7 +1766,7 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_PaymentTerms with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 
 		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
@@ -1784,7 +1806,7 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 		label LABELS.labPTPaymentMethods
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 
 		REQUEST.COUNTRY in {ES, FR} then
@@ -1806,7 +1828,7 @@ Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
 	with defaults
 		label LABELS.labCC_PT_ClearingWithCustomer
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1816,7 +1838,7 @@ Entity CC_PT_IndividualPayment is CheckBox in frmMain
 		label LABELS.labSinglePayment
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COMPANY_CODE in {5101, 5109} then
 			set value true in CC_PT_IndividualPayment
@@ -1837,7 +1859,7 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 		label LABELS.labCC_CO_AccountingClerk
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR and REQUEST.CURRENT_ROLE is ROLES.CLERK then
 			this mandatory true
@@ -1868,7 +1890,7 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 		label LABELS.labDDDunningprocedure
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is not FR then
 			this visible false
@@ -1904,7 +1926,7 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 		visible false
 		label LABELS.labDunningArea
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -1917,7 +1939,7 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_ARPledgeIndicators with arguments {"FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COMPANY_CODE in { 5109, 4297, 461D, 596G, 596G } then
 			this visible false
@@ -1945,7 +1967,7 @@ Entity KNVV_BZIRK is DropDownList in frmMain
 		label LABELS.labBZIRK
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_BZIRK visible true
@@ -1965,7 +1987,7 @@ Entity SO_CustomerGroup is DropDownList in frmMain
 		value ''
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR and REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} then
 			set value 01 in SO_CustomerGroup
@@ -1989,7 +2011,7 @@ Entity SO_SalesOffice is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_SalesOffice with arguments { "POCode" : REQUEST.SALES_ORGANIZATION, "CompanyCode" : REQUEST.COMPANY_CODE, "DistChannel" : REQUEST.DISTRIBUTION_CHANNEL, "FlagActive" : true}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		; only show the control if there are data loaded from the 'load data from' instruction
 		this.Items.Count > 0 then
@@ -2006,7 +2028,7 @@ Entity KNVV_EIKTO is TextBox in frmMain
 		mandatory true
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_EIKTO visible true
@@ -2032,7 +2054,7 @@ Entity KNVV_VKGRP is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_SalesOfficeSalesGroup with arguments {"CodeSalesOffice" : REQUEST.SALES_ORGANIZATION}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_EIKTO visible true
@@ -2062,7 +2084,7 @@ Entity KNVV_KONDA is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_PriceGroup with arguments {"FlagActive" : true}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_PLTYP visible true
@@ -2077,7 +2099,7 @@ Entity KNVV_PLTYP is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_PriceListType with arguments {"FlagActive" : true}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY in {BE, FR} then
 			KNVV_PLTYP visible true
@@ -2093,7 +2115,7 @@ Entity SO_CustPricingProc is DropDownList in frmMain
 		value ''
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			set value 1 in SO_CustPricingProc
@@ -2117,7 +2139,7 @@ Entity SO_CustomerStatsGroup is DropDownList in frmMain
 		value ''
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			set value 01 in SO_CustPricingProc
@@ -2143,7 +2165,7 @@ Entity SO_CustomerShippingConditions is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_CustomerShippingCondition with arguments {"FlagActive" : true, "ClusterCountryCode" : REQUEST.CLUSTER_COUNTRY_CODE}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			set value 01 in SO_CustomerShippingConditions
@@ -2180,7 +2202,7 @@ Entity KNVV_VWERK is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_DeliveryPlant with arguments {"DistributionChannel" : REQUEST.DISTRIBUTION_CHANNEL}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} and REQUEST.COMPANY_CODE is 5140 and REQUEST.DISTRIBUTION_CHANNEL is 11 then
 			KNVV_VWERK visible true
@@ -2198,7 +2220,7 @@ Entity KNVV_AUTLF is CheckBox in frmMain
 		label LABELS.labAUTLF
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			set value true in KNVV_AUTLF
@@ -2218,7 +2240,7 @@ Entity KNVV_ANTLF is DropDownList in frmMain
 		visible false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			visible true
@@ -2237,7 +2259,7 @@ Entity KNVV_LPRIO is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_DeliverPriority with arguments {"FlagActive" : true}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY in {ES, IT, BE, LU, FR, GR, PT} then
 			set value 02 in KNVV_LPRIO
@@ -2258,7 +2280,7 @@ Entity KNVV_KZTLF is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_PartDeliveryItem
 		value 9
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -2268,7 +2290,7 @@ Entity KNVV_PRFRE is CheckBox in frmMain
 		label LABELS.labPRFRE
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_PRFRE mandatory false
@@ -2293,7 +2315,7 @@ Entity SO_Incoterms is DropDownList in frmMain
 		mandatory true
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			set value DAP in SO_Incoterms
@@ -2334,7 +2356,7 @@ Entity SO_IncotermsPart2 is TextBox in frmMain
 		mandatory true
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			set value 'France Metropolitaine' in SO_Incoterms
@@ -2374,7 +2396,7 @@ Entity SO_TermsOfPaymentKey is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_PaymentTerms with arguments {"FlagActive" : true, "ClusterCountryCode" : REQUEST.COUNTRY}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR and REQUEST.CUSTOMER_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
 			set value 6115 in SO_TermsOfPaymentKey
@@ -2419,7 +2441,7 @@ Entity KNVV_KTGRD is DropDownList in frmMain
 		mandatory false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is REQUEST.CUSTOMER_COUNTRY then
 			set value 01 in KNVV_KTGRD
@@ -2460,7 +2482,7 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 		visible false
 		label LABELS.labCreditControlGroups
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -2472,7 +2494,7 @@ Entity KNVV_KVGR1 is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {"Group" : GR1}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_KVGR1 visible true
@@ -2497,7 +2519,7 @@ Entity KNVV_KVGR3 is DropDownList in frmMain
 		label LABELS.labKVGR3
 		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {"Group" : GR3}
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_KVGR3 visible true
@@ -2512,7 +2534,7 @@ Entity KNVV_KVGR4 is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {"Group" : GR4}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_KVGR4 visible true
@@ -2525,7 +2547,7 @@ Entity KNVV_KVGR5 is DropDownList in frmMain
 		label LABELS.labKVGR5
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.SALES_ORGANIZATION in {40E0, 31E0, 60E0, 50E0, 70E0, 10E0, 22E0} then
 			KNVV_KVGR5 mandatory true
@@ -2572,7 +2594,7 @@ Entity KNKK_KLIMK is TextBox in frmMain
 		enabled false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY in {ES, PT} and REQUEST.COMPANY_CODE in {CC, CC_CC} then
 			set value 0 in KNKK_KLIMK
@@ -2597,7 +2619,7 @@ Entity KNKK_CTLPC is TextBox in frmMain
 		enabled false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is ES and REQUEST.COMPANY_CODE in {CC, CC_CC} then
 			set value '' in KNKK_CTLPC
@@ -2616,7 +2638,7 @@ Entity KNKK_DTREV is TextBox in frmMain
 		enabled false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 
 ; ---------------------------------------------------------------------------- 
@@ -2628,7 +2650,7 @@ Entity KNKK_NXTRV is TextBox in frmMain
 	with defaults
 		label LABELS.labNextInternalReview
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -2638,7 +2660,7 @@ Entity KNKK_KRAUS is TextBox in frmMain
 	with defaults
 		label LABELS.labCLimInfNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -2647,7 +2669,7 @@ Entity KNKK_DBRTG is TextBox in frmMain
 	with defaults
 		label LABELS.labRating
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -2656,7 +2678,7 @@ Entity KNKK_REVDB is TextBox in frmMain
 	with defaults
 		label LABELS.labLastReviewExt
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -2667,7 +2689,7 @@ Entity KNKK_DBEKR is TextBox in frmMain
 	with defaults
 		label LABELS.labRecClimit
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -2921,7 +2943,7 @@ Entity CostCenter is TextBox in frmMain
 		label LABELS.labCostCenter
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -2934,6 +2956,9 @@ Entity DDLDCReqAction is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+
+		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
+			this visible false
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_SAPNumber is TextBox in frmMain
@@ -2976,7 +3001,10 @@ Entity btnSubmit is Button in frmMain
 	with defaults
 		label LABELS.btnSubmit
 
-	REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
+	with rules
+		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
+			this visible false
+		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
 
 ; ---------------------------------------------------------------------------- 
@@ -2985,6 +3013,7 @@ Entity btnClose is Button in frmMain
 
 	with defaults
 		label LABELS.btnClose
+
 
 ; ---------------------------------------------------------------------------- 
 
@@ -3007,7 +3036,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		label LABELS.labGD_Ctr_RiskClassification
 		mandatory true
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 
 		REQUEST.REQUEST_TYPE in {CM, CM_BLK} then
@@ -3044,7 +3073,7 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		label LABELS.labGD_GD_Adr_Country
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3085,7 +3114,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		label LABELS.labCC_AM_BPClassification
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.REQUEST_TYPE is CM_BLK then
 			this mandatory false
@@ -3105,7 +3134,7 @@ Entity GD_Damex is DropDownList in frmMain
 		mandatory true
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.FLOWTYPE not in {CC, CC_CC} then 
 			GD_Damex not mandatory
@@ -3122,7 +3151,7 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 		label LABELS.labGD_Ctr_IsNaturalPerson
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
 		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {P, Q, S} then 
@@ -3143,7 +3172,7 @@ Entity labGD_DamexNote is Label in frmMain
 	with defaults
 		label LABELS.labGD_DamexNote
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3152,7 +3181,7 @@ Entity ATTACHMENT is attachmentmanager in frmMain
 	with defaults
 		mandatory true
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3163,7 +3192,7 @@ Entity SAP_Message is TextBox in frmMain
 		label LABELS.labSAP_Message
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3172,6 +3201,9 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 	with defaults
 		label LABELS.labUrgentRequest
 
+	with rules
+		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
+			this visible false
 ; ---------------------------------------------------------------------------- 
 
 Entity CostCenter is TextBox in frmMain
@@ -3179,7 +3211,7 @@ Entity CostCenter is TextBox in frmMain
 	with defaults
 		label LABELS.labCostCenter
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3189,7 +3221,7 @@ Entity DDLDCReqAction is DropDownList in frmMain
 		label LABELS.labSR_Action
 		mandatory true
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3199,7 +3231,7 @@ Entity GD_SAPNumber is TextBox in frmMain
 		visible false
 		label LABELS.labSAPNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3223,7 +3255,9 @@ Entity DDLDCComment is TextBox in frmMain
 	with defaults
 		label LABELS.labComments
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
+			this visible false
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3309,8 +3343,12 @@ Entity SR_Comments is TextBox in frmMain
 	with defaults
 		label LABELS.labSR_Comments
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		REQUEST.STATE not in {STATE.LOCKED, STATE.CLOSED} and REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.CLERK} then
+			this enable true	
+
+
 ; ---------------------------------------------------------------------------- 
 
 Entity btnBack2 is Button in frmMain
@@ -3325,7 +3363,7 @@ Entity btnSave is Button in frmMain
 	with defaults
 		label LABELS.btnSave
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3348,7 +3386,7 @@ Entity PF_PartnerFunction is DropDownList in frmMain
 	with defaults
 		label LABELS.labPartnerFunction
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3357,7 +3395,7 @@ Entity PF_Number is TextBox in frmMain
 	with defaults
 		label LABELS.labPFNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3366,7 +3404,7 @@ Entity PF_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.btnInsert
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this visible false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3377,7 +3415,7 @@ Entity PF_Grid is Grid in frmMain
 		define column GRID_PF_Default			with arguments {ControlType : CheckBox,	DataField : IsDefault, Visible : true}
 		
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_CustomerPartnerFunction with arguments {"RequestID" : REQUEST.REQUEST_ID}
@@ -3398,7 +3436,7 @@ Entity CP_btnClearAll is mButton in frmMain
 	with defaults
 		label LABELS.btnClearAll
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3407,7 +3445,7 @@ Entity CP_Surname is TextBox in frmMain
 	with defaults
 		label LABELS.labCP_Surname
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3416,7 +3454,7 @@ Entity CP_Name is TextBox in frmMain
 	with defaults
 		label LABELS.labCP_Name
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3426,7 +3464,7 @@ Entity CP_Department is DropDownList in frmMain
 		label LABELS.labCP_Department
 		load data from DATASOURCE.MDMC_Department with arguments {COLUMN.FlagActive : true, OrderBy : DisplayName}
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3435,7 +3473,7 @@ Entity CP_Telephone is TextBox in frmMain
 	with defaults
 		label LABELS.labCP_Phone
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3444,7 +3482,7 @@ Entity CP_Fax is TextBox in frmMain
 	with defaults
 		label LABELS.labCP_Fax
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3453,7 +3491,7 @@ Entity CP_Email is TextBox in frmMain
 	with defaults
 		label LABELS.labCP_Email
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3463,7 +3501,7 @@ Entity CP_ConsNumber is TextBox in frmMain
 		visible false
 		label LABELS.labCP_ConsNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3472,7 +3510,7 @@ Entity CP_Default is CheckBox in frmMain
 	with defaults
 		label LABELS.labCP_Default
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3481,7 +3519,7 @@ Entity CP_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.btnInsert
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this visible false	
 ; ---------------------------------------------------------------------------- 
 
@@ -3497,7 +3535,7 @@ Entity CP_Grid is Grid in frmMain
 		define column GRID_CP_Default			with arguments {ControlType : CheckBox,	DataField : Default, Visible : true}
 		
 	with rules	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false			REQUEST.CURRENT_ROLE in {ROLES.UPM, CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_ContactPersons with arguments {"RequestID" : REQUEST.REQUEST_ID}
 		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
@@ -3522,7 +3560,7 @@ Entity SO_lbxSODSalesOrganization1 is ListBox in frmMain
 
 Entity SO_lbxSODSalesOrganization2 is ListBox in frmMain
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
@@ -3530,7 +3568,7 @@ Entity SO_btnSODAll is Button in frmMain
 	with defaults
 		label LABELS.lab_____		; this label is actually this -->    >>
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
@@ -3538,7 +3576,7 @@ Entity SO_btnSODSelect is Button in frmMain
 	with defaults
 		label LABELS.lab_____		; this label is actually this -->    >
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
@@ -3546,7 +3584,7 @@ Entity SO_btnSODRemove is Button in frmMain
 	with defaults
 		label LABELS.lab_____		; this label is actually this -->    <
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
@@ -3554,7 +3592,7 @@ Entity btnSOClear is Button in frmMain
 	with defaults
 		label LABELS.lab_____		; this label is actually this -->    <<
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
 
