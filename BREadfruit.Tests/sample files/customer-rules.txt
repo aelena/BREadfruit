@@ -557,6 +557,11 @@ Entity GD_Adr_Name is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Name2 is TextBox in frmMain
@@ -570,6 +575,12 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 			GD_Adr_Name4 mandatory true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
+
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Name3 is TextBox in frmMain
@@ -625,6 +636,11 @@ Entity GD_Adr_Street is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Street2 is TextBox in frmMain
@@ -636,6 +652,11 @@ Entity GD_Adr_Street2 is TextBox in frmMain
 		REQUEST.COUNTRY is FR then GD_Adr_Street2 not visible
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Street3 is TextBox in frmMain
@@ -647,6 +668,11 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 		REQUEST.COUNTRY is FR then GD_Adr_Street3 not visible
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Street4 is TextBox in frmMain
@@ -658,6 +684,11 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 		REQUEST.COUNTRY is FR then GD_Adr_Street4 not visible
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Street5 is TextBox in frmMain
@@ -669,6 +700,11 @@ Entity GD_Adr_Street5 is TextBox in frmMain
 		REQUEST.COUNTRY is FR then GD_Adr_Street5 not visible
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_CountryGD is DropDownList in frmMain
@@ -730,6 +766,11 @@ Entity GD_Adr_City is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_City2 is TextBox in frmMain
@@ -1353,6 +1394,11 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankKey is TextBox in frmMain
@@ -1362,6 +1408,11 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankAccount is TextBox in frmMain
@@ -1371,6 +1422,11 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankControlKey is TextBox in frmMain
@@ -1379,7 +1435,12 @@ Entity B_GD_VB_BankControlKey is TextBox in frmMain
 		label LABELS.labGD_VD_BankControlKey
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
-			this enable false	
+			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change	
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_IBAN is TextBox in frmMain
@@ -1389,6 +1450,11 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_PartBankType is TextBox in frmMain
@@ -1435,7 +1501,12 @@ Entity B_GD_VB_AccountHolder is TextBox in frmMain
 		value GD_Adr_Name.Value
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
-			this enable false	
+			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankCity is MTextBox in frmMain
@@ -1478,6 +1549,10 @@ Entity B_GD_VB_Grid is Grid in frmMain
 			load data from DATASOURCE.MDMC_Request_CustomerBankDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
 		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
 			load data from DATASOURCE.MDMC_Request_CustomerBankDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
+
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
 
 	with triggers
 		on row inserted
@@ -1954,7 +2029,12 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 
 		REQUEST.COMPANY_CODE is 5101 then
 			set value '' in CC_AR_PledgeIndicator
-		
+
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2626,7 +2706,11 @@ Entity KNKK_CTLPC is TextBox in frmMain
 
 		REQUEST.COUNTRY is PT and REQUEST.COMPANY_CODE in {CC, CC_CC} then
 			set value 44X in KNKK_CTLPC
-
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: in case of french company codes See default values in excel attached CamposCreditLimit.xls"
@@ -2718,6 +2802,11 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity labCentralPostingBlock is Label in frmMain
@@ -2735,6 +2824,11 @@ Entity BLK_CentralPostingBlock is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity labPostBlockingForCompanyCode is Label in frmMain
@@ -2752,6 +2846,11 @@ Entity BLK_PostingBlockForCC is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
@@ -2761,6 +2860,11 @@ Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
@@ -2770,6 +2874,11 @@ Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
@@ -2779,6 +2888,11 @@ Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
@@ -2788,6 +2902,11 @@ Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity BLK_CentralBillingBlock is DropDownList in frmMain
@@ -2803,9 +2922,14 @@ Entity BLK_BillingBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labBillingBlockAtThisSalesArea
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity labCentralSalesSupportBlock is Label in frmMain
@@ -2857,6 +2981,11 @@ Entity BLK_CentralDeletionFlagMasterRecord is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity labDelFlagMasterCompanyCode is Label in frmMain
@@ -2874,6 +3003,11 @@ Entity BLK_DeletionFlagMasterRecordCC is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity labDelFlagAtThisSalesArea is Label in frmMain
@@ -2905,9 +3039,14 @@ Entity labCentralDelBlockMaster is Label in frmMain
 Entity BLK_CentralDeletionBlockMasterRecord is CheckBox in frmMain
 
 	with defaults
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity labDelBlockMasterCompany is Label in frmMain
@@ -2926,6 +3065,11 @@ Entity BLK_DeletionBlockMasterRecordCC is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity TS_IsUrgentRequest is CheckBox in frmMain
@@ -3100,7 +3244,11 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 		
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
-
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity CC_AM_BPClassification is DropDownList in frmMain
@@ -3122,7 +3270,11 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		CC_AM_BPClassification.Value in {BPHR, BPMR} then ATTACHMENT mandatory 
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
-
+	with actions
+		; ATTACHMENT mandatory  false
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Damex is DropDownList in frmMain
@@ -3164,7 +3316,11 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 			
 		REQUEST.CURRENT_ROLE is ROLES.RCO then
 			GD_Ctr_IsNaturalPerson enabled true
-
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity labGD_DamexNote is Label in frmMain
@@ -3595,6 +3751,3 @@ Entity btnSOClear is Button in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 ; ----------------------------------------------------------------------------	
-
-
-

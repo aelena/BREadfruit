@@ -47,7 +47,7 @@ Entity TBVendorName is TextBox in frmSearch
 		label LABELS.VENDOR.NAME
 
 
-	with actions
+	with actiosn
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
 
@@ -319,9 +319,11 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		GD_Ctr_RiskClassification.Value is '' then
 			GD_Ctr_RiskClassification enabled true
 
-	with triggers
-		; TODO: FIND A BETTER WAY TO EXPRESS THIS....
-		; BANK_INSERTED EVALUATE -----
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 
 ; ----------------------------------------------------------------------------	
 
@@ -357,7 +359,11 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 		
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
-
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 Entity CC_AM_BPClassification is DropDownList in frmMain
@@ -376,7 +382,11 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then ATTACHMENT mandatory 
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
-
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Damex is DropDownList in frmMain
@@ -436,8 +446,12 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 
 		; CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
 
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 
-; --- ALL THE "Procur" DO NOT EXIST IN CUSTOMER
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Procur_SupplierDunsNumber is TextBox in frmMain
@@ -935,7 +949,11 @@ Entity GD_Adr_Name is TextBox in frmMain
 			this enable false
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
-
+	with actions
+		ATTACHMENT mandatory  true 
+		; _COMMENT_ mandatory  false  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Name2 is TextBox in frmMain
@@ -947,6 +965,12 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 			this enable false
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
+	with actions
+		ATTACHMENT mandatory  true 
+		; _COMMENT_ mandatory  false  
+
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Name3 is TextBox in frmMain
@@ -1014,14 +1038,16 @@ Entity GD_Adr_Street is TextBox in frmMain
 Entity GD_Adr_Street2 is TextBox in frmMain
 	with defaults
 		max length 35
-
+	with actions
+		ATTACHMENT mandatory true
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 		REGIONAL_COUNTRY is FR then GD_Adr_Street2 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
-
+	with triggers
+		this changes
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Street3 is TextBox in frmMain
@@ -1034,7 +1060,11 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 		REGIONAL_COUNTRY is FR then GD_Adr_Street3 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
-
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Street4 is TextBox in frmMain
@@ -1046,7 +1076,11 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 		REGIONAL_COUNTRY is FR then GD_Adr_Street4 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
-
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Street5 is TextBox in frmMain
@@ -1115,7 +1149,11 @@ Entity GD_Adr_City is TextBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 		VENDOR_COUNTRY is GR then GD_Adr_City2 visible
-
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 
@@ -2089,6 +2127,11 @@ Entity V_Country is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity V_VATNumber is TextBox in frmMain
@@ -2097,6 +2140,11 @@ Entity V_VATNumber is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity V_btnInsert is Button in frmMain
@@ -2136,6 +2184,11 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankKey is TextBox in frmMain
@@ -2145,6 +2198,11 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankAccount is TextBox in frmMain
@@ -2154,6 +2212,11 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankControlKey is TextBox in frmMain
@@ -2163,6 +2226,11 @@ Entity B_GD_VB_BankControlKey is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_IBAN is TextBox in frmMain
@@ -2172,6 +2240,11 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_SWIFT is TextBox in frmMain
@@ -2196,6 +2269,11 @@ Entity B_GD_VB_AccountHolder is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankCity is MTextBox in frmMain
@@ -2480,6 +2558,8 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 		
 	with actions
 		set value CC_PT_PaymentTerms.Value in PO_TermsOfPaymentKey.Value
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -2523,6 +2603,11 @@ Entity CC_PT_PaymentBlock is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 
@@ -2587,6 +2672,11 @@ Entity CC_PT_AlternativePayee is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 Entity CC_PT_IndividualPayment	is CheckBox in frmMain
@@ -2887,7 +2977,11 @@ Entity PO_PurchaseOrderCurrency	is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 
@@ -2921,7 +3015,11 @@ Entity PO_TermsOfPaymentKey	is DropDownList in frmMain
 			
 		REQUEST.COUNTRY is "PT" and REQUEST.VENDOR_COUNTRY is not "PT" then
 			set value 4117 in PO_TermsOfPaymentKey
-
+	with actions
+		; ; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 ;	"26.5.14(MI), please, GSS, can you confirm the business rule for RC Greece?...No value by default is implemented for RC Greece.
@@ -2948,6 +3046,8 @@ Entity PO_Incoterms	is DropDownList in frmMain
 	with actions
 		; whenever the value of this dropdown list changes, copy the text, not the value to PO_IncotermsPart2
 		set value PO_Incoterms.Text in PO_IncotermsPart2
+		; ; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -3112,6 +3212,11 @@ Entity BLK_CC_PT_PaymentBlock
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 
 ; ----------------------------------------------------------------------------	
 
@@ -3125,7 +3230,11 @@ Entity BLK_CentralPO is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
-
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 ; this was not even in the field mapping, but is visible false as default, 
@@ -3156,7 +3265,11 @@ Entity BLK_CompanyCode is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
-
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 ;	1)Get data from SAP from field LFA1.SPERM
@@ -3171,7 +3284,11 @@ Entity BLK_Central is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
-
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 ;	1)Get data from SAP from field LFM1.SPERM
@@ -3186,7 +3303,11 @@ Entity BLK_PO is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
-
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 ;	1)Get data from SAP from field LFA1.LOEVM
@@ -3201,6 +3322,11 @@ Entity BLK_MFD_Central is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 ;	1)Get data from SAP from field LFB1.LOEVM
@@ -3215,6 +3341,11 @@ Entity BLK_MFD_CompanyCode is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 
 ; ----------------------------------------------------------------------------	
 
@@ -3230,6 +3361,12 @@ Entity BLK_MFD_PO is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
+
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 ; LFA1.NODEL
@@ -3243,6 +3380,11 @@ Entity BLK_MFD_DeletionBlockCentral	is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 ; ----------------------------------------------------------------------------	
 
 ; not sent to SAP, only retrieve from LFB1.NODEL
@@ -3256,6 +3398,11 @@ Entity BLK_MFD_DeletionBlockCompanyCode	is CheckBox in frmMain
 			this enable false
 		REQUEST.REQUEST_TYPE is "VM_BLK" then
 			enabled true	
+	with actions
+		; ATTACHMENT mandatory  false 
+		_COMMENT_ mandatory  true  
+	with triggers 
+		on change
 
 ; --- BUTTON BLOCK -----------------------------------------------------------
 
