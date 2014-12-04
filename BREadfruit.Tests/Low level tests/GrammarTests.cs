@@ -259,5 +259,27 @@ namespace BREadfruit.Tests.Low_level_tests
 
         // ---------------------------------------------------------------------------------
 
+
+		[TestCase ( "add row	 CP_Grid with arguments { \"Column1\" : \"Value1\", \"Column2\" : \"Value 2\" } ", Result = true )]
+		[TestCase ( "add row	 CP_Grid with arguments { 'Column1' : 'Value1', 'Column2' : 'Value2' } ", Result = true )]
+		[TestCase("add row CP_Grid with arguments { 'Column1' : 'Value1', 'Column2' : 'Value2' } ", Result=true)]
+		[TestCase("add row CP_Grid with arguments { 'Column1' :		'Value1', 'Column2' : 'Value2'	} ", Result=true)]
+		[TestCase("add row CP_Grid with arguments {'Column1':'Value1','Column2':'Value 2'}", Result=true)]
+		[TestCase("add row to  CP_Grid with arguments { 'Column1' : 'Value1', 'Column2' : 'Value2' } ", Result=true)]
+		[TestCase("add row to CP_Grid with arguments { 'Column1' : 'Value1', 'Column2' : 'Value2' } ", Result=true)]
+		[TestCase("add row to CP_Grid with arguments { 'Column1' :		'Value1', 'Column2' : 'Value2'	} ", Result=true)]
+		[TestCase("add row to    CP_Grid with arguments {'Column1':'Value1','Column2':'Value2'}", Result=true)]
+		[TestCase("add row CP_Grid with arguments{'Column1':'Value1','Column2':'Value2'}", Result=false)]
+		[TestCase("add row in CP_Grid with arguments{'Column1':'Value1','Column2':'Value2'}", Result=false)]
+		public bool AddRowToLineRegex ( string sut )
+		{
+			var p = new Parser ();
+			var lp = new LineParser();
+			var lineInfo = p.ParseLine ( sut );
+			lineInfo = p.ParseLine ( lp.TokenizeMultiplePartOperators ( lineInfo ) );
+
+			return Regex.IsMatch ( lineInfo.Representation, Grammar.AddRowToLineRegex, RegexOptions.IgnoreCase );
+		}
+
     }
 }

@@ -269,6 +269,7 @@ namespace BREadfruit
 		public const string ValidationRegexLineRegex = @"^validation_regex[\t\s]+(.)*[\t\s]*";
 		public const string ValidationRegexValueRegex = @"^(.)+$";
 
+		public const string AddRowToLineRegex = "^ADD_ROW[\t\\s]+(TO)?[\t\\s]+[A-Za-z0-9_-]+[\t\\s]+{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)[\t\\s]*}[\t\\s]*$";
 
 		public const string ClearValueLineRegex = @"^clear_element[\t\s]+([A-Za-z0-9'.'_])+[\t\s]*$";
 
@@ -338,6 +339,7 @@ namespace BREadfruit
 		public const string FreeValueLineRegex = "^VALUE[\t\\s]+(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
 		public const string LabelDefaultLineRegex = "^LABEL[\t\\s]+(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$";
 		public const string LoadDataDefaultLineRegex = @"^LOAD_DATA_FROM[\t\s]+(JAVASCRIPT|WEBSERVICE|DATASOURCE)?\.[A-Z]*(\.?[A-Z_0-9]+)+[\t\s]*$";
+		public const string AddRowDefaultLineRegex = @"^ADD_ROW[\t\s]+[A-Za-z_0-9]+[\t\s]*$";
 
 		/// <summary>
 		/// Regex for lines such as 
@@ -407,7 +409,8 @@ namespace BREadfruit
 		public static Symbol GridSymbol = new Symbol ( "Grid", 0, true );
 		public static Symbol HyperLinkSymbol = new Symbol ( "HyperLink", 0, true );
 		public static Symbol ListBoxSymbol = new Symbol ( "ListBox", 0, true );
-
+		public static Symbol CalendarSymbol = new Symbol ( "Calendar", 0, true );
+		public static Symbol AttachmentManagerSymbol = new Symbol ( "AttachmentManager", 0, true );
 		//public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
 		//public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
@@ -422,6 +425,8 @@ namespace BREadfruit
 		public static Symbol EmptyStringSymbol = new Symbol ( "\"\"", 2, true );
 		public static Symbol NullValueSymbol = new Symbol ( "null", 2, true );
 
+		public static Symbol VisibleSymbol = new Symbol ( "Visible", 2, true );
+		public static Symbol EnabledSymbol = new Symbol ( "Enabled", 2, true );
 
 		public static Symbol WithArgumentsSymbol = new Symbol ( "with_args", 2, false, new [] { "with args", "with arguments" } );
 
@@ -450,6 +455,8 @@ namespace BREadfruit
 		public static UnaryAction SaveDataUnaryActionSymbol = new UnaryAction ( "save_data_to", 2, true, new [] { "save data to" } );
 		public static UnaryAction ChangeFormUnaryActionSymbol = new UnaryAction ( "change_form_to", 2, true, new [] { "change form to" } );
 		public static UnaryAction SetValidationRegexUnaryActionSymbol = new UnaryAction ( "validation_regex", 2, true, new [] { "validation regex", "validation" } );
+
+		public static UnaryAction AddRowUnaryActionSymbol = new UnaryAction ( "add_row", 2, true, new [] { "add row to", "add row" } );
 
 
 		public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
@@ -613,6 +620,7 @@ namespace BREadfruit
 			Grammar._defaultClausesValidationRegexs.Add ( FreeValueLineRegex );
 			Grammar._defaultClausesValidationRegexs.Add ( LabelDefaultLineRegex );
 			Grammar._defaultClausesValidationRegexs.Add ( LoadDataDefaultLineRegex );
+			Grammar._defaultClausesValidationRegexs.Add ( AddRowToLineRegex );
 		}
 
 
@@ -850,6 +858,8 @@ namespace BREadfruit
 			Grammar._entityTypes.Add ( MultilineSymbol );
 			Grammar._entityTypes.Add ( HyperLinkSymbol );
 			Grammar._entityTypes.Add ( ListBoxSymbol );
+			Grammar._entityTypes.Add ( CalendarSymbol );
+			Grammar._entityTypes.Add ( AttachmentManagerSymbol );
 
 		}
 
@@ -919,6 +929,8 @@ namespace BREadfruit
 			Grammar._unaryOperators.Add ( IsNotNullOperator );
 			Grammar._unaryOperators.Add ( EqualityOperator );
 			Grammar._unaryOperators.Add ( NonEqualityOperator );
+			Grammar._unaryOperators.Add ( IsVisibleOperator );
+			Grammar._unaryOperators.Add ( IsNotVisibleOperator );
 
 			Grammar._unaryOperators.Add ( IsIntegerOperator );
 			Grammar._unaryOperators.Add ( IsNotNumberOperator );
@@ -972,6 +984,8 @@ namespace BREadfruit
 			Grammar._symbols.Add ( MultilineSymbol );
 			Grammar._symbols.Add ( HyperLinkSymbol );
 			Grammar._symbols.Add ( ListBoxSymbol );
+			Grammar._symbols.Add ( CalendarSymbol );
+			Grammar._symbols.Add ( AttachmentManagerSymbol );
 
 			Grammar._symbols.Add ( ThenSymbol );
 			Grammar._symbols.Add ( ThisSymbol );
