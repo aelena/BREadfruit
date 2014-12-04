@@ -47,7 +47,7 @@ Entity TBVendorName is TextBox in frmSearch
 		label LABELS.VENDOR.NAME
 
 
-	with actiosn
+	with actions
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
 
@@ -127,14 +127,14 @@ Entity TBVendorIFA is TextBox in frmSearch
 		visible true
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
 		mandatory true
-		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
+		load data from DATASOURCE.MDM_Countries
 		label LABELS.GENERIC.COUNTRY
 
 	with actions
 		set value '' in ErrorMessage
 		hide vendorSearchResultGrid
 		hide btnCreateVendor
-		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
+		load data from DATASOURCE.MDM_Countries
 
 	with rules
 		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
@@ -191,7 +191,7 @@ Entity DDLCDCompany is DropDownList in frmSearch
 
 	with actions
 		; load active companies for this country
-		load data from DATASOURCES.MDM_ClusterPurchaseOrganizations with arguments {"CompanyCode": this.value} in DDLCDPurchOrg 
+		load data from DATASOURCE.MDM_ClusterPurchaseOrganizations with arguments {"CompanyCode": this.value} in DDLCDPurchOrg 
 
 	with triggers
 		this.value changes
@@ -285,7 +285,7 @@ Entity vendorSearchResultGrid is Grid in frmSearch
 
 	; TODO: DEFINE CONVENTIONS FOR GRID BETTER
 
-	; MISSING ACTIOSN ON GRID BUTTONS
+	; MISSING ACTIONS ON GRID BUTTONS
 
 
 ; ----------------------------------------------------------------------------	
@@ -315,6 +315,10 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled true
+
+		REQUEST.CURRENT_ROLE not in {ROLES.ENQ,ROLES.CLERK} then enabled false
+
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then enabled true
 
 		GD_Ctr_RiskClassification.Value is '' then
 			GD_Ctr_RiskClassification enabled true
@@ -359,6 +363,11 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 		
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
+
+		REQUEST.CURRENT_ROLE not in {ROLES.ENQ,ROLES.CLERK} then enabled false
+
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then enabled true
+
 	with actions
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
@@ -382,6 +391,11 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		CC_AM_BPClassification.Value in {"BPHR", "BPMR"} then ATTACHMENT mandatory 
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
+
+		REQUEST.CURRENT_ROLE not in {ROLES.ENQ,ROLES.CLERK} then enabled false
+
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then enabled true
+
 	with actions
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
@@ -516,7 +530,7 @@ Entity GD_Procur_Supplier_ContactPhone is TextBox in frmMain
 		; TODO: TEST THIS AUTOFOCUS
 		this exit
 
-		with rules
+	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
@@ -1354,12 +1368,12 @@ Entity GD_Com_DataLine is TextBox in frmMain
 
 Entity P_GD_VT_Country is DropDownList in frmMain
 	with defaults
-		load data from ENTERPRISE.WORLD_COUNTRIES
+		load data from DATASOURCE.MDM_Countries
 		value REQUEST.VENDOR_COUNTRY
 		mandatory true
 	
 	with actions
-		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false	
@@ -1455,11 +1469,11 @@ Entity P_GD_VT_Grid is Grid in frmMain
 
 Entity F_GD_VF_Country is DropDownList in frmMain
 	with defaults
-		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
+		load data from DATASOURCE.MDM_Countries
 		value REQUEST.VENDOR_COUNTRY
 
 	with actions
-		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false	
@@ -1788,10 +1802,10 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			this enable false
 		; this means companycode country
 		;	1) if regional country Greece and not vendor creation from scratch->NO mandatory else If vendor country doesn't belong to YVT6 or YVT9 -> mandatory
-		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is not VC
-			mandatory false
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is not VC then
+			this mandatory false
 		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is not VC and VENDOR.ACCOUNT_GROUP not in {YVT6, YVT9} then
-			mandatory true
+			this mandatory true
 
 		; YVT1 is BELGIUM
 		REQUEST.ACCOUNT_GROUP is YVT1 then
@@ -2029,7 +2043,7 @@ Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
 			show GD_Ctr_SalesPurTax
 			set value true in GD_Ctr_SalesPurTax
 
-		REQUEST.COMPANY_CODE in {5101,563M,5109} and REQUEST.ACCOUNT_GROUP is YVT1
+		REQUEST.COMPANY_CODE in {5101,563M,5109} and REQUEST.ACCOUNT_GROUP is YVT1 then
 			set value true ; check the checkbox
 
 ; ----------------------------------------------------------------------------	
@@ -2276,7 +2290,7 @@ Entity B_GD_VB_AccountHolder is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
-Entity B_GD_VB_BankCity is MTextBox in frmMain
+Entity B_GD_VB_BankCity is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_BankCity
@@ -2405,10 +2419,10 @@ Entity CC_AM_SortKey is DropDownList in frmMain
 		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.VENDOR_COUNTRY is GR then
 			set value 001 in CC_AM_SortKey
 
-		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is FR
+		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is FR then
 			set value 003 in CC_AM_SortKey
 
-		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is GR
+		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is GR then
 			set value 001 in CC_AM_SortKey
 
 
@@ -2429,7 +2443,7 @@ Entity CC_AM_SubjectedToWHTax is CheckBox in frmMain
 		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked is true and REQUEST.REQUEST_TYPE is VM then
 			CC_AM_WithholdingTaxCode mandatory false
 
-		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked
+		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked is true then
 			set value true in CC_AM_SubjectedToWHTax
 
 ; ----------------------------------------------------------------------------	
@@ -2527,7 +2541,7 @@ Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 			; TODO: TEST THIS SHORTER SYNTAX
 			set value A2
 
-		REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC}
+		REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
 			hide this
 			set value A1
 
@@ -3202,7 +3216,7 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-Entity BLK_CC_PT_PaymentBlock
+Entity BLK_CC_PT_PaymentBlock is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTPaymentBlock
 		load data from DATASOURCE.MDM_PaymentBlocks with arguments {"FlagActive" : true}
@@ -3456,7 +3470,7 @@ Entity btnSubmit is Button in frmMain
 			set value MESSAGES.ERRsubmitRequestGDFieldTelephone in MESSAGE_POPUP
 			
 		; TODO: HOW TO DEFINE THIS?
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.PHONE_DETAILS is not empty and REQUEST.PHONE_DETAILS.NO_DEFAULT_ENTRY then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.PHONE_DETAILS is not empty and REQUEST.PHONE_DETAILS.NO_DEFAULT_ENTRY is true then
 			set value MESSAGES.ERRsubmitRequestGDFieldPhone in MESSAGE_POPUP
 
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.Value is empty then
@@ -3489,10 +3503,10 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and CC_PT_ValidityDate.Value is not empty and CC_PT_ValidityDate.Value < DATE.TODAY then
 			set value ERRsubmitRequestCCFielddateInv in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_CF is not empty and GD_Ctr_CF.Length < 9
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_CF is not empty and GD_Ctr_CF.Length < 9 then
 			set value ERRsubmitRequestGDFieldCFShort in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is PT and GD_Ctr_CF is not empty and GD_Ctr_CF.Length < 9
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is PT and GD_Ctr_CF is not empty and GD_Ctr_CF.Length < 9 then
 			set value ERRsubmitRequestGDFieldNIFShort in MESSAGE_POPUP
 
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_CF is empty and REQUEST.REQUEST_TYPE is VC then
@@ -3726,13 +3740,13 @@ Entity btnSubmit is Button in frmMain
 		GD_Adr_Country.Value is GR and GD_Adr_POBoxPostalCode is mandatory and GD_Adr_POBoxPostalCode.Value is empty then
 			set value ERRsubmitRequestGDPOBox in MESSAGE_POPUP
 
-		GD_SAPNumber is Visible and DDLDCReqAction.Value is SUBMITTED and GD_Adr_CountryGD.Value is BE and REQUEST.REQUEST_TYPE is VC and GD_SAPNumber.Value is empty 
+		GD_SAPNumber is Visible and DDLDCReqAction.Value is SUBMITTED and GD_Adr_CountryGD.Value is BE and REQUEST.REQUEST_TYPE is VC and GD_SAPNumber.Value is empty then
 			set value ERRsubmitRequestRHFieldSAP in MESSAGE_POPUP
 
 		GD_SAPNumber is Visible and DDLDCReqAction.Value is SUBMITTED and GD_Adr_CountryGD.Value is BE and REQUEST.REQUEST_TYPE is VC and GD_SAPNumber.Value is not empty and GD_SAPNumber.Value not in range {1000000000,1999999999} then
 			set value ERRsubmitRequestRHFieldSAPInv in MESSAGE_POPUP
 
-		GD_SAPNumber is Visible and DDLDCReqAction.Value is SUBMITTED and GD_Adr_CountryGD.Value is LU and REQUEST.REQUEST_TYPE is VC and GD_SAPNumber.Value is empty 
+		GD_SAPNumber is Visible and DDLDCReqAction.Value is SUBMITTED and GD_Adr_CountryGD.Value is LU and REQUEST.REQUEST_TYPE is VC and GD_SAPNumber.Value is empty then
 			set value ERRsubmitRequestRHFieldSAP in MESSAGE_POPUP									
 																									
 		GD_SAPNumber is Visible and DDLDCReqAction.Value is SUBMITTED and GD_Adr_CountryGD.Value is LU and REQUEST.REQUEST_TYPE is VC and GD_SAPNumber.Value is not empty and GD_SAPNumber.Value not in range {2000000000,2999999999} then
@@ -3741,7 +3755,7 @@ Entity btnSubmit is Button in frmMain
 		CC_AM_WithholdingTaxCode is mandatory and CC_AM_WithholdingTaxCode.Value is empty then
 			set value ERRsubmitRequestCCTaxCode in MESSAGE_POPUP
 
-		CC_AM_SubjectedToWHTax.Value and REQUEST.COUNTRY is IT and CC_AM_WithholdingTaxCode.Value is empty then
+		REQUEST.COUNTRY is IT and CC_AM_WithholdingTaxCode.Value is empty then
 			set value ERRsubmitRequestCCTaxCode in MESSAGE_POPUP
 
 		GD_Damex is mandatory and GD_Damex.Value is emtpy then

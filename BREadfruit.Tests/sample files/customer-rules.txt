@@ -126,7 +126,7 @@ Entity DDLDCountry is DropDownList in frmSearch
 		set value '' in ErrorMessage
 		hide CustomerSearchResultGrid
 		hide btnCreateCustomer
-		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES 
+		load data from DATASOURCE.MDMC_Countries 
 
 	with rules
 		DDLCDCountry.Value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
@@ -185,7 +185,7 @@ Entity DDLCDCompany is DropDownList in frmSearch
 
 	with actions
 		; load active companies for this country
-		load data from DATASOURCES.MDMC_ClusterSalesOrganizations with arguments {"Arg1": this.value} in DDLCDPurchOrg 
+		load data from DATASOURCE.MDMC_ClusterSalesOrganizations with arguments {"Arg1": this.value} in DDLCDPurchOrg 
 
 	with triggers
 		this.value changes
@@ -202,7 +202,7 @@ Entity DDLCDSalesOrg is DropDownList in frmSearch
 		; load active companies for this country
 		; this means the current ìmplementation needs to change a bit...
 		; TODO: REORGANIZE THE TABLE TO REFLECT THIS CHANGES IN TEH VALUES LOADED IN THIS DIST CHANNEL COMBO ISNTEAD OF REMOVING BY CODE
-		load data from DATASOURCES.MDMC_ClusterDistributionChannels with arguments {"FlagActive": true, "Country" : DDLCDCountry.Value} in DDLCDDistribChannel 
+		load data from DATASOURCE.MDMC_ClusterDistributionChannels with arguments {"FlagActive": true, "Country" : DDLCDCountry.Value} in DDLCDDistribChannel 
 
 	with triggers
 		this.value changes
@@ -225,7 +225,7 @@ Entity DDLCDivision is DropDownList in frmSearch
 
 	; TODO: WHEN DOES THIS CONTROL BECOME VISIBLE
 	with rules
-		DDLCDivision.Visible and DDLCDivision is empty then
+		DDLCDivision is visible and DDLCDivision is empty then
 			DDLCDivision mandatory
 
 ; ---------------------------------------------------------------------------- 
@@ -268,7 +268,7 @@ Entity btnSearch is Button in frmSearch
 		TBCustomerName is not empty and DDLDCountry is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
 
-		DDLCDivision.Visible and DDLCDivision is empty then
+		DDLCDivision is visible and DDLCDivision is empty then
 			; show this message : Fill the field of Division Country
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
 
@@ -326,7 +326,7 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ; ----------------------------------------------------------------------------	
 
 ; ----------------------------------------------------------------------------
-  -- LIST OF ALL ENTITIES FOUND in MDMC main FORM
+;  -- LIST OF ALL ENTITIES FOUND in MDMC main FORM
 ; ----------------------------------------------------------------------------
 
 
@@ -992,12 +992,12 @@ Entity GD_Com_DataLine is TextBox in frmMain
 
 Entity P_GD_VT_Country is DropDownList in frmMain
 	with defaults
-		load data from ENTERPRISE.WORLD_COUNTRIES
+		load data from DATASOURCE.MDMC_Countries
 		value REQUEST.VENDOR_COUNTRY
 		mandatory true
 	
 	with actions
-		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
@@ -1104,11 +1104,11 @@ Entity P_GD_VT_Grid is Grid in frmMain
 ; ----------------------------------------------------------------------------	
 Entity F_GD_VF_Country is DropDownList in frmMain
 	with defaults
-		load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES
+		load data from DATASOURCE.MDMC_Countries
 		value REQUEST.VENDOR_COUNTRY
 
 	with actions
-		load data from DATASOURCE.ENTERPRISE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -1310,7 +1310,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		visible true
 		label LABELS.labIndustries
 		; if there are no specific data for this specific country, data for "EN" should be loaded
-		load data from VENDOR.ACCOUNT_GROUP with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
+		load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -1509,7 +1509,7 @@ Entity B_GD_VB_AccountHolder is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
-Entity B_GD_VB_BankCity is MTextBox in frmMain
+Entity B_GD_VB_BankCity is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_BankCity
@@ -1707,8 +1707,8 @@ Entity GD_Com_TransportZone is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
-		REQUEST.CUSTOMER_COUNTRY is ES and REQUEST.MDM_REQUESTSAP.GD_Com_TransportZone.VALUE is empty
-			set value substring(GD_Adr_PostalCode,2) in REQUEST.MDM_REQUESTS.GD_Com_TransportZone.Value 
+		REQUEST.CUSTOMER_COUNTRY is ES and GD_Com_TransportZone.Value is empty then
+			set value substring(GD_Adr_PostalCode,2) in GD_Com_TransportZone.Value 
 
 ; ---------------------------------------------------------------------------- 
 
@@ -1890,10 +1890,10 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 		REQUEST.COUNTRY is IT and CC_PT_PaymentMethods.Value is L then
 			B_GD_VB_BankKey mandatory true
 
-		REQUEST.COUNTRY is PT and CC_PT_PaymentMethods.Value in {P, M}
+		REQUEST.COUNTRY is PT and CC_PT_PaymentMethods.Value in {P, M} then
 			B_GD_VB_BankKey mandatory true
 			
-		REQUEST.COUNTRY is FR and CC_PT_PaymentMethods.Value in {M, A}
+		REQUEST.COUNTRY is FR and CC_PT_PaymentMethods.Value in {M, A} then
 			B_GD_VB_BankKey mandatory true
 
 ; ---------------------------------------------------------------------------- 
@@ -2663,9 +2663,9 @@ Entity KNKK_KNKLI is TextBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-1) TODO:
-2) see attached email ""credit control area (legal form) for all french companies in sheet “other documents”
-5) for italian company 5180, Based in Credit rep. Group, MADAM has to find into the sheet ""credit limit for italy 5180 regional company"" attached in sheet “other documents” the values the values for the fields KNKK-KLIMK & KNKK-NXTRV
+;	1) TODO:
+;	2) see attached email ""credit control area (legal form) for all french companies in sheet “other documents”
+;	5) for italian company 5180, Based in Credit rep. Group, MADAM has to find into the sheet ""credit limit for italy 5180 regional company"" attached in sheet “other documents” the values the values for the fields KNKK-KLIMK & KNKK-NXTRV
 
 Entity KNKK_KLIMK is TextBox in frmMain
 
@@ -2684,11 +2684,11 @@ Entity KNKK_KLIMK is TextBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-"17-07-2014(RG): 1)Read only field
-2)in case of french company codes, See default values in excel attached CamposCreditLimit.xls
-3) only used in spanish company codes creations from scratch and company code, by default blank (Required in 101896228 (TTT_079307))
-4) only used in portuguese company codes creations from scratch and company code, by default 44X
-5)only used in italian company codes creations from scratch and company code, if KNA1-KUKLA=NG, by default ""523"", if KNA1-KUKLA =G, by default ""5EP"""
+;	"17-07-2014(RG): 1)Read only field
+;	2)in case of french company codes, See default values in excel attached CamposCreditLimit.xls
+;	3) only used in spanish company codes creations from scratch and company code, by default blank (Required in 101896228 (TTT_079307))
+;	4) only used in portuguese company codes creations from scratch and company code, by default 44X
+;	5)only used in italian company codes creations from scratch and company code, if KNA1-KUKLA=NG, by default ""523"", if KNA1-KUKLA =G, by default ""5EP"""
 
 ; TODO: FIELDMAPPING SAYS THIS IS A DROPDOWNLIST BUT THIS IS ACTUALLY A TEXTBOX --- PENDING CLARIFICATION... // REVIEW REST OF RULES
 
@@ -3079,6 +3079,8 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
+			this visible false
 ; ---------------------------------------------------------------------------- 
 
 Entity CostCenter is TextBox in frmMain
@@ -3098,22 +3100,14 @@ Entity DDLDCReqAction is DropDownList in frmMain
 		mandatory true
 
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
-			this enable false
 
 		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
 			this visible false
+
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
+			this enable false
 ; ---------------------------------------------------------------------------- 
 
-Entity GD_SAPNumber is TextBox in frmMain
-
-	with defaults
-		visible false
-		label LABELS.labSAPNumber
-	
-	REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
-		this enable false
-; ---------------------------------------------------------------------------- 
 
 Entity labNextRole is DropDownList in frmMain
 
@@ -3128,15 +3122,6 @@ Entity labNextAction is DropDownList in frmMain
 	with defaults
 		enable false
 
-; ---------------------------------------------------------------------------- 
-
-Entity DDLDCComment is TextBox in frmMain
-
-	with defaults
-		label LABELS.labComments
-
-	REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
-			this enable false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -3189,7 +3174,9 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
 
-		REQUEST.CURRENT_ROLE not in {ROLES.RCO,ROLES.ENQ,ROLES.CLERK} then enabled false
+		REQUEST.CURRENT_ROLE not in {ROLES.ENQ,ROLES.CLERK} then enabled false
+
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then enabled true
 
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
@@ -3199,6 +3186,11 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 		REQUEST.STATUS is REQUEST.CLOSED then
 			enabled false
+
+		GD_Ctr_RiskClassification.Value is empty and GD_Ctr_RiskClassification.Enabled is false then
+			GD_Ctr_RiskClassification enabled true
+			
+		 
 
 	with triggers
 		; TODO FIND A BETTER WAY TO EXPRESS THIS....
@@ -3262,17 +3254,26 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		label LABELS.labCC_AM_BPClassification
 	
 	with rules
+		
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		
 		REQUEST.REQUEST_TYPE is CM_BLK then
 			this mandatory false
+		
+		REQUEST.CURRENT_ROLE not in {ROLES.ENQ,ROLES.CLERK} then enabled false
+
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then enabled true
 
 		CC_AM_BPClassification.Value in {BPHR, BPMR} then ATTACHMENT mandatory 
+		
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
+	
 	with actions
 		; ATTACHMENT mandatory  false
 		; _COMMENT_ mandatory  false
+	
 	with triggers 
 		on change
 ; ---------------------------------------------------------------------------- 
@@ -3316,6 +3317,11 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 			
 		REQUEST.CURRENT_ROLE is ROLES.RCO then
 			GD_Ctr_IsNaturalPerson enabled true
+
+		REQUEST.CURRENT_ROLE not in {ROLES.ENQ,ROLES.CLERK} then enabled false
+
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then enabled true
+
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false
@@ -3332,7 +3338,7 @@ Entity labGD_DamexNote is Label in frmMain
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
-Entity ATTACHMENT is attachmentmanager in frmMain
+Entity ATTACHMENT is AttachmentManager in frmMain
 
 	with defaults
 		mandatory true
@@ -3352,34 +3358,6 @@ Entity SAP_Message is TextBox in frmMain
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
-Entity TS_IsUrgentRequest is CheckBox in frmMain
-
-	with defaults
-		label LABELS.labUrgentRequest
-
-	with rules
-		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
-			this visible false
-; ---------------------------------------------------------------------------- 
-
-Entity CostCenter is TextBox in frmMain
-
-	with defaults
-		label LABELS.labCostCenter
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
-			this enable false	
-; ---------------------------------------------------------------------------- 
-
-Entity DDLDCReqAction is DropDownList in frmMain
-
-	with defaults
-		label LABELS.labSR_Action
-		mandatory true
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
-			this enable false	
-; ---------------------------------------------------------------------------- 
 
 Entity GD_SAPNumber is TextBox in frmMain
 
@@ -3389,21 +3367,6 @@ Entity GD_SAPNumber is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
-; ---------------------------------------------------------------------------- 
-
-Entity labNextRole is DropDownList in frmMain
-
-	with defaults
-		label LABELS.NextRole
-		enable false
-
-; ---------------------------------------------------------------------------- 
-
-Entity labNextAction is DropDownList in frmMain
-
-	with defaults
-		enable false
-
 ; ---------------------------------------------------------------------------- 
 
 Entity DDLDCComment is TextBox in frmMain
@@ -3587,13 +3550,18 @@ Entity PF_Grid is Grid in frmMain
 
 ; --- CONTACT PERSONS --------------------------------------------------------
 
-Entity CP_btnClearAll is mButton in frmMain
+Entity CP_btnClearAll is Button in frmMain
 
 	with defaults
 		label LABELS.btnClearAll
+
+	with actions
+		clear CP_Grid
+		
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+
 ; ---------------------------------------------------------------------------- 
 
 Entity CP_Surname is TextBox in frmMain
@@ -3690,7 +3658,7 @@ Entity CP_Grid is Grid in frmMain
 		define column GRID_CP_KNVK_NAME1		with arguments {ControlType : TextBox, DataField : KNVK_NAME1, Visible : false}
 		define column GRID_CP_Default			with arguments {ControlType : CheckBox,	DataField : Default, Visible : true}
 		
-	with rules	with rules
+	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false			REQUEST.CURRENT_ROLE in {ROLES.UPM, CPM, ROLES.SUS, ROLES.RCO, ROLES.CLERK} then
 			load data from DATASOURCE.MDMC_Request_ContactPersons with arguments {"RequestID" : REQUEST.REQUEST_ID}
