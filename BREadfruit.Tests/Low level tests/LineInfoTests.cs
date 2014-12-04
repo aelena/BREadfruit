@@ -108,9 +108,12 @@ namespace BREadfruit.Tests.Low_level_tests
 
         // this one should return "" because it's not really valid not having a then clause after the condition
         [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", Result = null )]
+		[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} and YOU is STUPID", Result = null )]
         // the rest are valid and should be joining correctly
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"PT\"}" )]
-        [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
+		[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"PT\"}" )]
+		[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} and YOU is STUPID then TBVendorNumber set enabled", Result = "{\"ES\",\"PT\"}" )]
+		[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
+		[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"FR\", \"PT\"} and YOU is STUPID then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY is {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY is not {\"ES\", \"FR\", \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"FR\",\"PT\"}" )]
         [TestCase ( "VENDOR.COUNTRY in {\"ES\",     \"PT\"} then TBVendorNumber set enabled", Result = "{\"ES\",\"PT\"}" )]
