@@ -328,13 +328,23 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
-		private static void CheckForValueListsInCondition ( LineInfo li )
+		internal static void CheckForValueListsInCondition ( LineInfo li )
 		{
-			var _conditionValueList = li.TokenizeValueListInCondition ();
-			if ( _conditionValueList != null )
+			var __openingBracketCount = from c in li.Representation where ( c == '{' ) select c;
+
+			var __inTokens = li.Tokens.Where ( x => x == Grammar.InOperator ).Count ();
+
+			// should be same count....
+			var __indices = li.Tokens.IndicesOf ( x => x.Token == Grammar.InOperator.Token );
+
+			for ( int i = 0; i < __indices.Count (); i++ )
 			{
-				li.RemoveTokensFromTo ( _conditionValueList.Item2, _conditionValueList.Item3 + 1 );
-				li.InsertTokenAt ( _conditionValueList.Item2, new Symbol ( _conditionValueList.Item1, 2 ) );
+				var _conditionValueList = li.TokenizeValueListInCondition ( __indices.ElementAt ( i ) );
+				if ( _conditionValueList != null )
+				{
+					li.RemoveTokensFromTo ( _conditionValueList.Item2, _conditionValueList.Item3 + 1 );
+					li.InsertTokenAt ( _conditionValueList.Item2, new Symbol ( _conditionValueList.Item1, 2 ) );
+				}
 			}
 		}
 
@@ -404,41 +414,65 @@ namespace BREadfruit
 
 			for ( int i = 0; i <= 3 * __ands; )
 			{
-				if ( i >= lineInfo.Tokens.Count() )
+				bool __controlFlag = false;
+				if ( i >= lineInfo.Tokens.Count () )
 					break;
 				var _operandToken = lineInfo.Tokens.ElementAt ( i ).Token;
 				if ( _operandToken.Trim ().ToLowerInvariant ().StartsWith ( "this." ) && entityName != null )
 					_operandToken = _operandToken.Replace ( "this", entityName );
 
-				var _c = new Condition ( _operandToken,
-										 Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
-										 lineInfo.Tokens.ElementAt ( ++i ).Token );
 
+				Condition _c = null;
+				if ( i + 2 >= lineInfo.Tokens.Count () )
+				{
+					_c = new Condition ( _operandToken,
+										Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
+										lineInfo.Tokens.ElementAt ( i ).Token );
+					__controlFlag = true;
+				}
+				else
+				{
+					_c = new Condition ( _operandToken,
+											Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
+											lineInfo.Tokens.ElementAt ( ++i ).Token );
+				}
 				// need to purge in the case of unary operator conditions
 				if ( _c.Operator.In ( new [] { Grammar.IsEmptyOperator, Grammar.IsMandatoryOperator, Grammar.IsMandatoryOperator, Grammar.IsNotMandatoryOperator } ) )
 					_c.ChangeValue ( "" );
 
-				if ( _c.Operator.In ( Grammar.UnaryOperators ) )
-					i -= 2;
+				if ( !__controlFlag )
+				{
+					if ( _c.Operator.In ( Grammar.UnaryOperators ) )
+						i -= 2;
 
-				if ( _c.Operator == Grammar.IsEmptyOperator )
-					_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
-						Grammar.EqualityOperator, Grammar.EmptyStringSymbol.Token );
+					if ( _c.Operator == Grammar.IsEmptyOperator )
+						_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+							Grammar.EqualityOperator, Grammar.EmptyStringSymbol.Token );
 
-				if ( _c.Operator == Grammar.IsNotEmptyOperator )
-					_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
-						Grammar.NonEqualityOperator, Grammar.EmptyStringSymbol.Token );
+					if ( _c.Operator == Grammar.IsNotEmptyOperator )
+						_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+							Grammar.NonEqualityOperator, Grammar.EmptyStringSymbol.Token );
 
-				if ( _c.Operator == Grammar.IsNullOperator )
-					_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
-						Grammar.EqualityOperator, Grammar.NullValueSymbol.Token );
+					if ( _c.Operator == Grammar.IsVisibleOperator )
+						_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+							Grammar.EqualityOperator, Grammar.VisibleSymbol.Token );
 
-				if ( _c.Operator == Grammar.IsNotNullOperator )
-					_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
-						Grammar.NonEqualityOperator, Grammar.NullValueSymbol.Token );
+					if ( _c.Operator == Grammar.IsNotVisibleOperator )
+						_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+							Grammar.NonEqualityOperator, Grammar.VisibleSymbol.Token );
 
-				if ( _c.Operator.In ( Grammar.UnaryOperators ) )
-					i += 1;
+					if ( _c.Operator == Grammar.IsNullOperator )
+						_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+							Grammar.EqualityOperator, Grammar.NullValueSymbol.Token );
+
+					if ( _c.Operator == Grammar.IsNotNullOperator )
+						_c = new Condition ( lineInfo.Tokens.ElementAt ( i ).Token,
+							Grammar.NonEqualityOperator, Grammar.NullValueSymbol.Token );
+
+					if ( _c.Operator.In ( Grammar.UnaryOperators ) )
+						i += 1;
+
+				}
 
 				_conds.Add ( _c );
 
