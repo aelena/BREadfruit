@@ -421,18 +421,152 @@ namespace BREadfruit.Helpers
 		// ---------------------------------------------------------------------------------
 
 
-		public static void RemoveAfter<T> ( this IEnumerable<T> list, Func<T, bool> func )
+		/// <summary>
+		/// Returns the index of the first element that satisfies the function.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="list"></param>
+		/// <param name="func"></param>
+		/// <returns></returns>
+		public static int IndexOf<T> ( this IEnumerable<T> list, Func<T, bool> func )
+		{
+			if ( list == null )
+				throw new ArgumentNullException ( "list", "The list to be searched cannot be null" );
+			if ( func == null )
+				throw new ArgumentNullException ( "func", "The search function cannot be null" );
+
+			int i = 0;
+			foreach ( var l in list )
+			{
+				if ( func ( l ) )
+				{
+					return i;
+				}
+				i++;
+			}
+			return -1;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Returns the index of the first element that satisfies the function
+		/// but it performs the search only after a certain index.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="list"></param>
+		/// <param name="func"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException" />
+		/// <exception cref="ArgumentException" />
+		public static int IndexOf<T> ( this IEnumerable<T> list, Func<T, bool> func, int afterIndex )
+		{
+
+			if ( list == null )
+				throw new ArgumentNullException ( "list", "The list to be searched cannot be null" );
+			if ( afterIndex < 0 )
+				throw new ArgumentException ( "afterIndex", "The index from which to perform the search cannot be lower than zero" );
+			if ( afterIndex > list.Count () )
+				throw new ArgumentException ( "afterIndex", "The index from which to perform the search cannot greater than the number of elements in the list" );
+
+			int i = 0;
+			foreach ( var l in list.Skip ( afterIndex ) )
+			{
+				if ( func ( l ) )
+				{
+					return i;
+				}
+				i++;
+			}
+			return -1;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Finds and returns the nth element in the collection that satisfies the function. 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="list"></param>
+		/// <param name="func"></param>
+		/// <returns></returns>
+		public static T FindNth<T> ( this IEnumerable<T> list, Func<T, bool> func, int index )
+		{
+
+			if ( list == null )
+				throw new ArgumentNullException ( "list", "The list to be searched cannot be null" );
+			if ( func == null )
+				throw new ArgumentNullException ( "func", "The search function cannot be null" );
+			if ( index >= list.Count () )
+				throw new ArgumentException ( "The index cannot greater than the number of elements in the list", "index" );
+
+			var _all = list.Where ( func );
+			if ( _all.HasItems () && index < list.Count () )
+			{
+				return _all.ElementAt ( index );
+			}
+			// do not like this for value types....
+			return default ( T );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Return the indices of all elements in the collection that satisfy
+		/// the function passed.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="list"></param>
+		/// <param name="func"></param>
+		/// <returns></returns>
+		public static IEnumerable<int> IndicesOf<T> ( this IEnumerable<T> list, Func<T, bool> func )
+		{
+			if ( list == null )
+				throw new ArgumentNullException ( "list", "The list to be searched cannot be null" );
+			if ( func == null )
+				throw new ArgumentNullException ( "func", "The search function cannot be null" );
+			var _indices = new List<int> ();
+			var i = 0;
+			foreach ( var l in list )
+			{
+				if ( func ( l ) )
+					_indices.Add ( i );
+				++i;
+			}
+
+			return _indices;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static int LengthSafe ( this string value )
+		{
+			return value == null ? 0 : value.Length;
+		}
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<T> RemoveAfter<T> ( this IEnumerable<T> list, Func<T, bool> func )
 		{
 			int i = 0;
 			foreach ( var l in list )
 			{
 				if ( func ( l ) )
 				{
-					var _list = list.Take ( ++i );
-					list = _list;
+					return list.Take ( ++i );
 				}
 				i++;
 			}
+			return list;
 		}
 
 
@@ -586,7 +720,30 @@ namespace BREadfruit.Helpers
 		public static string RemoveBetween ( this string value, string stringToRemove, string beginningString, string endString )
 		{
 			return value.RemoveBetween ( new List<string> { stringToRemove }, beginningString, endString );
+		}
 
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Removes all ocurrences of a string in the interval denoted by the 
+		/// beginningString and endString markers.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="stringToRemove"></param>
+		/// <param name="beginningString"></param>
+		/// <param name="endString"></param>
+		/// <returns></returns>
+		public static string RemoveBetween ( this string value,
+											 string stringToRemove,
+											 string beginningString,
+											 string endString,
+											 Func<String, int, bool> func )
+		{
+
+			var rep = value.Replace ( " ", "", func );
+			return rep;
 		}
 
 
@@ -787,6 +944,9 @@ namespace BREadfruit.Helpers
 		// ---------------------------------------------------------------------------------
 		public static string ReplaceFirstAndLastOnly ( this string subject, string occurrenceToRemove, string replacement = "" )
 		{
+			// TODO: ADD EXCEPTION CONTROL
+			// TODO: ADD CULTURE AND COMPARISON INFO
+
 			if ( String.IsNullOrWhiteSpace ( subject ) )
 				throw new ArgumentException ( "String cannot be null (subject)" );
 			if ( String.IsNullOrWhiteSpace ( occurrenceToRemove ) )
@@ -802,6 +962,313 @@ namespace BREadfruit.Helpers
 		// ---------------------------------------------------------------------------------
 
 
+		public static bool IsBetweenMinAndMax ( this int search, IEnumerable<int> list )
+		{
+			return search > list.Min () && search < list.Max ();
+		}
+
+		/// <summary>
+		/// Returns a boolean value that indicates if a char or string is contained
+		/// between the marker strings passed.
+		/// </summary>
+		/// <param name="?"></param>
+		/// <returns></returns>
+		public static bool IsBetween ( this string sut, string search, string markerString, int startIndex = 0 )
+		{
+
+			// TODO: ADD EXCEPTION CONTROL
+			// TODO: ADD CULTURE AND COMPARISON INFO
+			var indexOfSut = search.IndexOf ( sut, startIndex );
+			var indices = search.IndicesOfAll ( markerString );
+
+			// indices must be of a even length, otherwise is not "between"
+			if ( indices.Count () % 2 > 0 )
+				throw new Exception ( "The marker string has to have an even number of occurrences" );
+
+			if ( indices.Count () > 0 )
+			{
+
+				// split the indices in pairs
+				var _split = indices.Split ( 2 );
+
+				if ( indexOfSut.InBetweenAny ( _split ) )
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Splits a collection into a collection of collections
+		/// where each element is of the same length as indicated by splitLength.
+		/// Splitting a 9-element collection with a value of 3 for splitLength, yields
+		/// a list of 3-element collections.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="list"></param>
+		/// <param name="splitLength"></param>
+		/// <returns></returns>
+		public static IEnumerable<IEnumerable<T>> Split<T> ( this IEnumerable<T> list, int splitLength )
+		{
+			if ( !list.HasItems () )
+				throw new ArgumentException ( "A collection has to have items in order to be split" );
+			if ( splitLength <= 0 || splitLength > list.Count () )
+				throw new ArgumentException ( "Invalid split length" );
+
+			var __list = new List<List<T>> ();
+			List<T> __subList = new List<T> (); ;
+
+			var i = 0;
+			foreach ( var x in list )
+			{
+				if ( i > 0 && i % splitLength == 0 )
+				{
+					__list.Add ( __subList );
+					__subList = new List<T> ();
+				}
+
+				__subList.Add ( x );
+				i++;
+			}
+
+			// on exit add last split
+			__list.Add ( __subList );
+
+			return __list;
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+		public static bool InBetweenAny ( this Int16 t, IEnumerable<IEnumerable<Int16>> intervals )
+		{
+			if ( !intervals.HasItems () )
+				return false;
+
+			foreach ( var interval in intervals )
+			{
+				if ( t <= interval.Max () && t >= interval.Min () )
+					return true;
+			}
+			return false;
+		}
+
+		public static bool InBetweenAny ( this Int32 t, IEnumerable<IEnumerable<Int32>> intervals )
+		{
+			if ( !intervals.HasItems () )
+				return false;
+
+			foreach ( var interval in intervals )
+			{
+				if ( t <= interval.Max () && t >= interval.Min () )
+					return true;
+			}
+			return false;
+		}
+
+		public static bool InBetweenAny ( this Int64 t, IEnumerable<IEnumerable<Int64>> intervals )
+		{
+			if ( !intervals.HasItems () )
+				return false;
+
+			foreach ( var interval in intervals )
+			{
+				if ( t <= interval.Max () && t >= interval.Min () )
+					return true;
+			}
+			return false;
+		}
+
+		public static bool InBetweenAny ( this float t, IEnumerable<IEnumerable<float>> intervals )
+		{
+			if ( !intervals.HasItems () )
+				return false;
+
+			foreach ( var interval in intervals )
+			{
+				if ( t <= interval.Max () && t >= interval.Min () )
+					return true;
+			}
+			return false;
+		}
+
+		public static bool InBetweenAny ( this Decimal t, IEnumerable<IEnumerable<Decimal>> intervals )
+		{
+			if ( !intervals.HasItems () )
+				return false;
+
+			foreach ( var interval in intervals )
+			{
+				if ( t <= interval.Max () && t >= interval.Min () )
+					return true;
+			}
+			return false;
+		}
+
+		public static bool InBetweenAny ( this Double t, IEnumerable<IEnumerable<Double>> intervals, int roundToPrecision = 2 )
+		{
+			if ( !intervals.HasItems () )
+				return false;
+
+			foreach ( var interval in intervals )
+			{
+				if ( Math.Round ( t, roundToPrecision ) <= interval.Max () && Math.Round ( t, roundToPrecision ) >= interval.Min () )
+					return true;
+			}
+			return false;
+		}
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<int> IndicesOfAll ( this string value, string search, bool ignoreCase = false )
+		{
+			// TODO: ADD EXCEPTION CONTROL
+			// TODO: ADD CULTURE AND COMPARISON INFO
+
+			var i = 0;
+			var _indices = new List<int> ();
+			if ( !ignoreCase )
+			{
+				while ( ( i = value.IndexOf ( search, i ) ) != -1 )
+				{
+					_indices.Add ( i++ );
+				}
+			}
+			else
+			{
+				while ( ( i = value.ToUpperInvariant ().IndexOf ( search.ToUpperInvariant (), i ) ) != -1 )
+				{
+					_indices.Add ( i++ );
+				}
+			}
+			return _indices;
+		}
+
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		//public static string Replace ( this string sut, char replacee, char replacement, Func<String, bool> func )
+		//{
+		//	if ( sut.Length > 25 )
+		//	{
+		//		var __sb = new StringBuilder ();
+		//		foreach ( var c in sut )
+		//		{
+		//			if ( c == replacee && func ( replacee.ToString () ) )
+		//				__sb.Append ( replacement );
+		//			else
+		//				__sb.Append ( replacee );
+		//		}
+		//		return __sb.ToString ();
+		//	}
+		//	else
+		//	{
+		//		var __sb = String.Empty;
+		//		foreach ( var c in sut )
+		//		{
+		//			if ( c == replacee && func ( replacee.ToString () ) )
+		//				__sb += replacement;
+		//			else
+		//				__sb += replacee;
+		//		}
+		//		return __sb;
+		//	}
+		//}
+
+
+		// ---------------------------------------------------------------------------------
+
+		public static string Replace ( this string sut, string replacee, string replacement, Func<String, Int32, bool> func )
+		{
+			var i = 0;
+			if ( sut.Length > 25 )
+			{
+				var __sb = new StringBuilder ();
+				foreach ( var c in sut )
+				{
+					if ( c.ToString () == replacee )
+					{
+						if ( func ( c.ToString (), i ) )
+							__sb.Append ( c );
+						else
+							__sb.Append ( replacement );
+					}
+					else
+						__sb.Append ( c );
+					i++;
+				}
+				return __sb.ToString ();
+			}
+			else
+			{
+				var __sb = String.Empty;
+				foreach ( var c in sut )
+				{
+					if ( c.ToString () == replacee )
+					{
+						if ( func ( c.ToString (), i ) )
+							__sb += c;
+						else
+							__sb += replacement;
+					}
+					else
+						__sb += c;
+					i++;
+				}
+				return __sb;
+			}
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<String> FindAllBetween ( this string value, string s1, string s2, bool includeMarkers = false )
+		{
+			int _1 = 0;
+			var _occurrences = new List<String> ();
+
+			if ( !includeMarkers )
+			{
+				while ( ( _1 = value.IndexOf ( s1, _1 ) ) != -1 )
+				{
+					var _2 = value.IndexOf ( s2, _1 + 1 );
+					if ( _2 != -1 )
+					{
+						_occurrences.Add ( value.Substring ( ++_1, _2 - _1 ) );
+					}
+					_1 += _2 - _1;
+					if ( _1 == -1 )
+						break;
+				}
+			}
+			else
+			{
+				while ( ( _1 = value.IndexOf ( s1, _1 ) ) != -1 )
+				{
+					var _2 = value.IndexOf ( s2, _1 + 1 );
+					if ( _2 != -1 )
+					{
+						_occurrences.Add ( value.Substring ( _1, ++_2 - _1 ) );
+					}
+					_1 += _2 - _1;
+					if ( _1 == -1 )
+						break;
+				}
+			}
+			return _occurrences;
+		}
+
+		// ---------------------------------------------------------------------------------
 
 	}
 }

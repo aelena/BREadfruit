@@ -368,11 +368,40 @@ namespace BREadfruit.Tests.Low_level_tests
 		[TestCase ( "random stirng before dog{'P',     'Q'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q'}god" )]
 		[TestCase ( "random stirng before dog{'P', 'Q', '2', 'birds'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q','2','birds'}god" )]
 		[TestCase ( "random stirng before dog{'P',   'Q', '2',    'birds'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q','2','birds'}god" )]
-
-		public string RemoveBetweenTests ( string original, string removee, string s1, string s2 )
+		public string ReplaceBetweenTests_01 ( string original, string removee, string s1, string s2 )
 		{
+
+			// TODO: ADD FOR SEVERAL CHARS, like \t etc 
+			// TODO: or even an overload that takes a set of key value pairs for pieces to remove and pieces to replace
 			return original.RemoveBetween ( removee, s1, s2 );
 		}
+
+
+		[TestCase ( "{'P I X I E L A N D', 'Q U O'}", " ", "{", "}", Result = "{'P I X I E L A N D','Q U O'}" )]
+		[TestCase ( "{  'P I X I E L A N D',    'Q U O'}", " ", "{", "}", Result = "{'P I X I E L A N D','Q U O'}" )]
+		[TestCase ( "{  'P I X I E L A N D',    'Q U O'  }", " ", "{", "}", Result = "{'P I X I E L A N D','Q U O'}" )]
+		[TestCase ( "my dreams are of {  'P I X I E L A N D',    'Q U O'  } quandaries", " ", "{", "}",
+			Result = "my dreams are of {'P I X I E L A N D','Q U O'} quandaries" )]
+
+		public string ReplaceBetweenTests_02 ( string original, string removee, string s1, string s2 )
+		{
+
+			// TODO: ADD FOR SEVERAL CHARS, like \t etc 
+			// TODO: or even an overload that takes a set of key value pairs for pieces to remove and pieces to replace
+			var rep = original.RemoveBetween ( removee, s1, s2, ( x, y ) => x.IsBetween ( original, "'", y ) );
+			return rep;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( "xxx { \"yay ouch\" : \"i am weasel\" } xx", " ", "{", "}", Result = "xxx{\"yay ouch\":\"i am weasel\"}xx" )]
+		public string RemoveBetweenTests_02 ( string original, string removee, string s1, string s2 )
+		{
+			return original.RemoveBetween ( removee, s1, s2, ( x, y ) => !x.IsBetween ( original, "\"", y ) );
+		}
+
 
 		// ---------------------------------------------------------------------------------
 
@@ -520,7 +549,7 @@ namespace BREadfruit.Tests.Low_level_tests
 		[TestCase ( "[", Result = "[" )]
 		[TestCase ( "set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber", Result = "set value [LU + GD_Ctr_PIVA.Value]" )]
 		[TestCase ( "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber", Result = "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber" )]
-		public string TakeUntilTests( string sut )
+		public string TakeUntilTests ( string sut )
 		{
 			LineInfo li = new LineInfo ( sut );
 			var reduced = li.Tokens.TakeUntil ( x => x.Token.EndsWith ( Grammar.ClosingSquareBracket.Token ) );
@@ -531,20 +560,452 @@ namespace BREadfruit.Tests.Low_level_tests
 		// ---------------------------------------------------------------------------------
 
 
-		//[TestCase ( "", Result = "" )]
-		//[TestCase ( "[]", Result = "[]" )]
-		//[TestCase ( "[", Result = "[" )]
-		//[TestCase ( "set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber", Result = "set value [LU + GD_Ctr_PIVA.Value]" )]
-		//[TestCase ( "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber", Result = "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber" )]
-		//public string RemoveAfterTest ( string sut )
-		//{
-		//	LineInfo li = new LineInfo ( sut );
-		//	li.Tokens.RemoveAfter ( x => x.Token.EndsWith ( Grammar.ClosingSquareBracket.Token ) );
-		//	return li.Tokens.JoinTogether ().Token;
-		//}
+		[TestCase ( "", Result = "" )]
+		[TestCase ( "[]", Result = "[]" )]
+		[TestCase ( "[", Result = "[" )]
+		[TestCase ( "set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber", Result = "set value [LU + GD_Ctr_PIVA.Value]" )]
+		[TestCase ( "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber", Result = "set value LU + GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber" )]
+		public string RemoveAfterTest ( string sut )
+		{
+			LineInfo li = new LineInfo ( sut );
+			var __li = li.Tokens.RemoveAfter ( x => x.Token.EndsWith ( Grammar.ClosingSquareBracket.Token ) );
+			return __li.JoinTogether ().Token;
+		}
 
 
 		// ---------------------------------------------------------------------------------
 
+
+		[Test]
+		public void IndexOfFuncTests_01 ()
+		{
+			var arr = new [] { 1, 3, 5, 7, 9, 11 };
+			Assert.That ( arr.IndexOf ( x => x > 6 ) == 3 );
+		}
+
+
+		[Test]
+		public void IndexOfFuncTests_02 ()
+		{
+			var arr = "hey,you,what,are,you,doing".Split ( ',' );
+			Assert.That ( arr.IndexOf ( x => x.EndsWith ( "t" ) ) == 2 );
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( ArgumentNullException ),
+			UserMessage = "The list to be searched cannot be null" )]
+		public void IndexOfFuncTests_03 ()
+		{
+			List<object> arr = null;
+			Assert.That ( arr.IndexOf ( x => x != null ) == 2 );
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( ArgumentNullException ),
+			UserMessage = "The search function cannot be null" )]
+		public void IndexOfFuncTests_04 ()
+		{
+			var arr = "hey,you,what,are,you,doing".Split ( ',' );
+			Assert.That ( arr.IndexOf ( null ) == 2 );
+		}
+
+		// ---------------------------------------------------------------------------------
+
+		[Test]
+		public void FindNthTests_01 ()
+		{
+			var arr = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+			Assert.That ( arr.FindNth ( x => x % 2 == 0, 3 ) == 8 );
+		}
+
+
+		[Test]
+		public void FindNthTests_02 ()
+		{
+			var arr = "hey,you,what,are,you,doing".Split ( ',' );
+			Assert.That ( arr.FindNth ( x => x.Length == 3, 2 ) == "are" );
+		}
+
+		[Test]
+		public void FindNthTests_03 ()
+		{
+			var arr = "hey,you,what,are,you,doing".Split ( ',' );
+			Assert.That ( arr.FindNth ( x => x.EndsWith ( "g" ), 0 ) == "doing" );
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( ArgumentNullException ),
+			UserMessage = "The list to be searched cannot be null" )]
+		public void FindNthTests_04 ()
+		{
+			List<string> arr = null;
+			Assert.That ( arr.FindNth ( x => x.Length == 3, 2 ) == "are" );
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( ArgumentNullException ),
+			UserMessage = "The search function cannot be null" )]
+		public void FindNthTests_05 ()
+		{
+			var arr = "hey,you,what,are,you,doing".Split ( ',' );
+			Assert.That ( arr.FindNth ( null, 2 ) == "are" );
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( ArgumentException ),
+			UserMessage = "The index cannot greater than the number of elements in the list" )]
+		public void FindNthTests_06 ()
+		{
+			var arr = "hey,you,what,are,you,doing".Split ( ',' );
+			Assert.That ( arr.FindNth ( x => x.Length == 3, 6 ) == "are" );
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( ArgumentException ),
+			UserMessage = "The index cannot greater than the number of elements in the list" )]
+		public void FindNthTests_07 ()
+		{
+			var arr = "hey,you,what,are,you,doing".Split ( ',' );
+			Assert.That ( arr.FindNth ( x => x.Length == 3, 7 ) == "are" );
+		}
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void IndicesOfTests_01 ()
+		{
+			var arr = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+			Assert.That ( arr.IndicesOf ( x => x % 2 == 0 ).Count () == 5 );
+		}
+
+		[Test]
+		public void IndicesOfTests_02 ()
+		{
+			var arr = new [] { "kl", "lko", "98", "x", null, "" };
+			Assert.That ( arr.IndicesOf ( x => x.LengthSafe () == 2 ).Count () == 2 );
+		}
+
+		[Test]
+		public void IndicesOfTests_03 ()
+		{
+			var arr = new [] { "kl", "lko", "98", "x", null, "" };
+			Assert.That ( arr.IndicesOf ( x => x.LengthSafe () == 0 ).Count () == 2 );
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( ArgumentNullException ),
+			UserMessage = "The list to be searched cannot be null" )]
+		public void IndicesOfTests_04 ()
+		{
+			List<string> arr = null;
+			Assert.That ( arr.IndicesOf ( x => x.Length == 3 ).Count () == 1 );
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( ArgumentNullException ),
+			UserMessage = "The search function cannot be null" )]
+		public void IndicesOfTests_05 ()
+		{
+			var arr = "hey,you,what,are,you,doing".Split ( ',' );
+			Assert.That ( arr.IndicesOf ( null ).Count () == 1 );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		//public bool IsBetween ( string sut, string beginString, string endString)
+		//{
+
+		//}
+
+
+		[TestCase ( "alabama", "a", "0,2,4,6", false, Result = 4 )]
+		[TestCase ( "ALABAMA", "A", "0,2,4,6", false, Result = 4 )]
+		[TestCase ( "alabama", "A", "0,2,4,6", true, Result = 4 )]
+		[TestCase ( "alAbamA", "A", "0,2,4,6", true, Result = 4 )]
+		[TestCase ( "Mississippi", "ss", "2,5", true, Result = 2 )]
+		[TestCase ( "yeah { do { the } dance {", "{", "5,10, 24", true, Result = 3 )]
+
+		public int IndicesOfAllTest ( string sut, string search, string expectedIndices, bool ignoreCase )
+		{
+			var _result = sut.IndicesOfAll ( search, ignoreCase );
+			var _indices = expectedIndices.Split ( new char [] { ',' },
+				StringSplitOptions.RemoveEmptyEntries ).Select ( x => Convert.ToInt32 ( x ) ); ;
+			Assert.IsTrue ( _result.Count () == _indices.Count () );
+			Assert.That ( _result.Sum () == _indices.Sum () );
+			return _result.Count ();
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( 4, "2,3,4,5,6,7", Result = true )]
+		[TestCase ( 2, "2,3,4,5,6,7", Result = false )]
+		[TestCase ( 1, "2,3,4,5,6,7", Result = false )]
+		public bool IsBetweenMinAndMax_Test ( int sut, string searchArray )
+		{
+			var _indices = searchArray.Split ( new char [] { ',' },
+				StringSplitOptions.RemoveEmptyEntries ).Select ( x => Convert.ToInt32 ( x ) );
+			return sut.IsBetweenMinAndMax ( _indices );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( "a", "\"abcd\"efgh", "\"", Result = true )]
+		[TestCase ( "f", "\"abcd\"efgh", "\"", Result = false )]
+		[TestCase ( "x", "\"abcd\"efgh", "\"", Result = false )]
+		[TestCase ( "bc", "\"abcd\"efgh", "\"", Result = true )]
+		[TestCase ( "bc", "\"abcd\"efgh", "{", Result = false )]
+		[TestCase ( "f", "\"abcd\"efgh", "{", Result = false )]
+		[TestCase ( "z", "\"abcd\"efgh", "{", Result = false )]
+		[TestCase ( "a", "{abcd{efgh", "{", Result = true )]
+		[TestCase ( "z", "\"abcd\"efgh", "{", Result = false )]
+		[TestCase ( "drugs", "sex and drugs and sex and money", "sex", Result = true )]
+		[TestCase ( " ", "sex and drugs and sex and money", "sex", Result = true )]
+		public bool IsBetween_Tests ( string sut, string search, string marker )
+		{
+			return sut.IsBetween ( search, marker );
+		}
+
+		[TestCase ( "a", "{abcd\"efgh", "{", Result = false )]
+		[ExpectedException ( ExpectedMessage = "The marker string has to have an even number of occurrences" )]
+		public bool IsBetween_Tests_02 ( string sut, string search, string marker )
+		{
+			return sut.IsBetween ( search, marker );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ReplaceExceptThoseInBetween ()
+		{
+			var sut = " x { 'y adda' : 'wei', 'you what?' : 'yeah I did it ' } xxx";
+			var rep = sut.Replace ( " ", "", ( x, y ) => x.IsBetween ( sut, "'", y ) );
+			Assert.IsTrue ( rep == "x{'y adda':'wei','you what?':'yeah I did it '}xxx", "Got this -> " + rep );
+		}
+
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void SplitCollectionTests_01 ()
+		{
+
+			var _list = new int [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+			var _split = _list.Split ( 2 );
+
+			Assert.That ( _split.Count () == 5, "has " + _split.Count () + " elements" );
+			Assert.That ( _split.ElementAt ( 2 ).First () == 5 );
+			Assert.That ( _split.Last ().Last () == 0 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void SplitCollectionTests_02 ()
+		{
+
+			var _list = new int [] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+			var _split = _list.Split ( 3 );
+
+			Assert.That ( _split.Count () == 3, "has " + _split.Count () + " elements" );
+			Assert.That ( _split.ElementAt ( 2 ).First () == 7 );
+			Assert.That ( _split.Last ().Last () == 9 );
+			Assert.That ( _split.First ().Last () == 3 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void SplitCollectionTests_03 ()
+		{
+
+			var _list = new int [] { 1, 2, 3, 4, 5, 6, 7, 8 };
+			var _split = _list.Split ( 3 );
+
+			Assert.That ( _split.Count () == 3, "has " + _split.Count () + " elements" );
+			Assert.That ( _split.ElementAt ( 2 ).First () == 7 );
+			Assert.That ( _split.Last ().Last () == 8 );
+			Assert.That ( _split.First ().Last () == 3 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		[ExpectedException ( ExpectedMessage = "A collection has to have items in order to be split" )]
+		public void SplitCollectionTests_04 ()
+		{
+
+			List<Int32> _list = null;
+			var _split = _list.Split ( 3 );
+
+		}
+
+		[Test]
+		[ExpectedException ( ExpectedMessage = "A collection has to have items in order to be split" )]
+		public void SplitCollectionTests_05 ()
+		{
+			List<Int32> _list = new List<int> ();
+			var _split = _list.Split ( 3 );
+		}
+		[Test]
+		[ExpectedException ( ExpectedMessage = "Invalid split length" )]
+		public void SplitCollectionTests_06 ()
+		{
+			var _list = new [] { 1, 2, 3 };
+			var _split = _list.Split ( 4 );
+		}
+		[Test]
+		[ExpectedException ( ExpectedMessage = "Invalid split length" )]
+		public void SplitCollectionTests_07 ()
+		{
+			var _list = new [] { 1, 2, 3 };
+			var _split = _list.Split ( -4 );
+		}
+
+		[Test]
+		public void SplitCollectionTests_08 ()
+		{
+			var _list = new [] { 1, 2, 3 };
+			var _split = _list.Split ( 3 );
+			Assert.That ( _split.Count () == 1, "has " + _split.Count () + " elements" );
+			Assert.That ( _split.Last ().Last () == 3 );
+			Assert.That ( _split.First ().Last () == 3 );
+			Assert.That ( _split.First ().ElementAt ( 1 ) == 2 );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( "1,10,30,40,50,60,70,80", 9, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 29, 2, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 219, 2, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 39, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 79, 2, Result = true )]
+
+		[TestCase ( "1,10,30,40,50,60,70,80", 9, 3, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 29, 3, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 219, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 31, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 39, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 79, 3, Result = true )]
+
+		public bool IsBetweenAny_Int16Tests ( string searchArray, Int16 value, int numSplits )
+		{
+			var _indices = searchArray.Split ( new char [] { ',' },
+				StringSplitOptions.RemoveEmptyEntries ).Select ( x => Convert.ToInt16 ( x ) );
+			return value.InBetweenAny ( _indices.Split ( numSplits ) );
+		}
+
+		[TestCase ( "1,10,30,40,50,60,70,80", 9, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 29, 2, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 219, 2, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 39, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 79, 2, Result = true )]
+
+		[TestCase ( "1,10,30,40,50,60,70,80", 9, 3, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 29, 3, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 219, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 31, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 39, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 79, 3, Result = true )]
+
+		public bool IsBetweenAny_Int32Tests ( string searchArray, Int32 value, int numSplits )
+		{
+			var _indices = searchArray.Split ( new char [] { ',' },
+				StringSplitOptions.RemoveEmptyEntries ).Select ( x => Convert.ToInt32 ( x ) );
+			return value.InBetweenAny ( _indices.Split ( numSplits ) );
+		}
+
+
+		[TestCase ( "1,10,30,40,50,60,70,80", 9, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 1, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 10, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 1, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 29, 2, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 219, 2, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 39, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 79, 2, Result = true )]
+
+		[TestCase ( "1,10,30,40,50,60,70,80", 9, 3, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 1, 2, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 29, 3, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 80, 3, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 219, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 31, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 39, 3, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 79, 3, Result = true )]
+
+		public bool IsBetweenAny_Int64Tests ( string searchArray, Int64 value, int numSplits )
+		{
+			var _indices = searchArray.Split ( new char [] { ',' },
+				StringSplitOptions.RemoveEmptyEntries ).Select ( x => Convert.ToInt64 ( x ) );
+			return value.InBetweenAny ( _indices.Split ( numSplits ) );
+		}
+
+		[TestCase ( "1,1|10,2|	30,03|40,09|	50,25|60,00|	70,01|80,33", 9, 2, 2, Result = true )]
+		[TestCase ( "1,1|10,2|	30,03|40,09|	50,25|60,00|	70,01|80,33", 1.1F, 2, 2, Result = true )]
+		[TestCase ( "1,1|10,2|	30,03|40,09|	50,25|60,00|	70,01|80,33", 10.2F, 2, 2, Result = true )]
+		[TestCase ( "1,1|10,2|	30,03|40,09|	50,25|60,00|	70,01|80,33", 1.0F, 2, 2, Result = false )]
+		[TestCase ( "1,1|10,2|	30,03|40,09|	50,25|60,00|	70,01|80,33", 50.24F, 2, 2, Result = false )]
+		[TestCase ( "1,1|10,2|	30,03|40,09|	50,25|60,00|	70,01|80,33", 50.25F, 2, 2, Result = true )]
+		[TestCase ( "1,1|10,2|	30,03|40,09|	50,25|60,00|	70,01|80,33", 50.26F, 2, 2, Result = true )]
+		[TestCase ( "1,1|10,2|30,03|		40,09|50,25|60,00|	70,01|80,33", 50.26F, 3, 2, Result = true )]
+		[TestCase ( "1,1|10,2|30,03|		40,09|50,25|60,00|	70,01|80,33", 32, 3, 2, Result = false )]
+		[TestCase ( "1,1|10,2|30,03|		40,09|50,25|60,00|	70,01|80,33", 60.0001F, 3, 4, Result = false )]
+		[TestCase ( "1,1|10,2|30,03|		40,09|50,25|60,00|	70,01|80,33", 60F, 3, 2, Result = true )]
+		[TestCase ( "1,1|10,2|30,03|		40,09|50,25|60,00|	70,01|80,33", 80.33F, 3, 2, Result = true )]
+		[TestCase ( "1,1|10,2|30,03|		40,09|50,25|60,00|	70,01|80,33", 80.341F, 3, 2, Result = false )]
+		public bool IsBetweenAny_FloatTests ( string searchArray, double value, int numSplits, int precision = 2 )
+		{
+			var _indices = searchArray.Split ( new char [] { '|' },
+				StringSplitOptions.RemoveEmptyEntries ).Select ( x => double.Parse ( x.Trim () ) );
+			return value.InBetweenAny ( _indices.Split ( numSplits ), precision );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( "1-234-1-567-1-233-1", "1", "1", false, Result = "-234-" )]
+		//[TestCase ( "1-234-1-567-1-233-1", "1", "1", true, Result = "1-234-1" )]
+		[TestCase ( "{-234-}{-567-}{-233-}", "{", "}", false, Result = "-234-" )]
+		[TestCase ( "{-234-}{-567-}{-233-}", "{", "}", true, Result = "{-234-}" )]
+		[TestCase ( "the sequence starts with {-234-} goes on with {-567-} and dies off with {-233-}", "{", "}", true, Result = "{-234-}" )]
+		[TestCase ( "the sequence starts with {-234-} goes on with {-567-} and dies off with {-233-}", "{", "}", false, Result = "-234-" )]
+		public string FindAllBetween ( string sut, string a, string b, bool includeMarkers )
+		{
+			var _res = sut.FindAllBetween ( a, b, includeMarkers );
+			Assert.That ( _res.Count () == 3 );
+			return _res.First ();
+		}
+
+		[TestCase ( "load data from DATASOURCE.WORLD_COUNTRIES with arguments {\"Country\" : \"ES\",\"Active\" : true, \"Age\":30, \"Title\" : \"Anything Goes\" }", "{", "}", true,
+			Result = "{\"Country\" : \"ES\",\"Active\" : true, \"Age\":30, \"Title\" : \"Anything Goes\" }" )]
+		public string FindAllBetween_02 ( string sut, string a, string b, bool includeMarkers )
+		{
+			var _res = sut.FindAllBetween ( a, b, includeMarkers );
+			Assert.That ( _res.Count () == 1);
+			return _res.First ();
+		}
 	}
 }
