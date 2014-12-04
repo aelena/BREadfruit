@@ -1004,8 +1004,36 @@ namespace BREadfruit.Tests.Low_level_tests
 		public string FindAllBetween_02 ( string sut, string a, string b, bool includeMarkers )
 		{
 			var _res = sut.FindAllBetween ( a, b, includeMarkers );
-			Assert.That ( _res.Count () == 1);
+			Assert.That ( _res.Count () == 1 );
 			return _res.First ();
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ElementsAt_Test01 ()
+		{
+			var _list = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+			var res = _list.ElementsAt ( new [] { 2, 4, 5, 8 } );
+			Assert.That ( res.ElementAt ( 0 ) == 3 );
+			Assert.That ( res.ElementAt ( 1 ) == 5 );
+			Assert.That ( res.ElementAt ( 2 ) == 6 );
+			Assert.That ( res.Last () == 9 );
+		}
+
+
+		[Test]
+		public void ElementsAt_Test02 ()
+		{
+			var _list = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+			var res = _list.ElementsAt ( x => x % 3 == 0 );
+			Assert.That ( res.ElementAt ( 0 ) == 3 );
+			Assert.That ( res.ElementAt ( 1 ) == 6 );
+			Assert.That ( res.ElementAt ( 2 ) == 9 );
+			Assert.That ( res.Last () == 0 );
+		}
+
 	}
 }

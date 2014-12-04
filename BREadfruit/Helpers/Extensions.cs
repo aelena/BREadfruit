@@ -1270,5 +1270,43 @@ namespace BREadfruit.Helpers
 
 		// ---------------------------------------------------------------------------------
 
+
+		/// <summary>
+		/// Returns all the elements in the collection which 
+		/// indices are contained in the specifid list of indices.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="t"></param>
+		/// <param name="indices"></param>
+		/// <returns></returns>
+		public static IEnumerable<T> ElementsAt<T> ( this IEnumerable<T> t, IEnumerable<int> indices )
+		{
+			if ( t.HasItems () )
+			{
+				var _list = new List<T> ();
+				foreach ( var i in indices )
+				{
+					_list.Add ( t.ElementAt ( i ) );
+				}
+				return _list;
+			}
+			return null;
+		}
+
+
+		public static IEnumerable<T> ElementsAt<T> ( this IEnumerable<T> t, Func<T, bool> func )
+		{
+			if ( t.HasItems () )
+			{
+				var _list = new List<T> ();
+				foreach ( var _t in t )
+					if ( func ( _t ) )
+						_list.Add ( _t );
+				return _list;
+			}
+			return null;
+
+		}
+
 	}
 }
