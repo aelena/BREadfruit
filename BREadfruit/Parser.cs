@@ -136,14 +136,21 @@ namespace BREadfruit
 					// now, if we're in the scope of the defaults block
 					if ( _currentScope == CurrentScope.DEFAULTS_BLOCK )
 					{
-						if ( lineInfo.Tokens.First () == Grammar.ToolTipDefaultClause )
+						try
 						{
-							CheckForStringTokens ( line, lineInfo );
+							if ( lineInfo.Tokens.First () == Grammar.ToolTipDefaultClause )
+							{
+								CheckForStringTokens ( line, lineInfo );
+							}
+							// then try and parse a default clause
+							if ( lineInfo.Tokens.First () == Grammar.DefineColumnDefaultClause && this._entities.Last ().TypeDescription != Grammar.GridSymbol.Token )
+								throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a default column in an Entity that is not a grid." );
+							this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
 						}
-						// then try and parse a default clause
-						if ( lineInfo.Tokens.First () == Grammar.DefineColumnDefaultClause && this._entities.Last ().TypeDescription != Grammar.GridSymbol.Token )
-							throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a default column in an Entity that is not a grid." );
-						this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
+						catch ( Exception ex)
+						{
+							throw new Exception ( String.Format ( "Line {2} {0} caused exception : {1}",  lineInfo.Representation, ex.Message, _currLine ) );
+						}
 					}
 					#endregion
 
