@@ -59,10 +59,16 @@ namespace BREadfruit
 		{
 			if ( line != null )
 			{
+
+				var separators = new List<Tuple<string, string>> ();
+				separators.Add ( new Tuple<string, string> ( "{", "}" ) );
+				separators.Add ( new Tuple<string, string> ( "[", "]" ) );
+
+
 				// this poses the details of the last token being really the nontermoinal or not....
 				// maybe this need some more careful thinking
-				var _tokens = from t in line.Replace ( "\t", " " ).Split ( new [] { " " },
-								 StringSplitOptions.RemoveEmptyEntries )
+				var _tokens = from t in line.Replace ( "\t", " " ).Split2 ( new [] { " " }, separators,
+								 StringSplitOptions.RemoveEmptyEntries, true )
 							  let grammarToken = Grammar.GetSymbolByToken ( t, false )
 							  select
 								 grammarToken == null ?
@@ -320,6 +326,9 @@ namespace BREadfruit
 
 			li = ParseLine ( _replacedString.RemoveBetween ( " ", "{", "}" ) );
 
+			if ( _replacedString.IndexOf ( Grammar.OpeningCurlyBracket.Token ) > 0 )
+				li = ParseLine ( _replacedString.RemoveBetween ( " ", "{", "}", ( x, y ) => x.IsBetween ( _replacedString, "\"", y ) ) );
+
 			var _ = li.Representation;
 			return li.Representation;
 		}
@@ -336,6 +345,8 @@ namespace BREadfruit
 
 			// should be same count....
 			var __indices = li.Tokens.IndicesOf ( x => x.Token == Grammar.InOperator.Token );
+			if ( __indices.Count () == 0 )
+				__indices = li.Tokens.IndicesOf ( x => x.Token == Grammar.WithArgumentsSymbol.Token );
 
 			for ( int i = 0; i < __indices.Count (); i++ )
 			{

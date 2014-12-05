@@ -1,0 +1,14 @@
+﻿Entity CP_btnClearAll is Button in frmMain
+
+	with defaults
+		label LABELS.btnClearAll
+
+	with actions
+		clear CP_Grid
+		
+	with rules
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
+			this enable false	
+
+	with triggers
+		this on click

@@ -269,7 +269,7 @@ namespace BREadfruit
 		public const string ValidationRegexLineRegex = @"^validation_regex[\t\s]+(.)*[\t\s]*";
 		public const string ValidationRegexValueRegex = @"^(.)+$";
 
-		public const string AddRowToLineRegex = "^ADD_ROW[\t\\s]+(TO)?[\t\\s]+[A-Za-z0-9_-]+[\t\\s]+{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)[\t\\s]*}[\t\\s]*$";
+		public const string AddRowToLineRegex = "^ADD_ROW[\t\\s]+(TO[\t\\s]+)?[A-Za-z0-9_-]+[\t\\s]+WITH_ARGS[\t\\s]+{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)[\t\\s]*}[\t\\s]*$";
 
 		public const string ClearValueLineRegex = @"^clear_element[\t\s]+([A-Za-z0-9'.'_])+[\t\s]*$";
 
@@ -1045,6 +1045,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( SaveDataUnaryActionSymbol );
 			Grammar._symbols.Add ( ChangeFormUnaryActionSymbol );
 			Grammar._symbols.Add ( SetValidationRegexUnaryActionSymbol );
+			Grammar._symbols.Add ( AddRowUnaryActionSymbol );
 
 			// result actions
 			Grammar._symbols.Add ( SetValueActionSymbol );

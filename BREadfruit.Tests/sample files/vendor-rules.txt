@@ -1794,7 +1794,7 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 	with defaults
 		; I doubt this
 		visible false
-		label LABELS.labPIVA ;Local Tax Code
+		label LABELS.labPIVA ; ocal Tax Code
 		mandatory false
 
 	with rules
@@ -1858,7 +1858,7 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			set value substring(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
-		;any EU country ; finish the list....
+		; ny EU country ; finish the list....
 		REQUEST.VENDOR.ACCOUNT_GROUP is not "YVT6" and REQUEST.VENDOR_COUNTRY in {"ES", "IT", "PT", "GR" } then
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 
@@ -2723,8 +2723,8 @@ Entity CC_PT_HouseBank is DropDownList in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
-;1) Not visible to all company codes
-;2) Only used for company code 5240:
+; 1) Not visible to all company codes
+; 2) Only used for company code 5240:
 ;    value is always 4112 (is value from SAP different, do not maintain)
 ; in fact control does not exist in form, just a field, always write 4112 for 5240
 Entity CC_PT_ForCreditMemos	is DropDownList in frmMain

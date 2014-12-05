@@ -396,10 +396,10 @@ namespace BREadfruit.Tests.Low_level_tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "xxx { \"yay ouch\" : \"i am weasel\" } xx", " ", "{", "}", Result = "xxx{\"yay ouch\":\"i am weasel\"}xx" )]
+		[TestCase ( "xxx { \"yay ouch\" : \"i am weasel\" } xx", " ", "{", "}", Result = "xxx {\"yay ouch\":\"i am weasel\"} xx" )]
 		public string RemoveBetweenTests_02 ( string original, string removee, string s1, string s2 )
 		{
-			return original.RemoveBetween ( removee, s1, s2, ( x, y ) => !x.IsBetween ( original, "\"", y ) );
+			return original.RemoveBetween ( removee, s1, s2, ( x, y ) => x.IsBetween ( original, "\"", y ) );
 		}
 
 
@@ -788,7 +788,7 @@ namespace BREadfruit.Tests.Low_level_tests
 		{
 			var sut = " x { 'y adda' : 'wei', 'you what?' : 'yeah I did it ' } xxx";
 			var rep = sut.Replace ( " ", "", ( x, y ) => x.IsBetween ( sut, "'", y ) );
-			Assert.IsTrue ( rep == "x{'y adda':'wei','you what?':'yeah I did it '}xxx", "Got this -> " + rep );
+			Assert.IsTrue ( rep == " x {'y adda':'wei','you what?':'yeah I did it '} xxx", "Got this -> " + rep );
 		}
 
 
@@ -936,6 +936,31 @@ namespace BREadfruit.Tests.Low_level_tests
 			return value.InBetweenAny ( _indices.Split ( numSplits ) );
 		}
 
+		[TestCase ( "1,10,30,40,50,60,70,80", 9, 2, true, 1, 10, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 29, 2, false, 0, 0, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 219, 2, false, 0, 0, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 39, 2, true, 30, 40, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 79, 2, true, 70, 80, Result = true )]
+
+		[TestCase ( "1,10,30,40,50,60,70,80", 9, 3, true, 1, 30, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 29, 3, true, 1, 30, Result = true )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 219, 3, false, 0, 0, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 31, 3, false, 0, 0, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 39, 3, false, 0, 0, Result = false )]
+		[TestCase ( "1,10,30,40,50,60,70,80", 79, 3, true, 70, 80, Result = true )]
+
+		public bool IsBetweenAny_Int32Tests_WithOut ( string searchArray, Int32 value, int numSplits, bool shouldReturnInterval, int intervalMin, int intervalMax )
+		{
+			var _indices = searchArray.Split ( new char [] { ',' },
+				StringSplitOptions.RemoveEmptyEntries ).Select ( x => Convert.ToInt32 ( x ) );
+			IEnumerable<int> chosenInterval = new List<int> ();
+			var ret = value.InBetweenAny ( _indices.Split ( numSplits ), out chosenInterval );
+			if ( shouldReturnInterval )
+				Assert.That ( chosenInterval.Min () == intervalMin && chosenInterval.Max () == intervalMax );
+			else
+				Assert.IsNull ( chosenInterval );
+			return ret;
+		}
 
 		[TestCase ( "1,10,30,40,50,60,70,80", 9, 2, Result = true )]
 		[TestCase ( "1,10,30,40,50,60,70,80", 1, 2, Result = true )]
@@ -1034,6 +1059,198 @@ namespace BREadfruit.Tests.Low_level_tests
 			Assert.That ( res.ElementAt ( 2 ) == 9 );
 			Assert.That ( res.Last () == 0 );
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void IndicesOfAll_Overload_Tests ()
+		{
+			var sut = "In this string there is a { and there is also a [";
+			var __indices = sut.IndicesOfAll ( new [] { "{", "[", "is" } );
+			Assert.That ( __indices.Count () == 5 );
+
+			Assert.That ( __indices.ElementAt ( 0 ) == 26 );
+			Assert.That ( __indices.ElementAt ( 1 ) == 48 );
+			Assert.That ( __indices.ElementAt ( 2 ) == 5 );
+			Assert.That ( __indices.ElementAt ( 3 ) == 21 );
+			Assert.That ( __indices.ElementAt ( 4 ) == 38 );
+
+		}
+
+
+		[Test]
+		public void IndicesOfAll2_Tests ()
+		{
+			var sut = "In this string there is a { and there is also a [";
+			var __indices = sut.IndicesOfAll2 ( new [] { "{", "[", "is" } );
+			Assert.That ( __indices.Count () == 5 );
+
+			Assert.That ( __indices.ElementAt ( 0 ).Key == 26 );
+			Assert.That ( __indices.ElementAt ( 1 ).Key == 48 );
+			Assert.That ( __indices.ElementAt ( 2 ).Key == 5 );
+			Assert.That ( __indices.ElementAt ( 3 ).Key == 21 );
+			Assert.That ( __indices.ElementAt ( 4 ).Key == 38 );
+
+			Assert.That ( __indices.ElementAt ( 0 ).Value == "{" );
+			Assert.That ( __indices.ElementAt ( 1 ).Value == "[" );
+			Assert.That ( __indices.ElementAt ( 2 ).Value == "is" );
+			Assert.That ( __indices.ElementAt ( 3 ).Value == "is" );
+			Assert.That ( __indices.ElementAt ( 4 ).Value == "is" );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void Split2_NormalSplit_Tests ()
+		{
+			var sut = "Normal split with plain old spaces";
+			var spl = sut.Split2 ( new [] { " " } );
+			Assert.That ( spl.Count () == 6 );
+			Assert.That ( spl.First () == "Normal" );
+			Assert.That ( spl.Last () == "spaces" );
+		}
+
+		[Test]
+		public void Split2_NormalSplit_Tests_02 ()
+		{
+			var sut = "Normal split with plain old spaces and,some,commas";
+			// 0    5   10   15   20   25   30   35    40    45    
+			var spl = sut.Split2 ( new [] { " ", "," } );
+			Assert.That ( spl.Count () == 9 );
+			Assert.That ( spl.First () == "Normal" );
+			Assert.That ( spl.Last () == "commas" );
+		}
+
+		[Test]
+		public void Split2_NormalSplit_Tests_03 ()
+		{
+			var sut = "What is what is oh is this";
+			var spl = sut.Split2 ( new [] { "is" }, StringSplitOptions.RemoveEmptyEntries, true );
+			Assert.That ( spl.Count () == 4 );
+			Assert.That ( spl.First () == "What" );
+			Assert.That ( spl.Last () == "th" );
+		}
+
+		[Test]
+		public void Split2_NormalSplit_Tests_04 ()
+		{
+			var sut = "What is what is oh is this";
+			var spl = sut.Split2 ( new [] { "is" }, StringSplitOptions.RemoveEmptyEntries, false );
+			Assert.That ( spl.Count () == 4 );
+			Assert.That ( spl.First () == "What " );
+			Assert.That ( spl.Last () == " th" );
+		}
+
+
+		[Test]
+		public void Split2_NormalSplit_Tests_05 ()
+		{
+			var sut = "What is what is oh is this";
+			var spl = sut.Split2 ( new [] { "is" } );
+			Assert.That ( spl.Count () == 5 );
+			Assert.That ( spl.First () == "What " );
+			Assert.That ( spl.Last () == "" );
+		}
+
+		[Test]
+		public void Split2_NormalSplit_Tests_06 ()
+		{
+			var sut = "What is what is oh is this";
+			var spl = sut.Split2 ( new [] { "is" }, StringSplitOptions.None, true );
+			Assert.That ( spl.Count () == 5 );
+			Assert.That ( spl.First () == "What" );
+			Assert.That ( spl.Last () == "" );
+		}
+
+		// ---------------------------------------------------------------------------------
+
+		[Test]
+		public void Split2_SplitWithExclusion_Tests ()
+		{
+			var sut = "Normal split with plain old spaces but { this should not be split } since it is between brackets";
+			var spl = sut.Split2 ( new [] { " " }, "{", "}" );
+			Assert.That ( spl.Count () == 13 );
+			Assert.That ( spl.First () == "Normal" );
+			Assert.That ( spl.Last () == "brackets" );
+		}
+
+		[Test]
+		public void Split2_SplitWithExclusion_Tests_02 ()
+		{
+			var sut = "Normal split with plain old spaces but { this should not be split } since it is  { between brackets }";
+			var spl = sut.Split2 ( new [] { " " }, "{", "}", StringSplitOptions.RemoveEmptyEntries, true );
+			Assert.That ( spl.Count () == 12 );
+			Assert.That ( spl.First () == "Normal" );
+			Assert.That ( spl.Last () == "{ between brackets }" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void Split2_SplitWithExclusion_Tests_03 ()
+		{
+			var sut = "Normal split with plain old spaces but { this should not be split } since it is between brackets";
+			var separators = new List<Tuple<string, string>> ();
+			separators.Add ( new Tuple<string, string> ( "{", "}" ) );
+			separators.Add ( new Tuple<string, string> ( "[", "]" ) );
+			var spl = sut.Split2 ( new [] { " " }, separators);
+			Assert.That ( spl.Count () == 13 );
+			Assert.That ( spl.First () == "Normal" );
+			Assert.That ( spl.Last () == "brackets" );
+		}
+
+		[Test]
+		public void Split2_SplitWithExclusion_Tests_04 ()
+		{
+			var sut = "Normal split with plain old spaces but { this should not be split } since it is  { between brackets }";
+			var separators = new List<Tuple<string, string>> ();
+			separators.Add ( new Tuple<string, string> ( "{", "}" ) );
+			separators.Add ( new Tuple<string, string> ( "[", "]" ) );
+			var spl = sut.Split2 ( new [] { " " }, separators, StringSplitOptions.RemoveEmptyEntries, true );
+			Assert.That ( spl.Count () == 12 );
+			Assert.That ( spl.First () == "Normal" );
+			Assert.That ( spl.Last () == "{ between brackets }" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+		[Test]
+		public void Split2_SplitWithExclusion_Tests_05 ()
+		{
+			// the sexorcisto and the yeezusfuckenchrist-o
+			var sut = "Normal split with plain old spaces but { this should not be split } since it is  [ between brackets ]";
+			var separators = new List<Tuple<string, string>> ();
+			separators.Add ( new Tuple<string, string> ( "{", "}" ) );
+			separators.Add ( new Tuple<string, string> ( "[", "]" ) );
+			var spl = sut.Split2 ( new [] { " " }, separators, StringSplitOptions.RemoveEmptyEntries, true );
+			Assert.That ( spl.Count () == 12 );
+			Assert.That ( spl.First () == "Normal" );
+			Assert.That ( spl.Last () == "[ between brackets ]" );
+		}
+
+		[Test]
+		public void Split2_SplitWithExclusion_Tests_06 ()
+		{
+			// the sexorcisto and the yeezusfuckenchrist-o
+			var sut = "Normal split with /*plain old spaces*/ but { this should not be split } since it is  [ between brackets ]";
+			var separators = new List<Tuple<string, string>> ();
+			separators.Add ( new Tuple<string, string> ( "{", "}" ) );
+			separators.Add ( new Tuple<string, string> ( "[", "]" ) );
+			separators.Add ( new Tuple<string, string> ( "/*", "*/" ) );
+			var spl = sut.Split2 ( new [] { " " }, separators, StringSplitOptions.RemoveEmptyEntries, true );
+			Assert.That ( spl.Count () == 10 );
+			Assert.That ( spl.First () == "Normal" );
+			Assert.That ( spl.Last () == "[ between brackets ]" );
+		}
+		// ---------------------------------------------------------------------------------
 
 	}
 }

@@ -130,12 +130,12 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.First ().ToString () == "visible true" );
 			Assert.That ( e.Defaults.ElementAt ( 1 ).ToString ().Trim () == "value USER.COUNTRY" );
 			Assert.That ( e.Defaults.ElementAt ( 2 ).ToString ().Trim () == "mandatory true" );
-			Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Trim () == "load_data_from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).ToString ().Trim () == "load_data_from DATASOURCE.WORLD_COUNTRIES" );
 			Assert.That ( e.Defaults.ElementAt ( 4 ).ToString () == "label LABELS.GENERIC.COUNTRY" );
 			Assert.That ( e.ConditionlessActions.Count () == 4 );
 			Assert.That ( e.ConditionlessActions.First ().ToString () == "hide vendorSearchResultGrid" );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString () == "hide btnCreateVendor" );
-			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).ToString () == "load_data_from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).ToString () == "load_data_from DATASOURCE.WORLD_COUNTRIES" );
 			Assert.That ( e.Rules.Count () == 4 );
 			Assert.That ( e.Constraints.Count () == 0 );
 			Assert.That ( e.Triggers.Count () == 1 );
@@ -184,7 +184,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.First ().Arguments.First ().Key == "\"Active\"" );
 			Assert.That ( e.Defaults.First ().Arguments.First ().Value == "true" );
 			Assert.That ( e.Defaults.First ().Arguments.Last ().Key == "\"Title\"" );
-			Assert.That ( e.Defaults.First ().Arguments.Last ().Value == "\"Anything\"" );
+			Assert.That ( e.Defaults.First ().Arguments.Last ().Value == "\"Anything Goes\"" );
 			Assert.That ( e.Constraints.Count () == 1 );
 			Assert.That ( e.Constraints.First ().Name == "only_numbers" );
 
@@ -1331,7 +1331,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 3 ).Key == "Header" );
 			Assert.That ( e.Defaults.First ().Arguments.ElementAt ( 3 ).Value == "LABELS.labCountry" );
 
-			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 0 ).Key == "constraints" );
+			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 0 ).Key == "Constraints" );
 			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 0 ).Value == "Only_Numbers" );
 			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 1 ).Key == "ControlType" );
 			Assert.That ( e.Defaults.ElementAt ( 3 ).Arguments.ElementAt ( 1 ).Value == "TextBox" );
@@ -1355,8 +1355,8 @@ namespace BREadfruit.Tests
 
 
 		[Test]
-		[ExpectedException ( ExpectedException = typeof ( UnexpectedClauseException ),
-			ExpectedMessage = "An unexpected clause was found" + "\r\n" + "Cannot define a default column in an Entity that is not a grid." )]
+		[ExpectedException (
+			ExpectedMessage = "Line 4 \t\tdefine_column GRID_P_GD_VT_Country with_args {ControlType:DropDownList,DataField:XYZ,Header:LABELS.labXYZ} caused exception : An unexpected clause was found\r\nCannot define a default column in an Entity that is not a grid." )]
 		public void ParseSampleFile043 ()
 		{
 			var parser = new Parser ();
@@ -1514,8 +1514,35 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+
 		[Test]
-		public void ShouldFindEntities ()
+		public void ParseSampleFile050 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File050 - Clear.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "CP_btnClearAll", "Entity name should be 'CP_btnClearAll' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 3, "Should have 3 default clauses, but has" + e.Defaults.Count () );
+			Assert.That ( e.Rules.Count () == 1, "Should have 1 rules, but has" + e.Rules.Count () );
+
+			Assert.That ( e.Triggers.Count () == 1, "Should have 1 Triggers, but has" + e.Triggers.Count () );
+			Assert.That ( e.ConditionlessActions.Count () == 1, "Should have 1 Conditionless Actions, but has" + e.ConditionlessActions.Count () );
+
+			Assert.That ( e.ConditionlessActions.First ().Action == Grammar.ClearValueUnaryActionSymbol.Token );
+			Assert.That ( e.Triggers.First ().Event == Grammar.ClickedEventSymbol.Token );
+			Assert.That ( e.Triggers.First ().Target == "CP_btnClearAll" );
+
+		
+		}
+
+		// ---------------------------------------------------------------------------------
+
+		[Test]
+		public void ShouldFindEntities_Vendor ()
 		{
 			var parser = new Parser ();
 			parser.ParseRuleSet ( @"..\..\sample files\vendor-rules.txt" );
@@ -1630,6 +1657,20 @@ namespace BREadfruit.Tests
 		}
 
 		// ---------------------------------------------------------------------------------
+
+		[Test]
+		public void ShouldFindEntities_Customer ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\customer-rules.txt" );
+
+			//Assert.That ( parser.Entities.Count () == 18 );
+
+			//var parser2 = new Parser ();
+			//var eList = parser2.ParseRuleSet ( @"..\..\sample files\vendor-rules.txt" );
+
+		}
+
 
 
 	}

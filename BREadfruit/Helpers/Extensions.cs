@@ -1156,6 +1156,30 @@ namespace BREadfruit.Helpers
 
 		// ---------------------------------------------------------------------------------
 
+		public static bool InBetweenAny ( this Int32 t, IEnumerable<IEnumerable<Int32>> intervals, out IEnumerable<Int32> interval )
+		{
+			if ( !intervals.HasItems () )
+			{
+				interval = null;
+				return false;
+			}
+
+			foreach ( var _interval in intervals )
+			{
+				if ( t <= _interval.Max () && t >= _interval.Min () )
+				{
+					interval = _interval;
+					return true;
+				}
+			}
+
+			interval = null;
+			return false;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 		public static IEnumerable<int> IndicesOfAll ( this string value, string search, bool ignoreCase = false )
 		{
@@ -1181,6 +1205,84 @@ namespace BREadfruit.Helpers
 			return _indices;
 		}
 
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<int> IndicesOfAll ( this string value, IEnumerable<string> searches, bool ignoreCase = false )
+		{
+			// TODO: ADD EXCEPTION CONTROL
+			// TODO: ADD CULTURE AND COMPARISON INFO
+
+			if ( String.IsNullOrEmpty ( value ) )
+				return null;
+
+			if ( !searches.HasItems () )
+				throw new ArgumentNullException ( "searches", "The list must contain at least one element" );
+
+			var i = 0;
+			var _indices = new List<int> ();
+			foreach ( var search in searches )
+			{
+				// reset counter here otherwise further operations fail
+				i = 0;
+				if ( !ignoreCase )
+				{
+					while ( ( i = value.IndexOf ( search, i ) ) != -1 )
+					{
+						_indices.Add ( i++ );
+					}
+				}
+				else
+				{
+					while ( ( i = value.ToUpperInvariant ().IndexOf ( search.ToUpperInvariant (), i ) ) != -1 )
+					{
+						_indices.Add ( i++ );
+					}
+				}
+			}
+
+			return _indices;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<KeyValuePair<int, string>> IndicesOfAll2 ( this string value, IEnumerable<string> searches, bool ignoreCase = false )
+		{
+			// TODO: ADD EXCEPTION CONTROL
+			// TODO: ADD CULTURE AND COMPARISON INFO
+
+			if ( String.IsNullOrEmpty ( value ) )
+				return null;
+
+			if ( !searches.HasItems () )
+				throw new ArgumentNullException ( "searches", "The list must contain at least one element" );
+
+			var i = 0;
+			var _indices = new List<KeyValuePair<int, string>> ();
+			foreach ( var search in searches )
+			{
+				// reset counter here otherwise further operations fail
+				i = 0;
+				if ( !ignoreCase )
+				{
+					while ( ( i = value.IndexOf ( search, i ) ) != -1 )
+					{
+						_indices.Add ( new KeyValuePair<int, string> ( i++, search ) );
+					}
+				}
+				else
+				{
+					while ( ( i = value.ToUpperInvariant ().IndexOf ( search.ToUpperInvariant (), i ) ) != -1 )
+					{
+						_indices.Add ( new KeyValuePair<int, string> ( i++, search ) );
+					}
+				}
+			}
+
+			return _indices;
+		}
 
 
 		// ---------------------------------------------------------------------------------
@@ -1231,7 +1333,7 @@ namespace BREadfruit.Helpers
 							__sb.Append ( c );
 						else
 						{
-							if ( c.ToString ().IsBetween ( sut, "{", "}", i ) && 
+							if ( c.ToString ().IsBetween ( sut, "{", "}", i ) &&
 									!( c.ToString ().IsBetween ( sut, "\"", i ) || c.ToString ().IsBetween ( sut, "'", i ) ) )
 								__sb.Append ( replacement );
 							else
@@ -1294,7 +1396,8 @@ namespace BREadfruit.Helpers
 					var _2 = value.IndexOf ( s2, _1 + 1 );
 					if ( _2 != -1 )
 					{
-						_occurrences.Add ( value.Substring ( _1, ++_2 - _1 ) );
+						//_occurrences.Add ( value.Substring ( _1, ++_2 - _1 ) );
+						_occurrences.Add ( value.Substring ( _1, _2 + s2.Length - _1 ) );
 					}
 					_1 += _2 - _1;
 					if ( _1 == -1 )
@@ -1330,6 +1433,9 @@ namespace BREadfruit.Helpers
 		}
 
 
+		// ---------------------------------------------------------------------------------
+
+
 		public static IEnumerable<T> ElementsAt<T> ( this IEnumerable<T> t, Func<T, bool> func )
 		{
 			if ( t.HasItems () )
@@ -1343,6 +1449,180 @@ namespace BREadfruit.Helpers
 			return null;
 
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<string> Split2 ( this string s,
+												   IEnumerable<string> separators,
+													StringSplitOptions options = StringSplitOptions.None,
+													bool trimElements = false )
+		{
+
+			if ( String.IsNullOrEmpty ( s ) )
+				return null;
+
+			if ( !separators.HasItems () )
+				throw new ArgumentNullException ( "separators", "The list must contain at least one element" );
+
+			// get indices of all separators
+			var __sepIndices = s.IndicesOfAll2 ( separators );
+			var __splittedList = new List<string> ();
+			var __offset = 0;
+			foreach ( var i in __sepIndices )
+			{
+				if ( !trimElements )
+					__splittedList.Add ( s.Substring ( __offset, i.Key - __offset ) );
+				else
+					__splittedList.Add ( s.Substring ( __offset, i.Key - __offset ).Trim () );
+
+				__offset = i.Key + i.Value.Length;
+			}
+
+			// after last separator, add the string's remainder
+			__splittedList.Add ( s.Substring ( __offset ) );
+
+			if ( options == StringSplitOptions.RemoveEmptyEntries )
+				__splittedList.RemoveAll ( x => x == String.Empty );
+
+			return __splittedList;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<string> Split2 ( this string s,
+												   IEnumerable<string> separators,
+													string excludeBeginningString,
+													string excludeEndString,
+													StringSplitOptions options = StringSplitOptions.None,
+													bool trimElements = false )
+		{
+
+			if ( String.IsNullOrEmpty ( s ) )
+				return null;
+
+			if ( !separators.HasItems () )
+				throw new ArgumentNullException ( "separators", "The list must contain at least one element" );
+
+			var excludedStrings = s.FindAllBetween ( excludeBeginningString, excludeEndString, true );
+			// InBetweenAny
+			var excludedIntervals = new List<List<int>> ();
+			foreach ( var ex in excludedStrings )
+			{
+				excludedIntervals.Add ( new List<int> () { s.IndexOf ( ex ), ex.Length + s.IndexOf ( ex ) } );
+			}
+
+			// get indices of all separators
+			var __sepIndices = s.IndicesOfAll2 ( separators );
+			var __splittedList = new List<string> ();
+			var __offset = 0;
+			IEnumerable<int> __chosenInterval = new List<int> ();
+			bool __controlFlag = false;
+			foreach ( var i in __sepIndices )
+			{
+				if ( i.Key.InBetweenAny ( excludedIntervals, out __chosenInterval ) )
+				{
+					if ( !__controlFlag )
+					{
+						__splittedList.Add ( s.Substring ( __chosenInterval.Min (), __chosenInterval.Max () - __chosenInterval.Min () ) );
+						__offset = __chosenInterval.Max ();
+						__controlFlag = true;
+					}
+				}
+				else
+				{
+					__controlFlag = false;
+					if ( !trimElements )
+						__splittedList.Add ( s.Substring ( __offset, i.Key - __offset ) );
+					else
+						__splittedList.Add ( s.Substring ( __offset, i.Key - __offset ).Trim () );
+					__offset = i.Key + i.Value.Length;
+				}
+			}
+
+			// after last separator, add the string's remainder
+			__splittedList.Add ( s.Substring ( __offset ) );
+
+			if ( options == StringSplitOptions.RemoveEmptyEntries )
+				__splittedList.RemoveAll ( x => x == String.Empty );
+
+			return __splittedList;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<string> Split2 ( this string s,
+												   IEnumerable<string> separators,
+													IEnumerable<Tuple<string, string>> excludingPairs,
+													StringSplitOptions options = StringSplitOptions.None,
+													bool trimElements = false )
+		{
+
+			if ( String.IsNullOrEmpty ( s ) )
+				return new List<string>();
+
+			if ( !separators.HasItems () )
+				throw new ArgumentNullException ( "separators", "The list must contain at least one element" );
+
+			
+			var excludedStrings = new List<string> ();
+			foreach ( var t in excludingPairs )
+				excludedStrings.AddRange ( s.FindAllBetween ( t.Item1, t.Item2, true ) );
+
+
+			// InBetweenAny
+			var excludedIntervals = new List<List<int>> ();
+			foreach ( var ex in excludedStrings )
+			{
+				excludedIntervals.Add ( new List<int> () { s.IndexOf ( ex ), ex.Length + s.IndexOf ( ex ) } );
+			}
+
+			// get indices of all separators
+			var __sepIndices = s.IndicesOfAll2 ( separators );
+			var __splittedList = new List<string> ();
+			var __offset = 0;
+			IEnumerable<int> __chosenInterval = new List<int> ();
+			bool __controlFlag = false;
+			foreach ( var i in __sepIndices )
+			{
+				if ( i.Key.InBetweenAny ( excludedIntervals, out __chosenInterval ) )
+				{
+					if ( !__controlFlag )
+					{
+						__splittedList.Add ( s.Substring ( __chosenInterval.Min (), __chosenInterval.Max () - __chosenInterval.Min () ) );
+						__offset = __chosenInterval.Max ();
+						__controlFlag = true;
+					}
+				}
+				else
+				{
+					__controlFlag = false;
+					if ( !trimElements )
+						__splittedList.Add ( s.Substring ( __offset, i.Key - __offset ) );
+					else
+						__splittedList.Add ( s.Substring ( __offset, i.Key - __offset ).Trim () );
+					__offset = i.Key + i.Value.Length;
+				}
+			}
+
+			// after last separator, add the string's remainder
+			__splittedList.Add ( s.Substring ( __offset ) );
+
+			if ( options == StringSplitOptions.RemoveEmptyEntries )
+				__splittedList.RemoveAll ( x => x.Trim() == String.Empty );
+
+			return __splittedList;
+		}
+
+
+
+		// ---------------------------------------------------------------------------------
+
 
 	}
 }
