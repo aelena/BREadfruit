@@ -987,10 +987,8 @@ namespace BREadfruit.Helpers
 
 			if ( indices.Count () > 0 )
 			{
-
 				// split the indices in pairs
 				var _split = indices.Split ( 2 );
-
 				if ( indexOfSut.InBetweenAny ( _split ) )
 				{
 					return true;
@@ -1002,6 +1000,38 @@ namespace BREadfruit.Helpers
 
 		// ---------------------------------------------------------------------------------
 
+
+		public static bool IsBetween ( this string sut, string search, string s1, string s2, int startIndex = 0 )
+		{
+
+			// TODO: ADD EXCEPTION CONTROL
+			// TODO: ADD CULTURE AND COMPARISON INFO
+
+
+			var indexOfSut = search.IndexOf ( sut, startIndex );
+			var indices1 = search.IndicesOfAll ( s1 );
+			var indices2 = search.IndicesOfAll ( s2 );
+
+			// indices must be of a even length, otherwise is not "between"
+			//if ( indices1.Count () % 2 > 0 )
+			if ( indices1.Count () != indices2.Count () )
+				throw new Exception ( "The marker string has to have an even number of occurrences" );
+
+			if ( indices1.Count () > 0 )
+			{
+				var _split = new List<List<int>> ();
+				for ( int i = 0; i < indices1.Count (); i++ )
+					_split.Add ( new List<int> () { indices1.ElementAt ( i ), indices2.ElementAt ( i ) } );
+
+				if ( indexOfSut.InBetweenAny ( _split ) )
+				{
+					return true;
+				}
+			}
+
+			return false;
+
+		}
 
 		/// <summary>
 		/// Splits a collection into a collection of collections
@@ -1200,7 +1230,13 @@ namespace BREadfruit.Helpers
 						if ( func ( c.ToString (), i ) )
 							__sb.Append ( c );
 						else
-							__sb.Append ( replacement );
+						{
+							if ( c.ToString ().IsBetween ( sut, "{", "}", i ) && 
+									!( c.ToString ().IsBetween ( sut, "\"", i ) || c.ToString ().IsBetween ( sut, "'", i ) ) )
+								__sb.Append ( replacement );
+							else
+								__sb.Append ( c );
+						}
 					}
 					else
 						__sb.Append ( c );
