@@ -44,7 +44,7 @@ Entity TBVendorName is TextBox in frmSearch
 		enabled true
 		visible
 		value   ''
-		label LABELS.VENDOR.NAME
+		label LABELS.NAME
 
 
 	with actions
@@ -132,7 +132,7 @@ Entity TBVendorIFA is TextBox in frmSearch
 	with defaults
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
 		load data from DATASOURCE.MDM_Countries
-		label LABELS.GENERIC.COUNTRY
+		label LABELS.COUNTRY
 
 	with actions
 		set value '' in MESSAGE_POPUP
@@ -217,7 +217,7 @@ Entity DDLCDPurchOrg is DropDownList in frmSearch
 	with defaults
 		visible true
 		value ''
-		label LABELS.GENERIC.PURCHASEORG
+		label LABELS.labPURCHASEORG
 		mandatory true
 
 	with actions
@@ -366,13 +366,13 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 		; values G  and NG
 		load data from DATASOURCE.labGD_Ctr_VendorClassification
 		mandatory true
-		label LABELS.VENDOR.VENDOR_CLASSIFICATION
+		label LABELS.labGD_Ctr_VendorClassification
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM} then
 			this enable false
-		REQUEST.VENDOR_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification
-		REQUEST.VENDOR_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_VendorClassification
+		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification
+		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_VendorClassification
 		
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
@@ -423,7 +423,7 @@ Entity GD_Damex is DropDownList in frmMain
 		value ''
 		load data from DATASOURCE.YES_NO
 		mandatory true
-		label LABELS.VENDOR.labGD_Damex
+		label LABELS.labGD_Damex
 
 	with actions
 		ATTACHMENT mandatory true
@@ -443,7 +443,7 @@ Entity GD_DamexNote is CheckBox in frmMain
 	with defaults
 		visible true
 		enabled true
-		value LABELS.VENDOR.labGD_DamexNote
+		value LABELS.labGD_DamexNote
 
 ; ----------------------------------------------------------------------------	
 
@@ -553,7 +553,7 @@ Entity GD_Procur_Supplier_ContactPhone is TextBox in frmMain
 Entity GD_Procur_Supplier_ContactPerson is DropDownList in frmMain
 	with defaults
 		label LABELS.labGD_Procur_Supplier_ContactPerson
-		max length 47		;??
+		max length 47		
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -566,7 +566,7 @@ Entity GD_Procur_Supplier_ContactPerson is DropDownList in frmMain
 Entity lGD_Procur_Supplier_ContactEmail is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_Procur_Supplier_ContactEmail
-		max length 47		;??
+		max length 47		
 
 	with actions
 		; move to email control
@@ -598,7 +598,7 @@ Entity GD_Procur_MainProducts is DropDownList in frmMain
 Entity GD_Procur_SuppliersName is TextBox in frmMain
 	with defaults
 		max length 35
-		label DICTIONARY.LABELS.VENDOR.labGD_Procur_SuppliersName
+		label LABELS.labGD_Procur_SuppliersName
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -666,7 +666,7 @@ Entity GD_Procur_Reason_Justification is TextBox in frmMain
 
 Entity GD_Procur_MainActivity is TextBox in frmMain
 	with defaults
-		label DICTIONARY.LABELS.VENDOR.labGD_Procur_MainActivity
+		label LABELS.labGD_Procur_MainActivity
 		
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -677,7 +677,7 @@ Entity GD_Procur_MainActivity is TextBox in frmMain
 
 Entity GD_Procur_Supplier_ExpectedPVO is DropDownList in frmMain
 	with defaults
-		label DICTIONARY.LABELS.VENDOR.labGD_Procur_Supplier_ExpectedPVO
+		label LABELS.labGD_Procur_Supplier_ExpectedPVO
 		mandatory true
 		; by default it shows the first item in the list which is blank
 		value ''
@@ -723,7 +723,7 @@ Entity GD_Procur_Supplier_ExpectedPVO is DropDownList in frmMain
 Entity GD_PVO_Question1 is DropDownList in frmMain
 	with defaults
 		visible false
-		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question1
+		label LABELS.labGD_PVO_Question1
 		mandatory false
 		value ''
 		load data from DATASOURCE.YES_NO
@@ -741,7 +741,7 @@ Entity GD_PVO_Question1 is DropDownList in frmMain
 Entity GD_PVO_Question2 is DropDownList in frmMain
 	with defaults
 		visible false
-		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question2
+		label LABELS.labGD_PVO_Question2
 		mandatory false
 		value ''
 		; high risk country or low risk country
@@ -761,7 +761,7 @@ Entity GD_PVO_Question2 is DropDownList in frmMain
 Entity GD_PVO_Question3 is DropDownList in frmMain
 	with defaults
 		visible false
-		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question3
+		label LABELS.labGD_PVO_Question3
 		mandatory false
 		value ''
 		; high risk country or low risk country
@@ -779,7 +779,7 @@ Entity GD_PVO_Question3 is DropDownList in frmMain
 Entity GD_PVO_Question4 is DropDownList in frmMain
 	with defaults
 		visible false
-		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question4
+		label LABELS.labGD_PVO_Question4
 		mandatory false
 		value ''
 		; values: low, average, high
@@ -799,7 +799,7 @@ Entity GD_PVO_Question4 is DropDownList in frmMain
 Entity GD_PVO_Question5 is DropDownList in frmMain
 	with defaults
 		visible false
-		label DICTIONARY.LABELS.VENDOR.labGD_PVO_Question5
+		label LABELS.labGD_PVO_Question5
 		mandatory false
 		value ''
 		; high risk country or low risk country
@@ -825,7 +825,7 @@ Entity GD_PVO_Question5 is DropDownList in frmMain
 
 Entity GD_PVO_Link1 is HyperLink in frmMain
 	with defaults
-		label DICTIONARY.MDMFillDoc
+		label .MDMFillDoc
 		value "~/Resources/MDM/Templates/1.-Basic%20Quality%20Requirements%20and%20Certificates.doc"
 		visible false
 		
@@ -839,7 +839,7 @@ Entity GD_PVO_Link1 is HyperLink in frmMain
 
 Entity GD_PVO_Link2 is HyperLink in frmMain
 	with defaults
-		label DICTIONARY.MDMFillDoc
+		label .MDMFillDoc
 		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/2.-Corporate%20Responsibility%20Self%20Assessment.doc"
 		visible false
 
@@ -853,7 +853,7 @@ Entity GD_PVO_Link2 is HyperLink in frmMain
 
 Entity GD_PVO_Link3 is HyperLink in frmMain
 	with defaults
-		label DICTIONARY.MDMFillDoc
+		label .MDMFillDoc
 		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/3.-Security%20in%20the%20supply%20chain%20-%20customs%20security%20initiatives.doc"
 		visible false
 
@@ -867,7 +867,7 @@ Entity GD_PVO_Link3 is HyperLink in frmMain
 
 Entity GD_PVO_Link4 is HyperLink in frmMain
 	with defaults
-		label DICTIONARY.MDMFillDoc
+		label .MDMFillDoc
 		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/4.-Future%20influence%20in%20Siemens.xlsx"
 		visible false
 
@@ -880,7 +880,7 @@ Entity GD_PVO_Link4 is HyperLink in frmMain
 
 Entity GD_PVO_Link5 is HyperLink in frmMain
 	with defaults
-		label DICTIONARY.MDMFillDoc
+		label .MDMFillDoc
 		value "https://workspace.swe.siemens.com/content/70000071/07/22978293/Docs/5.-Environmental%20Protection,%20Health%20Management%20and%20Safety.doc"
 		visible false
 
@@ -1150,6 +1150,8 @@ Entity GD_Adr_Region is DropDownList in frmMain
 		REQUEST.ACCOUNT_GROUP is YVT1 and GD_Adr_Region.Value in {02,03} then
 			set value FR in GD_Com_Language
 
+		REQUEST.ACCOUNT_GROUP in {YCT6,YVT6,YCT9,YVT9} and REQUEST.Region_IsMandatory and REQUEST.TYPE is VC then
+			this mandatory true
 
 ; ----------------------------------------------------------------------------	
 
@@ -1161,8 +1163,7 @@ Entity GD_Adr_CountryGD is TextBox in frmMain
 		mandatory true
 		enabled false		; always disabled
 		; TODO: PENDING FINAL MODEL DEFINITION FROM FD
-		value SEARCH_FORM_VALUES.DDLVDCountry			; Vendor country, country of the company code!!!!
-
+		value REQUEST.VENDOR_COUNTRY
 
 
 ; ----------------------------------------------------------------------------	
@@ -1875,13 +1876,13 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
 		; ny EU country ; finish the list....
-		REQUEST.REQUEST.ACCOUNT_GROUP is not "YVT6" and REQUEST.VENDOR_COUNTRY in {"ES", "IT", "PT", "GR" } then
+		REQUEST.REQUEST.ACCOUNT_GROUP is not "YVT6" and REQUEST.VENDOR_COUNTRY in {ES, IT, PT, GR } then
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 
-		REQUEST.VENDOR_COUNTRY is not "ES" then
+		REQUEST.VENDOR_COUNTRY is not ES then
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
-		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is "GR" then
+		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is GR then
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 			remove letters GD_Ctr_TaxCode2.Value
 		
@@ -1947,10 +1948,13 @@ Entity GD_Ctr_CF is TextBox in frmMain
 
 
 Entity GD_Ctr_TaxCode1 is TextBox in frmMain
+	with defaults
+		label LABELS.labTaxCode2
+
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.VENDOR_COUNTRY is "ES" and GD_Ctr_TaxCode1.Text starts with {1,2,3,4,5,6,7,8,9,X} then
+		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {1,2,3,4,5,6,7,8,9,X} then
 			set value true in GD_Ctr_IsNaturalPerson			; check the checkbox
 
 		REQUEST.ACCOUNT_GROUP is YVT1 then
@@ -1970,11 +1974,14 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 		REQUEST.REQUEST.ACCOUNT_GROUP is YVT5 then
 			max length 16
 
+		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is VC and REQUEST.TaxCode1_IsMandatory then
+			this mandatory true
 
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_TaxCode2 is TextBox in frmMain
-
+	with defaults
+		label LABELS.labTaxCode2
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -1985,6 +1992,9 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 			max length 11
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			enabled false
+
+		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is VC and REQUEST.TaxCode2_IsMandatory then
+			this mandatory true
 
 ; ----------------------------------------------------------------------------	
 
@@ -2036,7 +2046,9 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 			this enable false
 			this mandatory false
 
-			
+		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is VC and REQUEST.VAT_IsMandatory then
+			this mandatory true
+			this enable true
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
@@ -3025,25 +3037,25 @@ Entity PO_TermsOfPaymentKey	is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.COUNTRY is "ES" then
+		REQUEST.COUNTRY is ES then
 			set value 3M60 in PO_TermsOfPaymentKey
 
-		REQUEST.COUNTRY is "IT" then
+		REQUEST.COUNTRY is IT then
 			set value 5510 in PO_TermsOfPaymentKey
 	
-		REQUEST.COUNTRY is "LU" then
+		REQUEST.COUNTRY is LU then
 			set value 1113 in PO_TermsOfPaymentKey
 	
-		REQUEST.COUNTRY is "BE" then
+		REQUEST.COUNTRY is BE then
 			set value 1301 in PO_TermsOfPaymentKey
 
-		REQUEST.COUNTRY is "GR" then
+		REQUEST.COUNTRY is GR then
 			set value 7A90 in PO_TermsOfPaymentKey
 
-		REQUEST.COUNTRY is "PT" and REQUEST.VENDOR_COUNTRY is "PT" then
+		REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is PT then
 			set value 4217 in PO_TermsOfPaymentKey
 			
-		REQUEST.COUNTRY is "PT" and REQUEST.VENDOR_COUNTRY is not "PT" then
+		REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is not PT then
 			set value 4117 in PO_TermsOfPaymentKey
 	with actions
 		; ; ATTACHMENT mandatory  false 
@@ -3082,13 +3094,13 @@ Entity PO_Incoterms	is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.COUNTRY is "ES" then
+		REQUEST.COUNTRY is ES then
 			set value "DAP" in PO_Incoterms
 
-		REQUEST.COUNTRY is "IT" then
+		REQUEST.COUNTRY is IT then
 			set value "EXW" in PO_IncotermsPart2
 
-		REQUEST.COUNTRY in {"PT", "BE", "LU"} then
+		REQUEST.COUNTRY in {PT, BE, LU} then
 			set value "DDP" in PO_IncotermsPart2
 
 		REQUEST.COMPANY_CODE is 5140 then

@@ -780,11 +780,8 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 		mandatory true
 		enable false
 		; TODO: PENDING FINAL MODEL DEFINITION FROM FD
-		value SEARCH_FORM_VALUES.DDLVDCountry			; Vendor country, country of the company code!!!!
+		value REQUEST.CUSTOMER_COUNTRY
  
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
-			this enable false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -819,6 +816,8 @@ Entity GD_Adr_Region is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 
+		REQUEST.ACCOUNT_GROUP in {YCT6,YVT6,YCT9,YVT9} and REQUEST.Region_IsMandatory and REQUEST.TYPE is CC then
+			this mandatory true
 			
 ; ---------------------------------------------------------------------------- 
 
@@ -1085,6 +1084,10 @@ Entity P_GD_VT_Country is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		REQUEST.COUNTRY not in {BE,LU,PT} and GD_Adr_Country is not WF then
+			P_GD_VT_Country mandatory true
+			P_GD_VT_CountryCode mandatory true
+			P_GD_VT_Number mandatory true
 	with triggers
 		this changes
 
@@ -1709,6 +1712,8 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP is YCT9 then 
 			max length 5
 			this mandatory false
+		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
+			this mandatory false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -1784,7 +1789,16 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP is YCT9 then
 			mandatory false
 		
-; ---------------------------------------------------------------------------- 
+		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is CC and REQUEST.TaxCode1_IsMandatory then
+			this mandatory true
+
+		REQUEST.COUNTRY in {BE,LU} and REQUEST.CURRENT_ROLE is ROLES.CLERK then
+			this mandatory false
+			GD_Ctr_VATRegistrationNumber mandatory false
+		
+		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
+			this mandatory false
+			; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 
@@ -1812,7 +1826,10 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 			mandatory false
 		REQUEST.ACCOUNT_GROUP is YCT9 and REQUEST.REQUEST_TYPE is not CC then
 			this enable false
-
+		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is CC and REQUEST.TaxCode2_IsMandatory then
+			this mandatory true
+		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
+			this mandatory true
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
@@ -1830,7 +1847,10 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 			this enable true
 		REQUEST.ACCOUNT_GROUP is YCT6 and REQUEST.REQUEST_TYPE is CC and GD_Ctr_IsNaturalPerson.Value is false then
 			this mandatory true
-
+		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is CC and REQUEST.VAT_IsMandatory then
+			this mandatory true
+		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
+			this mandatory true
 ; ---------------------------------------------------------------------------- 
 
 
@@ -1955,7 +1975,9 @@ Entity CC_CO_ReconAccount is DropDownList in frmMain
 		label LABELS.labCC_CO_ReconAccount
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
-			this enable false	
+			this enable false
+		GD_Adr_Country is GR and GD_Ctr_CustomerClassification.Value is G and GD_Ctr_IsNaturalPerson.Value is false then
+			this mandatory true	
 ; ---------------------------------------------------------------------------- 
 
 ;	"2.6.14(MI) GSS, please, check and provide the business rule. For RC Greece... I don't undertand the meaning of ""if customer is na ICC""
@@ -2024,6 +2046,9 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
 		REQUEST.COUNTRY in {ES, FR} then
 			this mandatory true
+
+		REQUEST.COUNTRY is PT
+			this mandatory false
 
 		REQUEST.COUNTRY is IT and CC_PT_PaymentMethods.Value is L then
 			B_GD_VB_BankKey mandatory true
@@ -2107,6 +2132,8 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 			this enable false	
 		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is not FR then
 			this visible false
+		REQUEST.COUNTRY is FR then
+			this mandatory trye
 
 		REQUEST.COUNTRY is ES then
 			set value Y302 in CC_DD_DunningProcedure
@@ -2800,7 +2827,10 @@ Entity KNKK_KNKLI is TextBox in frmMain
 	with defaults
 		label LABELS.labCreditAccount
 		enabled false
-
+	
+	with rules
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
+			this enable false	
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2873,6 +2903,7 @@ Entity KNKK_DTREV is TextBox in frmMain
 Entity KNKK_NXTRV is TextBox in frmMain
 
 	with defaults
+		enabled false
 		label LABELS.labNextInternalReview
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -2884,6 +2915,7 @@ Entity KNKK_KRAUS is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCLimInfNumber
+		enabled false
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
@@ -2893,6 +2925,7 @@ Entity KNKK_DBRTG is TextBox in frmMain
 
 	with defaults
 		label LABELS.labRating
+		enabled false
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
@@ -2902,6 +2935,7 @@ Entity KNKK_REVDB is TextBox in frmMain
 
 	with defaults
 		label LABELS.labLastReviewExt
+		enabled false
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
@@ -2913,6 +2947,7 @@ Entity KNKK_DBEKR is TextBox in frmMain
 
 	with defaults
 		label LABELS.labRecClimit
+		enabled false
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
@@ -3410,7 +3445,9 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
-	
+
+		REQUEST.COUNTRY in {BE,IT, PT} then
+			this mandatory false
 	with actions
 		; ATTACHMENT mandatory  false
 		; _COMMENT_ mandatory  false
