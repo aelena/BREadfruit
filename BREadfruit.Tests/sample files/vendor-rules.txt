@@ -50,6 +50,7 @@ Entity TBVendorName is TextBox in frmSearch
 	with actions
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
 
 	with rules
 		
@@ -67,6 +68,7 @@ Entity TBVendorCity is TextBox in frmSearch
 	with actions
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
 
 	with triggers
 		this.value on change
@@ -80,18 +82,21 @@ Entity TBVendorNumber is TextBox in frmSearch
 		value ''
 		max length 10
 		min length 10
-		label LABELS.VENDOR.NUMBER
+		label LABELS.labVendorNumber
+		validation ^[0-9]{10}$
+
 
 	with actions
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
 
 	with rules
 		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
 		TBVendorNumber.text starts with '0' then
-			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in ErrorMessage
+			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in MESSAGE_POPUP
 		TBVendorNumber.text not starts with '0' then
-			set value '' in ErrorMessage
+			set value '' in MESSAGE_POPUP
 
 	with triggers
 		this.value changes
@@ -110,6 +115,7 @@ Entity TBVendorIFA is TextBox in frmSearch
 	with actions
 		hide btnCreateVendor
 		hide vendorSearchResultGrid
+		clear vendorSearchResultGrid
 	
 	with rules
 		; should this be moved to rules for the btnSearch button? maybe.....
@@ -124,23 +130,23 @@ Entity TBVendorIFA is TextBox in frmSearch
 
  Entity DDLVDCountry is DropDownList in frmSearch
 	with defaults
-		visible true
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
-		mandatory true
 		load data from DATASOURCE.MDM_Countries
 		label LABELS.GENERIC.COUNTRY
 
 	with actions
-		set value '' in ErrorMessage
+		set value '' in MESSAGE_POPUP
 		hide vendorSearchResultGrid
 		hide btnCreateVendor
 		load data from DATASOURCE.MDM_Countries
+		clear vendorSearchResultGrid
+
 
 	with rules
-		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then set value LABELS.VENDOR.SPECIFICLOCALIZED.SIRET in TBVendorVAT
-		DDLVDCountry.value in {PT,ES} then set value LABELS.VENDOR.SPECIFICLOCALIZED.NIF in TBVendorVAT
-		DDLVDCountry.value is IT then set value LABELS.VENDOR.SPECIFICLOCALIZED.PARTITAIVA in TBVendorVAT
-		DDLVDCountry.value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value VAT in TBVendorVAT
+		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then set value LABELS.labSIRET in TBVendorVAT
+		DDLVDCountry.value in {PT,ES} then set value LABELS.labNIF in TBVendorVAT
+		DDLVDCountry.value is IT then set value LABELS.labPartitaIVA in TBVendorVAT
+		DDLVDCountry.value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value LABELS.labVAT in TBVendorVAT
 	
 	with triggers
 		this.value changes 
@@ -156,6 +162,7 @@ Entity TBVendorVAT is TextBox in frmSearch
 	with actions
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
 
 	with triggers
 		this.value changes
@@ -166,16 +173,19 @@ Entity TBVendorVAT is TextBox in frmSearch
 Entity DDLCDCountry is DropDownList in frmSearch
 	with defaults
 		visible true
-		; we need to define these things too, let's calle them "data constants" for now...
-		value User.Country
-		load data from DATASOURCE.ACTIVE_COUNTRIES
+		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
+		load data from DATASOURCE.MDM_ClusterCountries
 		label LABELS.labCountry
+		mandatory true
 	
 	with actions
 		; load active companies for this country
 		load data from DATASOURCE.MDM_ClusterCompanies with arguments {"Country" : this.value} in DDLCDCompany
 		; purge the data in this dropdownlist
 		clear DDLCDPurchOrg
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+		hide btnCreateVendor
 
 	with triggers
 		this.value changes
@@ -186,12 +196,16 @@ Entity DDLCDCountry is DropDownList in frmSearch
 Entity DDLCDCompany is DropDownList in frmSearch
 	with defaults
 		visible true
-		value USER_COST_LOCATION_UNIT			; another data constant
+		value USER.COST_LOCATION_UNIT			; another data constant
 		label LABELS.labCompany
+		mandatory true
 
 	with actions
 		; load active companies for this country
-		load data from DATASOURCE.MDM_ClusterPurchaseOrganizations with arguments {"CompanyCode": this.value} in DDLCDPurchOrg 
+		load data from DATASOURCE.MDM_ClusterPurchaseOrganizations with arguments {CompanyCode: this.value} in DDLCDPurchOrg 
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+		hide btnCreateVendor
 
 	with triggers
 		this.value changes
@@ -204,14 +218,22 @@ Entity DDLCDPurchOrg is DropDownList in frmSearch
 		visible true
 		value ''
 		label LABELS.GENERIC.PURCHASEORG
-		
+		mandatory true
+
+	with actions
+		clear vendorSearchResultGrid
+		hide vendorSearchResultGrid
+		hide btnCreateVendor
+
+	with triggers
+		this.value changes	
 
 ; ----------------------------------------------------------------------------	
 
 Entity btnSearch is Button in frmSearch
+
 	with defaults
-		visible true
-		label LABELS.BUTTONS.SEARCH
+		label LABELS.btnSearch
 
 	with actions
 		; TODO: missing defining arguments here...
@@ -222,30 +244,29 @@ Entity btnSearch is Button in frmSearch
 		; maybe this has to be defined a bit better
 		; would this be DATASOURCE or maybe WEBSERVICE call?
 		; what properties should be passed to identify the user? or shall this be somehow managed or injected by environment?
-		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {"User" : USER.USER_ID, "Country" : DDLCDCountry, "Company" : DDLCDCompany, "PurchaseOrg" : DDLCDPurchOrg} in ErrorMessage
-		
+		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {User : USER.USER_ID, Country : DDLCDCountry.Value, Company : DDLCDCompany.Value, PurchaseOrg : DDLCDPurchOrg.Value} in MESSAGE_POPUP
 
 	with rules
 		
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
 
 		DDLVDCountry is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 		
 		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 	
 		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in ErrorMessage
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in MESSAGE_POPUP
 		
 		TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 	
 		DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in ErrorMessage
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in MESSAGE_POPUP
 		
 		TBVendorName is not empty and DDLVDCountry is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 
 		TBVendorIFA.value is not empty then DDLVDCountry not mandatory
 
@@ -267,14 +288,12 @@ Entity btnCreateVendor is Button in frmSearch
 		; transition to the main form
 		; TODO: guess we will have to pass some arguments here and map things to the conceptual model
 		; this works already anyway
+		; TODO: PROBABLY NOT NEEDED
 		change form to frmMain with arguments {"A" : "B"}
 
-	with rules
-		; how to specify all that happens server side here?
-		; shall be express something like change form?
 
 	with triggers
-		this click
+		this clicked
 
 ; ----------------------------------------------------------------------------	
 
@@ -282,12 +301,6 @@ Entity vendorSearchResultGrid is Grid in frmSearch
 	with defaults
 		visible false
 	
-
-	; TODO: DEFINE CONVENTIONS FOR GRID BETTER
-
-	; MISSING ACTIONS ON GRID BUTTONS
-
-
 ; ----------------------------------------------------------------------------	
 ;     END OF SEARCH FORM DEFINITION
 ; ----------------------------------------------------------------------------	
@@ -444,7 +457,7 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.VENDOR.ACCOUNT_GROUP in {YVT4, YVT5} then
+		REQUEST.REQUEST.ACCOUNT_GROUP in {YVT4, YVT5} then
 			show this
 			show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
 			; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
@@ -965,9 +978,12 @@ Entity GD_Adr_Name is TextBox in frmMain
 			max length 32
 	with actions
 		ATTACHMENT mandatory  true 
-		; _COMMENT_ mandatory  false  
+		; _COMMENT_ mandatory  false
+		set value SUBSTRING(GD_Adr_Name,2) in GD_Adr_Search
+		set value GD_Adr_Name in B_GD_VB_AccountHolder
+
 	with triggers 
-		on change
+		this on change
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Name2 is TextBox in frmMain
@@ -994,7 +1010,7 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			mandatory true
 
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
@@ -1023,7 +1039,7 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
 		
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			mandatory true
 
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
@@ -1123,9 +1139,9 @@ Entity GD_Adr_Region is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
 			mandatory false
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT1 then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT1 then
 			mandatory true
 
 		REQUEST.ACCOUNT_GROUP is YVT1 and GD_Adr_Region.Value is 01 then
@@ -1303,7 +1319,7 @@ Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
 		REQUEST.VENDOR_COUNTRY is COUNTRIES.FRANCE then this max length 10
 		REQUEST.VENDOR_COUNTRY is ES then this max length 5
 
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
 			max length 5
 ; ----------------------------------------------------------------------------	
 
@@ -1720,7 +1736,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
 			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "FR"}
 			; this equals to this line in original code
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
@@ -1728,7 +1744,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 			; can or should we do something like this?
 			set width 680px		
 
-		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
+		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
 			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "EN"}
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 			set value "EN" in REQUEST.INDUSTRY_COUNTRY
@@ -1748,10 +1764,10 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
 			visible true
 
-		REQUEST.VENDOR.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is ROLES.CLERK then
+		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is ROLES.CLERK then
 			mandatory true
 
 ; ----------------------------------------------------------------------------	
@@ -1804,7 +1820,7 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 		;	1) if regional country Greece and not vendor creation from scratch->NO mandatory else If vendor country doesn't belong to YVT6 or YVT9 -> mandatory
 		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is not VC then
 			this mandatory false
-		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is not VC and VENDOR.ACCOUNT_GROUP not in {YVT6, YVT9} then
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE is not VC and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9} then
 			this mandatory true
 
 		; YVT1 is BELGIUM
@@ -1852,14 +1868,14 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			set value substring(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
-		REQUEST.VENDOR_COUNTRY is FR and REQUEST.VENDOR.ACCOUNT_GROUP is YVT6 then
+		REQUEST.VENDOR_COUNTRY is FR and REQUEST.REQUEST.ACCOUNT_GROUP is YVT6 then
 			pad left 0,14
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value substring(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
 		; ny EU country ; finish the list....
-		REQUEST.VENDOR.ACCOUNT_GROUP is not "YVT6" and REQUEST.VENDOR_COUNTRY in {"ES", "IT", "PT", "GR" } then
+		REQUEST.REQUEST.ACCOUNT_GROUP is not "YVT6" and REQUEST.VENDOR_COUNTRY in {"ES", "IT", "PT", "GR" } then
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 
 		REQUEST.VENDOR_COUNTRY is not "ES" then
@@ -1947,11 +1963,11 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
 			mandatory false
 			visible false
 
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT5 then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT5 then
 			max length 16
 
 
@@ -1963,9 +1979,9 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
 			max length 9
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT5 then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT5 then
 			max length 11
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			enabled false
@@ -2016,7 +2032,7 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 			GD_Ctr_VATRegistrationNumber mandatory true
 			GD_Ctr_VATRegistrationNumber enabled true
 
-		REQUEST.VENDOR.ACCOUNT_GROUP is YVT7 then
+		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
 			this enable false
 			this mandatory false
 
@@ -3587,7 +3603,7 @@ Entity btnSubmit is Button in frmMain
 			set value ERRsubmitRequestGDFieldTaxCode1Empty in MESSAGE_POPUP			   
 
 		; TODO: how to include this WEBSERVICE call in a condition like this?
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_POBox.Value is not empty and WEBSERVICES.VALIDATE_POSTAL_CODE with arguments {} and GD_Adr_Country.Value is not GR and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_POBox.Value is not empty and WEBSERVICE.VALIDATE_POSTAL_CODE with arguments {} and GD_Adr_Country.Value is not GR and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} then
 			set value ERRsubmitRequestGDPOinv in MESSAGE_POPUP			   
 		
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Name.Value is empty then
