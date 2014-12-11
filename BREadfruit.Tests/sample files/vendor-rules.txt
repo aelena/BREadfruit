@@ -355,6 +355,10 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		mandatory true
 		label LABELS.labGD_GD_Adr_Country
 
+	with rules
+		GD_Adr_Country.Value is ES and GD_Ctr_CustomerClassification is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S} then
+			set value G in GD_Ctr_CustomerClassification
+
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_VendorClassification is DropDownList in frmMain
@@ -979,7 +983,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 	with actions
 		ATTACHMENT mandatory  true 
 		; _COMMENT_ mandatory  false
-		set value SUBSTRING(GD_Adr_Name,2) in GD_Adr_Search
+		set value SUBSTRING(GD_Adr_Name,20) in GD_Adr_Search
 		set value GD_Adr_Name in B_GD_VB_AccountHolder
 
 	with triggers 
@@ -1351,6 +1355,18 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} then
+			set value FR in GD_Com_LanguageCode
+
+		REQUEST.ACCOUNT_GROUP is YVT1 and GD_Adr_Region is 01 then
+			set value NL in GD_Com_LanguageCode
+	
+		REQUEST.ACCOUNT_GROUP is YCV1 and GD_Adr_Region in {02, 03} then
+			set value FR in GD_Com_LanguageCode
+
+		; this should come from the MODEL (from the MDM_Countries table) where "country configuration" is set
+		REQUEST.DefaultLanguage is not empty then
+			set value REQUEST.DefaultLanguage in GD_Com_LanguageCode
 
 ; ----------------------------------------------------------------------------	
 
@@ -2049,6 +2065,10 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is VC and REQUEST.VAT_IsMandatory then
 			this mandatory true
 			this enable true
+
+		REQUEST.VAT_IsMandatory and REQUEST.REQUEST_TYPE is VC then
+			this enable true
+			this mandatory true
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
@@ -3463,6 +3483,19 @@ Entity btnSubmit is Button in frmMain
 	with defaults
 		label LABELS.btnSubmit
 
+	with actions
+		set value toupper(GD_Adr_Name.Value) in GD_Adr_Name
+		set value toupper(GD_Adr_Name.Value) in    GD_Adr_Name
+		set value toupper(GD_Adr_Name2.Value) in   GD_Adr_Name2
+		set value toupper(GD_Adr_Name3.Value) in   GD_Adr_Name3
+		set value toupper(GD_Adr_Name4.Value) in   GD_Adr_Name4
+		set value toupper(GD_Adr_Street.Value) in  GD_Adr_Street
+		set value toupper(GD_Adr_Street2.Value) in GD_Adr_Street2
+		set value toupper(GD_Adr_Street3.Value) in GD_Adr_Street3
+		set value toupper(GD_Adr_Street4.Value) in GD_Adr_Street4
+		set value toupper(GD_Adr_Street5.Value) in GD_Adr_Street5
+		set value toupper(GD_Adr_City.Value) 	in   GD_Adr_City
+
 	with rules
 
 		REQUEST.REQUEST_STATE is CLOSED then
@@ -3802,6 +3835,11 @@ Entity btnSubmit is Button in frmMain
 		; TODO: ValidateBankDetails
 
 		; TODO: CalculateExternalNumber
+
+		
+	with triggers
+
+		this on click
 			
 ; ----------------------------------------------------------------------------	
 		

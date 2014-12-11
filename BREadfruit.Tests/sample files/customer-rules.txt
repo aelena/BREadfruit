@@ -1045,6 +1045,10 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 		REQUEST.ACCOUNT_GROUP is YCT1 and GD_Adr_Region in {02, 03} then
 			set value FR in GD_Com_LanguageCode
 
+		; this should come from the MODEL (from the MDM_Countries table) where "country configuration" is set
+		REQUEST.DefaultLanguage is not empty then
+			set value REQUEST.DefaultLanguage in GD_Com_LanguageCode
+
 
 ; ---------------------------------------------------------------------------- 
 
@@ -1701,9 +1705,9 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			this visible true
 		REQUEST.ACCOUNT_GROUP in {YCT1,YCT2} then
 			max length 10
-		REQUEST.ACCOUNT_GROUP in {YCT3,YCT4} is YCT3then
+		REQUEST.ACCOUNT_GROUP in {YCT3,YCT4} is YCT3 then
 			max length 9
-		REQUEST.ACCOUNT_GROUP in YCT5 is YCT3then
+		REQUEST.ACCOUNT_GROUP in YCT5 is YCT3 then
 			max length 11
 		REQUEST.ACCOUNT_GROUP is YCT6 and REQUEST.REQUEST_TYPE is CC and GD_Ctr_IsNaturalPerson.Value is false then
 			this mandatory true
@@ -1850,6 +1854,8 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is CC and REQUEST.VAT_IsMandatory then
 			this mandatory true
 		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
+			this mandatory true
+		REQUEST.VAT_IsMandatory and REQUEST.REQUEST_TYPE is CC then
 			this mandatory true
 ; ---------------------------------------------------------------------------- 
 
@@ -2016,12 +2022,15 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 		REQUEST.COUNTRY is LU and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 1113 in CC_PT_PaymentTerms
+			set value 1113 in SO_TermsOfPaymentKey
 
 		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} and REQUEST.CUSTOMER_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
 			set value 6115 in CC_PT_PaymentTerms
+			set value 6115 in SO_TermsOfPaymentKey
 		
 		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} and REQUEST.CUSTOMER_COUNTRY not in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
 			set value 6000 in CC_PT_PaymentTerms
+			set value 6000 in SO_TermsOfPaymentKey
 
 		REQUEST.COMPANY_CODE in {5150,5180,596G} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value '' in CC_PT_PaymentTerms
@@ -2047,7 +2056,7 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 		REQUEST.COUNTRY in {ES, FR} then
 			this mandatory true
 
-		REQUEST.COUNTRY is PT
+		REQUEST.COUNTRY is PT then
 			this mandatory false
 
 		REQUEST.COUNTRY is IT and CC_PT_PaymentMethods.Value is L then
@@ -2431,6 +2440,9 @@ Entity SO_CustomerShippingConditions is DropDownList in frmMain
 		REQUEST.COUNTRY is GR then
 			set value 01 in SO_CustomerShippingConditions
 
+		REQUEST.COUNTRY is IT then
+			set value 31 in SO_CustomerShippingConditions
+
 		REQUEST.COUNTRY is GR then
 			set value 21 in SO_CustomerShippingConditions
 
@@ -2704,8 +2716,27 @@ Entity SO_TaxClassification is DropDownList in frmMain
 	with defaults
 		label LABELS.labTaxClassification
 		mandatory true
+		load data from DATASOURCE.MDMC_TaxClassification
 
 	with rules
+		
+		SO_TaxClassification.Value is empty then
+			set value 1 in SO_TaxClassification
+
+		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is PT then
+			set value 1 in SO_TaxClassification
+
+		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is not PT REQUEST.IsEU is true then
+			set value B in SO_TaxClassification
+
+		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is not PT and REQUEST.IsEU is false then
+			set value A in SO_TaxClassification
+
+		REQUEST.COUNTRY is FR then
+			this mandatory true
+			set value 01 in SO_TaxClassification
+			this enable false
+
 		REQUEST.COUNTRY is ES then
 			set value 1 in SO_TaxClassification
 
@@ -3306,11 +3337,44 @@ Entity btnSubmit is Button in frmMain
 	with defaults
 		label LABELS.btnSubmit
 
+	with actions
+		set value toupper(GD_Adr_Name.Value) in GD_Adr_Name
+		set value toupper(GD_Adr_Name.Value) in    GD_Adr_Name
+		set value toupper(GD_Adr_Name2.Value) in   GD_Adr_Name2
+		set value toupper(GD_Adr_Name3.Value) in   GD_Adr_Name3
+		set value toupper(GD_Adr_Name4.Value) in   GD_Adr_Name4
+		set value toupper(GD_Adr_Street.Value) in  GD_Adr_Street
+		set value toupper(GD_Adr_Street2.Value) in GD_Adr_Street2
+		set value toupper(GD_Adr_Street3.Value) in GD_Adr_Street3
+		set value toupper(GD_Adr_Street4.Value) in GD_Adr_Street4
+		set value toupper(GD_Adr_Street5.Value) in GD_Adr_Street5
+		set value toupper(GD_Adr_City.Value) 	in   GD_Adr_City
+
+
+
+
 	with rules
 		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
 			this visible false
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
+
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC and DDLDCComment.Value is empty then
+			set value ERRsubmitRequestComment in MESSAGE_POPUP
+
+		DDLDCComment.Value is not empty and DDLDCComment.Length > 2000 then 
+			set value ERRcommentLenght in MESSAGE_POPUPç
+
+		GD_Adr_Country.Value is GR and GD_Adr_City2.Value is empty and GD_Adr_City2 is mandatory then
+			set value ERRsubmitRequestGDFieldDistrict in MESSAGE_POPUP
+
+		; TODO: ValidateBankDetails
+
+		; TODO: CalculateExternalNumber
+
+	with triggers
+
+		this on click
 
 ; ---------------------------------------------------------------------------- 
 
@@ -3385,8 +3449,12 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		label LABELS.labGD_GD_Adr_Country
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
-			this enable false	
+		GD_Adr_Country.Value is ES and GD_Ctr_VendorClassification is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S,U} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is CC then
+			set value G in GD_Ctr_VendorClassification
+
+		GD_Adr_Country.Value is ES and GD_Ctr_VendorClassification is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S,U} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is not CC and GD_Ctr_CustomerClassification.OldDisplayValue is not empty then
+			set value G in GD_Ctr_VendorClassification
+
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
@@ -3489,7 +3557,7 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 			set value false in GD_Ctr_IsNaturalPerson
 			set value G in GD_Ctr_CustomerClassification
 
-		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {X, 1,2,3,4,5,6,7,8,9} then 
+		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {X,1,2,3,4,5,6,7,8,9} then 
 			set value true in GD_Ctr_IsNaturalPerson 
 			set value NG in GD_Ctr_CustomerClassification
 			

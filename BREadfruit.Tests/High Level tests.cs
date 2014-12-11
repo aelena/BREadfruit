@@ -507,11 +507,12 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.Count () == 1 );
 			var e = parser.Entities.First ();
 			Assert.That ( e.Defaults.Count () == 4 );
-			Assert.That ( e.Triggers.Count () == 5, "Expected 5 triggers" );
+			Assert.That ( e.Triggers.Count () == 6, "Expected 6 triggers" );
 			Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed", "wrong trigger expression(1)." );
 			Assert.That ( e.Triggers.ElementAt ( 1 ).ToString () == "TBVendorCity clicked", "wrong trigger expression(2)." );
 			Assert.That ( e.Triggers.ElementAt ( 2 ).ToString () == "TBVendorCity clicked", "wrong trigger expression(3)." );
 			Assert.That ( e.Triggers.ElementAt ( 3 ).ToString () == "TBVendorCity clicked", "wrong trigger expression(4)." );
+			Assert.That ( e.Triggers.ElementAt ( 4 ).ToString () == "TBVendorCity clicked", "wrong trigger expression(5)." );
 			Assert.That ( e.Triggers.Last ().ToString () == "TBVendorCity clicked", "wrong trigger expression(5)." );
 		}
 
@@ -1437,9 +1438,9 @@ namespace BREadfruit.Tests
 			var e = parser.Entities.First ();
 			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
 			Assert.That ( e.Name == "xARKANEx", "Entity name should be 'xARKANEx' but is " + e.Name );
-			Assert.That ( e.Defaults.Count () == 2,"Should have 2 default clauses, but has" + e.Defaults.Count () );
+			Assert.That ( e.Defaults.Count () == 2, "Should have 2 default clauses, but has" + e.Defaults.Count () );
 
-			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString() == "LU + GD_Ctr_PIVA.Value" );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "LU + GD_Ctr_PIVA.Value" );
 
 		}
 
@@ -1498,10 +1499,10 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Name == "Sample", "Entity name should be 'Sample' but is " + e.Name );
 
 			Assert.That ( e.Defaults.Count () == 2, "Should have 2 default clauses, but has" + e.Defaults.Count () );
-			Assert.That ( e.Rules.Count() == 2, "Should have 2 rules, but has" + e.Rules.Count () );
+			Assert.That ( e.Rules.Count () == 2, "Should have 2 rules, but has" + e.Rules.Count () );
 
 			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.InRangeOperator, "Operator Error" );
-			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString() == "{723,1332}" );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "{723,1332}" );
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First () == Grammar.SetValueActionSymbol );
 
 			Assert.That ( e.Rules.Last ().Conditions.First ().Operator == Grammar.NotInRangeOperator );
@@ -1536,10 +1537,131 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Triggers.First ().Event == Grammar.ClickedEventSymbol.Token );
 			Assert.That ( e.Triggers.First ().Target == "CP_btnClearAll" );
 
-		
+
 		}
 
+
 		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile051 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File051 - SetValue.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_TaxClassification", "Entity name should be 'SO_TaxClassification' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 2, "Should have 2 default clauses, but has" + e.Defaults.Count () );
+			Assert.That ( e.Rules.Count () == 1, "Should have 1 rules, but has" + e.Rules.Count () );
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Reference == "SO_TaxClassification" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Value.ToString () == "01" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol.Token );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile052 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File052 - In Aliases.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_TaxClassification", "Entity name should be 'SO_TaxClassification' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 2, "Should have 2 default clauses, but has" + e.Defaults.Count () );
+			Assert.That ( e.Rules.Count () == 3, "Should have 3 rules, but has" + e.Rules.Count () );
+
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.InOperator );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Reference == "SO_TaxClassification" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Value.ToString () == "01" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol.Token );
+
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator == Grammar.InOperator );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Reference == "SO_TaxClassification" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "01" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol.Token );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator == Grammar.InOperator );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Reference == "SO_TaxClassification" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "01" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol.Token );
+
+		}
+
+
+		[Test]
+		public void ParseSampleFile053 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File053 - Not In Aliases.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_TaxClassification", "Entity name should be 'SO_TaxClassification' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 2, "Should have 2 default clauses, but has" + e.Defaults.Count () );
+			Assert.That ( e.Rules.Count () == 5, "Should have 5 rules, but has" + e.Rules.Count () );
+
+			Assert.That ( e.Rules.All ( x => x.Conditions.First ().Operator == Grammar.NotInOperator ) );
+			Assert.That ( e.Rules.All ( x => x.Conditions.Last ().ResultActions.First ().Reference == "SO_TaxClassification" ) );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.NotInOperator );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Reference == "SO_TaxClassification" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Value.ToString () == "01" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol.Token );
+
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator == Grammar.NotInOperator );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Reference == "SO_TaxClassification" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "01" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol.Token );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator == Grammar.NotInOperator );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Reference == "SO_TaxClassification" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "01" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol.Token );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile055 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File054 - ToUpper.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_TaxClassification", "Entity name should be 'SO_TaxClassification' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 2, "Should have 2 default clauses, but has" + e.Defaults.Count () );
+			Assert.That ( e.Rules.Count () == 1, "Should have 1 rules, but has" + e.Rules.Count () );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Action == Grammar.SetValueActionSymbol.Token );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Reference == "GD_Adr_Name2" );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "toupper(GD_Adr_Name)" );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.ElementAt ( 1 ).Value.ToString () == "tolower(GD_Adr_Name)" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 		[Test]
 		public void ShouldFindEntities_Vendor ()
