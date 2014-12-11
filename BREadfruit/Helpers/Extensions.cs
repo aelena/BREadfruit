@@ -254,26 +254,33 @@ namespace BREadfruit.Helpers
 			if ( searchee == null )
 				throw new ArgumentNullException ( "searchee", "the string cannot be null." );
 
-			if ( !wordBoundaries )
+			if ( searches.HasItems () )
 			{
-				if ( searches != null )
-					foreach ( var s in searches )
-						if ( searchee.Contains ( s ) )
-							return new Tuple<bool, string> ( true, s );
-			}
-			else
-			{
-				if ( searches != null )
-				{
-					foreach ( var s in searches )
-					{
-						var _rx = "\\b" + s + "\\b";
-						var _matches = Regex.Matches ( searchee, _rx );
-						if ( _matches != null && _matches.Count > 0 )
-							return new Tuple<bool, string> ( true, s );
 
+				searches = searches.OrderByDescending ( x => x.Length );
+
+				if ( !wordBoundaries )
+				{
+					if ( searches != null )
+						foreach ( var s in searches )
+							if ( searchee.Contains ( s ) )
+								return new Tuple<bool, string> ( true, s );
+				}
+				else
+				{
+					if ( searches != null )
+					{
+						foreach ( var s in searches )
+						{
+							var _rx = "\\b" + s + "\\b";
+							var _matches = Regex.Matches ( searchee, _rx );
+							if ( _matches != null && _matches.Count > 0 )
+								return new Tuple<bool, string> ( true, s );
+
+						}
 					}
 				}
+
 			}
 
 			return new Tuple<bool, string> ( false, String.Empty );
@@ -428,6 +435,7 @@ namespace BREadfruit.Helpers
 		/// <param name="list"></param>
 		/// <param name="func"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException" />
 		public static int IndexOf<T> ( this IEnumerable<T> list, Func<T, bool> func )
 		{
 			if ( list == null )
@@ -494,6 +502,8 @@ namespace BREadfruit.Helpers
 		/// <param name="list"></param>
 		/// <param name="func"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException" />
+		/// <exception cref="ArgumentException" />
 		public static T FindNth<T> ( this IEnumerable<T> list, Func<T, bool> func, int index )
 		{
 
