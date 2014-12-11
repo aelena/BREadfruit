@@ -145,6 +145,23 @@ namespace BREadfruit.Tests.Low_level_tests
         [TestCase ( "substring   (  \"ANYTHING.GOES\", 4 ) ", Result = true )]
         [TestCase ( "substring ( '79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\"', 4 ) ", Result = true )]
         [TestCase ( "substring ( 79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\", 4 ) ", Result = false )]
+
+		[TestCase ( "substring(ANYTHING.GOES,4)", Result = true )]
+		[TestCase ( "substring(ANY566THING.GOES,4)", Result = true )]
+		[TestCase ( "substring(ANYTHING.GOES,4) ", Result = true )]
+		[TestCase ( "substring(ANYTHING.GOES_HERE,4)", Result = true )]
+		[TestCase ( "substring(ANYTHING.GOES.HERE_IS_ME,14) ", Result = true )]
+		[TestCase ( "substring(\"ANYTHING.GOES\",4) ", Result = true )]
+		[TestCase ( "substring('79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\"',4) ", Result = true )]
+		[TestCase ( "substring(79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\",4) ", Result = false )]
+
+		[TestCase ( "substring(ANYTHING.GOES,4", Result = false )]
+		[TestCase ( "substring(ANYTHING.GOES,)", Result = false )]
+		[TestCase ( "substring(,4)", Result = false )]
+		[TestCase ( "substring(,)", Result = false )]
+		[TestCase ( "substring()", Result = false )]
+
+
         public bool SubStringExpressionRegexTests ( string line )
         {
             return Regex.IsMatch ( line, Grammar.SubStringExpressionRegex, RegexOptions.IgnoreCase );
@@ -154,6 +171,41 @@ namespace BREadfruit.Tests.Low_level_tests
 
         // ---------------------------------------------------------------------------------
 
+
+		[TestCase ( "ToUpper ( ANYTHING.GOES)", Result = true )]
+		[TestCase ( "ToUpper ( ANY566THING.GOES )", Result = true )]
+		[TestCase ( "ToUpper ( ANYTHING.GOES ) ", Result = true )]
+		[TestCase ( "ToUpper   (  ANYTHING.GOES) ", Result = true )]
+		[TestCase ( "ToUpper ( ANYTHING.GOES_HERE )", Result = true )]
+		[TestCase ( "ToUpper ( ANYTHING.GOES.HERE_IS_ME ) ", Result = true )]
+		[TestCase ( "ToUpper   (  \"ANYTHING.GOES\" ) ", Result = true )]
+		[TestCase ( "ToUpper ( '79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\"') ", Result = true )]
+		[TestCase ( "ToUpper ( 79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\" ) ", Result = false )]
+
+		[TestCase ( "toupper(ANYTHING.GOES)", Result = true )]
+		[TestCase ( "toupper(ANY566THING.GOES)", Result = true )]
+		[TestCase ( "toupper(ANYTHING.GOES) ", Result = true )]
+		[TestCase ( "toupper(ANYTHING.GOES_HERE)", Result = true )]
+		[TestCase ( "toupper(ANYTHING.GOES.HERE_IS_ME) ", Result = true )]
+		[TestCase ( "toupper(\"ANYTHING.GOES\") ", Result = true )]
+		[TestCase ( "toupper('79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\"') ", Result = true )]
+		[TestCase ( "toupper(79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\") ", Result = false )]
+
+		[TestCase ( "ToUpper ( ANYTHING.GOES, 3)", Result = false )]
+		[TestCase ( "ToUpper ( ANYTHING.GOES", Result = false )]
+		[TestCase ( "ToUpperANYTHING.GOES", Result = false )]
+		[TestCase ( "ToUpper ANYTHING.GOES", Result = false )]
+		[TestCase ( "ToUpper()", Result = false )]
+
+
+		public bool ToUpperExpressionRegexTests ( string line )
+		{
+			return Regex.IsMatch ( line, Grammar.ToUpperExpressionRegex, RegexOptions.IgnoreCase );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
         // TODO: PENDING TESTS FOR 
         // ^save data to[\t\s]+(DATASOURCE|WEBSERVICE)(\.){1}[A-Za-z0-9_-]+[\t\s]+with arguments[\t\s]*{{1}[\t\s]*((\"|'){1}[A-Za-z0-9_-]+(\"|'){1}){1}[\t\s]*:[\t\s]*((\"|'){1}.+(\"|'){1}){1}[\t\s]*}{1}[\t\s]*$
