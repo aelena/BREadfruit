@@ -197,11 +197,43 @@ namespace BREadfruit.Tests.Low_level_tests
 		[TestCase ( "ToUpper ANYTHING.GOES", Result = false )]
 		[TestCase ( "ToUpper()", Result = false )]
 
-
 		public bool ToUpperExpressionRegexTests ( string line )
 		{
 			return Regex.IsMatch ( line, Grammar.ToUpperExpressionRegex, RegexOptions.IgnoreCase );
 
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( "ToLower ( ANYTHING.GOES)", Result = true )]
+		[TestCase ( "ToLower ( ANY566THING.GOES )", Result = true )]
+		[TestCase ( "ToLower ( ANYTHING.GOES ) ", Result = true )]
+		[TestCase ( "ToLower   (  ANYTHING.GOES) ", Result = true )]
+		[TestCase ( "ToLower ( ANYTHING.GOES_HERE )", Result = true )]
+		[TestCase ( "ToLower ( ANYTHING.GOES.HERE_IS_ME ) ", Result = true )]
+		[TestCase ( "ToLower   (  \"ANYTHING.GOES\" ) ", Result = true )]
+		[TestCase ( "ToLower ( '79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\"') ", Result = true )]
+		[TestCase ( "ToLower ( 79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\" ) ", Result = false )]
+
+		[TestCase ( "tolower(ANYTHING.GOES)", Result = true )]
+		[TestCase ( "tolower(ANY566THING.GOES)", Result = true )]
+		[TestCase ( "tolower(ANYTHING.GOES) ", Result = true )]
+		[TestCase ( "tolower(ANYTHING.GOES_HERE)", Result = true )]
+		[TestCase ( "tolower(ANYTHING.GOES.HERE_IS_ME) ", Result = true )]
+		[TestCase ( "tolower(\"ANYTHING.GOES\") ", Result = true )]
+		[TestCase ( "tolower('79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\"') ", Result = true )]
+		[TestCase ( "tolower(79842398/)(/)(//&(&(/&(/&/(\"!\"·!·\") ", Result = false )]
+		[TestCase ( "ToLower ( ANYTHING.GOES, 3)", Result = false )]
+		[TestCase ( "ToLower ( ANYTHING.GOES", Result = false )]
+		[TestCase ( "ToLowerANYTHING.GOES", Result = false )]
+		[TestCase ( "ToLower ANYTHING.GOES", Result = false )]
+		[TestCase ( "ToLower()", Result = false )]
+
+		public bool ToLowerExpressionRegexTests ( string line )
+		{
+			return Regex.IsMatch ( line, Grammar.ToLowerExpressionRegex, RegexOptions.IgnoreCase );
 		}
 
 

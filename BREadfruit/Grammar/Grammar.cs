@@ -293,7 +293,9 @@ namespace BREadfruit
 		/// in which case, only numbers, letters, _ and . are allowed 
 		/// 
 		/// </summary>
-		public const string SubStringExpressionRegex = "^substring[\t\\s]+[(][\t\\s]*(([A-Za-z0-9'.'_])|(\"|'){1}(.)+(\"|'))+[\t\\s]*,[\t\\s]*[0-9]+[\t\\s]*[)][\t\\s]*$";
+		public const string SubStringExpressionRegex = "^substring[\t\\s]*[(][\t\\s]*(([A-Za-z0-9'.'_])|(\"|'){1}(.)+(\"|'))+[\t\\s]*,[\t\\s]*[0-9]+[\t\\s]*[)][\t\\s]*$";
+		public const string ToUpperExpressionRegex = "^toupper[\t\\s]*[(][\t\\s]*(([A-Za-z0-9'.'_])|(\"|'){1}(.)+(\"|'))+[\t\\s]*[)][\t\\s]*$";
+		public const string ToLowerExpressionRegex = "^tolower[\t\\s]*[(][\t\\s]*(([A-Za-z0-9'.'_])|(\"|'){1}(.)+(\"|'))+[\t\\s]*[)][\t\\s]*$";
 
 		public const string WithArgumentsClauseLineRegex = "^WITH_ARGS[\t\\s]+{([\t\\s]*((\"|')?([A-Za-z0-9'.'_])+(\"|'))[\t\\s]*:[\t\\s]*((\"|')?(.)+(\"|'))[\t\\s]*),?}[\t\\s]*$";
 		/// <summary>
@@ -420,7 +422,7 @@ namespace BREadfruit
 
 		public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
 		public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
-		public static Symbol InSymbol = new Symbol ( "in", 2, false );
+		public static Symbol InSymbol = new Symbol ( "in", 2, false, new [] {"is in", "is one of", "is any of"} );
 
 		public static Symbol EmptyStringSymbol = new Symbol ( "\"\"", 2, true );
 		public static Symbol NullValueSymbol = new Symbol ( "null", 2, true );
@@ -525,7 +527,7 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
-		#region " --- operators --- "
+		#region " --- operators --- Sub
 
 
 		public static Operator IsOperator = new Operator ( "is", 2, false );
@@ -546,8 +548,8 @@ namespace BREadfruit
 		public static Operator NotEndsWithOperator = new Operator ( "does_not_end_with", 2, false, new [] { "does not end with", "not ends with", "not ends" } );
 		public static Operator ContainsOperator = new Operator ( "contains", 2, false );
 		public static Operator NotContainsOperator = new Operator ( "does_not_contain", 2, false, new [] { "does not contain", "not contains" } );
-		public static Operator InOperator = new Operator ( "in", 2, false );
-		public static Operator NotInOperator = new Operator ( "not_in", 2, false, new [] { "not in" } );
+		public static Operator InOperator = new Operator ( "in", 2, false, new [] { "is in", "is one of", "is any of" } );
+		public static Operator NotInOperator = new Operator ( "not_in", 2, false, new [] { "not in", "not one of", "is not in", "is not any of", "is not one of" } );
 		public static Operator EqualityOperator = new Operator ( "==", 2, false );
 		public static Operator NonEqualityOperator = new Operator ( "!=", 2, false );
 		public static Operator InRangeOperator = new Operator ( "in_range", 2, false, new [] { "in range" } );
@@ -881,8 +883,7 @@ namespace BREadfruit
 		private static void AddOperators ()
 		{
 			//IsOperator.Aliases.ToList ().ForEach ( x => Grammar._operators.Add ( new Operator ( x ) ) );
-			Grammar._operators.Add ( IsOperator );
-			Grammar._operators.Add ( IsNotOperator );
+		
 			Grammar._operators.Add ( IsEmptyOperator );
 			Grammar._operators.Add ( IsNotEmptyOperator );
 			Grammar._operators.Add ( IsMandatoryOperator );
@@ -903,6 +904,9 @@ namespace BREadfruit
 			Grammar._operators.Add ( EqualityOperator );
 			Grammar._operators.Add ( NonEqualityOperator );
 			Grammar._operators.Add ( SubStringOperator );
+
+			Grammar._operators.Add ( IsOperator );
+			Grammar._operators.Add ( IsNotOperator );
 
 			Grammar._operators.Add ( InRangeOperator );
 			Grammar._operators.Add ( NotInRangeOperator );
@@ -994,8 +998,8 @@ namespace BREadfruit
 			// add default symbols
 			Grammar._symbols.Add ( ValueSymbol );
 			// add operator symbols
-			Grammar._symbols.Add ( IsOperator );
-			Grammar._symbols.Add ( IsNotOperator );
+			//Grammar._symbols.Add ( IsOperator );
+			//Grammar._symbols.Add ( IsNotOperator );
 			Grammar._symbols.Add ( IsEmptyOperator );
 			Grammar._symbols.Add ( IsNotEmptyOperator );
 			Grammar._symbols.Add ( IsMandatoryOperator );
@@ -1015,6 +1019,9 @@ namespace BREadfruit
 			Grammar._symbols.Add ( IsNotNullOperator );
 			Grammar._symbols.Add ( EqualityOperator );
 			Grammar._symbols.Add ( NonEqualityOperator );
+
+			Grammar._symbols.Add ( IsOperator );
+			Grammar._symbols.Add ( IsNotOperator );
 
 			Grammar._symbols.Add ( IsAplhaOperator );
 			Grammar._symbols.Add ( IsDecimalOperator );

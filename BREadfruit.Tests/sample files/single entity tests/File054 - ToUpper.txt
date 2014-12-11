@@ -1,0 +1,6 @@
+﻿	Entity SO_TaxClassification is DropDownList in frmMain
+
+	with rules
+		REQUEST.VENDOR_COUNTRY in {"FR", "GF", "GP", "MC", "MQ", "NC", "PF", "PM", "RE", "WF", "YT"} then
+			set value toupper(GD_Adr_Name) in GD_Adr_Name2			
+			set value tolower(GD_Adr_Name) in GD_Adr_Name2			

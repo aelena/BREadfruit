@@ -1,0 +1,7 @@
+﻿Entity SO_TaxClassification is DropDownList in frmMain
+
+	with rules
+		REQUEST.COUNTRY is FR then
+			this mandatory true
+			set value 01
+			this enable false

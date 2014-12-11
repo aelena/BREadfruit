@@ -1,0 +1,11 @@
+﻿Entity SO_TaxClassification is DropDownList in frmMain
+
+	with rules
+		REQUEST.COUNTRY is in {FR, GR} then
+			set value 01
+		
+		REQUEST.COUNTRY is any of {FR, GR} then
+			set value 01
+		
+		REQUEST.COUNTRY is one of {FR, GR} then
+			set value 01

@@ -14,3 +14,4 @@
 		this on_click		
 		this onclick
 		this click
+		this clicked
