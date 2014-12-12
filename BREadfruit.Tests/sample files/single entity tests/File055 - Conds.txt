@@ -1,0 +1,7 @@
+﻿Entity SO_TaxClassification is DropDownList in frmMain
+	with rules
+		TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in ErrorMessage
+
+		GD_Adr_CountryGD.Value is BE and GD_Adr_Region.Value is 01 and GD_Adr_PostalCode.Value is number and GD_Adr_PostalCode.Value not in range {1500,3999} or GD_Adr_PostalCode.Value not in range {8000,9999} then 
+			set value ERRregionCode in MESSAGE_POPUP

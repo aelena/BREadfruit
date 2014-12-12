@@ -1639,7 +1639,7 @@ namespace BREadfruit.Tests
 
 
 		[Test]
-		public void ParseSampleFile055 ()
+		public void ParseSampleFile054 ()
 		{
 
 			var parser = new Parser ();
@@ -1661,6 +1661,27 @@ namespace BREadfruit.Tests
 
 
 		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile055 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File055 - Conds.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_TaxClassification", "Entity name should be 'SO_TaxClassification' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.Take ( 5 ).All ( x => x.SuffixLogicalOperator == "and" ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().SuffixLogicalOperator == null );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 
 		[Test]

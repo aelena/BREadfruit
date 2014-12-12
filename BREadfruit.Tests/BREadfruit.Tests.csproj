@@ -136,6 +136,7 @@
     <Content Include="sample files\single entity tests\File052 - In Aliases.txt" />
     <Content Include="sample files\single entity tests\File053 - Not In Aliases.txt" />
     <Content Include="sample files\single entity tests\File054 - ToUpper.txt" />
+    <Content Include="sample files\single entity tests\File055 - Conds.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>
