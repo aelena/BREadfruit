@@ -1,0 +1,11 @@
+﻿Entity SO_TaxClassification is DropDownList in frmMain
+	with rules
+		TBVendorName is empty then
+			set value 'AAA' in txtExample
+		else
+			set value 'BBB' in txtExample
+			label "Hello World"
+			hide this
+
+		TBVendorName2 is empty then
+			set value 'CCC' in txtExample

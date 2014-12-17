@@ -1699,8 +1699,45 @@ namespace BREadfruit.Tests
 			Assert.IsTrue ( e.Rules.First ().HasElseClause );
 			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
 			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorName" );
-			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count() == 1 );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 1 );
 
+			Assert.IsTrue ( e.Rules.First ().Conditions.Last ().Else.First ().IsResultAction );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.First () ).Value.ToString () == "'BBB'" );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.First () ).Reference == "txtExample" );
+
+			Assert.IsFalse ( e.Rules.Last ().HasElseClause );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile057 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File057 - Else02.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_TaxClassification", "Entity name should be 'SO_TaxClassification' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorName" );
+
+			Assert.IsTrue ( e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorName" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 3 );
+
+			Assert.IsFalse ( e.Rules.First ().Conditions.Last ().Else.First ().IsResultAction );
+
+			Assert.IsTrue ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ).IsResultAction );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ) ).Value.ToString () == "'BBB'" );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ) ).Reference == "txtExample" );
+			Assert.IsTrue ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ).IsResultAction );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ) ).Value.ToString () == "Hello World" );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ) ).Reference == "SO_TaxClassification" );
 
 			Assert.IsFalse ( e.Rules.Last ().HasElseClause );
 		}
