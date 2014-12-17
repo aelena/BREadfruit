@@ -114,7 +114,7 @@ Entity TBCustomerIFA is TextBox in frmSearch
 	
 	with rules
 		; should this be moved to rules for the btnSearch button? maybe.....
-		TBCustomerIFA.value not is '' then DDLDCountry not mandatory
+		TBCustomerIFA.value is not '' then DDLDCountry not mandatory
 		TBCustomerIFA.value is '' then DDLDCountry mandatory
 
 	with triggers
@@ -3363,7 +3363,7 @@ Entity btnSubmit is Button in frmMain
 			set value ERRsubmitRequestComment in MESSAGE_POPUP
 
 		DDLDCComment.Value is not empty and DDLDCComment.Length > 2000 then 
-			set value ERRcommentLenght in MESSAGE_POPUPç
+			set value ERRcommentLenght in MESSAGE_POPUP
 
 		GD_Adr_Country.Value is GR and GD_Adr_City2.Value is empty and GD_Adr_City2 is mandatory then
 			set value ERRsubmitRequestGDFieldDistrict in MESSAGE_POPUP

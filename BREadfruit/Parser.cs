@@ -106,10 +106,10 @@ namespace BREadfruit
 
 					if ( lineInfo.Tokens.First () != Grammar.ValidationRegexDefaultClause )
 						lineInfo = this._lineParser.TokenizeBracketExpression ( lineInfo );
-					
+
 					// we need to check the indent level to make sure we set the right scope
 					// this is for conditions with several action lines
-					if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK && lineInfo.IndentLevel == 2 )
+					if ( ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK || _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK ) && lineInfo.IndentLevel == 2 )
 						_currentScope = CurrentScope.RULES_BLOCK;
 
 
@@ -147,13 +147,29 @@ namespace BREadfruit
 								throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a default column in an Entity that is not a grid." );
 							this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
 						}
-						catch ( Exception ex)
+						catch ( Exception ex )
 						{
-							throw new Exception ( String.Format ( "Line {2} {0} caused exception : {1}",  lineInfo.Representation, ex.Message, _currLine ) );
+							throw new Exception ( String.Format ( "Line {2} {0} caused exception : {1}", lineInfo.Representation, ex.Message, _currLine ) );
 						}
 					}
 					#endregion
 
+					if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.ElseSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
+					{
+						// check we are in the current scope for else to appear
+						if ( _currentScope != CurrentScope.RULES_BLOCK )
+							throw new InvalidElseStatementClauseException (
+								String.Format ( Grammar.InvalidElseStatementClauseExceptionDefaultTemplate, _currLine, line ) );
+						// we keep in the same scope, that of RULES, so change the scope and go on
+						_currentScope = CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK;
+						continue;
+					}
+
+					//if ( _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK )
+					//{
+
+
+					//}
 
 					#region " --- rules block --- "
 					if ( _currentScope == CurrentScope.RULES_BLOCK )
@@ -346,21 +362,21 @@ namespace BREadfruit
 
 
 					#region " --- condition  actions block --- "
-					if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK )
+					if ( _currentScope == CurrentScope.CONDITION_ACTIONS_BLOCK || _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK )
 					{
 
 						if ( lineInfo.Tokens.First () == Grammar.LabelDefaultClause )
 						{
 							var _ra = new ResultAction ( Grammar.LabelDefaultClause, lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token.Replace ( "\"", "" ),
 								 this.Entities.Last ().Name );
-							this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+							AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 							continue;
 						}
-						if ( lineInfo.Tokens.First () == Grammar.ToolTipDefaultClause)
+						if ( lineInfo.Tokens.First () == Grammar.ToolTipDefaultClause )
 						{
 							var _ra = new ResultAction ( Grammar.ToolTipDefaultClause, lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token.Replace ( "\"", "" ),
 								 this.Entities.Last ().Name );
-							this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+							AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 							continue;
 						}
 
@@ -369,7 +385,7 @@ namespace BREadfruit
 							if ( lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause ) )
 							{
 								var _ua = new UnaryAction ( Grammar.MandatoryDefaultClause, this.Entities.Last ().Name );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+								AddUnaryAction ( _ua, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 						}
@@ -383,7 +399,7 @@ namespace BREadfruit
 								{
 									var _ua = new UnaryAction ( lineInfo.Tokens.First (),
 										lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
-									this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+									this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								}
 								else
 									throw new InvalidShowStatementClauseException (
@@ -395,7 +411,7 @@ namespace BREadfruit
 								{
 									var _ua = new UnaryAction ( lineInfo.Tokens.First (),
 										lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
-									this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+									this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								}
 								else
 									throw new InvalidHideStatementClauseException (
@@ -411,7 +427,7 @@ namespace BREadfruit
 							if ( lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause ) )
 							{
 								var _ua = new UnaryAction ( Grammar.MandatoryDefaultClause, lineInfo.Tokens.First () == Grammar.ThisSymbol ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 
@@ -419,7 +435,7 @@ namespace BREadfruit
 							{
 								var _ua = new UnaryAction ( Grammar.MakeNonMandatoryUnaryActionSymbol,
 									lineInfo.Tokens.First ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 
@@ -434,7 +450,7 @@ namespace BREadfruit
 							{
 								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token,
 									this.Entities.Last ().Name );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 
@@ -443,7 +459,7 @@ namespace BREadfruit
 							{
 								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
 									this.Entities.Last ().Name );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 
@@ -452,7 +468,7 @@ namespace BREadfruit
 								// ProcessUnaryAction ( lineInfo, Grammar.EnabledDefaultClause );
 								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
 								   this.Entities.Last ().Name );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 							if ( lineInfo.Tokens.First () == Grammar.VisibleDefaultClause )
@@ -460,7 +476,7 @@ namespace BREadfruit
 								//ProcessUnaryAction ( lineInfo, Grammar.VisibleDefaultClause );
 								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
 								   this.Entities.Last ().Name );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 							if ( lineInfo.Tokens.Last () == Grammar.VisibleDefaultClause )
@@ -470,7 +486,7 @@ namespace BREadfruit
 									_ename = this.Entities.Last ().Name;
 
 								var _ra = new ResultAction ( Grammar.VisibleDefaultClause, true, _ename );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 							if ( lineInfo.Tokens.Last () == Grammar.MandatoryDefaultClause )
@@ -480,7 +496,7 @@ namespace BREadfruit
 									_ename = this.Entities.Last ().Name;
 
 								var _ra = new ResultAction ( Grammar.MandatoryDefaultClause, true, _ename );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 							if ( lineInfo.Tokens.Last () == Grammar.DisableUnaryActionSymbol || lineInfo.Tokens.First () == Grammar.DisableUnaryActionSymbol )
@@ -489,7 +505,7 @@ namespace BREadfruit
 									lineInfo.Tokens.First () == Grammar.DisableUnaryActionSymbol ?
 									lineInfo.Tokens.ElementAt ( 1 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 1 ).Token
 									: lineInfo.Tokens.ElementAt ( 0 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 0 ).Token );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 
 							}
@@ -498,7 +514,7 @@ namespace BREadfruit
 							{
 								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
 										lineInfo.Tokens.ElementAt ( 1 ).Token, this.Entities.Last ().Name );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 							}
 
 
@@ -509,14 +525,14 @@ namespace BREadfruit
 							{
 								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
 								   lineInfo.Tokens.ElementAt ( 1 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 1 ).Token );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 							if ( lineInfo.Tokens.First () == Grammar.VisibleDefaultClause )
 							{
 								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
 								   lineInfo.Tokens.ElementAt ( 1 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 1 ).Token );
-								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+								this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 							if ( lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause ) )
@@ -554,7 +570,10 @@ namespace BREadfruit
 						{
 							var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
 										lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
-							this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+
+							if ( _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK )
+								this._entities.Last ().Rules.Last ().HasElseClause = true;
+							this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 						}
 					}
 					#endregion
@@ -634,6 +653,29 @@ namespace BREadfruit
 
 			return this.Entities;
 
+
+		}
+
+		private void AddUnaryAction ( UnaryAction _ua, bool addAsElse = false )
+		{
+			if ( !addAsElse )
+				this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+			else
+			{
+				this._entities.Last ().Rules.Last ().HasElseClause = true;
+				this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, true );
+			}
+		}
+
+		private void AddResultAction ( ResultAction _ra, bool addAsElse = false )
+		{
+			if ( !addAsElse )
+				this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
+			else
+			{
+				this._entities.Last ().Rules.Last ().HasElseClause = true;
+				this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra, true );
+			}
 
 		}
 
@@ -922,6 +964,10 @@ namespace BREadfruit
 		/// Indicates we are in the rules block of a business rule definition
 		/// </summary>
 		RULES_BLOCK,
+		/// <summary>
+		/// Indicates we are in the rules' else block of a business rule definition
+		/// </summary>
+		CONDITION_ACTIONS_ELSE_BLOCK,
 		/// <summary>
 		/// Indicates we are in the block that indicates condition-less actions
 		/// </summary>

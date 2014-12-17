@@ -421,6 +421,7 @@ namespace BREadfruit
 		public static Symbol EmptySymbol = new Symbol ( "", 2, true );
 
 		public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
+		public static Symbol ElseSymbol = new Symbol ( "else", 2, false );
 		public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
 		public static Symbol InSymbol = new Symbol ( "in", 2, false, new [] {"is in", "is one of", "is any of"} );
 
@@ -991,6 +992,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( CalendarSymbol );
 			Grammar._symbols.Add ( AttachmentManagerSymbol );
 
+			Grammar._symbols.Add ( ElseSymbol );
 			Grammar._symbols.Add ( ThenSymbol );
 			Grammar._symbols.Add ( ThisSymbol );
 			Grammar._symbols.Add ( InSymbol );
@@ -1172,7 +1174,8 @@ namespace BREadfruit
 		public static readonly string DuplicateEntityFoundExceptionDefaultTemplate = "A duplicate declaration was found for Entity '{0}' in line {1}";
 		public static readonly string UnexpectedDefaultClauseExceptionDefaultMessage = "An unexpected clause was found";
 		public static readonly string UnexpectedDefaultClauseExceptionDefaultTemplate = "An unexpected clause clause was found. Entity of type '{0}' does not accept {1}";
-
+		public static readonly string InvalidElseStatementClauseExceptionDefaultMessage = "An out-of-scope else statement was found";
+		public static readonly string InvalidElseStatementClauseExceptionDefaultTemplate = "An out-of-scope else statement was found in line {0} - '{1}' - Check else statements are in rules blocks";
 
 
 		// ---------------------------------------------------------------------------------

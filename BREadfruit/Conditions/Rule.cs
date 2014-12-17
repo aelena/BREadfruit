@@ -17,6 +17,7 @@ namespace BREadfruit.Conditions
         /// A rule can have one or more conditions.
         /// </summary>
         private List<Condition> _conditions = new List<Condition> ();
+
         /// <summary>
         /// Gets a list of the conditions that this rule has.
         /// </summary>
@@ -27,6 +28,14 @@ namespace BREadfruit.Conditions
                 return this._conditions;
             }
         }
+
+
+		/// <summary>
+		/// Indicates if the Rule has a series of conditions acting as Else branch
+		/// </summary>
+		public bool HasElseClause { get; protected internal set; }
+
+		
 
         // ---------------------------------------------------------------------------------
 

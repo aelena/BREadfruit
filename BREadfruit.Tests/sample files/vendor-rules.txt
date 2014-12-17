@@ -119,7 +119,7 @@ Entity TBVendorIFA is TextBox in frmSearch
 	
 	with rules
 		; should this be moved to rules for the btnSearch button? maybe.....
-		TBVendorIFA.value not is '' then DDLVDCountry not mandatory
+		TBVendorIFA.value is not '' then DDLVDCountry not mandatory
 		TBVendorIFA.value is '' then DDLVDCountry mandatory
 
 	with triggers
@@ -248,16 +248,19 @@ Entity btnSearch is Button in frmSearch
 
 	with rules
 		
+		TBVendorNumber is not empty and TBVendorNumber.Length is not 10 then
+			set value 'Insert a valid Vendor Number. It must be 10 digits long.' in MESSAGE_POPUP
+
 		TBVendorIFA.value is not empty then DDLVDCountry mandatory
 
 		DDLVDCountry is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
 		
 		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			set value 'Fill the fields KeyTax or Vendor or IFA Number or Country + Name or Country + City' in MESSAGE_POPUP
 	
 		TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in MESSAGE_POPUP
+			set value 'Fill the fields KeyTax or Vendor or IFA Number or Country + Name or Country + City' in MESSAGE_POPUP
 		
 		TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
 			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
