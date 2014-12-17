@@ -420,7 +420,7 @@ namespace BREadfruit
 
 							if ( lineInfo.Tokens.Contains ( Grammar.MakeMandatoryUnaryActionSymbol ) )
 							{
-								ProcessUnaryAction ( lineInfo, Grammar.MakeMandatoryUnaryActionSymbol );
+								ProcessUnaryAction ( lineInfo, Grammar.MakeMandatoryUnaryActionSymbol, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 
@@ -441,7 +441,7 @@ namespace BREadfruit
 
 							if ( lineInfo.Tokens.Contains ( Grammar.NotVisibleUnaryActionSymbol ) )
 							{
-								ProcessUnaryAction ( lineInfo, Grammar.NotVisibleUnaryActionSymbol );
+								ProcessUnaryAction ( lineInfo, Grammar.NotVisibleUnaryActionSymbol, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 
@@ -554,12 +554,12 @@ namespace BREadfruit
 							}
 							if ( lineInfo.Tokens.Contains ( Grammar.EnabledDefaultClause ) )
 							{
-								AddTrueFalseAction ( lineInfo, Grammar.EnableUnaryActionSymbol, Grammar.DisableUnaryActionSymbol );
+								AddTrueFalseAction ( lineInfo, Grammar.EnableUnaryActionSymbol, Grammar.DisableUnaryActionSymbol, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 							if ( lineInfo.Tokens.Contains ( Grammar.VisibleDefaultClause ) )
 							{
-								AddTrueFalseAction ( lineInfo, Grammar.VisibleUnaryActionSymbol, Grammar.NotVisibleUnaryActionSymbol );
+								AddTrueFalseAction ( lineInfo, Grammar.VisibleUnaryActionSymbol, Grammar.NotVisibleUnaryActionSymbol, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
 
@@ -689,7 +689,7 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
-		private void AddTrueFalseAction ( LineInfo lineInfo, Symbol trueSymbol, Symbol falseSymbol )
+		private void AddTrueFalseAction ( LineInfo lineInfo, Symbol trueSymbol, Symbol falseSymbol, bool addToElseBranch = false )
 		{
 			var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
 			var _indexOfThis = lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol );
@@ -701,7 +701,7 @@ namespace BREadfruit
 				_ua = new UnaryAction ( falseSymbol,
 				_indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
 
-			this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+			this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
 		}
 
 
@@ -757,7 +757,7 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
-		private void ProcessUnaryAction ( LineInfo lineInfo, Symbol symbol )
+		private void ProcessUnaryAction ( LineInfo lineInfo, Symbol symbol, bool addToElseBranch = false )
 		{
 			if ( lineInfo.Tokens.Contains ( symbol ) )
 			{
@@ -768,7 +768,7 @@ namespace BREadfruit
 				else
 					_ua = new UnaryAction ( lineInfo.Tokens.Last (),
 						   lineInfo.Tokens.First ().Token == "this" ? this.Entities.First ().Name : lineInfo.Tokens.First ().Token );
-				this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua );
+				this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
 			}
 		}
 
