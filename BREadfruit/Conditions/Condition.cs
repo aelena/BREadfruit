@@ -99,14 +99,14 @@ namespace BREadfruit.Conditions
 		// ---------------------------------------------------------------------------------
 
 
-		private List<ResultAction> _elseResultActions = new List<ResultAction> ();
-		public IEnumerable<ResultAction> ElseResultActions
-		{
-			get
-			{
-				return this._elseResultActions;
-			}
-		}
+		//private List<ResultAction> _elseResultActions = new List<ResultAction> ();
+		//public IEnumerable<ResultAction> ElseResultActions
+		//{
+		//	get
+		//	{
+		//		return this._elseResultActions;
+		//	}
+		//}
 
 
 		// ---------------------------------------------------------------------------------
@@ -120,8 +120,8 @@ namespace BREadfruit.Conditions
 				var l = new List<UnaryAction> ();
 				if ( this._elseResults != null )
 					l.AddRange ( this._elseResults );
-				if ( this._elseResultActions != null )
-					l.AddRange ( this._elseResultActions );
+				//if ( this._elseResultActions != null )
+				//	l.AddRange ( this._elseResultActions );
 				return l;
 			}
 
@@ -204,9 +204,9 @@ namespace BREadfruit.Conditions
 				this._resultActions.Add ( result );
 			else
 			{
-				if ( this._elseResultActions == null )
-					this._elseResultActions = new List<ResultAction> ();
-				this._elseResultActions.Add ( result );
+				if ( this._elseResults == null )
+					this._elseResults = new List<UnaryAction> ();
+				this._elseResults.Add ( result );
 			}
 			return this;
 		}

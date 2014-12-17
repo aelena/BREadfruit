@@ -1730,14 +1730,15 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorName" );
 			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 3 );
 
-			Assert.IsFalse ( e.Rules.First ().Conditions.Last ().Else.First ().IsResultAction );
 
+			Assert.IsTrue ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 0 ).IsResultAction );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 0 ) ).Value.ToString () == "'BBB'" );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 0 ) ).Reference == "txtExample" );
 			Assert.IsTrue ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ).IsResultAction );
-			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ) ).Value.ToString () == "'BBB'" );
-			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ) ).Reference == "txtExample" );
-			Assert.IsTrue ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ).IsResultAction );
-			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ) ).Value.ToString () == "Hello World" );
-			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ) ).Reference == "SO_TaxClassification" );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ) ).Value.ToString () == "Hello World" );
+			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ) ).Reference == "SO_TaxClassification" );
+			Assert.IsFalse ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ).IsResultAction );
+			Assert.That (  e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ).Reference == "SO_TaxClassification" );
 
 			Assert.IsFalse ( e.Rules.Last ().HasElseClause );
 		}
