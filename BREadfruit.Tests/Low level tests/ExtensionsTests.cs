@@ -1263,8 +1263,15 @@ namespace BREadfruit.Tests.Low_level_tests
 			var _sut = sut.Split ( new [] { ';' } );
 			var _finds = _sut.FindAllMatching ( new Regex ( regex ), startAt, count );
 			return _finds.Count ();
+		}
 
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "^AAA$", 0, 0, Result = 3 )]
+		public int FindAllNotMatching_Tests ( string sut, string regex, int startAt, int count )
+		{
 
+			var _sut = sut.Split ( new [] { ';' } );
+			var _finds = _sut.FindAllNotMatching ( new Regex ( regex ), startAt, count );
+			return _finds.Count ();
 		}
 
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 0, Result = 1 )]
@@ -1277,6 +1284,80 @@ namespace BREadfruit.Tests.Low_level_tests
 			var _finds = sut.FindAllMatching ( new Regex ( regex ), startAt, count );
 			return _finds.Count ();
 
+		}
+
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 0, Result = "BBB;CCC;;DDD" )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 8, Result = "AAA;BBB;CCC;AAA;DDD" )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 8, Result = "BBB;;" )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 9, Result = "BBB;;A" )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 6, Result = "AAA;BBB;CCC;AAA;DDD" )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 29, Result = "BBB;;AAA;DDD" )]
+		public string FindAllNotMatching_Tests_02 ( string sut, string regex, int startAt, int count )
+		{
+			var _finds = sut.RemoveNonMatching ( new Regex ( regex ), startAt, count );
+			return _finds;
+		}
+
+
+		[TestCase ( null, 0, Result = "" )]
+		[TestCase ( null, -1, Result = "" )]
+		[TestCase ( null, -10, Result = "" )]
+		[TestCase ( "", 0, Result = "" )]
+		[TestCase ( "", -1, Result = "" )]
+		[TestCase ( "", -10, Result = "" )]
+		[TestCase ( "A", -10, Result = "A" )]
+		[TestCase ( "A", 0, Result = "A" )]
+		[TestCase ( "A", 1, Result = "" )]
+		[TestCase ( "A", 2, Result = "" )]
+		[TestCase ( "A", 12, Result = "" )]
+		[TestCase ( "Arcane", -10, Result = "Arcane" )]
+		[TestCase ( "Arcane", 0, Result = "Arcane" )]
+		[TestCase ( "Arcane", 1, Result = "rcane" )]
+		[TestCase ( "Arcane", 2, Result = "cane" )]
+		[TestCase ( "Arcane", 12, Result = "" )]
+		public string SubStringSafeTests ( string sut, int startAt )
+		{
+			return sut.SubstringSafe ( startAt );
+		}
+
+		[TestCase ( null, 0, 0, Result = "" )]
+		[TestCase ( null, -1, 0, Result = "" )]
+		[TestCase ( null, -10, 0, Result = "" )]
+		[TestCase ( null, 0, 10, Result = "" )]
+		[TestCase ( null, -1, 2, Result = "" )]
+		[TestCase ( null, -10, 1, Result = "" )]
+		[TestCase ( "", 0, 0, Result = "" )]
+		[TestCase ( "", 0, 1, Result = "" )]
+		[TestCase ( "", 1, 0, Result = "" )]
+		[TestCase ( "", 1, 1, Result = "" )]
+		[TestCase ( "", 2, 0, Result = "" )]
+		[TestCase ( "", 3, 1, Result = "" )]
+		[TestCase ( "", 2, 0, Result = "" )]
+		[TestCase ( "", -1, 0, Result = "" )]
+		[TestCase ( "", -10, -1, Result = "" )]
+		[TestCase ( "A", -10, -20, Result = "A" )]
+		[TestCase ( "A", 0, 0, Result = "A" )]
+		[TestCase ( "A", 0, 1, Result = "A" )]
+		[TestCase ( "A", 0, 2, Result = "A" )]
+		[TestCase ( "A", 0, 3, Result = "A" )]
+		[TestCase ( "A", 1, 0, Result = "" )]
+		[TestCase ( "A", 1, 1, Result = "" )]
+		[TestCase ( "A", 1, 21, Result = "" )]
+		[TestCase ( "A", 2, 0, Result = "" )]
+		[TestCase ( "A", 2, 1, Result = "" )]
+		[TestCase ( "A", 2, 2, Result = "" )]
+		[TestCase ( "A", 12, 0, Result = "" )]
+		[TestCase ( "A", 12, 1, Result = "" )]
+		[TestCase ( "A", 12, 2, Result = "" )]
+		[TestCase ( "A", 12, 12, Result = "" )]
+		[TestCase ( "A", 12, 22, Result = "" )]
+		[TestCase ( "Arcane", -10, 0, Result = "Arcane" )]
+		[TestCase ( "Arcane", -10, 1, Result = "A" )]
+		[TestCase ( "Arcane", -10, 2, Result = "Ar" )]
+		[TestCase ( "Arcane", -10, 12, Result = "Arcane" )]
+		public string SubStringSafeTests ( string sut, int startAt, int count )
+		{
+			return sut.SubstringSafe ( startAt, count );
 		}
 
 	}

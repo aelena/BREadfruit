@@ -1638,11 +1638,28 @@ namespace BREadfruit.Helpers
 			var _retList = new List<String> ();
 			var _count = count == 0 ? s.Length : count;
 			_count = _count > s.Length ? s.Length : _count;
-				if ( regex.Match ( s, startAt, _count ).Value != string.Empty )
-					_retList.Add ( s );
+			if ( regex.Match ( s, startAt, _count ).Value != string.Empty )
+				_retList.Add ( s );
 			return _retList;
 		}
 
+
+		public static string RemoveNonMatching ( this string s, Regex regex, int startAt = 0, int count = 0 )
+		{
+			var _retList = new List<String> ();
+			var _count = count == 0 ? s.Length : count;
+			_count = _count > s.Length ? s.Length : _count;
+
+			var _r = regex.Match ( s, startAt, _count ).Value;
+			if ( _r != string.Empty )
+			{
+				if ( count == 0 )
+					return s.SubstringSafe ( startAt ).Replace ( _r, String.Empty );
+				else
+					return s.SubstringSafe ( startAt, _count ).Replace ( _r, String.Empty );
+			}
+			return s;
+		}
 
 		// ---------------------------------------------------------------------------------
 
@@ -1660,6 +1677,54 @@ namespace BREadfruit.Helpers
 			return _retList;
 		}
 
+		public static IEnumerable<string> FindAllNotMatching ( this IEnumerable<string> strings, Regex regex, int startAt = 0, int count = 0 )
+		{
+			var _retList = new List<String> ();
+			foreach ( var l in strings )
+			{
+				var _count = count == 0 ? l.Length : count;
+				if ( regex.Match ( l, startAt, _count ).Value == string.Empty )
+					_retList.Add ( l );
+			}
 
+			return _retList;
+		}
+
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static string SubstringSafe ( this string s, int startAt )
+		{
+			if ( s == null )
+				return String.Empty;
+			startAt = startAt < 0 ? 0 : startAt;
+			startAt = startAt > s.Length ? s.Length : startAt;
+			var _s = s.Substring ( startAt );
+			return _s;
+
+		}
+
+		public static string SubstringSafe ( this string s, int startAt, int count )
+		{
+			if ( s == null )
+				return String.Empty;
+
+			if ( count <= 0 )
+				return s.SubstringSafe ( startAt );
+
+			if ( startAt > s.Length)
+				return String.Empty;
+
+			startAt = startAt < 0 ? 0 : startAt;
+			count = count > s.Length ? s.Length : count;
+			count = count + startAt > s.Length ? count - startAt : count;
+
+
+			var _s = s.Substring ( startAt, count );
+			return _s;
+
+		}
 	}
 }
