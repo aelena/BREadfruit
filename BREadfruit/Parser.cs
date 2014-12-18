@@ -75,6 +75,12 @@ namespace BREadfruit
 
 		// ---------------------------------------------------------------------------------
 
+		public IEnumerable<Entity> ParseRuleSetAsString ( string ruleSet )
+		{
+			return ParseRuleSet ( ruleSet.Split ( new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries ) );
+		}
+
+		// ---------------------------------------------------------------------------------
 
 		/// <summary>
 		/// Main entry point for parsing a file.
@@ -933,6 +939,96 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
+
+		protected internal IEnumerable<Entity> GenerateTests ( string filePath )
+		{
+			this.CheckFileExists ( filePath );
+
+			var line = String.Empty;
+			List<string> lines = new List<string> ();
+			using ( var sr = new StreamReader ( filePath ) )
+			{
+				while ( line != null )
+				{
+					line = sr.ReadLine ();
+					lines.Add ( line );
+				}
+			}
+
+			return GenerateTests ( lines );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Main entry point for parsing a file.
+		/// Allows a caller to send in a list of strings (standard text lines)
+		/// containing all the entities and rules to be parsed by the engine.
+		/// </summary>
+		/// <param name="filePath">Array of lines to be parsed.</param>
+		protected internal IEnumerable<Entity> GenerateTests ( IEnumerable<string> lines )
+		{
+			return null;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		protected internal IEnumerable<TestGenerationInfo> CreateTestForEntities ()
+		{
+			return null;
+		}
+
+
+		protected internal string CreateTestForEntity ( string entity )
+		{
+			var lines = entity.Split ( new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries );
+
+			// first line should be TESTGEN declaration as a comment
+			// but we search for it
+			string __testgenLine = "";
+			var __testgenLines = lines.FindAllMatching ( new Regex ( TestGenParameters.TestGenLine1Regex ) );
+			if ( __testgenLines.HasItems () )
+				__testgenLine = __testgenLines.First ().ToUpperInvariant ();
+			else
+				return __testgenLine;
+
+			var e = this.ParseRuleSet ( lines ).First ();
+
+			var __testBody = new StringBuilder ();
+			__testBody.Append ( "[Test]" ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( "public void TestEntity_{0} ()", e.Name ).Append ( Environment.NewLine );
+			__testBody.Append ( "{" ).Append ( Environment.NewLine );
+			__testBody.Append ( "var parser = new Parser ();" ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( "parser.ParseRuleSetAsString ( @\"{0}\" );", entity.EscapeAllDoubleQuotes () ).Append ( Environment.NewLine );
+			__testBody.Append ( "Assert.That ( parser.Entities.Count () == 1 );" ).Append ( Environment.NewLine );
+			__testBody.Append ( "var e = parser.Entities.First ();" ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( "Assert.That ( e.Form == \"{0}\", \"Entity form should be '{0}' but is \" + e.Form );", e.Form ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( "Assert.That ( e.Name == \"{0}\", \"Entity name should be '{0}' but is \" + e.Name );", e.Name ).Append ( Environment.NewLine );
+
+			var __numOfDefaults = __testgenLine.FindAllMatching ( new Regex ( "DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+			var __numOfRules = __testgenLine.FindAllMatching ( new Regex ( "RULES[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+			var __numOfActions = __testgenLine.FindAllMatching ( new Regex ( "ACTIONS[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+			var __numOfTriggers = __testgenLine.FindAllMatching ( new Regex ( "TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+			var __numOfConstraints = __testgenLine.FindAllMatching ( new Regex ( "CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+
+			__testBody.AppendFormat ( "Assert.That ( e.Defaults.Count() == {0}, \"Should have '{0}' default clauses but has \" + e.Defaults.Count());", __numOfDefaults ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( "Assert.That ( e.ConditionlessActions.Count() == {0}, \"Should have '{0}' Conditionless Actions but has \" + e.ConditionlessActions.Count());", __numOfActions ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( "Assert.That ( e.Rules.Count() == {0}, \"Should have '{0}' Rules but has \" + e.Rules.Count());", __numOfRules ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( "Assert.That ( e.Triggers.Count() == {0}, \"Should have '{0}' Triggers but has \" + e.Triggers.Count());", __numOfTriggers ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( "Assert.That ( e.Constraints.Count() == {0}, \"Should have '{0}' Constraints but has \" + e.Constraints.Count());", __numOfConstraints ).Append ( Environment.NewLine );
+
+			__testBody.Append ( "}" ).Append ( Environment.NewLine );
+			__testBody.Append ( Environment.NewLine ).Append ( "// ---------------------------------------------------------------------------------" ).Append ( Environment.NewLine );
+
+			return __testBody.ToString ();
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 	}
 

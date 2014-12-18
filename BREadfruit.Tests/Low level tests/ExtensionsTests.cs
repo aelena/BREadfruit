@@ -1286,6 +1286,21 @@ namespace BREadfruit.Tests.Low_level_tests
 
 		}
 
+		[TestCase ( "; TESTGEN : DEFAULTS=2, RULES=1, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS=0", "DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "DEFAULTS=2" )]
+		[TestCase ( "; TESTGEN : DEFAULTS = 2, RULES=1, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS=0", "DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "DEFAULTS = 2" )]
+		[TestCase ( "; TESTGEN : DEFAULTS=2, RULES=1, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS=0", "RULES[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "RULES=1" )]
+		[TestCase ( "; TESTGEN : DEFAULTS = 2, RULES = 1, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS=0", "RULES[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "RULES = 1" )]
+		[TestCase ( "; TESTGEN : DEFAULTS=2, RULES=1, ACTIONS=3, TRIGGERS= 0, CONSTRAINTS=0", "ACTIONS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "ACTIONS=3" )]
+		[TestCase ( "; TESTGEN : DEFAULTS = 2, RULES=1, ACTIONS = 4, TRIGGERS= 0, CONSTRAINTS=0", "ACTIONS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "ACTIONS = 4" )]
+		[TestCase ( "; TESTGEN : DEFAULTS=2, RULES=1, ACTIONS=0, TRIGGERS= 2, CONSTRAINTS=0", "TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "TRIGGERS= 2" )]
+		[TestCase ( "; TESTGEN : DEFAULTS = 2, RULES=1, ACTIONS=0, TRIGGERS= 6, CONSTRAINTS=0", "TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "TRIGGERS= 6" )]
+		[TestCase ( "; TESTGEN : DEFAULTS=2, RULES=1, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS=0", "CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "CONSTRAINTS=0" )]
+		[TestCase ( "; TESTGEN : DEFAULTS = 2, RULES=1, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS =	1", "CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "CONSTRAINTS =	1" )]
+		public string FindAllMatching_Tests_03 ( string sut, string regex, int startAt, int count )
+		{
+			return sut.FindAllMatching ( new Regex ( regex ), startAt, count ).First ();
+		}
+
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 0, Result = "BBB;CCC;;DDD" )]
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 8, Result = "AAA;BBB;CCC;AAA;DDD" )]
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 8, Result = "BBB;;" )]

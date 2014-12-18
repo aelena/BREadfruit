@@ -1639,7 +1639,7 @@ namespace BREadfruit.Helpers
 			var _count = count == 0 ? s.Length : count;
 			_count = _count > s.Length ? s.Length : _count;
 			if ( regex.Match ( s, startAt, _count ).Value != string.Empty )
-				_retList.Add ( s );
+				_retList.Add ( regex.Match ( s, startAt, _count ).Value );
 			return _retList;
 		}
 
@@ -1726,5 +1726,12 @@ namespace BREadfruit.Helpers
 			return _s;
 
 		}
+
+
+		public static string EscapeAllDoubleQuotes ( this string s )
+		{
+			return string.IsNullOrEmpty(s) ? s : s.Replace("\"", "\"\"");
+		}
+			
 	}
 }

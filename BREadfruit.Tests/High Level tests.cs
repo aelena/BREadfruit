@@ -1728,7 +1728,7 @@ namespace BREadfruit.Tests
 			Assert.IsTrue ( e.Rules.First ().HasElseClause );
 			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
 			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorName" );
-			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 3 );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 4 );
 
 
 			Assert.IsTrue ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 0 ).IsResultAction );
@@ -1738,7 +1738,9 @@ namespace BREadfruit.Tests
 			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ) ).Value.ToString () == "Hello World" );
 			Assert.That ( ( ( ResultAction ) e.Rules.First ().Conditions.Last ().Else.ElementAt ( 1 ) ).Reference == "SO_TaxClassification" );
 			Assert.IsFalse ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ).IsResultAction );
-			Assert.That (  e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ).Reference == "SO_TaxClassification" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 2 ).Reference == "SO_TaxClassification" );
+			Assert.IsFalse ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 3 ).IsResultAction );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.ElementAt ( 3 ).Reference == "SO_TaxClassification" );
 
 			Assert.IsFalse ( e.Rules.Last ().HasElseClause );
 		}
@@ -1747,6 +1749,7 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+		
 		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{

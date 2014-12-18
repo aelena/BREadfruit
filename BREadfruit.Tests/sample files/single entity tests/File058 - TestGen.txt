@@ -1,4 +1,6 @@
-﻿Entity SO_TaxClassification is DropDownList in frmMain
+﻿; TESTGEN : DEFAULTS=2, RULES=2, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS=0
+
+Entity SO_TaxClassification is DropDownList in frmMain
 	with rules
 		TBVendorName is empty then
 			set value 'AAA' in txtExample

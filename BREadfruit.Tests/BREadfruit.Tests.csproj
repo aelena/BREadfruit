@@ -70,6 +70,7 @@
     <Compile Include="Low level tests\ParseEntityLineTests.cs" />
     <Compile Include="Low level tests\RegexTests.cs" />
     <Compile Include="Low level tests\SymbolTests.cs" />
+    <Compile Include="Low level tests\TESTGEN_tests.cs" />
     <Compile Include="Low level tests\WithLineTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -138,6 +139,8 @@
     <Content Include="sample files\single entity tests\File054 - ToUpper.txt" />
     <Content Include="sample files\single entity tests\File055 - Conds.txt" />
     <Content Include="sample files\single entity tests\File057 - Else02.txt" />
+    <Content Include="sample files\single entity tests\File059 - TestGen No Instructions.txt" />
+    <Content Include="sample files\single entity tests\File058 - TestGen.txt" />
     <Content Include="sample files\single entity tests\File056 - Else01.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
@@ -146,6 +149,9 @@
       <Project>{30f1650c-e16e-4f18-bd23-2f2bf4e5e194}</Project>
       <Name>BREadfruit</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="autogen_tests\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
