@@ -1677,6 +1677,10 @@ namespace BREadfruit.Helpers
 			return _retList;
 		}
 
+
+		// ---------------------------------------------------------------------------------
+
+
 		public static IEnumerable<string> FindAllNotMatching ( this IEnumerable<string> strings, Regex regex, int startAt = 0, int count = 0 )
 		{
 			var _retList = new List<String> ();
@@ -1689,7 +1693,6 @@ namespace BREadfruit.Helpers
 
 			return _retList;
 		}
-
 
 
 		// ---------------------------------------------------------------------------------
@@ -1705,6 +1708,10 @@ namespace BREadfruit.Helpers
 			return _s;
 
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 		public static string SubstringSafe ( this string s, int startAt, int count )
 		{
@@ -1728,10 +1735,27 @@ namespace BREadfruit.Helpers
 		}
 
 
+		// ---------------------------------------------------------------------------------
+
+
 		public static string EscapeAllDoubleQuotes ( this string s )
 		{
 			return string.IsNullOrEmpty(s) ? s : s.Replace("\"", "\"\"");
 		}
-			
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static StringBuilder AppendAll ( this StringBuilder sb, IEnumerable<string> values )
+		{
+			values.ToList ().ForEach ( x => sb.Append ( x ) );
+			return sb;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
 	}
 }

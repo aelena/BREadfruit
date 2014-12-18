@@ -1265,6 +1265,10 @@ namespace BREadfruit.Tests.Low_level_tests
 			return _finds.Count ();
 		}
 
+
+		// ---------------------------------------------------------------------------------
+
+
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "^AAA$", 0, 0, Result = 3 )]
 		public int FindAllNotMatching_Tests ( string sut, string regex, int startAt, int count )
 		{
@@ -1273,6 +1277,9 @@ namespace BREadfruit.Tests.Low_level_tests
 			var _finds = _sut.FindAllNotMatching ( new Regex ( regex ), startAt, count );
 			return _finds.Count ();
 		}
+
+
+		// ---------------------------------------------------------------------------------
 
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 0, Result = 1 )]
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 8, Result = 0 )]
@@ -1285,6 +1292,9 @@ namespace BREadfruit.Tests.Low_level_tests
 			return _finds.Count ();
 
 		}
+
+
+		// ---------------------------------------------------------------------------------
 
 		[TestCase ( "; TESTGEN : DEFAULTS=2, RULES=1, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS=0", "DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "DEFAULTS=2" )]
 		[TestCase ( "; TESTGEN : DEFAULTS = 2, RULES=1, ACTIONS=0, TRIGGERS= 0, CONSTRAINTS=0", "DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+", 0, 0, Result = "DEFAULTS = 2" )]
@@ -1301,6 +1311,10 @@ namespace BREadfruit.Tests.Low_level_tests
 			return sut.FindAllMatching ( new Regex ( regex ), startAt, count ).First ();
 		}
 
+
+		// ---------------------------------------------------------------------------------
+
+
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 0, Result = "BBB;CCC;;DDD" )]
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 8, Result = "AAA;BBB;CCC;AAA;DDD" )]
 		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 8, Result = "BBB;;" )]
@@ -1312,6 +1326,9 @@ namespace BREadfruit.Tests.Low_level_tests
 			var _finds = sut.RemoveNonMatching ( new Regex ( regex ), startAt, count );
 			return _finds;
 		}
+
+
+		// ---------------------------------------------------------------------------------
 
 
 		[TestCase ( null, 0, Result = "" )]
@@ -1334,6 +1351,10 @@ namespace BREadfruit.Tests.Low_level_tests
 		{
 			return sut.SubstringSafe ( startAt );
 		}
+
+		// ---------------------------------------------------------------------------------
+
+
 
 		[TestCase ( null, 0, 0, Result = "" )]
 		[TestCase ( null, -1, 0, Result = "" )]
@@ -1374,6 +1395,78 @@ namespace BREadfruit.Tests.Low_level_tests
 		{
 			return sut.SubstringSafe ( startAt, count );
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void AppendAll_Tests_01()
+		{
+			var sb = new StringBuilder ();
+			sb.AppendAll ( new string [] { } );
+			Assert.That ( sb.ToString () == String.Empty );
+		}
+
+		[Test]
+		public void AppendAll_Tests_02 ()
+		{
+			var sb = new StringBuilder ();
+			sb.AppendAll ( new string [] { null } );
+			Assert.That ( sb.ToString () == String.Empty );
+		}
+
+		[Test]
+		public void AppendAll_Tests_03 ()
+		{
+			var sb = new StringBuilder ();
+			sb.AppendAll ( new string [] { null, string.Empty } );
+			Assert.That ( sb.ToString () == String.Empty );
+		}
+
+		[Test]
+		public void AppendAll_Tests_04 ()
+		{
+			var sb = new StringBuilder ();
+			sb.AppendAll ( new string [] { string.Empty, string.Empty } );
+			Assert.That ( sb.ToString () == String.Empty );
+		}
+
+		[Test]
+		public void AppendAll_Tests_05 ()
+		{
+			var sb = new StringBuilder ();
+			sb.AppendAll ( new string [] { null, null, null, "" } );
+			Assert.That ( sb.ToString () == String.Empty );
+		}
+
+
+		[Test]
+		public void AppendAll_Tests_06 ()
+		{
+			var sb = new StringBuilder ();
+			sb.AppendAll ( new string [] { "a", "B", "c", "D" } );
+			Assert.That ( sb.ToString () == "aBcD" );
+		}
+
+		[Test]
+		public void AppendAll_Tests_07 ()
+		{
+			var sb = new StringBuilder ();
+			sb.AppendAll ( new string [] { "a", "B", null, "c", string.Empty, "D" } );
+			Assert.That ( sb.ToString () == "aBcD" );
+		}
+
+		[Test]
+		public void AppendAll_Tests_08 ()
+		{
+			var sb = new StringBuilder ();
+			sb.AppendAll ( new string [] { "a", "B", null, "c", string.Empty,"0", "D" } );
+			Assert.That ( sb.ToString () == "aBc0D" );
+		}
+
+		// ---------------------------------------------------------------------------------
+
 
 	}
 }
