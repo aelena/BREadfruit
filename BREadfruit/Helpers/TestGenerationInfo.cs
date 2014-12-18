@@ -28,7 +28,8 @@ namespace BREadfruit.Helpers
 
 	public static class TestGenParameters
 	{
-		public static string TestGenLine1Regex = "^[\t\\s]*;[\t\\s]*TESTGEN[\t\\s]*:[\t\\s]*DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*RULES[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*ACTIONS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*$";
+		//public static string TestGenLine1Regex = "^[\t\\s]*;[\t\\s]*TESTGEN[\t\\s]*:[\t\\s]*DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*RULES[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*ACTIONS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*$";
+		public static string TestGenLine1Regex = "^[\t\\s]*;[\t\\s]*TESTGEN[\t\\s]*"; // :[\t\\s]*DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*RULES[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*ACTIONS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*,[\t\\s]*CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+[\t\\s]*$";
 	}
 
 }

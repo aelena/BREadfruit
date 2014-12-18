@@ -139,6 +139,7 @@
     <Content Include="sample files\single entity tests\File054 - ToUpper.txt" />
     <Content Include="sample files\single entity tests\File055 - Conds.txt" />
     <Content Include="sample files\single entity tests\File057 - Else02.txt" />
+    <Content Include="sample files\single entity tests\File060 - TestGen - Incomplete.txt" />
     <Content Include="sample files\single entity tests\File059 - TestGen No Instructions.txt" />
     <Content Include="sample files\single entity tests\File058 - TestGen.txt" />
     <Content Include="sample files\single entity tests\File056 - Else01.txt" />

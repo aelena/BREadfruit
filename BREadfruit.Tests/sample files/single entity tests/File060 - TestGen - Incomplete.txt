@@ -1,0 +1,7 @@
+﻿; TESTGEN : RULES=2,
+
+Entity SO_TaxClassification is DropDownList in frmMain
+	with rules
+		
+		TBVendorName2 is empty then
+			set value 'CCC' in txtExample

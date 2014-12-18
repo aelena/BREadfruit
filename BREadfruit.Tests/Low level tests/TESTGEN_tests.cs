@@ -35,6 +35,16 @@ namespace BREadfruit.Tests.Low_level_tests
 			Assert.IsEmpty ( tgi );
 		}
 
+		[Test]
+		public void TESTGEN_test_03 ()
+		{
+			var parser = new Parser ();
+			var tgi = parser.CreateTestForEntity ( string.Join ( Environment.NewLine,
+				System.IO.File.ReadAllLines ( @"..\..\sample files\single entity tests\File060 - TestGen - Incomplete.txt" ) ) );
+
+			Assert.That ( tgi.Trim ().StartsWith ( "[Test]" ) );
+
+		}
 		
 	}
 }

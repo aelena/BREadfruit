@@ -1009,11 +1009,36 @@ namespace BREadfruit
 			__testBody.AppendFormat ( "Assert.That ( e.Form == \"{0}\", \"Entity form should be '{0}' but is \" + e.Form );", e.Form ).Append ( Environment.NewLine );
 			__testBody.AppendFormat ( "Assert.That ( e.Name == \"{0}\", \"Entity name should be '{0}' but is \" + e.Name );", e.Name ).Append ( Environment.NewLine );
 
-			var __numOfDefaults = __testgenLine.FindAllMatching ( new Regex ( "DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
-			var __numOfRules = __testgenLine.FindAllMatching ( new Regex ( "RULES[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
-			var __numOfActions = __testgenLine.FindAllMatching ( new Regex ( "ACTIONS[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
-			var __numOfTriggers = __testgenLine.FindAllMatching ( new Regex ( "TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
-			var __numOfConstraints = __testgenLine.FindAllMatching ( new Regex ( "CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+" ) ).First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+			string __numOfDefaults = "0";
+			string __numOfRules = "0";
+			string __numOfActions = "0";
+			string __numOfTriggers = "0";
+			string __numOfConstraints = "0";
+
+			var _1 = __testgenLine.FindAllMatching ( new Regex ( "DEFAULTS[\t\\s]*=[\t\\s]*[0-9]+" ) );
+			if ( _1.HasItems () )
+				__numOfDefaults = _1.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+
+			var _2 = __testgenLine.FindAllMatching ( new Regex ( "RULES[\t\\s]*=[\t\\s]*[0-9]+" ) );
+			if ( _2.HasItems () )
+				__numOfRules = _2.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+
+
+			var _3 = __testgenLine.FindAllMatching ( new Regex ( "ACTIONS[\t\\s]*=[\t\\s]*[0-9]+" ) );
+			if ( _3.HasItems () )
+				__numOfActions = _3.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+
+
+
+			var _4 = __testgenLine.FindAllMatching ( new Regex ( "TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+" ) );
+			if ( _4.HasItems () )
+				__numOfTriggers = _4.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
+
+
+
+			var _5 = __testgenLine.FindAllMatching ( new Regex ( "CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+" ) );
+			if ( _5.HasItems () )
+				__numOfConstraints = _5.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
 
 			__testBody.AppendFormat ( "Assert.That ( e.Defaults.Count() == {0}, \"Should have '{0}' default clauses but has \" + e.Defaults.Count());", __numOfDefaults ).Append ( Environment.NewLine );
 			__testBody.AppendFormat ( "Assert.That ( e.ConditionlessActions.Count() == {0}, \"Should have '{0}' Conditionless Actions but has \" + e.ConditionlessActions.Count());", __numOfActions ).Append ( Environment.NewLine );
