@@ -1574,12 +1574,12 @@ namespace BREadfruit.Helpers
 		{
 
 			if ( String.IsNullOrEmpty ( s ) )
-				return new List<string>();
+				return new List<string> ();
 
 			if ( !separators.HasItems () )
 				throw new ArgumentNullException ( "separators", "The list must contain at least one element" );
 
-			
+
 			var excludedStrings = new List<string> ();
 			foreach ( var t in excludingPairs )
 				excludedStrings.AddRange ( s.FindAllBetween ( t.Item1, t.Item2, true ) );
@@ -1624,7 +1624,7 @@ namespace BREadfruit.Helpers
 			__splittedList.Add ( s.Substring ( __offset ) );
 
 			if ( options == StringSplitOptions.RemoveEmptyEntries )
-				__splittedList.RemoveAll ( x => x.Trim() == String.Empty );
+				__splittedList.RemoveAll ( x => x.Trim () == String.Empty );
 
 			return __splittedList;
 		}
@@ -1632,6 +1632,33 @@ namespace BREadfruit.Helpers
 
 
 		// ---------------------------------------------------------------------------------
+
+		public static IEnumerable<string> FindAllMatching ( this string s, Regex regex, int startAt = 0, int count = 0 )
+		{
+			var _retList = new List<String> ();
+			var _count = count == 0 ? s.Length : count;
+			_count = _count > s.Length ? s.Length : _count;
+				if ( regex.Match ( s, startAt, _count ).Value != string.Empty )
+					_retList.Add ( s );
+			return _retList;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<string> FindAllMatching ( this IEnumerable<string> strings, Regex regex, int startAt = 0, int count = 0 )
+		{
+			var _retList = new List<String> ();
+			foreach ( var l in strings )
+			{
+				var _count = count == 0 ? l.Length : count;
+				if ( regex.Match ( l, startAt, _count ).Value != string.Empty )
+					_retList.Add ( l );
+			}
+
+			return _retList;
+		}
 
 
 	}

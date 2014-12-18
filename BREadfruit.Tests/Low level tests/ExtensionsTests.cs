@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using BREadfruit.Helpers;
+using System.Text.RegularExpressions;
 
 namespace BREadfruit.Tests.Low_level_tests
 {
@@ -1200,7 +1201,7 @@ namespace BREadfruit.Tests.Low_level_tests
 			var separators = new List<Tuple<string, string>> ();
 			separators.Add ( new Tuple<string, string> ( "{", "}" ) );
 			separators.Add ( new Tuple<string, string> ( "[", "]" ) );
-			var spl = sut.Split2 ( new [] { " " }, separators);
+			var spl = sut.Split2 ( new [] { " " }, separators );
 			Assert.That ( spl.Count () == 13 );
 			Assert.That ( spl.First () == "Normal" );
 			Assert.That ( spl.Last () == "brackets" );
@@ -1250,7 +1251,33 @@ namespace BREadfruit.Tests.Low_level_tests
 			Assert.That ( spl.First () == "Normal" );
 			Assert.That ( spl.Last () == "[ between brackets ]" );
 		}
+
+
 		// ---------------------------------------------------------------------------------
+
+
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "^AAA$", 0, 0, Result = 2 )]
+		public int FindAllMatching_Tests ( string sut, string regex, int startAt, int count )
+		{
+
+			var _sut = sut.Split ( new [] { ';' } );
+			var _finds = _sut.FindAllMatching ( new Regex ( regex ), startAt, count );
+			return _finds.Count ();
+
+
+		}
+
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 0, Result = 1 )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "AAA", 4, 8, Result = 0 )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 8, Result = 1 )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 6, Result = 0 )]
+		[TestCase ( "AAA;BBB;CCC;AAA;DDD", "CCC", 4, 29, Result = 1 )]
+		public int FindAllMatching_Tests_02 ( string sut, string regex, int startAt, int count )
+		{
+			var _finds = sut.FindAllMatching ( new Regex ( regex ), startAt, count );
+			return _finds.Count ();
+
+		}
 
 	}
 }
