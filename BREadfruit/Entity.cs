@@ -131,7 +131,17 @@ namespace BREadfruit
             }
         }
 
-        // ---------------------------------------------------------------------------------
+        
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Keeps a representation of the entity as stored in the source files.
+		/// </summary>
+		public string TextRepresentation { get; protected internal set; }
+
+
+		// ---------------------------------------------------------------------------------
 
 
         public Entity ( string name, string typeDescription, string formName, string bpCode = "" )
@@ -237,6 +247,7 @@ namespace BREadfruit
 
 
         // ---------------------------------------------------------------------------------
+
 
 
     }
