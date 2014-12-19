@@ -1749,6 +1749,61 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+		/*
+		 * TESTS FOR FILES 058, 059 and 060 are in testgen
+		 */
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile061 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File061 - RealElse.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorIFA.value" );
+
+			Assert.IsTrue ( e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorIFA.value" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 1 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile062 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File062 - NoElse.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorIFA.value" );
+
+			Assert.IsFalse ( e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorIFA.value" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 0 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 		
 		[Test]
 		public void ShouldFindEntities_Vendor ()

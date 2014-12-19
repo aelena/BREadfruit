@@ -1,0 +1,18 @@
+﻿Entity TBVendorIFA is TextBox in frmSearch
+	with defaults
+		visible true
+		value ''
+		label LABELS.labVendorIFA
+
+	with actions
+		hide btnCreateVendor
+		hide vendorSearchResultGrid
+		clear vendorSearchResultGrid
+	
+	with rules
+		; should this be moved to rules for the btnSearch button? maybe.....
+		TBVendorIFA.value is '' then 
+			DDLVDCountry mandatory
+
+	with triggers
+		this.value changes

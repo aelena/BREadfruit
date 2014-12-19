@@ -96,9 +96,7 @@ Entity TBVendorNumber is TextBox in frmSearch
 	with rules
 		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
 		TBVendorNumber.text starts with '0' then
-			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in MESSAGE_POPUP
-		TBVendorNumber.text not starts with '0' then
-			set value '' in MESSAGE_POPUP
+			set value "This partner is not managed by Madam. Please contact GSS master data team." in MESSAGE_POPUP
 
 	with triggers
 		this.value changes

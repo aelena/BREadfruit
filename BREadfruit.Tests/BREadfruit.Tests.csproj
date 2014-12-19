@@ -144,6 +144,8 @@
     <Content Include="sample files\single entity tests\File059 - TestGen No Instructions.txt" />
     <Content Include="sample files\single entity tests\File058 - TestGen.txt" />
     <Content Include="sample files\single entity tests\File056 - Else01.txt" />
+    <Content Include="sample files\single entity tests\File061 - RealElse.txt" />
+    <Content Include="sample files\single entity tests\File062 - NoElse.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
