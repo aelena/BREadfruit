@@ -175,7 +175,14 @@ namespace BREadfruit
 								String.Format ( Grammar.InvalidElseStatementClauseExceptionDefaultTemplate, _currLine, line ) );
 						// we keep in the same scope, that of RULES, so change the scope and go on
 						_currentScope = CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK;
-						continue;
+						// if the else is in a separate line
+						if ( lineInfo.Tokens.Count () == 1 )
+							continue;
+						else
+						{
+							// otherwise fuck our brains inside out 
+							lineInfo.RemoveTokens ( 1 );
+						}
 					}
 
 					#region " --- rules block --- "
@@ -384,7 +391,7 @@ namespace BREadfruit
 						{
 							var _ra = new ResultAction ( Grammar.ToolTipDefaultClause, lineInfo.Tokens.Skip ( 1 ).JoinTogether ().Token.Replace ( "\"", "" ),
 								 this.Entities.Last ().Name );
-							this._entities.Last ().Rules.Last ().HasElseClause = _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK; 
+							this._entities.Last ().Rules.Last ().HasElseClause = _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK;
 							AddResultAction ( _ra, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 							continue;
 						}

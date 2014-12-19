@@ -119,12 +119,14 @@ Entity TBVendorIFA is TextBox in frmSearch
 	
 	with rules
 		; should this be moved to rules for the btnSearch button? maybe.....
-		TBVendorIFA.value is not '' then DDLVDCountry not mandatory
-		TBVendorIFA.value is '' then DDLVDCountry mandatory
+		TBVendorIFA.value is '' then 
+			DDLVDCountry mandatory
+		else 
+			DDLVDCountry not mandatory
 
 	with triggers
 		this.value changes
-		
+				
 ; ----------------------------------------------------------------------------	
 
 

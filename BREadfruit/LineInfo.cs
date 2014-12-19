@@ -167,7 +167,7 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
-		protected internal Tuple<string, int, int> TokenizeValueListInCondition (int index = 0)
+		protected internal Tuple<string, int, int> TokenizeValueListInCondition ( int index = 0 )
 		{
 			// reeturn immediately in this case
 			if ( this.IsEntityLine || this.IsWithLine )
@@ -423,6 +423,20 @@ namespace BREadfruit
 				throw new ArgumentException ( "Cannot specify a upper index lower than the starting index", "to" );
 
 			this._tokens = this._tokens.Take ( from ).Concat ( this._tokens.Skip ( to ) ).ToList ();
+			this._numberOfTokens = this._tokens.Count ();
+			this._representation = this.Tokens.JoinTogether ().Token;
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+		internal void RemoveTokens ( int to )
+		{
+			if ( to < 0 || to > this._tokens.Count () )
+				throw new ArgumentException ( "The amount of tokens to remove cannot be lower than zero or bigger than the number of tokens available", "to" );
+
+			this._tokens = this._tokens.From (to ).ToList ();
 			this._numberOfTokens = this._tokens.Count ();
 			this._representation = this.Tokens.JoinTogether ().Token;
 

@@ -1804,6 +1804,30 @@ namespace BREadfruit.Tests
 
 		// ---------------------------------------------------------------------------------
 
+
+		[Test]
+		public void ParseSampleFile063 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File063 - SingleLineElse.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorIFA.value" );
+
+			Assert.IsTrue ( e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "TBVendorIFA.value" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 1 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 		
 		[Test]
 		public void ShouldFindEntities_Vendor ()

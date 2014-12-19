@@ -146,6 +146,7 @@
     <Content Include="sample files\single entity tests\File056 - Else01.txt" />
     <Content Include="sample files\single entity tests\File061 - RealElse.txt" />
     <Content Include="sample files\single entity tests\File062 - NoElse.txt" />
+    <Content Include="sample files\single entity tests\File063 - SingleLineElse.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
