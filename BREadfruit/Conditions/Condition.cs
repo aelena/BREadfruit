@@ -74,13 +74,13 @@ namespace BREadfruit.Conditions
 
 
 		private List<UnaryAction> _elseResults = null;
-		public IEnumerable<UnaryAction> ElseResults
-		{
-			get
-			{
-				return this._elseResults;
-			}
-		}
+		//public IEnumerable<UnaryAction> ElseResults
+		//{
+		//	get
+		//	{
+		//		return this._elseResults;
+		//	}
+		//}
 
 
 		// ---------------------------------------------------------------------------------
