@@ -1,0 +1,84 @@
+﻿; TESTGEN : DEFAULTS=4
+Entity rbSpiridon is RadioButton in frmSearch
+	with defaults
+		enabled false
+		label "Spiridon"
+		value true				; means checked
+
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=4
+Entity rbEPass is RadioButton in frmSearch
+	with defaults
+		enabled false
+		label "Epass"
+		value false				; means unchecked
+
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
+Entity TBVendorName is TextBox in frmSearch
+	with defaults
+		enabled true
+		visible
+		value   ''
+		label LABELS.NAME
+
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+
+	with rules
+		
+	with triggers
+		TBVendorName.value changes
+
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
+
+Entity TBVendorCity is TextBox in frmSearch
+	with defaults
+		visible true
+		value ""
+		label LABELS.labVendorCity
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+
+	with triggers
+		this.value on change
+
+
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, CONSTRAINTS=1,TRIGGERS=1
+
+Entity TBVendorNumber is TextBox in frmSearch
+	with defaults
+		visible true
+		value ''
+		max length 10
+		min length 10
+		label LABELS.labVendorNumber
+		validation ^[0-9]{10}$
+
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+
+	with rules
+		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
+		TBVendorNumber.text starts with '0' then
+			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in MESSAGE_POPUP
+		TBVendorNumber.text not starts with '0' then
+			set value '' in MESSAGE_POPUP
+
+	with triggers
+		this.value changes
+
+	with constraints
+		only numbers
+			

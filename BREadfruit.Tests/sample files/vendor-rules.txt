@@ -22,7 +22,7 @@
 ;     SEARCH FORM 
 ; ----------------------------------------------------------------------------	
 
-
+; TESTGEN : DEFAULTS=4
 Entity rbSpiridon is RadioButton in frmSearch
 	with defaults
 		enabled false
@@ -30,7 +30,7 @@ Entity rbSpiridon is RadioButton in frmSearch
 		value true				; means checked
 
 ; ----------------------------------------------------------------------------	
-
+; TESTGEN : DEFAULTS=4
 Entity rbEPass is RadioButton in frmSearch
 	with defaults
 		enabled false
@@ -38,7 +38,7 @@ Entity rbEPass is RadioButton in frmSearch
 		value false				; means unchecked
 
 ; ----------------------------------------------------------------------------	
-
+; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
 Entity TBVendorName is TextBox in frmSearch
 	with defaults
 		enabled true
@@ -58,6 +58,7 @@ Entity TBVendorName is TextBox in frmSearch
 		TBVendorName.value changes
 
 ; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
 
 Entity TBVendorCity is TextBox in frmSearch
 	with defaults
@@ -75,6 +76,7 @@ Entity TBVendorCity is TextBox in frmSearch
 
 
 ; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, CONSTRAINTS=1,TRIGGERS=1
 
 Entity TBVendorNumber is TextBox in frmSearch
 	with defaults

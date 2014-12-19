@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="autogen_tests\autogen.cs" />
     <Compile Include="High Level tests.cs" />
     <Compile Include="Low level tests\DefaultClauseTests.cs" />
     <Compile Include="Low level tests\EntityTests.cs" />
@@ -143,6 +144,7 @@
     <Content Include="sample files\single entity tests\File059 - TestGen No Instructions.txt" />
     <Content Include="sample files\single entity tests\File058 - TestGen.txt" />
     <Content Include="sample files\single entity tests\File056 - Else01.txt" />
+    <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +153,7 @@
       <Name>BREadfruit</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="autogen_tests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

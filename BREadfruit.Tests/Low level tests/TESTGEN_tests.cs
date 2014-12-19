@@ -41,10 +41,19 @@ namespace BREadfruit.Tests.Low_level_tests
 			var parser = new Parser ();
 			var tgi = parser.CreateTestForEntity ( string.Join ( Environment.NewLine,
 				System.IO.File.ReadAllLines ( @"..\..\sample files\single entity tests\File060 - TestGen - Incomplete.txt" ) ) );
-
 			Assert.That ( tgi.Trim ().StartsWith ( "[Test]" ) );
 
 		}
-		
+
+		[Test]
+		public void TESTGEN_test_04 ()
+		{
+			var parser = new Parser ();
+			var totalAutogenString = parser.CreateTestForEntities ( @"..\..\sample files\vendor-rules-simple.txt" );
+
+			System.IO.File.WriteAllText ( @"..\..\autogen_tests\autogen.cs", totalAutogenString );
+
+			Assert.That ( totalAutogenString.IndexOf ( "[TestFixture]" ) > 0 );
+		}
 	}
 }
