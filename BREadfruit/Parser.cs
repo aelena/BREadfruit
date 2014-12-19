@@ -103,7 +103,7 @@ namespace BREadfruit
 				{
 
 					this.CheckForTestGenInstruction ( line );
-					this.n ( line );
+					this.AddLineToCurrentEntityRepresentation ( line );
 
 					var lineInfo = ParseLine ( line );
 
