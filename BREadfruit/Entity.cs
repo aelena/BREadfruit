@@ -156,6 +156,7 @@ namespace BREadfruit
             this._unaryactions = new List<UnaryAction> ();
             this._triggers = new List<Trigger> ();
             this._constraints = new List<Constraint> ();
+			this.TextRepresentation = "";
         }
 
 

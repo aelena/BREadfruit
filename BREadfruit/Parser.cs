@@ -102,6 +102,9 @@ namespace BREadfruit
 				if ( !( String.IsNullOrWhiteSpace ( line ) ) )
 				{
 
+					this.CheckForTestGenInstruction ( line );
+					this.n ( line );
+
 					var lineInfo = ParseLine ( line );
 
 
@@ -124,6 +127,10 @@ namespace BREadfruit
 					{
 						this.CheckIfVisibleAndEnabledDefaultsAreSet ();
 						_currentScope = ProcessEntityBlock ( _currLine, _currentScope, line, lineInfo );
+						this._entities.Last ().TextRepresentation += __lastTestGenCommandFound;
+						this._entities.Last ().TextRepresentation += Environment.NewLine;
+						this._entities.Last ().TextRepresentation += line;
+						this._entities.Last ().TextRepresentation += Environment.NewLine;
 					}
 					#endregion
 
@@ -662,6 +669,35 @@ namespace BREadfruit
 
 		}
 
+
+		// ---------------------------------------------------------------------------------
+
+		private string __lastTestGenCommandFound = "";
+
+		public void CheckForTestGenInstruction ( string line )
+		{
+			if ( !string.IsNullOrWhiteSpace ( line ) && line.ToUpperInvariant ().Matches ( new Regex ( "^[\t\\s]*;[\t\\s]*TESTGEN" ) ) )
+			{
+				__lastTestGenCommandFound = line;
+			}
+		}
+
+
+		public void AddLineToCurrentEntityRepresentation ( string line )
+		{
+			if ( !string.IsNullOrWhiteSpace ( line ) &&
+				 this._entities.Count () > 0 &&
+				 !line.ToUpperInvariant ().Matches ( new Regex ( "^[\t\\s]*;[\t\\s]*TESTGEN" ) ) &&
+				 !line.Trim ().StartsWith ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
+			{
+				this._entities.Last ().TextRepresentation += line;
+				this._entities.Last ().TextRepresentation += Environment.NewLine;
+			}
+		}
+
+		// ---------------------------------------------------------------------------------
+
+
 		private void AddUnaryAction ( UnaryAction _ua, bool addAsElse = false )
 		{
 			if ( !addAsElse )
@@ -672,6 +708,10 @@ namespace BREadfruit
 				this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, true );
 			}
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 		private void AddResultAction ( ResultAction _ra, bool addAsElse = false )
 		{
@@ -684,6 +724,10 @@ namespace BREadfruit
 			}
 
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 		private static IEnumerable<Symbol> GetClauseAfterThen ( LineInfo lineInfo )
 		{
@@ -939,48 +983,58 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
-
-		protected internal IEnumerable<Entity> GenerateTests ( string filePath )
-		{
-			this.CheckFileExists ( filePath );
-
-			var line = String.Empty;
-			List<string> lines = new List<string> ();
-			using ( var sr = new StreamReader ( filePath ) )
-			{
-				while ( line != null )
-				{
-					line = sr.ReadLine ();
-					lines.Add ( line );
-				}
-			}
-
-			return GenerateTests ( lines );
-		}
-
-
-		// ---------------------------------------------------------------------------------
-
-
 		/// <summary>
 		/// Main entry point for parsing a file.
 		/// Allows a caller to send in a list of strings (standard text lines)
 		/// containing all the entities and rules to be parsed by the engine.
 		/// </summary>
 		/// <param name="filePath">Array of lines to be parsed.</param>
-		protected internal IEnumerable<Entity> GenerateTests ( IEnumerable<string> lines )
+		protected internal string CreateTestForEntities ( string filePath )
 		{
-			return null;
+			var _fucktardos = this.ParseRuleSet ( filePath );
+			var __localCopy = new Entity [ 10000 ];
+			_fucktardos.ToList ().CopyTo ( __localCopy );
+			this._entities.Clear ();
+			var __tests = new List<string> ();
+			foreach ( var _f in __localCopy.Where ( x => x != null ) )
+				__tests.Add ( this.CreateTestForEntity ( _f.TextRepresentation ) );
+
+
+			var __sb = new StringBuilder ();
+
+			__sb.Append ( "using System;						".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using System.Collections.Generic;	".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using System.IO;					".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using System.Linq;				".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using System.Text;				".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using System.Threading.Tasks;		".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using BREadfruit.Exceptions;		".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using NUnit.Framework;			".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using BREadfruit.Helpers;			".Trim () ).Append ( Environment.NewLine );
+			__sb.Append ( "using BREadfruit.Conditions;		".Trim () ).Append ( Environment.NewLine );
+
+			__sb.Append ( "/* ************************************************************" ).Append ( Environment.NewLine );
+			__sb.Append ( " *                                                            *" ).Append ( Environment.NewLine );
+			__sb.AppendFormat ( " * AUTOGENERATED ON : {0}	", DateTime.UtcNow.ToString () ).Append ( Environment.NewLine );
+			__sb.Append ( " *                                                            *" ).Append ( Environment.NewLine );
+			__sb.Append ( "************************************************************* */" ).Append ( Environment.NewLine );
+
+			__sb.Append ( "namespace BREadfruit.Tests.Autogenerated" ).Append ( Environment.NewLine );
+			__sb.Append ( "{" ).Append ( Environment.NewLine );
+			__sb.Append ( "\t[TestFixture]" ).Append ( Environment.NewLine );
+			__sb.Append ( "\tpublic class EntityTests" ).Append ( Environment.NewLine );
+			__sb.Append ( "\t{" ).Append ( Environment.NewLine );
+
+
+			__sb.AppendAll ( __tests ).Append ( "\t}" ).Append ( Environment.NewLine ).Append ( "}" );
+
+			return __sb.ToString ();
+
+
 		}
 
 
 		// ---------------------------------------------------------------------------------
-
-
-		protected internal IEnumerable<TestGenerationInfo> CreateTestForEntities ()
-		{
-			return null;
-		}
 
 
 		protected internal string CreateTestForEntity ( string entity )
@@ -996,18 +1050,19 @@ namespace BREadfruit
 			else
 				return __testgenLine;
 
-			var e = this.ParseRuleSet ( lines ).First ();
+			var e = this.ParseRuleSet ( lines ).Last ();
 
 			var __testBody = new StringBuilder ();
-			__testBody.Append ( "[Test]" ).Append ( Environment.NewLine );
-			__testBody.AppendFormat ( "public void TestEntity_{0} ()", e.Name ).Append ( Environment.NewLine );
-			__testBody.Append ( "{" ).Append ( Environment.NewLine );
-			__testBody.Append ( "var parser = new Parser ();" ).Append ( Environment.NewLine );
-			__testBody.AppendFormat ( "parser.ParseRuleSetAsString ( @\"{0}\" );", entity.EscapeAllDoubleQuotes () ).Append ( Environment.NewLine );
-			__testBody.Append ( "Assert.That ( parser.Entities.Count () == 1 );" ).Append ( Environment.NewLine );
-			__testBody.Append ( "var e = parser.Entities.First ();" ).Append ( Environment.NewLine );
-			__testBody.AppendFormat ( "Assert.That ( e.Form == \"{0}\", \"Entity form should be '{0}' but is \" + e.Form );", e.Form ).Append ( Environment.NewLine );
-			__testBody.AppendFormat ( "Assert.That ( e.Name == \"{0}\", \"Entity name should be '{0}' but is \" + e.Name );", e.Name ).Append ( Environment.NewLine );
+			__testBody.Append ( "[Test]", 2 ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 2, "public void TestEntity_{0} ()", e.Name ).Append ( Environment.NewLine );
+			__testBody.Append ( "{",2 ).Append ( Environment.NewLine );
+			__testBody.Append ( "var parser = new Parser ();", 3 ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 3, "parser.ParseRuleSetAsString ( @\"{0}\" ", entity.EscapeAllDoubleQuotes () ).Append ( Environment.NewLine );
+			__testBody.Append ( ");", 3 ).Append ( Environment.NewLine );
+			__testBody.Append ( "Assert.That ( parser.Entities.Count () == 1 );",3 ).Append ( Environment.NewLine );
+			__testBody.Append ( "var e = parser.Entities.First ();",3 ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 3, "Assert.That ( e.Form == \"{0}\", \"Entity form should be '{0}' but is \" + e.Form );", e.Form ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 3, "Assert.That ( e.Name == \"{0}\", \"Entity name should be '{0}' but is \" + e.Name );", e.Name ).Append ( Environment.NewLine );
 
 			string __numOfDefaults = "0";
 			string __numOfRules = "0";
@@ -1023,31 +1078,28 @@ namespace BREadfruit
 			if ( _2.HasItems () )
 				__numOfRules = _2.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
 
-
 			var _3 = __testgenLine.FindAllMatching ( new Regex ( "ACTIONS[\t\\s]*=[\t\\s]*[0-9]+" ) );
 			if ( _3.HasItems () )
 				__numOfActions = _3.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
-
-
 
 			var _4 = __testgenLine.FindAllMatching ( new Regex ( "TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+" ) );
 			if ( _4.HasItems () )
 				__numOfTriggers = _4.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
 
-
-
 			var _5 = __testgenLine.FindAllMatching ( new Regex ( "CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+" ) );
 			if ( _5.HasItems () )
 				__numOfConstraints = _5.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
 
-			__testBody.AppendFormat ( "Assert.That ( e.Defaults.Count() == {0}, \"Should have '{0}' default clauses but has \" + e.Defaults.Count());", __numOfDefaults ).Append ( Environment.NewLine );
-			__testBody.AppendFormat ( "Assert.That ( e.ConditionlessActions.Count() == {0}, \"Should have '{0}' Conditionless Actions but has \" + e.ConditionlessActions.Count());", __numOfActions ).Append ( Environment.NewLine );
-			__testBody.AppendFormat ( "Assert.That ( e.Rules.Count() == {0}, \"Should have '{0}' Rules but has \" + e.Rules.Count());", __numOfRules ).Append ( Environment.NewLine );
-			__testBody.AppendFormat ( "Assert.That ( e.Triggers.Count() == {0}, \"Should have '{0}' Triggers but has \" + e.Triggers.Count());", __numOfTriggers ).Append ( Environment.NewLine );
-			__testBody.AppendFormat ( "Assert.That ( e.Constraints.Count() == {0}, \"Should have '{0}' Constraints but has \" + e.Constraints.Count());", __numOfConstraints ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 3, "Assert.That ( e.Defaults.Count() == {0}, \"Should have '{0}' default clauses but has \" + e.Defaults.Count());", __numOfDefaults ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 3, "Assert.That ( e.ConditionlessActions.Count() == {0}, \"Should have '{0}' Conditionless Actions but has \" + e.ConditionlessActions.Count());", __numOfActions ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 3, "Assert.That ( e.Rules.Count() == {0}, \"Should have '{0}' Rules but has \" + e.Rules.Count());", __numOfRules ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 3, "Assert.That ( e.Triggers.Count() == {0}, \"Should have '{0}' Triggers but has \" + e.Triggers.Count());", __numOfTriggers ).Append ( Environment.NewLine );
+			__testBody.AppendFormat ( 3, "Assert.That ( e.Constraints.Count() == {0}, \"Should have '{0}' Constraints but has \" + e.Constraints.Count());", __numOfConstraints ).Append ( Environment.NewLine );
 
-			__testBody.Append ( "}" ).Append ( Environment.NewLine );
-			__testBody.Append ( Environment.NewLine ).Append ( "// ---------------------------------------------------------------------------------" ).Append ( Environment.NewLine );
+			__testBody.Append ( "}", 2 ).Append ( Environment.NewLine );
+			__testBody.Append ( Environment.NewLine ).Append ( Environment.NewLine );
+			__testBody.Append ( "// ---------------------------------------------------------------------------------", 2 );
+			__testBody.Append ( Environment.NewLine ).Append ( Environment.NewLine );
 
 			return __testBody.ToString ();
 		}
