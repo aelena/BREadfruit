@@ -1721,7 +1721,7 @@ namespace BREadfruit.Helpers
 			if ( count <= 0 )
 				return s.SubstringSafe ( startAt );
 
-			if ( startAt > s.Length)
+			if ( startAt > s.Length )
 				return String.Empty;
 
 			startAt = startAt < 0 ? 0 : startAt;
@@ -1740,7 +1740,7 @@ namespace BREadfruit.Helpers
 
 		public static string EscapeAllDoubleQuotes ( this string s )
 		{
-			return string.IsNullOrEmpty(s) ? s : s.Replace("\"", "\"\"");
+			return string.IsNullOrEmpty ( s ) ? s : s.Replace ( "\"", "\"\"" );
 		}
 
 
@@ -1756,6 +1756,60 @@ namespace BREadfruit.Helpers
 
 		// ---------------------------------------------------------------------------------
 
+
+		public static StringBuilder AppendAll ( this StringBuilder sb, IEnumerable<string> values, int indentationLevel )
+		{
+			values.ToList ().ForEach ( x => sb.Append ( x, indentationLevel ) );
+			return sb;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static bool Matches ( this string s, Regex regex )
+		{
+			if ( string.IsNullOrEmpty ( s ) )
+				return false;
+
+			if ( regex == null )
+				return false;
+
+			return regex.Matches ( s ).Count > 0;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static StringBuilder Append ( this StringBuilder sb, string value, int indentationLevel = 0 )
+		{
+			if ( indentationLevel < 0 )
+				indentationLevel = 0;
+
+			if ( indentationLevel > 0 )
+				for ( var i = 0; i++ < indentationLevel; )
+					sb.Append ( "\t" );
+			sb.Append ( value );
+			return sb;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static StringBuilder AppendFormat ( this StringBuilder sb, int indentationLevel, string value,params object [] args  )
+		{
+			if ( indentationLevel < 0 )
+				indentationLevel = 0;
+
+			if ( indentationLevel > 0 )
+				for ( var i = 0; i++ < indentationLevel; )
+					sb.Append ( "\t" );
+
+			sb.AppendFormat ( value, args );
+			return sb;
+		}
 
 	}
 }
