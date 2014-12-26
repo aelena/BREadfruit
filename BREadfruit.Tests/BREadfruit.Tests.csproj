@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BREadfruit.Tests</RootNamespace>
     <AssemblyName>BREadfruit.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -147,6 +148,7 @@
     <Content Include="sample files\single entity tests\File061 - RealElse.txt" />
     <Content Include="sample files\single entity tests\File062 - NoElse.txt" />
     <Content Include="sample files\single entity tests\File063 - SingleLineElse.txt" />
+    <Content Include="sample files\single entity tests\File064 - SetLabel.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
   </ItemGroup>

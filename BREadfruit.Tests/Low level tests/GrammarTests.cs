@@ -20,7 +20,7 @@ namespace BREadfruit.Tests.Low_level_tests
                          select new
                          {
                              Name = x.Name,
-                             Ex = x.GetValue(null)
+                             Ex = x.GetValue (x, null )
                          };
             var fields = from x in typeof ( Grammar ).GetFields ()
                              where x.Name.ToUpperInvariant ().Contains ( "REGEX" )

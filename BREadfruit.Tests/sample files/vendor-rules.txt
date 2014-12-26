@@ -239,7 +239,7 @@ Entity btnSearch is Button in frmSearch
 
 	with actions
 		; TODO: missing defining arguments here...
-		load data from WEBSERVICE.SEARCH_VENDORS with arguments {"A" : "B"} in grid
+		load data from WEBSERVICE.SEARCH_VENDORS with arguments {"A" : "B"} in vendorSearchResultGrid
 		; this means the database has to be asked to see if current user has permissions for the selected combination
 		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
 		; show an error message or popup
@@ -265,13 +265,13 @@ Entity btnSearch is Button in frmSearch
 			set value 'Fill the fields KeyTax or Vendor or IFA Number or Country + Name or Country + City' in MESSAGE_POPUP
 		
 		TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
 	
 		DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in MESSAGE_POPUP
+			set value MESSAGES.SEARCH.FILL03 in MESSAGE_POPUP
 		
 		TBVendorName is not empty and DDLVDCountry is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
 
 		TBVendorIFA.value is not empty then DDLVDCountry not mandatory
 
