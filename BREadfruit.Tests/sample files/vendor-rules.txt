@@ -145,10 +145,10 @@ Entity TBVendorIFA is TextBox in frmSearch
 
 
 	with rules
-		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then set value LABELS.labSIRET in TBVendorVAT
-		DDLVDCountry.value in {PT,ES} then set value LABELS.labNIF in TBVendorVAT
-		DDLVDCountry.value is IT then set value LABELS.labPartitaIVA in TBVendorVAT
-		DDLVDCountry.value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value LABELS.labVAT in TBVendorVAT
+		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then label LABELS.labSIRET in TBVendorVAT
+		DDLVDCountry.value in {PT,ES} then label LABELS.labNIF in TBVendorVAT
+		DDLVDCountry.value is IT then label LABELS.labPartitaIVA in TBVendorVAT
+		DDLVDCountry.value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then label LABELS.labVAT in TBVendorVAT
 	
 	with triggers
 		this.value changes 
@@ -239,21 +239,23 @@ Entity btnSearch is Button in frmSearch
 
 	with actions
 		; TODO: missing defining arguments here...
-		load data from WEBSERVICE.SEARCH_VENDORS with arguments {"A" : "B"} in vendorSearchResultGrid
+		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {User : USER.USER_ID, Country : DDLCDCountry.Value, Company : DDLCDCompany.Value, PurchaseOrg : DDLCDPurchOrg.Value} in MESSAGE_POPUP
+		load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
 		; this means the database has to be asked to see if current user has permissions for the selected combination
 		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
 		; show an error message or popup
 		; maybe this has to be defined a bit better
 		; would this be DATASOURCE or maybe WEBSERVICE call?
 		; what properties should be passed to identify the user? or shall this be somehow managed or injected by environment?
-		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {User : USER.USER_ID, Country : DDLCDCountry.Value, Company : DDLCDCompany.Value, PurchaseOrg : DDLCDPurchOrg.Value} in MESSAGE_POPUP
-
+		
 	with rules
 		
 		TBVendorNumber is not empty and TBVendorNumber.Length is not 10 then
 			set value 'Insert a valid Vendor Number. It must be 10 digits long.' in MESSAGE_POPUP
 
-		TBVendorIFA.value is not empty then DDLVDCountry mandatory
+		; TODO: CHECK THIS
+		; TBVendorIFA.value is not empty then DDLVDCountry mandatory
+		; TBVendorIFA.value is not empty then DDLVDCountry not mandatory
 
 		DDLVDCountry is empty then
 			set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
@@ -273,9 +275,7 @@ Entity btnSearch is Button in frmSearch
 		TBVendorName is not empty and DDLVDCountry is empty then
 			set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
 
-		TBVendorIFA.value is not empty then DDLVDCountry not mandatory
-
-		TBVendorIFA.value is not empty then DDLVDCountry mandatory
+		
 						
 
 	with triggers
@@ -2478,6 +2478,11 @@ Entity CC_AM_SortKey is DropDownList in frmMain
 		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is GR then
 			set value 001 in CC_AM_SortKey
 
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} then
+			this visible false
+		else
+			this visible true
+
 
 ; ----------------------------------------------------------------------------	
 
@@ -3910,6 +3915,10 @@ Entity DDLDCReqAction is DropDownList in frmMain
 		REQUEST.COUNTRY is LU or REQUEST.COUNTRY is IT then
 			; this needs a TEST and inclusion in the GRAMMAR
 			; remove value 'Info Requested to ROLES.UPM' from DDLDCReqAction
+
+
+	; with triggers
+	; 	this.value changes
 
 ; ----------------------------------------------------------------------------	
 

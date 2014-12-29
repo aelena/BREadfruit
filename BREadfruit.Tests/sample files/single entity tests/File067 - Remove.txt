@@ -1,0 +1,5 @@
+﻿Entity TBVendorIFA is TextBox in frmSearch
+	with rules
+		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then
+			remove value 1 in FIELD_A.Items
+			remove 1 in FIELD_B.Items

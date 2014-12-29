@@ -1,0 +1,12 @@
+﻿Entity TBVendorIFA is TextBox in frmSearch
+	with rules
+		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then
+			FIELD_A.value is A then
+				FIELD_X mandatory true
+			else
+				FIELD_X mandatory false
+		else
+			FIELD_B.value is B then
+				FIELD_Y mandatory true
+			else
+				FIELD_Y mandatory false

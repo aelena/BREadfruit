@@ -423,7 +423,7 @@ namespace BREadfruit
 		public static Symbol ThenSymbol = new Symbol ( "then", 2, false );
 		public static Symbol ElseSymbol = new Symbol ( "else", 2, false );
 		public static Symbol ThisSymbol = new Symbol ( "this", 2, false );
-		public static Symbol InSymbol = new Symbol ( "in", 2, false, new [] {"is in", "is one of", "is any of"} );
+		public static Symbol InSymbol = new Symbol ( "in", 2, false, new [] { "is in", "is one of", "is any of" } );
 
 		public static Symbol EmptyStringSymbol = new Symbol ( "\"\"", 2, true );
 		public static Symbol NullValueSymbol = new Symbol ( "null", 2, true );
@@ -464,6 +464,10 @@ namespace BREadfruit
 
 		public static ResultAction SetValueActionSymbol = new ResultAction ( "set_value", 2, true, new [] { "set value" } );
 		public static ResultAction AddValueActionSymbol = new ResultAction ( "add_value", 2, true, new [] { "add value" } );
+
+		public static ResultAction SetIndexActionSymbol = new ResultAction ( "set_index", 2, true, new [] { "set index", "select index" } );
+		public static ResultAction RemoveValueActionSymbol = new ResultAction ( "remove_value", 2, true, new [] { "remove", "remove value" } );
+
 
 		#endregion
 
@@ -884,7 +888,7 @@ namespace BREadfruit
 		private static void AddOperators ()
 		{
 			//IsOperator.Aliases.ToList ().ForEach ( x => Grammar._operators.Add ( new Operator ( x ) ) );
-		
+
 			Grammar._operators.Add ( IsEmptyOperator );
 			Grammar._operators.Add ( IsNotEmptyOperator );
 			Grammar._operators.Add ( IsMandatoryOperator );
@@ -1059,6 +1063,9 @@ namespace BREadfruit
 			// result actions
 			Grammar._symbols.Add ( SetValueActionSymbol );
 			Grammar._symbols.Add ( AddValueActionSymbol );
+
+			Grammar._symbols.Add ( SetIndexActionSymbol );
+			Grammar._symbols.Add ( RemoveValueActionSymbol );
 
 			Grammar._symbols.Add ( ANDSymbol );
 			Grammar._symbols.Add ( ORSymbol );

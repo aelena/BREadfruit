@@ -1847,7 +1847,7 @@ namespace BREadfruit.Tests
 
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Reference == "TBVendorVAT" );
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Action == "label" );
-			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString() == "LABELS.labSIRET" );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "LABELS.labSIRET" );
 
 		}
 
@@ -1855,6 +1855,90 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+
+		[Test]
+		public void ParseSampleFile065 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File065 - NestedConds.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Else.Count () == 1 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile066 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File066 - SetIndex.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsFalse ( e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Count () == 2 );
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.All ( x => x.IsResultAction ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.All ( x => x.Value.ToString () == "1" ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Reference == "FIELD_A" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Last ().Reference == "FIELD_B" );
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.All ( x => x.Token == Grammar.SetIndexActionSymbol.Token ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile067 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File067 - Remove.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsFalse ( e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Count () == 2 );
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.All ( x => x.IsResultAction ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.All ( x => x.Value.ToString () == "1" ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Reference == "FIELD_A.Items" );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Last ().Reference == "FIELD_B.Items" );
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.All ( x => x.Token == Grammar.RemoveValueActionSymbol.Token ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+		
 		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{

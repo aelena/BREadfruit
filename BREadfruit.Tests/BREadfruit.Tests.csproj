@@ -149,8 +149,12 @@
     <Content Include="sample files\single entity tests\File062 - NoElse.txt" />
     <Content Include="sample files\single entity tests\File063 - SingleLineElse.txt" />
     <Content Include="sample files\single entity tests\File064 - SetLabel.txt" />
+    <Content Include="sample files\single entity tests\File065 - NestedConds.txt" />
+    <Content Include="sample files\single entity tests\File066 - SetIndex.txt" />
+    <Content Include="sample files\single entity tests\File067 - Remove.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
+    <Content Include="__sketchpad.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BREadfruit\BREadfruit.csproj">

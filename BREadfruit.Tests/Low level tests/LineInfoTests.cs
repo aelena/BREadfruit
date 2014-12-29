@@ -106,7 +106,7 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        // this one should return "" because it's not really valid not having a then clause after the condition
+        // this one should return "" because it's not really valid not having a then clause after the rule
         [TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"}", Result = null )]
 		[TestCase ( "VENDOR.COUNTRY in {\"ES\", \"PT\"} and YOU is STUPID", Result = null )]
         // the rest are valid and should be joining correctly

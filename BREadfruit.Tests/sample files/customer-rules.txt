@@ -137,10 +137,10 @@ Entity DDLDCountry is DropDownList in frmSearch
 		clear CustomerSearchResultGrid
 
 	with rules
-		DDLCDCountry.Value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value LABELS.labSIRET in TBVendorVAT
-		DDLCDCountry.Value in {PT,ES} then set value LABELS.labNIF in TBVendorVAT
-		DDLCDCountry.Value is IT then set value LABELS.labPartitaIVA in TBVendorVAT
-		DDLCDCountry.Value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then set value LABELS.labVAT in TBVendorVAT
+		DDLCDCountry.Value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then label LABELS.labSIRET in TBVendorVAT
+		DDLCDCountry.Value in {PT,ES} then label LABELS.labNIF in TBVendorVAT
+		DDLCDCountry.Value is IT then label LABELS.labPartitaIVA in TBVendorVAT
+		DDLCDCountry.Value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then label LABELS.labVAT in TBVendorVAT
 	
 	with triggers
 		this.value changes 
@@ -272,6 +272,7 @@ Entity btnSearch is Button in frmSearch
 	with actions
 		; TODO: CHECK LATER ON
 		
+		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments { User : USER.USER_ID, Country : DDLCDCountry.Value, Company : DDLCDCompany.Value, SalesOrganization : DDLCDSalesOrg.Value} in MESSAGE_POPUP
 		load data from WEBSERVICE.CUSTOMER_SEARCH_SERVICE with arguments {CustomerName:TBCustomerName.Value, CustomerCity:TBCustomerCity, CustomerNumber:TBCustomerNumber.Value, CustomerCountry:DDLVDCountry.Value,TaxCode1:TBCustomerVAT.Value,TaxCode4:TBCustomerIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in CustomerSearchResultGrid
 
 		; this means the database has to be asked to see if current user has permissions for the selected combination
@@ -280,8 +281,7 @@ Entity btnSearch is Button in frmSearch
 		; maybe this has to be defined a bit better
 		; would this be DATASOURCE or maybe WEBSERVICE call?
 		; what properties should be passed to identify the user? or shall this be somehow managed or injected by environment?
-		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments { User : USER.USER_ID, Country : DDLCDCountry.Value, Company : DDLCDCompany.Value, SalesOrganization : DDLCDSalesOrg.Value} in MESSAGE_POPUP
-
+		
 	with rules
 
 		TBCustomerIFA.value is not empty then DDLDCountry mandatory

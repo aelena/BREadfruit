@@ -1,0 +1,232 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BREadfruit.Conditions
+{
+
+	/// <summary>
+	/// Represents a rule instance
+	/// </summary>
+	public class Rule
+	{
+
+
+		private List<Rule> _nestedRules = new List<Rule> ();
+
+		public IEnumerable<Rule> NestedRules
+		{
+			get { return _nestedRules; }
+		}
+
+
+		/// <summary>
+		/// A rule can have one or more conditions.
+		/// </summary>
+		private List<Condition> _conditions = new List<Condition> ();
+
+		/// <summary>
+		/// Gets a list of the conditions that this rule has.
+		/// </summary>
+		public IEnumerable<Condition> Conditions
+		{
+			get
+			{
+				return this._conditions;
+			}
+		}
+
+
+		/// <summary>
+		/// Indicates if the Rule has a series of conditions acting as Else branch
+		/// </summary>
+		public bool HasElseClause { get; protected internal set; }
+
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Gets the number of conditions the rule has.
+		/// </summary>
+		public int NumberOfConditions
+		{
+			get
+			{
+				return this._conditions.Count ();
+			}
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Returns a boolean value that indicates whether this is a 
+		/// "simple rule rule", that is, that it only has a rule.
+		/// </summary>
+		public bool IsSimpleConditionRule
+		{
+			get
+			{
+				return this._conditions.Count () == 1;
+			}
+		}
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Returns a boolean value that indicates whether this is a 
+		/// "multiple rule rule", that is, that it has more than a rule.
+		/// </summary>
+		public bool IsMultipleConditionRule
+		{
+			get
+			{
+				return this._conditions.Count () > 1;
+			}
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Allows privileged callers (protected internal) to add conditions to the rule
+		/// as these conditions are parsed from the file.
+		/// </summary>
+		/// <param name="rule">Condition instance.</param>
+		/// <returns></returns>
+		protected internal Rule AddCondition ( Condition condition )
+		{
+			if ( condition == null )
+				throw new ArgumentNullException ( "condition" );
+
+			this._conditions.Add ( condition );
+			return this;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Allows privileged callers (protected internal) to add nested rules to the rule
+		/// as these conditions are parsed from the file.
+		/// </summary>
+		/// <param name="rule">Condition instance.</param>
+		/// <returns></returns>
+		protected internal Rule AddNestedRule ( Rule rule )
+		{
+			if ( rule == null )
+				throw new ArgumentNullException ( "rule" );
+
+			this._nestedRules.Add ( rule );
+			return this;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public override string ToString ()
+		{
+			string _ = "";
+			this._conditions.ForEach ( x => _ += x.ToString () + Environment.NewLine );
+			return _;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+	}
+}
+
+
+
+
+
+FOR THE PARSER
+
+		Rule __ruleInScope = null;
+
+
+
+
+
+
+
+
+
+
+	if ( lineInfo.IndentLevel >= 3 && lineInfo.HasSymbol ( Grammar.ThenSymbol ) )
+					{
+						// and if so, set the scope correctly
+						_currentScope = CurrentScope.RULES_BLOCK;
+						// and set a flag accordingly
+						_inNestedRuleScope = true;
+					}
+
+						// TODO: RESET TO FALSE IN THE RIGHT PLACE OF COURSE
+
+
+
+
+						if ( _inNestedRuleScope )
+							this._entities.Last ().Rules.Last ().AddNestedRule ( _rule );
+						else
+							this._entities.Last ().AddRule ( _rule );
+
+						__ruleInScope = _rule;
+
+
+
+		AFTER LINE 605
+
+				__ruleInScope.HasElseClause = _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK;
+								AddTrueFalseAction2 ( lineInfo, Grammar.MakeMandatoryUnaryActionSymbol, Grammar.MakeNonMandatoryUnaryActionSymbol, __ruleInScope, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
+
+
+
+		
+		private void AddTrueFalseAction2 ( LineInfo lineInfo, Symbol trueSymbol, Symbol falseSymbol, Rule rule, bool addToElseBranch = false )
+		{
+			var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
+			var _indexOfThis = lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol );
+			UnaryAction _ua = null;
+			if ( _booleanValue.Item2 == Grammar.TrueSymbol )
+				_ua = new UnaryAction ( trueSymbol,
+					_indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
+			else
+				_ua = new UnaryAction ( falseSymbol,
+				_indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
+
+			//this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
+
+			rule.Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
