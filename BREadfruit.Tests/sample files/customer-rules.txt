@@ -512,7 +512,6 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ;	ATTACHMENT
 ;	AttachHistory
 ;	SAP_Message
-;	TS_IsUrgentRequest
 ;	CostCenter
 ;	DDLDCReqAction
 ;	GD_SAPNumber
@@ -3286,7 +3285,8 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
-		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
 			this visible false
 ; ---------------------------------------------------------------------------- 
 
@@ -3308,11 +3308,13 @@ Entity DDLDCReqAction is DropDownList in frmMain
 
 	with rules
 
-		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
-			this visible false
-
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
+		
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false
 ; ---------------------------------------------------------------------------- 
 
 
@@ -3354,8 +3356,10 @@ Entity btnSubmit is Button in frmMain
 
 
 	with rules
-		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
 			this visible false
+
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
 
@@ -3620,10 +3624,11 @@ Entity DDLDCComment is TextBox in frmMain
 	with defaults
 		label LABELS.labComments
 	with rules
-		USER.ACCESS_RIGHT is ACCESS_RIGHTS.READER then
-			this visible false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false
 ; ---------------------------------------------------------------------------- 
 
 Entity btnSCClose is Button in frmMain
@@ -3631,12 +3636,22 @@ Entity btnSCClose is Button in frmMain
 	with defaults
 		label LABELS.btnClose
 
+	with rules
+		REQUEST.REQUEST_STATE is not CLOSED and btnSubmit.Visible is true then
+			this visible true
+
+		btnClose.Visible is true then
+			this visible false
+		else
+			this visible true
+
 ; ---------------------------------------------------------------------------- 
 
-Entity SCMessage is Label in frmMain
-
-	with defaults
-		enable false
+; SEEMS NOT USED
+; Entity SCMessage is Label in frmMain
+; 
+; 	with defaults
+; 		enable false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -3721,21 +3736,38 @@ Entity btnBack2 is Button in frmMain
 	with defaults
 		label LABELS.btnBack
 
+	with rules
+		REQUEST.REQUEST_STATE is CLOSED then
+			this visible false
+
 ; ---------------------------------------------------------------------------- 
 
 Entity btnSave is Button in frmMain
 
 	with defaults
 		label LABELS.btnSave
+	
+	with actions
+		this enable false
+	
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+
+	with triggers
+		this on click
 ; ---------------------------------------------------------------------------- 
 
 Entity btnCloseFinal is Button in frmMain
 
 	with defaults
 		label LABELS.btnClose
+
+	with rules
+		REQUEST.CURRENT_ROLE is ROLES.CLERK then
+			this visible true
+		else
+			this visible false
 
 ; ---------------------------------------------------------------------------- 
 

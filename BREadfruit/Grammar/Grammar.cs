@@ -561,7 +561,7 @@ namespace BREadfruit
 		public static Operator NotInRangeOperator = new Operator ( "not_in_range", 2, false, new [] { "not in range" } );
 
 
-		public static Operator IsIntegerOperator = new Operator ( "is_number", 2, false, new [] { "is number", "is digit", "is integer" } );
+		public static Operator IsNumberOperator = new Operator ( "is_number", 2, false, new [] { "is number", "is digit", "is integer" } );
 		public static Operator IsNotNumberOperator = new Operator ( "is_not_number", 2, false, new [] { "is not number", "is not a number", "is not a digit", "is not integer", "is not an integer" } );
 		public static Operator IsDecimalOperator = new Operator ( "is_decimal", 2, false, new [] { "is decimal" } );
 		public static Operator IsNotDecimalOperator = new Operator ( "is_not_decimal", 2, false, new [] { "is not decimal" } );
@@ -918,7 +918,7 @@ namespace BREadfruit
 
 			Grammar._operators.Add ( InRangeOperator );
 			Grammar._operators.Add ( NotInRangeOperator );
-			Grammar._operators.Add ( IsIntegerOperator );
+			Grammar._operators.Add ( IsNumberOperator );
 			Grammar._operators.Add ( IsNotNumberOperator );
 			Grammar._operators.Add ( IsDecimalOperator );
 			Grammar._operators.Add ( IsNotDecimalOperator );
@@ -941,7 +941,7 @@ namespace BREadfruit
 			Grammar._unaryOperators.Add ( IsVisibleOperator );
 			Grammar._unaryOperators.Add ( IsNotVisibleOperator );
 
-			Grammar._unaryOperators.Add ( IsIntegerOperator );
+			Grammar._unaryOperators.Add ( IsNumberOperator );
 			Grammar._unaryOperators.Add ( IsNotNumberOperator );
 			Grammar._unaryOperators.Add ( IsDecimalOperator );
 			Grammar._unaryOperators.Add ( IsNotDecimalOperator );
@@ -1032,7 +1032,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( IsAplhaOperator );
 			Grammar._symbols.Add ( IsDecimalOperator );
 			Grammar._symbols.Add ( IsNotDecimalOperator );
-			Grammar._symbols.Add ( IsIntegerOperator );
+			Grammar._symbols.Add ( IsNumberOperator );
 			Grammar._symbols.Add ( IsNotNumberOperator );
 
 			Grammar._symbols.Add ( InRangeOperator );

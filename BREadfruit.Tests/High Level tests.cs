@@ -1463,9 +1463,9 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Rules.Count () == 12, "Should have 12 rules, but has" + e.Rules.Count () );
 
 
-			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Operator.Token == Grammar.IsIntegerOperator.Token );
-			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator.Token == Grammar.IsIntegerOperator.Token );
-			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator.Token == Grammar.IsIntegerOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Operator.Token == Grammar.IsNumberOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator.Token == Grammar.IsNumberOperator.Token );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator.Token == Grammar.IsNumberOperator.Token );
 
 			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First ().Operator.Token == Grammar.IsNotNumberOperator.Token );
 			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.First ().Operator.Token == Grammar.IsNotNumberOperator.Token );

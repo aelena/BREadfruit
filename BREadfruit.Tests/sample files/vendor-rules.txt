@@ -380,7 +380,7 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM} then
 			this enable false
-		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value "G" in GD_Ctr_VendorClassification
+		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value G in GD_Ctr_VendorClassification
 		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with "X" then set value "NG" in GD_Ctr_VendorClassification
 		
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
@@ -402,7 +402,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 	with defaults
 		visible true
 		enabled true
-		value "NORM"
+		value NORM
 		load data from DATASOURCE.BP_CLASSIFICATIONS
 		mandatory true
 		label LABELS.labCC_AM_BPClassification
@@ -740,8 +740,8 @@ Entity GD_PVO_Question1 is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		GD_PVO_Question1.Value is "YES" then GD_PVO_Link1 visible
-		GD_PVO_Question1.Value is "NO" then GD_PVO_Link1 not visible
+		GD_PVO_Question1.Value is YES then GD_PVO_Link1 visible
+		GD_PVO_Question1.Value is NO then GD_PVO_Link1 not visible
 		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 			
@@ -779,8 +779,8 @@ Entity GD_PVO_Question3 is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		this.Value is "YES" then GD_PVO_Link3 visible
-		this.Value is "NO" then GD_PVO_Link3 not visible
+		this.Value is YES then GD_PVO_Link3 visible
+		this.Value is NO then GD_PVO_Link3 not visible
 		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 ; ----------------------------------------------------------------------------	
@@ -817,8 +817,8 @@ Entity GD_PVO_Question5 is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		GD_PVO_Question5.Value is "YES" then GD_PVO_Link5 visible
-		GD_PVO_Question5.Value is "NO" then GD_PVO_Link5 not visible
+		GD_PVO_Question5.Value is YES then GD_PVO_Link5 visible
+		GD_PVO_Question5.Value is NO then GD_PVO_Link5 not visible
 
 		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
@@ -1730,17 +1730,17 @@ Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 		
-		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
 			mandatory true
 			
-		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
 			this mandatory
 			
-		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Checked is false then
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is false then
 			this not mandatory
 			GD_Abc_DEMO mandatory
 			
-		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is not "VM" then
+		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is not VM then
 			mandatory true	
 
 
@@ -1759,10 +1759,10 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
-			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "FR"}
+			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : FR}
 			; this equals to this line in original code
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
-			set value "FR" in REQUEST.INDUSTRY_COUNTRY
+			set value FR in REQUEST.INDUSTRY_COUNTRY
 			; can or should we do something like this?
 			set width 680px		
 
@@ -2644,24 +2644,31 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 		REQUEST.COUNTRY is ES and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 3M60 in CC_PT_PaymentTerms
+			set value 3M60 in CC_PT_PaymentTerms.OldDisplayValue
 
 		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 5510 in CC_PT_PaymentTerms
+			set value 5510 in CC_PT_PaymentTerms.OldDisplayValue
 		
 		REQUEST.COUNTRY is LU and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
-			set value 1113 in CC_PT_PaymentTerms
+			set value 1113 in PO_TermsOfPaymentKey
+			set value 1113 in PO_TermsOfPaymentKey.OldDisplayValue
 
 		REQUEST.COUNTRY is BE and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 1301 in CC_PT_PaymentTerms
+			set value 1301 in CC_PT_PaymentTerms.OldDisplayValue
 
 		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 7A90 in CC_PT_PaymentTerms
+			set value 7A90 in CC_PT_PaymentTerms.OldDisplayValue
 
 		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 6115 in CC_PT_PaymentTerms
+			set value 6115 in CC_PT_PaymentTerms.OldDisplayValue
 
 		REQUEST.COMPANY_CODE in {5924, 592F} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 6000 in CC_PT_PaymentTerms
+			set value 6000 in CC_PT_PaymentTerms.OldDisplayValue
 	
 	with triggers
 		this changes
@@ -2916,40 +2923,50 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+
 		REQUEST.VENDOR_COUNTRY in {PT, FR} then
-			show CC_CO_AccountingClerk
+			CC_CO_AccountingClerk visible true
 
 		REQUEST.COMPANY_CODE in {5101, 563M} then
-			show CC_CO_AccountingClerk
-			
+			CC_CO_AccountingClerk visible true
+
+		REQUEST.COUNTRY is PT and CC_CO_AccountingClerk.Visible is true and CC_PT_PaymentTerms is number or PO_TermsOfPaymentKey is number then
+			set value 25 in CC_CO_AccountingClerk
+
+		REQUEST.COUNTRY is PT and CC_CO_AccountingClerk.Visible is true and CC_PT_PaymentTerms is not number or PO_TermsOfPaymentKey is not number then
+			set value 20 in CC_CO_AccountingClerk
+					
 
 ; ----------------------------------------------------------------------------	
 
 ; has to be saved and resent from SAP in any case
-Entity CC_CO_AccountingClerkTel	is TextBox in frmMain
-	with defaults
-		visible false
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
-			this enable false
+; NOTE: NOT PRESENT IN FORM
+; Entity CC_CO_AccountingClerkTel	is TextBox in frmMain
+; 	with defaults
+; 		visible false
+; 	with rules
+; 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
+; 			this enable false
 ; ----------------------------------------------------------------------------	
 
 ; has to be saved and resent from SAP in any case
-Entity CC_CO_AccountingClerkFax	is TextBox in frmMain
-	with defaults
-		visible false
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
-			this enable false
+; NOTE: NOT PRESENT IN FORM
+; Entity CC_CO_AccountingClerkFax	is TextBox in frmMain
+; 	with defaults
+; 		visible false
+; 	with rules
+; 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
+; 			this enable false
 ; ----------------------------------------------------------------------------	
 
 ; has to be saved and resent from SAP in any case
-Entity CC_CO_AccountingClerkInternet is TextBox in frmMain
-	with defaults
-		visible false
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
-			this enable false
+; NOTE: NOT PRESENT IN FORM
+; Entity CC_CO_AccountingClerkInternet is TextBox in frmMain
+; 	with defaults
+; 		visible false
+; 	with rules
+; 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
+; 			this enable false
 ; ----------------------------------------------------------------------------	
 
 
@@ -2961,6 +2978,7 @@ Entity CC_CO_OurAccountWithVendor is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+
 ; ----------------------------------------------------------------------------	
 
 Entity PO_AutomaticGenerationPO	is CheckBox in frmMain
@@ -2975,8 +2993,9 @@ Entity PO_AutomaticGenerationPO	is CheckBox in frmMain
 			PO_AutomaticGenerationPO visible true
 			set value false in PO_AutomaticGenerationPO
 
-		REQUEST.COUNTRY is not GR then
-			PO_AutomaticGenerationPO visible false
+		REQUEST.COUNTRY is GR then
+			set value false in PO_AutomaticGenerationPO
+			this visible true
 
 		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} then
 			set value true in PO_OrderAcknowledgmentReq
@@ -2985,7 +3004,7 @@ Entity PO_AutomaticGenerationPO	is CheckBox in frmMain
 
 Entity PO_OrderAcknowledgmentReq is CheckBox in frmMain
 	with defaults
-		visible true
+		visible false
 		label LABELS.labOrderAcknowledgmentReq
 
 	with rules
@@ -3007,6 +3026,7 @@ Entity PO_GRBasedInvoiceVerification is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+
 ; ----------------------------------------------------------------------------	
 
 Entity PO_ReturnsVendor	is CheckBox in frmMain
@@ -3014,25 +3034,31 @@ Entity PO_ReturnsVendor	is CheckBox in frmMain
 		visible true
 		label LABELS.labPO_ReturnsVendor
 
+
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
+
+		REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
 			GD_Ctr_CustomerNumber mandatory
+			GD_Ctr_CustomerNumber visible
 			GD_Ctr_CustomerNumber enable true
 
-		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
+		REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Value is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
 			GD_Ctr_CustomerNumber mandatory false
+			GD_Ctr_CustomerNumber visible
 			GD_Ctr_CustomerNumber enable false
 
-		REQUEST.REQUEST_TYPE is "VM" and PO_ReturnsVendor.Value is false then
+		REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Value is false then
 			GD_Ctr_CustomerNumber enable false
 
-		REQUEST.REQUEST_TYPE is not "VM" and PO_ReturnsVendor.Value is true then
+		REQUEST.REQUEST_TYPE is not VM and PO_ReturnsVendor.Value is true then
+			GD_Ctr_CustomerNumber visible
 			GD_Ctr_CustomerNumber mandatory
 
 		REQUEST.COUNTRY is GR then
 			set value false in PO_ReturnsVendor
+			this visible true
 
 	with triggers
 		this changes
@@ -3057,7 +3083,7 @@ Entity PO_PurchaseOrderCurrency	is DropDownList in frmMain
 ; ----------------------------------------------------------------------------	
 
 
-Entity PO_TermsOfPaymentKey	is DropDownList in frmMain
+Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 	with defaults
 		mandatory
 		label LABELS.lblPO_TermsOfPaymentKey
@@ -3067,26 +3093,34 @@ Entity PO_TermsOfPaymentKey	is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.COUNTRY is ES then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is ES then
 			set value 3M60 in PO_TermsOfPaymentKey
+			set value 3M60 in PO_TermsOfPaymentKey.OldDisplayValue
 
-		REQUEST.COUNTRY is IT then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.CURRENT_ROLE is ENQ and REQUEST.COUNTRY is IT then
 			set value 5510 in PO_TermsOfPaymentKey
+			set value 5510 in PO_TermsOfPaymentKey.OldDisplayValue
 	
-		REQUEST.COUNTRY is LU then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is LU then
 			set value 1113 in PO_TermsOfPaymentKey
+			set value 1113 in PO_TermsOfPaymentKey.OldDisplayValue
 	
-		REQUEST.COUNTRY is BE then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is BE then
 			set value 1301 in PO_TermsOfPaymentKey
+			set value 1301 in PO_TermsOfPaymentKey.OldDisplayValue
 
-		REQUEST.COUNTRY is GR then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is GR then
 			set value 7A90 in PO_TermsOfPaymentKey
+			set value 7A90 in PO_TermsOfPaymentKey.OldDisplayValue
 
 		REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is PT then
 			set value 4217 in PO_TermsOfPaymentKey
+			set value 4217 in PO_TermsOfPaymentKey.OldDisplayValue
 			
 		REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is not PT then
 			set value 4117 in PO_TermsOfPaymentKey
+			set value 4117 in PO_TermsOfPaymentKey.OldDisplayValue
+
 	with actions
 		; ; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
@@ -3121,29 +3155,49 @@ Entity PO_Incoterms	is DropDownList in frmMain
 		; ; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 
+		set value PO_Incoterms.SelectedText in PO_IncotermsPart2
+		set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
+
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.COUNTRY is ES then
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COUNTRY is ES then
 			set value "DAP" in PO_Incoterms
+			set value "DAP" in PO_Incoterms.OldDisplayValue
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
 
-		REQUEST.COUNTRY is IT then
-			set value "EXW" in PO_IncotermsPart2
 
-		REQUEST.COUNTRY in {PT, BE, LU} then
-			set value "DDP" in PO_IncotermsPart2
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COUNTRY is IT then
+			set value "EXW" in PO_Incoterms
+			set value "EXW" in PO_Incoterms.OldDisplayValue
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
 
-		REQUEST.COMPANY_CODE is 5140 then
-			set value "FRANCE METROPOLITAINE" in PO_IncotermsPart2
-				
-		REQUEST.COMPANY_CODE in {5924, 592F} then
-			set value "SAINT DENIS" in PO_IncotermsPart2
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COUNTRY in {PT, BE, LU} then
+			set value "DDP" in PO_Incoterms
+			set value "DDP" in PO_Incoterms.OldDisplayValue
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
 
-		REQUEST.COMPANY_CODE is 5150 then
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COMPANY_CODE is 5140 then
+			set value "SAP" in PO_Incoterms
+			set value "SAP" in PO_Incoterms.OldDisplayValue
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
+
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COMPANY_CODE is 5150 then
 			set value "CIF" in PO_Incoterms
-			set value "Athens" in PO_IncotermsPart2
+			set value "CIF" in PO_Incoterms.OldDisplayValue
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
 
-			
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.PURCHASE_ORGANIZATION in {65G0, 65Q0} then
+			set value "FCA" in PO_Incoterms
+			set value "FCA" in PO_Incoterms.OldDisplayValue
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
+			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
+
 	with triggers
 		this changes
 
@@ -3171,7 +3225,22 @@ Entity PO_IncotermsPart2 is TextBox in frmMain
 			this enable false
 		REQUEST.COMPANY_CODE is 5150 then
 			set value "ATHENS" in PO_IncotermsPart2
-			
+		REQUEST.COMPANY_CODE is 5150 and GD_Adr_City2 is not empty then
+			set value GD_Adr_City2.Value in PO_IncotermsPart2
+		REQUEST.COMPANY_CODE in {5924,592F} then
+			set value "Saint Denis" in PO_IncotermsPart2
+		REQUEST.COMPANY_CODE is 491E and REQUEST.PURCHASE_ORGANIZATION in {65G0, 65Q0} then
+			set value "GRENOBLE" in PO_IncotermsPart2
+		REQUEST.COMPANY_CODE is 491E and REQUEST.PURCHASE_ORGANIZATION not in {65G0, 65Q0} then
+			set value "France Metropolitaine" in PO_IncotermsPart2
+		REQUEST.COMPANY_CODE is 5140 then
+			set value "France Metropolitaine" in PO_IncotermsPart2
+		REQUEST.COUNTRY in {BE,LU} then
+			set value "Brussels" in PO_IncotermsPart2.OldDisplayValue
+			set value "Brussels" in PO_IncotermsPart2.Value
+		REQUEST.COUNTRY is IT then
+			set value "VS. MAGAZZINO" in PO_IncotermsPart2.OldDisplayValue
+			set value "VS. MAGAZZINO" in PO_IncotermsPart2.Value
 
 ; ----------------------------------------------------------------------------	
 
@@ -3179,18 +3248,14 @@ Entity PO_ConfirmationControl is DropDownList in frmMain
 	with defaults
 		label LABELS.labConfirmationControl
 		visible false
+		load data from DATASOURCE.MDM_ConfirmationControl with arguments {"FlagActive" : true}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.COUNTRY is "FR" and PO_ConfirmationControl.Value is empty then
-			set value "Y601" in PO_ConfirmationControl
+		REQUEST.COUNTRY is FR and PO_ConfirmationControl.Value is empty then
+			set value Y601 in PO_ConfirmationControl
 			PO_ConfirmationControl visible true
-
-; SPECIAL KIND OF COMPOSITE CONTROL
-; TODO: DECIDE WHAT TO DO WITH THEM
-Entity Multiple_Purchase_Organizations is DropDownList in frmMain
-
 
 ; ----------------------------------------------------------------------------	
 
@@ -3216,7 +3281,7 @@ Entity GD_SAPNumber is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.COMPANY_CODE in { 5101, 5109, 563M} then 
+		REQUEST.COMPANY_CODE in {5101, 5109, 563M} then 
 			GD_SAPNumber mandatory true
 
 ; ----------------------------------------------------------------------------	
@@ -3233,6 +3298,7 @@ Entity SAP_Message is TextBox in frmMain
 			this enable false
 		REQUEST.REQUEST_STATE is CLOSED then
 			this enabled false
+			this visible true
 
 
 ; ----------------------------------------------------------------------------	
@@ -3245,6 +3311,9 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false
 
 ; --- CONTROLS IN BLOCKING DATA TAB -------------------------------------------
 
@@ -3265,7 +3334,7 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 
 	with triggers
@@ -3282,7 +3351,7 @@ Entity BLK_CC_PT_PaymentBlock is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -3300,7 +3369,7 @@ Entity BLK_CentralPO is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -3320,7 +3389,7 @@ Entity BLK_24_hour is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 
 ; ----------------------------------------------------------------------------	
@@ -3335,7 +3404,7 @@ Entity BLK_CompanyCode is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -3354,7 +3423,7 @@ Entity BLK_Central is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -3373,7 +3442,7 @@ Entity BLK_PO is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -3392,7 +3461,7 @@ Entity BLK_MFD_Central is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -3411,7 +3480,7 @@ Entity BLK_MFD_CompanyCode is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -3431,7 +3500,7 @@ Entity BLK_MFD_PO is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 
 	with actions
@@ -3450,7 +3519,7 @@ Entity BLK_MFD_DeletionBlockCentral	is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -3468,24 +3537,25 @@ Entity BLK_MFD_DeletionBlockCompanyCode	is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST_TYPE is "VM_BLK" then
+		REQUEST.REQUEST_TYPE is VM_BLK then
 			enabled true	
 	with actions
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
+
 	with triggers 
 		on change
 
 ; --- BUTTON BLOCK -----------------------------------------------------------
 
-; TODO: Can probably be removed safely
-Entity GD_Ctr_CapCostNumber	is Button in frmMain
-	with defaults
-		label LABELS.btnCaptureCostumerNumber
-		visible false
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
-			this enable false
+; NOTE: REMOVED AS IT IS ALWAYS INVISIBLE
+; Entity GD_Ctr_CapCostNumber	is Button in frmMain
+; 	with defaults
+; 		label LABELS.btnCaptureCostumerNumber
+; 		visible false
+; 	with rules
+; 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
+; 			this enable false
 ; ----------------------------------------------------------------------------	
 
 ; TODO: Pending more stuff
@@ -3514,9 +3584,9 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_STATE is not CLOSED then
 			this visible true
 
-		REQUEST.USER_PERMISSION is PERMISSIONS.READER then
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
 			this visible false
-			this enabled false
 		
 		; --- validations when submitting
 
@@ -3853,46 +3923,67 @@ Entity btnSubmit is Button in frmMain
 			
 ; ----------------------------------------------------------------------------	
 		
-
-
 Entity btnClose	is Button in frmMain
 	with defaults
 		label LABELS.btnClose
+
+
+; ----------------------------------------------------------------------------	
 
 Entity btnSCClose is Button in frmMain
 	with defaults
 		label LABELS.btnClose
 
+	with rules
+		REQUEST.REQUEST_STATE is not CLOSED and btnSubmit.Visible is true then
+			this visible true
+
+		btnClose.Visible is true then
+			this visible false
+		else
+			this visible true
+
+
+; ----------------------------------------------------------------------------	
+
 Entity btnBack2 is Button in frmMain
 	with defaults
 		label LABELS.btnBack
+
+	with rules
+		REQUEST.REQUEST_STATE is CLOSED then
+			this visible false
+
+; ----------------------------------------------------------------------------	
 
 Entity btnSave is Button in frmMain
 	with defaults
 		label LABELS.btnSave
 
+	with actions
+		this enable false
+
+	with rules
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.RCO} then
+			this enable false	
+		else
+			this enable true
+
+	with triggers
+		this on click
+
+; ----------------------------------------------------------------------------	
+
 Entity btnCloseFinal is Button in frmMain
 	with defaults
 		label LABELS.btnClose
 
-; ----------------------------------------------------------------------------	
+	with rules
+		REQUEST.CURRENT_ROLE is ROLES.CLERK then
+			this visible true
+		else
+			this visible false
 
-; TODO: TEST FOR THIS
-; this name is going to be wrong, we need to distinguish between each btnInsert that we have 
-; phones, faxes, emails, VAT, banks...
-; Entity btnInsert is Button in frmMain
-; plus we need to define the "delete" and "edit" functionalities too!!
-Entity btnInsert is Button in frmMain
-	with defaults
-		value LABELS.labInsert
-
-	with actions
-		; TODO DEFINE ACTION SUCH AS
-		; save data to, similar to "load data from"
-		save data to DATASOURCE.MDM_Requests_PhoneEntry with arguments {"Phone" : "123456"}
-
-	with triggers
-		this clicked
 
 ; --- WORKFLOW RELATED CONTROLS ----------------------------------------------
 
@@ -3916,6 +4007,12 @@ Entity DDLDCReqAction is DropDownList in frmMain
 			; this needs a TEST and inclusion in the GRAMMAR
 			; remove value 'Info Requested to ROLES.UPM' from DDLDCReqAction
 
+		REQUEST.COUNTRY in {ES,IT,BE,LU} then
+			remove "Info Requested to CPM" in DDLDCReqAction.Items
+
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false
 
 	; with triggers
 	; 	this.value changes
