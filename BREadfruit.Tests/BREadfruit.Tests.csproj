@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="autogen_tests\autogen.cs" />
     <Compile Include="High Level tests.cs" />
+    <Compile Include="Low level tests\ActionTests.cs" />
     <Compile Include="Low level tests\DefaultClauseTests.cs" />
     <Compile Include="Low level tests\EntityTests.cs" />
     <Compile Include="Low level tests\ExtensionsTests.cs" />

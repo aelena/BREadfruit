@@ -181,6 +181,8 @@ namespace BREadfruit.Conditions
 			if ( result == null )
 				throw new ArgumentNullException ( "result" );
 
+			AssignProperty ( result );
+
 			if ( !addToElseBranch )
 				this._results.Add ( result );
 			else
@@ -200,6 +202,8 @@ namespace BREadfruit.Conditions
 			if ( result == null )
 				throw new ArgumentNullException ( "result" );
 
+			AssignProperty ( result );
+
 			if ( !addToElseBranch )
 				this._resultActions.Add ( result );
 			else
@@ -213,6 +217,17 @@ namespace BREadfruit.Conditions
 
 		// ---------------------------------------------------------------------------------
 
+
+		protected internal void AssignProperty ( UnaryAction _ra )
+		{
+			if ( _ra == Grammar.SetLabelActionSymbol )
+				_ra.Property = PropertyType.LABEL;
+			if ( _ra == Grammar.SetValueActionSymbol || _ra == Grammar.AddValueActionSymbol )
+				_ra.Property = PropertyType.VALUE;
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 
 		protected internal void ChangeValue ( object value )

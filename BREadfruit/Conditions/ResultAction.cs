@@ -125,5 +125,30 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
+		public override bool Equals ( object obj )
+		{
+
+			if ( obj == null)
+				return false;
+
+			if ( obj.GetType() != typeof(ResultAction))
+				return false;
+
+			var _ra = (ResultAction)obj;
+
+			// TODO: see if more is necessary in here .... 
+
+			return
+				( this.Token == _ra.Token &&
+				  this.Value == _ra.Value &&
+				  this.IsUnary == _ra.IsUnary &&
+				  this.IsResultAction == _ra.IsResultAction );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
     }
 }

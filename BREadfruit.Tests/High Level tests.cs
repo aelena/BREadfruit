@@ -904,6 +904,9 @@ namespace BREadfruit.Tests
 
 			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Token == Grammar.AddValueActionSymbol );
 			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Token == Grammar.AddValueActionSymbol );
+
+			Assert.That ( e.ConditionlessActions.All ( x => x.Property == PropertyType.LABEL ) );
+
 		}
 
 
@@ -1953,11 +1956,27 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
 			Assert.IsTrue ( !e.Rules.First ().HasElseClause );
 			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
-			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.InOperator );
 
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Reference == "TBVendorVAT" );
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Action == Grammar.SetLabelActionSymbol.Token );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Property == PropertyType.LABEL );
 			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "LABELS.labSIRET" );
+
+			Assert.That ( e.Rules.Last ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.Last ().HasElseClause );
+			Assert.That ( e.Rules.Last ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.Last ().Conditions.First ().Operator == Grammar.NotInOperator );
+
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Reference == "TBVendorVAT" );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Action == Grammar.SetLabelActionSymbol.Token );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Property == PropertyType.LABEL );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Value.ToString () == "LABELS.labSIRET" );
+
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.Last ().Reference == "TBVendorVAT" );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.Last ().Action == Grammar.SetValueActionSymbol.Token );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.Last ().Property == PropertyType.VALUE );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.Last ().Value.ToString () == "0000000000" );
 
 		}
 
