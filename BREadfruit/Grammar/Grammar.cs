@@ -468,6 +468,8 @@ namespace BREadfruit
 		public static ResultAction SetIndexActionSymbol = new ResultAction ( "set_index", 2, true, new [] { "set index", "select index" } );
 		public static ResultAction RemoveValueActionSymbol = new ResultAction ( "remove_value", 2, true, new [] { "remove", "remove value" } );
 
+		public static ResultAction SetLabelActionSymbol = new ResultAction ( "set_label", 2, true, new [] { "set label" } );
+		
 
 		#endregion
 
@@ -1066,6 +1068,7 @@ namespace BREadfruit
 
 			Grammar._symbols.Add ( SetIndexActionSymbol );
 			Grammar._symbols.Add ( RemoveValueActionSymbol );
+			Grammar._symbols.Add ( SetLabelActionSymbol );
 
 			Grammar._symbols.Add ( ANDSymbol );
 			Grammar._symbols.Add ( ORSymbol );
