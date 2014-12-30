@@ -1983,7 +1983,47 @@ namespace BREadfruit.Tests
 
 		// ---------------------------------------------------------------------------------
 
-		
+
+		[Test]
+		public void ParseSampleFile069 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File069 - Return.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+			Assert.That ( e.Rules.Count () == 3 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.EqualityOperator );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString() == "\"\"");
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Results.Count () == 1 );
+			// check the return statement has been interpreted
+			Assert.IsTrue ( e.Rules.First ().IsFinalRule );
+
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.ElementAt ( 1 ).HasElseClause );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Count () == 1 );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator == Grammar.InOperator );
+			Assert.IsTrue ( e.Rules.ElementAt ( 1 ).IsFinalRule );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.ElementAt ( 2 ).HasElseClause );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Count () == 1 );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator == Grammar.NotInOperator );
+			Assert.IsTrue ( e.Rules.ElementAt ( 2 ).IsFinalRule );
+
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
 		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{

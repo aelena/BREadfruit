@@ -385,6 +385,8 @@ namespace BREadfruit
 		public static readonly Symbol TrueSymbol = new Symbol ( "true", 2, true );
 		public static readonly Symbol FalseSymbol = new Symbol ( "false", 2, true );
 
+		public static readonly Symbol ReturnSymbol = new Symbol ( "return", 3, true, new [] { "exit", "break" } );
+
 		/* 
 		 * when adding a new Symbol here, do not forget
 		 * to update the WithSymbol definition below 
@@ -976,6 +978,8 @@ namespace BREadfruit
 
 			Grammar._symbols.Add ( TrueSymbol );
 			Grammar._symbols.Add ( FalseSymbol );
+			Grammar._symbols.Add ( ReturnSymbol );
+			
 			// add scope symbols
 			Grammar._symbols.Add ( EntitySymbol );
 			Grammar._symbols.Add ( WithSymbol );

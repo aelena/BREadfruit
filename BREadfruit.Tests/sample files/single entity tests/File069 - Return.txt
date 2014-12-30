@@ -1,0 +1,12 @@
+﻿Entity TBVendorIFA is TextBox in frmSearch
+	with rules
+		DDLVDCountry.value is empty then
+			set label LABELS.labXXX in TBVendorVAT
+			this mandatory true
+			return
+			; previous return statement means "do not evaluate further rules below"
+		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then return
+		DDLVDCountry.value not in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then 
+			set label LABELS.labSIRET in TBVendorVAT
+			set value 0000000000 in TBVendorVAT
+			return

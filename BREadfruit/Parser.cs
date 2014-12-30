@@ -122,6 +122,9 @@ namespace BREadfruit
 						_currentScope = CurrentScope.RULES_BLOCK;
 
 
+					if ( lineInfo.Tokens.Contains ( Grammar.ReturnSymbol ) )
+						this._entities.Last ().Rules.Last ().IsFinalRule = true;
+
 					#region " --- entity block --- "
 					if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.EntitySymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
 					{
@@ -211,6 +214,13 @@ namespace BREadfruit
 								// check if it's a valid action
 								if ( lineInfo.Tokens.Penultimate () == Grammar.ThenSymbol )
 								{
+									// CAVEAT here, a rule like this fits here
+									// DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then return
+									if ( lineInfo.Tokens.Last () == Grammar.ReturnSymbol )
+									{
+										this._entities.Last ().Rules.Last ().IsFinalRule = true;
+										continue;
+									}
 									var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
 										this.Entities.Last ().Name );
 									_rule.Conditions.Last ().AddUnaryAction ( _unaryAction );

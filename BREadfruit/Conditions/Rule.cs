@@ -30,6 +30,19 @@ namespace BREadfruit.Conditions
         }
 
 
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Indicates if this rule is the last one to be taken into account
+		/// and other rules to be ignored on account of finding a return statement.
+		/// </summary>
+		public bool IsFinalRule { get; protected internal set; }
+
+
+		// ---------------------------------------------------------------------------------
+
+
 		/// <summary>
 		/// Indicates if the Rule has a series of conditions acting as Else branch
 		/// </summary>
