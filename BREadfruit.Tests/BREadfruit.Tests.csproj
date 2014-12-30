@@ -148,6 +148,7 @@
     <Content Include="sample files\single entity tests\File061 - RealElse.txt" />
     <Content Include="sample files\single entity tests\File062 - NoElse.txt" />
     <Content Include="sample files\single entity tests\File063 - SingleLineElse.txt" />
+    <Content Include="sample files\single entity tests\File068 - SetLabel.txt" />
     <Content Include="sample files\single entity tests\File064 - SetLabel.txt" />
     <Content Include="sample files\single entity tests\File065 - NestedConds.txt" />
     <Content Include="sample files\single entity tests\File066 - SetIndex.txt" />

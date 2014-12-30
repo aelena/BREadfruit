@@ -1,0 +1,3 @@
+﻿Entity TBVendorIFA is TextBox in frmSearch
+	with rules
+		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then set label LABELS.labSIRET in TBVendorVAT

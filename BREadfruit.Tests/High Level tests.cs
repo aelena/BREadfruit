@@ -1938,6 +1938,32 @@ namespace BREadfruit.Tests
 
 		// ---------------------------------------------------------------------------------
 
+
+		[Test]
+		public void ParseSampleFile068 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File068 - SetLabel.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Reference == "TBVendorVAT" );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Action == Grammar.SetLabelActionSymbol.Token );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "LABELS.labSIRET" );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 		
 		[Test]
 		public void ShouldFindEntities_Vendor ()
