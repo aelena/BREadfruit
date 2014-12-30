@@ -817,6 +817,9 @@ Entity GD_Adr_Region is DropDownList in frmMain
 
 		REQUEST.ACCOUNT_GROUP in {YCT6,YVT6,YCT9,YVT9} and REQUEST.Region_IsMandatory and REQUEST.TYPE is CC then
 			this mandatory true
+
+		REQUEST.COUNTRY is FR then
+			this mandatory true
 			
 ; ---------------------------------------------------------------------------- 
 
@@ -930,6 +933,8 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP in {YCT6,YCT9} then
 			max length 5
 			mandatory true 
+
+	
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2034,6 +2039,8 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 		REQUEST.COMPANY_CODE in {5150,5180,596G} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value '' in CC_PT_PaymentTerms
 
+		REQUEST.COUNTRY is FR then
+			this mandatory true
 ; ---------------------------------------------------------------------------- 
 
 ;	"2.6.14(MI) GSS, please, check and provide the business rule. Additionally, CR ""IA_SEPA_payment methods"" ispending on clarification in your side yet
@@ -2047,6 +2054,7 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labPTPaymentMethods
+		load data from DATASOURCE.MDMC_PaymentMethods
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -2066,6 +2074,18 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 			
 		REQUEST.COUNTRY is FR and CC_PT_PaymentMethods.Value in {M, A} then
 			B_GD_VB_BankKey mandatory true
+
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is ES and REQUEST.VENDOR_COUNTRY is ES then
+			set value G in CC_PT_PaymentMethods
+
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is ES and REQUEST.VENDOR_COUNTRY is not ES then
+			set value Y in CC_PT_PaymentMethods
+
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY is FR then
+			set value G in CC_PT_PaymentMethods
+
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY is not FR then
+			set value Y in CC_PT_PaymentMethods
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2103,6 +2123,7 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCC_CO_AccountingClerk
+		load data from DATASOURCE.MDMC_AccountingClerks with arguments {"FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -2115,8 +2136,37 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 		; TODO: PENDING THIS ----> if company code Spain, Portugal and Belux-> see file: Sales areas _accounting clerks BE_PT and ES in sheet ""other documents""
 
-		REQUEST.COUNTRY is ES then
+		
+		REQUEST.COUNTRY is FR then
+			this mandatory true
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.COUNTRY is ES then
 			set value 81 in CC_CO_AccountingClerk
+			set value 81 in CC_CO_AccountingClerk.OldDisplayValue
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.COMPANY_CODE is 5109 then
+			set value MM in CC_CO_AccountingClerk
+			set value MM in CC_CO_AccountingClerk.OldDisplayValue
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.SALES_ORGANIZATION is 1E0E then
+			set value 95 in CC_CO_AccountingClerk
+			set value 95 in CC_CO_AccountingClerk.OldDisplayValue
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.SALES_ORGANIZATION in {10L0,10Q1} then
+			set value 87 in CC_CO_AccountingClerk
+			set value 87 in CC_CO_AccountingClerk.OldDisplayValue
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.SALES_ORGANIZATION in {10A0, 10A1, 10B0} then
+			set value 93 in CC_CO_AccountingClerk
+			set value 93 in CC_CO_AccountingClerk.OldDisplayValue
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.SALES_ORGANIZATION in {10F0, 10F1, 10F2, 10F3, 10G0, 10G1, 10H0, 10I0, 10P0, 10Z0} then
+			set value 92 in CC_CO_AccountingClerk
+			set value 92 in CC_CO_AccountingClerk.OldDisplayValue
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.COMPANY_CODE is 563M then
+			set value 20 in CC_CO_AccountingClerk
+			set value 20 in CC_CO_AccountingClerk.OldDisplayValue
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2227,8 +2277,11 @@ Entity KNVV_BZIRK is DropDownList in frmMain
 			set value '' in KNVV_BZIRK
 			mandatory false
 
-		REQUEST.ACCOUNT_GROUP in {YCT7, YCT9} then
+		REQUEST.ACCOUNT_GROUP in {YCT6, YCT9, YVT6, YVT9} then
 			this mandatory true
+
+		REQUEST.COUNTRY is FR then
+			this visible true
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2313,7 +2366,8 @@ Entity KNVV_VKGRP is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
-			KNVV_EIKTO visible true
+			this visible true
+			this mandatory false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2343,7 +2397,8 @@ Entity KNVV_KONDA is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is FR then
-			KNVV_PLTYP visible true
+			this visible true
+			this mandatory false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2359,6 +2414,8 @@ Entity KNVV_PLTYP is DropDownList in frmMain
 			this enable false	
 		REQUEST.COUNTRY in {BE, FR} then
 			KNVV_PLTYP visible true
+			this mandatory false
+
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2470,6 +2527,10 @@ Entity KNVV_VWERK is DropDownList in frmMain
 		REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} and REQUEST.COMPANY_CODE is 5140 and REQUEST.DISTRIBUTION_CHANNEL is 12 then
 			KNVV_VWERK visible true
 			set value 6020 in KNVV_VWERK
+
+		REQUEST.COUNTRY is FR then
+			this visible true
+			this mandatory false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2759,9 +2820,22 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 	with defaults
 		visible false
 		label LABELS.labCreditControlGroups
+		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { "FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
+
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
-			this enable false	
+			this enable false
+		
+		REQUEST.COMPANY_CODE in {5180, 596G,5140,491E} then
+			this visible true
+
+		REQUEST.COUNTRY is FR then
+			this mandatory false	
+			this visible true
+
+		REQUEST.COMPANY_CODE in {5140,491E} then
+			this mandatory false	
+			
 ; ---------------------------------------------------------------------------- 
 
 Entity KNVV_KVGR1 is DropDownList in frmMain
@@ -2776,6 +2850,8 @@ Entity KNVV_KVGR1 is DropDownList in frmMain
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_KVGR1 visible true
+			this mandatory false
+
 ; ---------------------------------------------------------------------------- 
 
 Entity KNVV_KVGR2 is DropDownList in frmMain
@@ -2788,6 +2864,8 @@ Entity KNVV_KVGR2 is DropDownList in frmMain
 	with rules
 		REQUEST.COUNTRY is FR then
 			KNVV_KVGR2 visible true
+			this mandatory false
+
 ; ---------------------------------------------------------------------------- 
 
 Entity KNVV_KVGR3 is DropDownList in frmMain
@@ -2801,6 +2879,7 @@ Entity KNVV_KVGR3 is DropDownList in frmMain
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_KVGR3 visible true
+			this mandatory false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2816,6 +2895,7 @@ Entity KNVV_KVGR4 is DropDownList in frmMain
 			this enable false	
 		REQUEST.COUNTRY is FR then
 			KNVV_KVGR4 visible true
+			this mandatory false
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2835,7 +2915,9 @@ Entity KNVV_KVGR5 is DropDownList in frmMain
 			KNVV_KVGR5 mandatory false
 			load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {"Group" : GR4}
 			
-
+		REQUEST.COUNTRY is FR then
+			KNVV_KVGR4 visible true
+			this mandatory false
 ; ---------------------------------------------------------------------------- 
 
 ; TODO:  MISSING ALL THE PARTNER FUNCTION STUFF
