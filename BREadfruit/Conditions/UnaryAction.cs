@@ -157,7 +157,8 @@ namespace BREadfruit.Conditions
 	public enum PropertyType
 	{
 		LABEL,
-		VALUE
+		VALUE,
+		INDEX
 	}
 
 

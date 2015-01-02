@@ -2248,6 +2248,7 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCountry
+		load data from DATASOURCE.MDM_Countries
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -2262,9 +2263,14 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_BankKey
+		max length 10
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+		REQUEST.ACCOUNT_GROUP in {YCT6,YCT9,YVT6,YVT9} then
+			max length 10
+		else
+			max length 15
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
@@ -2276,9 +2282,14 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_BankAccount
+		max length 11
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+		REQUEST.ACCOUNT_GROUP in {YCT6,YCT9,YVT6,YVT9} then
+			max length 11
+		else
+			max length 18
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
@@ -2290,6 +2301,7 @@ Entity B_GD_VB_BankControlKey is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_BankControlKey
+		max length 2
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -2307,6 +2319,10 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+		REQUEST.ACCOUNT_GROUP in {YCT6,YCT9,YVT6,YVT9} then
+			max length 27
+		else
+			max length 35
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
@@ -2359,6 +2375,8 @@ Entity B_GD_VB_PartBankType is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+		REQUEST.ACCOUNT_GROUP not in {YCT6,YCT9,YVT6,YVT9} then
+			max length 4
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankReferDetails is TextBox in frmMain
@@ -2368,6 +2386,8 @@ Entity B_GD_VB_BankReferDetails is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+		REQUEST.ACCOUNT_GROUP not in {YCT6,YCT9,YVT6,YVT9} then
+			max length 20
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_btnInsert is Button in frmMain

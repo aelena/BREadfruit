@@ -2025,6 +2025,44 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		public void ParseSampleFile070 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File070 - SetIndex.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.InOperator );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Reference == "FIELD_A" );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Action == Grammar.SetIndexActionSymbol.Token );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Property == PropertyType.INDEX );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "1" );
+
+			Assert.That ( e.Rules.Last ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.Last ().HasElseClause );
+			Assert.That ( e.Rules.Last ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.Last ().Conditions.First ().Operator == Grammar.NotInOperator );
+
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Reference == "FIELD_A" );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Action == Grammar.SetIndexActionSymbol.Token );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Property == PropertyType.INDEX );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Value.ToString () == "1" );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
+		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{
 			var parser = new Parser ();

@@ -224,6 +224,9 @@ namespace BREadfruit.Conditions
 				_ra.Property = PropertyType.LABEL;
 			if ( _ra == Grammar.SetValueActionSymbol || _ra == Grammar.AddValueActionSymbol )
 				_ra.Property = PropertyType.VALUE;
+			if ( _ra == Grammar.SetIndexActionSymbol)
+				_ra.Property = PropertyType.INDEX;
+
 		}
 
 
