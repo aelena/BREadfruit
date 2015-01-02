@@ -1024,6 +1024,11 @@ namespace BREadfruit
 					{
 						clause.AddArgumentsFromString ( lineInfo.Tokens.ElementAt ( lineInfo.IndexOfSymbol ( Grammar.WithArgumentsSymbol ) + 1 ).Token );
 					}
+
+					if ( lineInfo.HasSymbol ( Grammar.WithOutputArgumentsSymbol ) )
+					{
+						clause.AddOutputArgumentsFromString ( lineInfo.Tokens.ElementAt ( lineInfo.IndexOfSymbol ( Grammar.WithOutputArgumentsSymbol ) + 1 ).Token );
+					}
 				}
 			}
 			return clause;

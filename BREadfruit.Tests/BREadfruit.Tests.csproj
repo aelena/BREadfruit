@@ -76,6 +76,7 @@
     <Compile Include="Low level tests\TESTGEN_tests.cs" />
     <Compile Include="Low level tests\WithLineTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="sample files\single entity tests\File073 - Output in Default.txt" />
     <Content Include="sample files\single entity tests\File069 - Return.txt" />
   </ItemGroup>
   <ItemGroup>

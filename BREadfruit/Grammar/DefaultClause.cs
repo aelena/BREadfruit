@@ -73,6 +73,16 @@ namespace BREadfruit.Clauses
         // ---------------------------------------------------------------------------------
 
 
+		private List<FieldControlPair> _outputArguments;
+		public IEnumerable<FieldControlPair> OutputArguments
+		{
+			get { return this._outputArguments; }
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
         /// <summary>
         /// Parameterized constructor.
         /// </summary>
@@ -159,6 +169,33 @@ namespace BREadfruit.Clauses
 
 
         // ---------------------------------------------------------------------------------
+
+
+		protected internal void AddOutputArgumentsFromString ( string argumentsToken )
+		{
+			if ( String.IsNullOrWhiteSpace ( argumentsToken ) )
+				throw new ArgumentNullException ( "Argument string is null or empty", "argumentsToken" );
+
+			string [] _args = null;
+			// check that argumentsToken contains both "{" and "}"
+			if ( argumentsToken.Contains ( "{" ) && argumentsToken.Contains ( "}" ) )
+				_args = argumentsToken.TakeBetween ( "{", "}" ).Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+			else
+				_args = argumentsToken.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+
+			foreach ( var _a in _args )
+			{
+				var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
+				if ( this._outputArguments == null )
+					this._outputArguments = new List<FieldControlPair> ();
+				this._outputArguments.Add ( new FieldControlPair ( _argPair.Last ().Trim ().ReplaceFirstAndLastOnly ( "\"" ), _argPair.First ().Trim () ) );
+			}
+
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 
         public new DefaultClause Clone ()

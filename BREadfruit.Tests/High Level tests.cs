@@ -2132,6 +2132,27 @@ namespace BREadfruit.Tests
 
 		// ---------------------------------------------------------------------------------
 
+
+		[Test]
+		public void ParseSampleFile073 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File073 - Output in Default.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Defaults.Count () == 3, "should have 3 defaults but has " + e.Defaults.Count () );
+			Assert.That ( e.Defaults.First ().OutputArguments.Count () == 2 );
+
+			Assert.IsTrue ( e.Defaults.First ().OutputArguments.First ().ControlName == "FIELD_A" );
+			Assert.IsTrue ( e.Defaults.First ().OutputArguments.First ().DataFieldName == "Column A" );
+
+			Assert.IsTrue ( e.Defaults.First ().OutputArguments.Last ().ControlName == "FIELD_B" );
+			Assert.IsTrue ( e.Defaults.First ().OutputArguments.Last ().DataFieldName == "Column B" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
 		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{

@@ -1,0 +1,3 @@
+﻿Entity F_GD_VF_Country is DropDownList in frmMain
+	with defaults
+		load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} with output {FIELD_A : "Column A", FIELD_B : "Column B"}
