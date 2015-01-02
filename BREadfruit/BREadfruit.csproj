@@ -61,6 +61,7 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Grammar\Grammar.cs" />
     <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\FieldControlPair.cs" />
     <Compile Include="Helpers\TestGenerationInfo.cs" />
     <Compile Include="LineInfo.cs" />
     <Compile Include="LineParser.cs" />

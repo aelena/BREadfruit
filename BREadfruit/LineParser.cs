@@ -532,6 +532,30 @@ namespace BREadfruit
 
 		// ---------------------------------------------------------------------------------
 
+		
+		/// <summary>
+		/// This function parses a lineInfo to detect argument key value pairs 
+		/// and make a single token of all the individual tokens.
+		/// This token is to be parsed later on for extracting the individual key valuye pairs.
+		/// </summary>
+		/// <param name="lineInfo"></param>
+		/// <returns></returns>
+		protected internal LineInfo TokenizeOutputKeyValuePairs ( LineInfo lineInfo )
+		{
+			var _argsAsString = lineInfo.GetOutputArgumentsAsString ();
+			// check for tokens that might be after the token ending with }
+			var _trailingTokensToBePreserved = lineInfo.Tokens.TakeAfterLast ( x => x.Token.EndsWith ( "}" ) );
+			if ( !String.IsNullOrWhiteSpace ( _argsAsString ) )
+			{
+				lineInfo.RemoveTokensAfterSymbol ( Grammar.WithOutputArgumentsSymbol, true );
+				lineInfo.AddToken ( new Symbol ( _argsAsString, 2, true ) );
+			}
+			// if there were such tokens, preserve them again in the new instance
+			if ( _trailingTokensToBePreserved != null )
+				lineInfo.AddTokens ( _trailingTokensToBePreserved );
+			return lineInfo;
+		}
+
 
 		protected internal LineInfo TokenizeBracketExpression ( LineInfo lineInfo )
 		{
@@ -566,6 +590,21 @@ namespace BREadfruit
 		protected internal bool LineInfoContainsArgumentkeyValuePairs ( LineInfo lineInfo )
 		{
 			return lineInfo.HasSymbol ( Grammar.WithArgumentsSymbol );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+		
+		/// <summary>
+		/// Returns a value that indicates if the passed LineInfo instance contains
+		/// a "with output" clause.
+		/// </summary>
+		/// <param name="lineInfo">LineInfo instance to inspect.</param>
+		/// <returns></returns>
+		protected internal bool LineInfoContainsOutputkeyValuePairs ( LineInfo lineInfo )
+		{
+			return lineInfo.HasSymbol ( Grammar.WithOutputArgumentsSymbol );
 		}
 
 

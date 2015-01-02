@@ -165,5 +165,35 @@ namespace BREadfruit.Tests.Low_level_tests
 		// ---------------------------------------------------------------------------------
 
 
+		[TestCase ( "load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {\"COUNTRY\" : F_GD_VF_Country.Value }", Result = "\"COUNTRY\":F_GD_VF_Country.Value" )]
+		[TestCase ( "load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {\"COUNTRY\" : F_GD_VF_Country.Value } with output {F_GD_VF_CountryCode:\"Column A\",FIELD_B:\"Column B\"}", Result = "\"COUNTRY\":F_GD_VF_Country.Value" )]
+		public string GetArgumentsAsString_Tests ( string sut)
+		{
+			var p = new Parser ();
+			var lineInfo = p.ParseLine ( sut );
+			var lp = new LineParser ();
+			lineInfo = p.ParseLine ( lp.TokenizeMultiplePartOperators ( lineInfo ) );
+			return lineInfo.GetArgumentsAsString ();
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
+		[TestCase ( "load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {\"COUNTRY\" : F_GD_VF_Country.Value } with output {F_GD_VF_CountryCode:\"Column A\",FIELD_B:\"Column B\"}", Result = "F_GD_VF_CountryCode:\"Column A\",FIELD_B:\"Column B\"" )]
+		public string GetOutputArgumentsAsString_Tests ( string sut )
+		{
+			var p = new Parser ();
+			var lineInfo = p.ParseLine ( sut );
+			var lp = new LineParser ();
+			lineInfo = p.ParseLine ( lp.TokenizeMultiplePartOperators ( lineInfo ) );
+			return lineInfo.GetOutputArgumentsAsString ();
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
     }
 }

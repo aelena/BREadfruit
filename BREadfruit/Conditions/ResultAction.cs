@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BREadfruit.Helpers;
 
 namespace BREadfruit.Conditions
 {
@@ -55,6 +56,18 @@ namespace BREadfruit.Conditions
 
         // ---------------------------------------------------------------------------------
 
+
+		private List<FieldControlPair> _outputArguments;
+		public IEnumerable<FieldControlPair> OutputArguments
+		{
+			get { return this._outputArguments; }
+		}
+
+
+
+		// ---------------------------------------------------------------------------------
+
+
         protected internal ResultAction ( Symbol s, object value, string reference = "this" ) :
             base ( s.Token, s.IndentLevel, s.IsTerminal )
         {
@@ -90,6 +103,18 @@ namespace BREadfruit.Conditions
 
 
         // ---------------------------------------------------------------------------------
+
+
+		internal void AddOutputArgument ( string dataField, string controlName )
+		{
+			if ( this._outputArguments == null )
+				this._outputArguments = new List<FieldControlPair> ();
+
+			this._outputArguments.Add ( new FieldControlPair ( dataField, controlName ) );
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 
         public override string ToString ()

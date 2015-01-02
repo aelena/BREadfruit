@@ -464,8 +464,9 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM} then
 			this enable false
+
 		REQUEST.REQUEST.ACCOUNT_GROUP in {YVT4, YVT5} then
 			show this
 			show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
@@ -481,6 +482,35 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 			set value true in GD_Ctr_IsNaturalPerson 
 
 		; CHECK THIS -> 5) If request type creation for company or creation for sales org. or modification->enabled
+
+		GD_Adr_Country.Value is ES then
+			set value GD_Ctr_IsNaturalPerson.Value in CC_AM_SubjectedToWHTax.Value
+
+		GD_Ctr_IsNaturalPerson.Value is true then
+			GD_Ctr_CF enable true
+		else
+			GD_Ctr_CF enable false
+
+		GD_Ctr_IsNaturalPerson.Value is true and GD_Adr_Country.Value is IT then
+			GD_NatP_DateOfBirth mandatory true
+
+		GD_NatP_DateOfBirth is mandatory or GD_NatP_DateOfBirth is mandatory then
+			GD_NatP_PlaceOfBirth mandatory true
+		else
+			GD_NatP_PlaceOfBirth mandatory false
+			
+		GD_NatP_DateOfBirth is mandatory then
+			GD_NatP_Sex mandatory true
+		else
+			GD_NatP_Sex mandatory false 
+
+		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true
+			GD_Ctr_TaxCode1 mandatory true
+			GD_Ctr_TaxCode2 mandatory true
+
+		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is false
+			GD_Ctr_TaxCode1 mandatory false
+			GD_Ctr_TaxCode2 mandatory false
 
 	with actions
 		; ATTACHMENT mandatory  false 
@@ -2249,6 +2279,7 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 	with defaults
 		label LABELS.labCountry
 		load data from DATASOURCE.MDM_Countries
+		mandatory true
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -2257,6 +2288,7 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 		; _COMMENT_ mandatory  false 
 	with triggers 
 		on change
+
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankKey is TextBox in frmMain
@@ -2276,6 +2308,7 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 		; _COMMENT_ mandatory  false 
 	with triggers 
 		on change
+		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankAccount is TextBox in frmMain
@@ -2290,11 +2323,14 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 			max length 11
 		else
 			max length 18
+		B_GD_VB_Country.Value is BE and GD_VB_BankAccount.Length >= 3 then
+			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with triggers 
-		on change
+		this on change
+		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankControlKey is TextBox in frmMain
@@ -2328,6 +2364,7 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 		; _COMMENT_ mandatory  false 
 	with triggers 
 		on change
+		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_SWIFT is TextBox in frmMain
@@ -2377,6 +2414,9 @@ Entity B_GD_VB_PartBankType is TextBox in frmMain
 			this enable false
 		REQUEST.ACCOUNT_GROUP not in {YCT6,YCT9,YVT6,YVT9} then
 			max length 4
+	with triggers
+		B_GD_VB_Country changes
+		
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankReferDetails is TextBox in frmMain
@@ -2388,6 +2428,9 @@ Entity B_GD_VB_BankReferDetails is TextBox in frmMain
 			this enable false
 		REQUEST.ACCOUNT_GROUP not in {YCT6,YCT9,YVT6,YVT9} then
 			max length 20
+	with triggers
+		B_GD_VB_Country changes
+		
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_btnInsert is Button in frmMain
@@ -2397,6 +2440,31 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+			this visible false
+		REQUEST.REQUEST_TYPE in {VM_BLK,VM_UBLK} then
+			return
+		REQUEST.COUNTRY is IT and B_GD_VB_Country.Value is IT and B_GD_VB_SWIFT.Length is not 11 then
+			set value MESSAGES.ERRfieldSWIFT in MESSAGE_POPUP
+		B_GD_VB_IBAN is empty and B_GD_VB_BankAccount is empty then
+			set value MESSAGES.ERRfieldIban in MESSAGE_POPUP
+
+		; --- validations on bank insert
+
+		REQUEST.COUNTRY is ES and GD_Ctr_VendorClassification.Value is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S} then
+			set value G in GD_Ctr_VendorClassification
+
+		REQUEST.COUNTRY is ES and GD_Ctr_VendorClassification.Value is not NG and GD_Ctr_TaxCode1 is empty then
+			set value NG in GD_Ctr_VendorClassification
+
+		; as fallback
+		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {P,Q,S} then
+			set value G in GD_Ctr_VendorClassification
+
+		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {X,1,2,3,4,5,6,7,8,9,0} then
+			set value true in GD_Ctr_IsNaturalPerson
+		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value not starts with {X,1,2,3,4,5,6,7,8,9,0} then
+			set value false in GD_Ctr_IsNaturalPerson
+
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_Grid is Grid in frmMain
@@ -2865,6 +2933,7 @@ Entity CC_DD_LegalProceedings is Calendar in frmMain
 
 		REQUEST.COUNTRY is not ES and CC_DD_LegalProceedings is empty then
 			set value Y3PR in CC_DD_DunningProcedure
+
 
 ; ----------------------------------------------------------------------------	
 

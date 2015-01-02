@@ -434,6 +434,7 @@ namespace BREadfruit
 		public static Symbol EnabledSymbol = new Symbol ( "Enabled", 2, true );
 
 		public static Symbol WithArgumentsSymbol = new Symbol ( "with_args", 2, false, new [] { "with args", "with arguments" } );
+		public static Symbol WithOutputArgumentsSymbol = new Symbol ( "with_output", 2, false, new [] { "with output", "with output arguments" } );
 
 		public static Symbol DataSourceSymbol = new Symbol ( "DATASOURCE", 2, false );
 		public static Symbol WebServiceSymbol = new Symbol ( "WEBSERVICE", 2, false );
@@ -1007,6 +1008,8 @@ namespace BREadfruit
 			Grammar._symbols.Add ( ThisSymbol );
 			Grammar._symbols.Add ( InSymbol );
 			Grammar._symbols.Add ( WithArgumentsSymbol );
+			Grammar._symbols.Add ( WithOutputArgumentsSymbol );
+			
 			// add default symbols
 			Grammar._symbols.Add ( ValueSymbol );
 			// add operator symbols

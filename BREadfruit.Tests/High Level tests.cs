@@ -2061,6 +2061,76 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+		[Test]
+		public void ParseSampleFile071 ()
+		{
+
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File071 - MoreTriggers.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "TBVendorIFA", "Entity name should be 'TBVendorIFA' but is " + e.Name );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.InOperator );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Reference == "FIELD_A" );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Action == Grammar.SetIndexActionSymbol.Token );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Property == PropertyType.INDEX );
+			Assert.That ( e.Rules.First ().Conditions.First ().ResultActions.First ().Value.ToString () == "1" );
+
+			Assert.That ( e.Rules.Last ().Conditions.First ().Operand == "DDLVDCountry.value" );
+			Assert.IsTrue ( !e.Rules.Last ().HasElseClause );
+			Assert.That ( e.Rules.Last ().Conditions.Count () == 1 );
+			Assert.That ( e.Rules.Last ().Conditions.First ().Operator == Grammar.NotInOperator );
+
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Reference == "FIELD_A" );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Action == Grammar.SetIndexActionSymbol.Token );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Property == PropertyType.INDEX );
+			Assert.That ( e.Rules.Last ().Conditions.First ().ResultActions.First ().Value.ToString () == "1" );
+
+			Assert.That ( e.Triggers.Count () == 4 );
+			Assert.That ( e.Triggers.All ( x => x.Event == "changed" ) );
+			Assert.That ( e.Triggers.Take ( 2 ).All ( x => x.Target == "TBVendorIFA" ) );
+			Assert.That ( e.Triggers.ElementAt ( 2 ).Target == "TBVendorIFA.value" );
+			Assert.That ( e.Triggers.Last ().Target == "FIELD_A.Value" );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile072 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File072 - Load data 2.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Defaults.Count () == 2, "should have 2 defaults but has " + e.Defaults.Count () );
+
+			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.LoadDataUnaryActionSymbol.Token );
+			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "COUNTRY" );
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value.ToString () == "F_GD_VF_Country.Value" );
+
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.First ().ControlName == "F_GD_VF_CountryCode" );
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.First ().DataFieldName == "Column A" );
+
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.Last ().ControlName == "FIELD_B" );
+			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.Last ().DataFieldName == "Column B" );
+
+			Assert.That ( e.Triggers.Count () == 1, "should have 1 trigger(s)but has " + e.Triggers.Count () );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 		[Test]
 		public void ShouldFindEntities_Vendor ()

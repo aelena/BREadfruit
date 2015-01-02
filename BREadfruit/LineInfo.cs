@@ -167,6 +167,18 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
+		public string GetOutputArgumentsAsString ()
+		{
+			// first lets check for the presence of specific explicit "with_args" symbol, which
+			// indicates a list of arguments to be passed (generally in calls to datasource or web service)
+			if ( this.HasSymbol ( Grammar.WithOutputArgumentsSymbol ) )
+				return this._representation.TakeBetween ( Grammar.WithOutputArgumentsSymbol.Token, "{", "}", trimResults: true );
+			return String.Empty;
+		}
+
+		// ---------------------------------------------------------------------------------
+
+
 		protected internal Tuple<string, int, int> TokenizeValueListInCondition ( int index = 0 )
 		{
 			// reeturn immediately in this case

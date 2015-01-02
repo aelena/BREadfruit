@@ -1487,7 +1487,7 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 	with defaults
 		label LABELS.labCountry
 		load data from DATASOURCE.MDMC_Countries
-
+		mandatory true
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
@@ -1514,12 +1514,14 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankAccount is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_BankAccount
+		max length 11
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -1528,11 +1530,14 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 			max length 11
 		else
 			max length 18
+		B_GD_VB_Country.Value is BE and GD_VB_BankAccount.Length >= 3 then
+			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankControlKey is TextBox in frmMain
@@ -1567,6 +1572,7 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_PartBankType is TextBox in frmMain
@@ -1578,6 +1584,9 @@ Entity B_GD_VB_PartBankType is TextBox in frmMain
 			this enable false	
 		REQUEST.ACCOUNT_GROUP not in {YCT6,YCT9,YVT6,YVT9} then
 			max length 4
+	with triggers
+		B_GD_VB_Country changes
+
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankReferDetails is TextBox in frmMain
@@ -1589,6 +1598,8 @@ Entity B_GD_VB_BankReferDetails is TextBox in frmMain
 			this enable false
 		REQUEST.ACCOUNT_GROUP not in {YCT6,YCT9,YVT6,YVT9} then
 			max length 20	
+	with triggers
+		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_SWIFT is TextBox in frmMain
@@ -1640,6 +1651,11 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this visible false	
+			this visible false
+		REQUEST.COUNTRY is IT and B_GD_VB_Country.Value is IT and B_GD_VB_SWIFT.Length is not 11 then
+			set value MESSAGES.ERRfieldSWIFT in MESSAGE_POPUP
+		B_GD_VB_IBAN is empty and B_GD_VB_BankAccount is empty then
+			set value MESSAGES.ERRfieldIban in MESSAGE_POPUP
 ; ----------------------------------------------------------------------------	
 
 Entity B_GD_VB_Grid is Grid in frmMain
@@ -1694,6 +1710,9 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		visible false
 		; data source is same for vendors and customers
 		load data from DATASOURCE.MDMC_LegalForms with arguments {"FlagActive" : true }
+
+	with actions
+		load data from DATASOURCE.MDMC_LegalForms with arguments {"FlagActive" : true, "Code" : GD_Ctr_GFORM.Value }
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
