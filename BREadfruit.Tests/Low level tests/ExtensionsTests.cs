@@ -1401,7 +1401,7 @@ namespace BREadfruit.Tests.Low_level_tests
 
 
 		[Test]
-		public void AppendAll_Tests_01()
+		public void AppendAll_Tests_01 ()
 		{
 			var sb = new StringBuilder ();
 			sb.AppendAll ( new string [] { } );
@@ -1461,12 +1461,52 @@ namespace BREadfruit.Tests.Low_level_tests
 		public void AppendAll_Tests_08 ()
 		{
 			var sb = new StringBuilder ();
-			sb.AppendAll ( new string [] { "a", "B", null, "c", string.Empty,"0", "D" } );
+			sb.AppendAll ( new string [] { "a", "B", null, "c", string.Empty, "0", "D" } );
 			Assert.That ( sb.ToString () == "aBc0D" );
 		}
 
 		// ---------------------------------------------------------------------------------
 
+
+		[Test]
+		public void TakeAfterLast_Tests ()
+		{
+			var a = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 65, 5, 6, 4, 5, 6, 4 };
+			var _1 = a.AsEnumerable ().TakeAfterLast ( x => x == 9 );
+			Assert.That ( _1.Count () == 11, "Expected 11 elements but had " + _1.Count());
+			Assert.That ( _1.ElementAt ( 4 ) == 65 );
+			Assert.That ( _1.First () == 1, "First item should be 1 but was " + _1.First () );
+		}
+
+
+		[Test]
+		public void TakeAfterLast_Tests_2 ()
+		{
+
+			var a = new [] { "good", "people", "are", "good", "most", "of", "the", "time" };
+			var _1 = a.AsEnumerable ().TakeAfterLast ( x => x.StartsWith("g") );
+			Assert.That ( _1.Count () == 4, "Expected 4 elements but had " + _1.Count () );
+			Assert.That ( _1.First () == "most", "First item should be 'most' but was '" + _1.First () + "'");
+		}
+
+		[Test]
+		public void TakeAfterLast_Tests_3()
+		{
+
+			var a = new [] { "good", "people", "are", "good", "most", "of", "the", "time" };
+			var _1 = a.AsEnumerable ().TakeAfterLast ( x => x.EndsWith ( "e" ) );
+			Assert.That ( _1.Count () == 0, "Expected 4 elements but had " + _1.Count () );
+		}
+
+		[Test]
+		public void TakeAfterLast_Tests_4 ()
+		{
+
+			var a = new [] { "good", "people", "are", "good", "most", "of", "the", "time" };
+			var _1 = a.AsEnumerable ().TakeAfterLast ( x => x.EndsWith ( "d" ) );
+			Assert.That ( _1.Count () == 4, "Expected 4 elements but had " + _1.Count () );
+			Assert.That ( _1.First () == "most", "First item should be 'most' but was '" + _1.First () + "'" );
+		}
 
 	}
 }

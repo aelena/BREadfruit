@@ -410,6 +410,24 @@ namespace BREadfruit.Helpers
 		// ---------------------------------------------------------------------------------
 
 
+		public static IEnumerable<T> TakeAfterLast<T> ( this IEnumerable<T> list, Func<T, bool> func )
+		{
+			int i = 0, j = 0;
+			foreach ( var l in list )
+			{
+				if ( func ( l ) )
+				{
+					j = i;
+				}
+				i++;
+			}
+			return list.Skip ( ++j );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
 		public static IEnumerable<T> TakeUntil<T> ( this IEnumerable<T> list, Func<T, bool> func )
 		{
 			int i = 0;
@@ -1798,7 +1816,7 @@ namespace BREadfruit.Helpers
 		// ---------------------------------------------------------------------------------
 
 
-		public static StringBuilder AppendFormat ( this StringBuilder sb, int indentationLevel, string value,params object [] args  )
+		public static StringBuilder AppendFormat ( this StringBuilder sb, int indentationLevel, string value, params object [] args )
 		{
 			if ( indentationLevel < 0 )
 				indentationLevel = 0;
@@ -1810,6 +1828,11 @@ namespace BREadfruit.Helpers
 			sb.AppendFormat ( value, args );
 			return sb;
 		}
+
+
+
+		// ---------------------------------------------------------------------------------
+
 
 	}
 }
