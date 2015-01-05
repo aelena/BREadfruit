@@ -110,6 +110,24 @@ namespace BREadfruit.Helpers
 
 		// ---------------------------------------------------------------------------------
 
+		public static IEnumerable<T> From<T> ( this IEnumerable<T> list, Func<T, bool> func )
+		{
+			int i = 0;
+			foreach ( var l in list )
+			{
+				if ( func ( l ) )
+				{
+					return list.Skip ( ++i );
+				}
+				i++;
+			}
+			return null;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
 
 		/// <summary>
 		/// Returns from 0 to the "to" position on a IEnumerable instance.
@@ -121,6 +139,24 @@ namespace BREadfruit.Helpers
 		public static IEnumerable<T> To<T> ( this IEnumerable<T> list, int to )
 		{
 			return list.ToList ().GetRange ( 0, ++to );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		public static IEnumerable<T> To<T> ( this IEnumerable<T> list, Func<T, bool> func )
+		{
+			int i = 0;
+			foreach ( var l in list )
+			{
+				if ( func ( l ) )
+				{
+					return list.Take ( ++i );
+				}
+				i++;
+			}
+			return null;
 		}
 
 

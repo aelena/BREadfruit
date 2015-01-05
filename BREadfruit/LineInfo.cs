@@ -461,6 +461,8 @@ namespace BREadfruit
 		internal void InsertTokenAt ( int index, Symbol token )
 		{
 			this._tokens.Insert ( index, token );
+			this._numberOfTokens = this._tokens.Count ();
+			this._representation = this.Tokens.JoinTogether ().Token;
 		}
 
 

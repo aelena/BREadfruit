@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Conditions\ParameterizedResultAction.cs" />
+    <Compile Include="Conditions\QueryResultAction.cs" />
     <Compile Include="Conditions\ResultAction.cs" />
     <Compile Include="Conditions\Condition.cs" />
     <Compile Include="Conditions\Operator.cs" />

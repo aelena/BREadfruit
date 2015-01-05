@@ -330,28 +330,52 @@ namespace BREadfruit
 						{
 							lineInfo = this._lineParser.TokenizeOutputKeyValuePairs ( lineInfo );
 						}
+						if ( lineInfo.Tokens.Contains ( Grammar.WithQuerySymbol ) )
+						{
+							lineInfo = this._lineParser.TokenizeQuotedText ( lineInfo, Grammar.WithQuerySymbol );
+						}
 
-						if ( lineInfo.Tokens.Count () == 6 )
+						if ( lineInfo.Tokens.Count () >= 6 )
 						{
 							if ( lineInfo.HasSymbol ( Grammar.WithArgumentsSymbol ) && lineInfo.HasSymbol ( Grammar.InSymbol ) )
 							{
-								var _ra = ConfigureResultActionWithArguments ( lineInfo );
-
-								this._entities.Last ().AddResultAction ( _ra );
+								if ( lineInfo.HasSymbol ( Grammar.WithQuerySymbol ) )
+								{
+									var _ra = ConfigureQueriedResultActionWithArguments ( lineInfo );
+									this._entities.Last ().AddResultAction ( _ra );
+								}
+								else
+								{
+									var _ra = ConfigureResultActionWithArguments ( lineInfo );
+									this._entities.Last ().AddResultAction ( _ra );
+								}
 							}
 							if ( lineInfo.HasSymbol ( Grammar.WithArgumentsSymbol ) && lineInfo.HasSymbol ( Grammar.WithOutputArgumentsSymbol ) )
 							{
-								var _ra = ConfigureResultActionWithArguments ( lineInfo );
-
-								// output arguments, if they are there, should be last token in representation
-								var _args = lineInfo.Tokens.Last().Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
-								foreach ( var _a in _args )
+								if ( lineInfo.HasSymbol ( Grammar.WithQuerySymbol ) )
 								{
-									var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
-									_ra.AddOutputArgument ( _argPair.Last ().Trim ().MultipleReplace ( Grammar.ValidQuoteSymbols ), _argPair.First ().Trim ().ReplaceFirstAndLastOnly ( "\"" ) );
+									var _ra = ConfigureQueriedResultActionWithArguments ( lineInfo );
+									// output arguments, if they are there, should be last token in representation
+									var _args = lineInfo.Tokens.Last ().Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+									foreach ( var _a in _args )
+									{
+										var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
+										_ra.AddOutputArgument ( _argPair.Last ().Trim ().MultipleReplace ( Grammar.ValidQuoteSymbols ), _argPair.First ().Trim ().ReplaceFirstAndLastOnly ( "\"" ) );
+									}
+									this._entities.Last ().AddResultAction ( _ra );
 								}
-
-								this._entities.Last ().AddResultAction ( _ra );
+								else
+								{
+									var _ra = ConfigureResultActionWithArguments ( lineInfo );
+									// output arguments, if they are there, should be last token in representation
+									var _args = lineInfo.Tokens.Last ().Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+									foreach ( var _a in _args )
+									{
+										var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
+										_ra.AddOutputArgument ( _argPair.Last ().Trim ().MultipleReplace ( Grammar.ValidQuoteSymbols ), _argPair.First ().Trim ().ReplaceFirstAndLastOnly ( "\"" ) );
+									}
+									this._entities.Last ().AddResultAction ( _ra );
+								}
 							}
 						}
 						// see if this is resultaction
@@ -359,7 +383,7 @@ namespace BREadfruit
 						{
 							if ( lineInfo.Tokens.Contains ( Grammar.WithArgumentsSymbol ) )
 							{
-								var _r = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+								var _r = new ParameterizedResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
 									   lineInfo.Tokens.ElementAt ( 1 ).Token );
 								var _args = lineInfo.Tokens.ElementAt ( 3 ).Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
 								foreach ( var _a in _args )
@@ -712,16 +736,40 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
-		private static ResultAction ConfigureResultActionWithArguments ( LineInfo lineInfo )
+		private static ParameterizedResultAction ConfigureResultActionWithArguments ( LineInfo lineInfo )
 		{
 			// then it must be this sort of rule
 			// load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
-			var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+			var _ra = new ParameterizedResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
 					lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
 
 			// quite brittle this one here...
 			// replace with extension such as ElementAfterToken(xxx) or something like that.
 			var _args = lineInfo.Tokens.ElementAt ( 3 ).Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+			foreach ( var _a in _args )
+			{
+				var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );
+				_ra.AddArgument ( _argPair.First ().Trim ().MultipleReplace ( Grammar.ValidQuoteSymbols ), _argPair.Last ().Trim ().ReplaceFirstAndLastOnly ( "\"" ) );
+			}
+			return _ra;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		private static ParameterizedResultAction ConfigureQueriedResultActionWithArguments ( LineInfo lineInfo )
+		{
+			 var _ = lineInfo.Tokens.IndexOf ( x => x ==  Grammar.WithQuerySymbol );
+
+			// then it must be this sort of rule
+			// load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
+			var _ra = new QueryResultAction ( lineInfo.Tokens.ElementAt(++_).Token.ReplaceFirstAndLastOnly("\""), Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+					lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
+
+			// quite brittle this one here...
+			// replace with extension such as ElementAfterToken(xxx) or something like that.
+			var _args = lineInfo.Tokens.ElementAt ( 5 ).Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
 			foreach ( var _a in _args )
 			{
 				var _argPair = _a.Split ( new char [] { ':' }, StringSplitOptions.RemoveEmptyEntries );

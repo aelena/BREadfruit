@@ -1,0 +1,7 @@
+﻿Entity F_GD_VF_Country is DropDownList in frmMain
+
+	with actions
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with query "QUERY TEXT GOES HERE" with arguments {"CODE" : FIELD_X.Value } with output { FIELD_A : "Column A", FIELD_B: "Column B" }
+	
+	with triggers
+		this changes

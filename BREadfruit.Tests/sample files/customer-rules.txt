@@ -1712,7 +1712,7 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_LegalForms with arguments {"FlagActive" : true }
 
 	with actions
-		load data from DATASOURCE.MDMC_LegalForms with arguments {"FlagActive" : true, "Code" : GD_Ctr_GFORM.Value }
+		load data from DATASOURCE.MDMC_LegalForms with arguments {"FlagActive" : true, "Code" : GD_Ctr_GFORM.Value } with output {GD_Ctr_IsNaturalPerson.Value : KNA1_STKZN, GD_Ctr_CustomerClassification.Value : KNA1_KUKLA}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -2387,7 +2387,7 @@ Entity KNVV_EIKTO is TextBox in frmMain
 
 ; TODO: WE HAVE TO IMITATE THIS QUERY, SUGGEST CREATING A SPECIFIC STORED PROC OR SIMILAR
 ; SO THAT WE AVOID HAVING TO SPECIFY THE JOIN HERE
-;
+;MDMC_WORKSPACE
 ;		IQueryable query = from sosg in this.mdmc_lookup.MDMC_SalesOfficeSalesGroup
 ;		                        join sg in this.mdmc_lookup.MDMC_SalesGroup on sosg.CodeSalesGroup equals sg.Code
 ;		                        where sosg.CodeSalesOffice == selectedsalesoffice

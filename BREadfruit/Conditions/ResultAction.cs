@@ -47,26 +47,6 @@ namespace BREadfruit.Conditions
         // ---------------------------------------------------------------------------------
 
 
-        private SortedList<string, string> _arguments;
-        public IEnumerable<KeyValuePair<string, string>> Arguments
-        {
-            get { return this._arguments.AsEnumerable (); }
-        }
-
-
-        // ---------------------------------------------------------------------------------
-
-
-		private List<FieldControlPair> _outputArguments;
-		public IEnumerable<FieldControlPair> OutputArguments
-		{
-			get { return this._outputArguments; }
-		}
-
-
-
-		// ---------------------------------------------------------------------------------
-
 
         protected internal ResultAction ( Symbol s, object value, string reference = "this" ) :
             base ( s.Token, s.IndentLevel, s.IsTerminal )
@@ -91,30 +71,6 @@ namespace BREadfruit.Conditions
 
 
         // ---------------------------------------------------------------------------------
-
-
-        internal void AddArgument ( string key, string value )
-        {
-            if ( this._arguments == null )
-                this._arguments = new SortedList<string, string> ();
-
-            this._arguments.Add ( key, value );
-        }
-
-
-        // ---------------------------------------------------------------------------------
-
-
-		internal void AddOutputArgument ( string dataField, string controlName )
-		{
-			if ( this._outputArguments == null )
-				this._outputArguments = new List<FieldControlPair> ();
-
-			this._outputArguments.Add ( new FieldControlPair ( dataField, controlName ) );
-		}
-
-
-		// ---------------------------------------------------------------------------------
 
 
         public override string ToString ()

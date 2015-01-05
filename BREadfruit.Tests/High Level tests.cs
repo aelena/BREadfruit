@@ -533,7 +533,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString ().Equals ( "change_form_to frmMain" ) );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).ToString ().Equals ( "change_form_to \"frmMain\" this" ) );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).IsResultAction );
-			Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 2 ) ).Arguments.Count () == 1 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 2 ) ).Arguments.Count () == 1 );
 
 		}
 
@@ -858,10 +858,10 @@ namespace BREadfruit.Tests
 			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).Reference == "this" );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
 
-			Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString () == "DATASOURCE.MDM_Requests_PhoneEntry" );
-			Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.Count () == 1 );
-			Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "Phone" );
-			Assert.That ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value == "123456" );
+			Assert.That ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString () == "DATASOURCE.MDM_Requests_PhoneEntry" );
+			Assert.That ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.Count () == 1 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "Phone" );
+			Assert.That ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value == "123456" );
 		}
 
 
@@ -925,18 +925,18 @@ namespace BREadfruit.Tests
 
 			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.LoadDataUnaryActionSymbol.Token );
 			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "COUNTRY" );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value.ToString () == "F_GD_VF_Country.Value" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "COUNTRY" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value.ToString () == "F_GD_VF_Country.Value" );
 
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Reference == "F_GD_VF_CountryCode" );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString () == "DATASOURCE.MDM_CountryTelephonePrefixes" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Reference == "F_GD_VF_CountryCode" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Value.ToString () == "DATASOURCE.MDM_CountryTelephonePrefixes" );
 
 			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ).Action == Grammar.LoadDataUnaryActionSymbol.Token );
 			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 1 ).IsResultAction );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Arguments.First ().Key == "COUNTRY" );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Arguments.First ().Value.ToString () == "F_GD_VF_Country.Value" );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Reference == "F_GD_VF_CountryCode" );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Value.ToString () == "JAVASCRIPT.FUNCTION_NAME" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Arguments.First ().Key == "COUNTRY" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Arguments.First ().Value.ToString () == "F_GD_VF_Country.Value" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Reference == "F_GD_VF_CountryCode" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Value.ToString () == "JAVASCRIPT.FUNCTION_NAME" );
 
 
 			Assert.That ( e.Triggers.Count () == 1, "should have 1 trigger(s)but has " + e.Triggers.Count () );
@@ -2116,14 +2116,12 @@ namespace BREadfruit.Tests
 
 			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.LoadDataUnaryActionSymbol.Token );
 			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "COUNTRY" );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value.ToString () == "F_GD_VF_Country.Value" );
-
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.First ().ControlName == "F_GD_VF_CountryCode" );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.First ().DataFieldName == "Column A" );
-
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.Last ().ControlName == "FIELD_B" );
-			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.Last ().DataFieldName == "Column B" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "CODE" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value.ToString () == "FIELD_X.Value" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.First ().ControlName == "FIELD_A" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.First ().DataFieldName == "Column A" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.Last ().ControlName == "FIELD_B" );
+			Assert.IsTrue ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.Last ().DataFieldName == "Column B" );
 
 			Assert.That ( e.Triggers.Count () == 1, "should have 1 trigger(s)but has " + e.Triggers.Count () );
 
@@ -2149,6 +2147,35 @@ namespace BREadfruit.Tests
 
 			Assert.IsTrue ( e.Defaults.First ().OutputArguments.Last ().ControlName == "FIELD_B" );
 			Assert.IsTrue ( e.Defaults.First ().OutputArguments.Last ().DataFieldName == "Column B" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile074 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File074 - Load Data with Query.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Defaults.Count () == 2, "should have 2 defaults but has " + e.Defaults.Count () );
+
+			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.LoadDataUnaryActionSymbol.Token );
+			Assert.IsTrue ( e.ConditionlessActions.ElementAt ( 0 ).IsResultAction );
+			Assert.IsTrue ( ( ( QueryResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Key == "CODE" );
+			Assert.IsTrue ( ( ( QueryResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Arguments.First ().Value.ToString () == "FIELD_X.Value" );
+			Assert.IsTrue ( ( ( QueryResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.First ().ControlName == "FIELD_A" );
+			Assert.IsTrue ( ( ( QueryResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.First ().DataFieldName == "Column A" );
+			Assert.IsTrue ( ( ( QueryResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.Last ().ControlName == "FIELD_B" );
+			Assert.IsTrue ( ( ( QueryResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).OutputArguments.Last ().DataFieldName == "Column B" );
+
+			Assert.IsTrue ( ( ( QueryResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Query == "QUERY TEXT GOES HERE" );
+
+			Assert.That ( e.Triggers.Count () == 1, "should have 1 trigger(s)but has " + e.Triggers.Count () );
+
 		}
 
 

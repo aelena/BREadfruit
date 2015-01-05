@@ -532,7 +532,7 @@ namespace BREadfruit
 
 		// ---------------------------------------------------------------------------------
 
-		
+
 		/// <summary>
 		/// This function parses a lineInfo to detect argument key value pairs 
 		/// and make a single token of all the individual tokens.
@@ -555,6 +555,29 @@ namespace BREadfruit
 				lineInfo.AddTokens ( _trailingTokensToBePreserved );
 			return lineInfo;
 		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		// JoinTogetherBetween
+		protected internal LineInfo TokenizeQuotedText ( LineInfo lineInfo, Symbol s )
+		{
+
+			if ( lineInfo.Tokens.Contains ( s ) )
+			{
+				var _i = lineInfo.Tokens.IndexOf ( x => x == s );
+				var _tokens = lineInfo.Tokens.From ( ++_i ).To ( x => x.Token.EndsWith ( "\"" ) );
+				lineInfo.RemoveTokensFromTo ( _i, _tokens.Count () + _i );
+				lineInfo.InsertTokenAt ( _i, _tokens.JoinTogether () );
+			}
+
+			return lineInfo;
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 
 		protected internal LineInfo TokenizeBracketExpression ( LineInfo lineInfo )
@@ -595,7 +618,7 @@ namespace BREadfruit
 
 		// ---------------------------------------------------------------------------------
 
-		
+
 		/// <summary>
 		/// Returns a value that indicates if the passed LineInfo instance contains
 		/// a "with output" clause.
