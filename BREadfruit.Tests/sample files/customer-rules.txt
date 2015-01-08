@@ -597,10 +597,14 @@ Entity GD_Adr_Name is TextBox in frmMain
 			max length 32
 		REQUEST.ACCOUNT_GROUP is YCT3 then
 			max length 28
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE not in {CC,CC_CC} then
+			this mandatory false
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE in {CC,CC_CC} then
+			this mandatory true
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false
-		set value SUBSTRING(GD_Adr_Name,2) in GD_Adr_Search
+		set value SUBSTRING(GD_Adr_Name.Value,20) in GD_Adr_Search
 		set value GD_Adr_Name in B_GD_VB_AccountHolder
 	with triggers 
 		this on change
@@ -640,6 +644,10 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 			GD_Adr_Name4 mandatory true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE not in {CC,CC_CC} then
+			this mandatory false
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE in {CC,CC_CC} then
+			this mandatory true
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Name4 is TextBox in frmMain
@@ -649,6 +657,10 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE not in {CC,CC_CC} then
+			this mandatory false
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE in {CC,CC_CC} then
+			this mandatory true
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Adr_Search is TextBox in frmMain
@@ -657,7 +669,7 @@ Entity GD_Adr_Search is TextBox in frmMain
 		label LABELS.Search
 		max length 20
 		; put here the first 20 characters of the name (which in creations comes from search screen)
-		value GD_Adr_Name1
+		value SUBSTRING(GD_Adr_Name.Value,20)
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
@@ -3640,7 +3652,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
 			this enabled 
 
-		REQUEST.COUNTRY in {BE,IT, PT} then
+		REQUEST.COUNTRY in {BE,IT,PT} then
 			this mandatory false
 	with actions
 		; ATTACHMENT mandatory  false

@@ -1999,7 +1999,7 @@ namespace BREadfruit.Tests
 			Assert.IsTrue ( !e.Rules.First ().HasElseClause );
 			Assert.That ( e.Rules.First ().Conditions.Count () == 1 );
 			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.EqualityOperator );
-			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString() == "\"\"");
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "\"\"" );
 			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Count () == 1 );
 			Assert.That ( e.Rules.First ().Conditions.Last ().Results.Count () == 1 );
 			// check the return statement has been interpreted
@@ -2180,6 +2180,32 @@ namespace BREadfruit.Tests
 
 
 		// ---------------------------------------------------------------------------------
+
+		[Test]
+		public void ParseSampleFile075 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File075.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_Adr_Street", "Entity name should be 'GD_Adr_Street' but is " + e.Name );
+			Assert.That ( e.Defaults.Count () == 5, "should have 5 defaults but has " + e.Defaults.Count () );
+			Assert.That ( e.ConditionlessActions.Count () == 10, "should have 10 actions but has " + e.ConditionlessActions.Count () );
+
+			Assert.That ( e.ConditionlessActions.First ().Reference == "ATTACHMENT" );
+
+			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Value.ToString () == "32" );
+			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Reference == "GD_Adr_Street" );
+			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Token == Grammar.MaxlengthDefaultClause );
+
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
 		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{

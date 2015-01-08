@@ -1,0 +1,28 @@
+﻿Entity GD_Adr_Street is TextBox in frmMain
+	with defaults
+		max length 35
+		label LABELS.labHouseNumber
+		mandatory true
+
+	with actions
+		ATTACHMENT mandatory
+		COMMENT mandatory false
+		FIELD_A visible false
+		FIELD_B visible
+		FIELD_C enabled false
+		
+		FIELD_D enabled
+		FIELD_E enable false
+		FIELD_F enable
+		FIELD_G not mandatory
+		FIELD_H not visible
+
+
+	with rules
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
+			this enable false
+		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
+			max length 32
+
+	with triggers
+		this changes

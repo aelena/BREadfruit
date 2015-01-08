@@ -1009,6 +1009,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 	with defaults
 		max length 35			;  32 sometimes
 		label LABELS.labName
+		mandatory true
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -1018,7 +1019,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 	with actions
 		ATTACHMENT mandatory  true 
 		; _COMMENT_ mandatory  false
-		set value SUBSTRING(GD_Adr_Name,20) in GD_Adr_Search
+		set value SUBSTRING(GD_Adr_Name.Value,20) in GD_Adr_Search
 		set value GD_Adr_Name in B_GD_VB_AccountHolder
 
 	with triggers 
@@ -1059,6 +1060,12 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 		COMPANY_CODE is 5150 and CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
 
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE not in {VC,VC_CC} then
+			this mandatory false
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE in {VC,VC_CC} then
+			this mandatory true
+
+
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Name4 is TextBox in frmMain
@@ -1083,12 +1090,50 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
+
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE not in {VC,VC_CC} then
+			this mandatory false
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE in {VC,VC_CC} then
+			this mandatory true
+
+; ----------------------------------------------------------------------------
+
+Entity GD_Adr_Search is TextBox in frmMain
+	with defaults
+		enabled true
+		visible true
+		max length 20
+		SUBSTRING(GD_Adr_Name.Value,20)
+		label LABELS.Search
+
+	with actions
+		ATTACHMENT mandatory true
+
+	with rules
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
+			this enable false
+		CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then disabled
+
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------		
+
+Entity GD_Com_Comment is TextBox in frmMain
+	with defaults
+		max length 35
+		label LABELS.labComment
+	with rules
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
+			this enable false
+
 ; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_Street is TextBox in frmMain
 	with defaults
 		max length 35
 		label LABELS.labHouseNumber
+		mandatory true
 
 	with actions
 		ATTACHMENT mandatory true
@@ -1244,14 +1289,6 @@ Entity GD_Adr_City2 is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Com_Comment is TextBox in frmMain
-	with defaults
-		max length 35
-		label LABELS.labComment
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
-			this enable false
-; ----------------------------------------------------------------------------	
 
 Entity GD_Adr_PostalCode is TextBox in frmMain
 	with defaults
@@ -1315,28 +1352,6 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-
-Entity GD_Adr_Search is TextBox in frmMain
-	with defaults
-		enabled true
-		visible true
-		max length 20
-		value  GD_Adr_Name1.Value
-		label LABELS.Search
-
-	with actions
-		ATTACHMENT mandatory true
-
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
-			this enable false
-		CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then disabled
-
-	with triggers
-		this changes
-
-
-; ----------------------------------------------------------------------------	
 
 ; TODO: REVIEW THIS FIELD IN ACTUAL CODE - FIELD MAPPING JUST SAYS "IT WORKS CORRECTLY"
 ; BECAUSE THE RULES ARE SO COMPLEX THEY DONT EVEN KNOW WHAT THE FUCK IS GOING ON
@@ -2441,8 +2456,6 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 			this visible false
-		REQUEST.REQUEST_TYPE in {VM_BLK,VM_UBLK} then
-			return
 		REQUEST.COUNTRY is IT and B_GD_VB_Country.Value is IT and B_GD_VB_SWIFT.Length is not 11 then
 			set value MESSAGES.ERRfieldSWIFT in MESSAGE_POPUP
 		B_GD_VB_IBAN is empty and B_GD_VB_BankAccount is empty then
