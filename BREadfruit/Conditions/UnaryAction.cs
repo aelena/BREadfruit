@@ -156,9 +156,13 @@ namespace BREadfruit.Conditions
 
 	public enum PropertyType
 	{
+		NOT_SET,
 		LABEL,
 		VALUE,
-		INDEX
+		INDEX,
+		MANDATORY,
+		VISIBLE,
+		ENABLED
 	}
 
 
