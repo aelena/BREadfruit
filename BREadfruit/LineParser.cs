@@ -267,6 +267,32 @@ namespace BREadfruit
 				{
 					return Regex.IsMatch ( line.Representation.Trim (), Grammar.ClearValueLineRegex, RegexOptions.IgnoreCase );
 				}
+
+				if ( line.Tokens.Contains ( Grammar.MakeNonMandatoryUnaryActionSymbol ) )
+				{
+					return Regex.IsMatch ( line.Representation.Trim (), Grammar.MandatoryOrNotLineRegex, RegexOptions.IgnoreCase );
+				}
+
+				if ( line.Tokens.Contains ( Grammar.VisibleUnaryActionSymbol ) || line.Tokens.Contains ( Grammar.NotVisibleUnaryActionSymbol ) )
+				{
+					return Regex.IsMatch ( line.Representation.Trim (), Grammar.VisibleOrNotLineRegex, RegexOptions.IgnoreCase );
+				}
+
+				if ( line.HasSymbol ( Grammar.MakeMandatoryUnaryActionSymbol ) )
+				{
+					return Regex.IsMatch ( line.Representation.Trim (), Grammar.ToggleMandatoryLineRegex, RegexOptions.IgnoreCase );
+				}
+
+				if ( line.HasSymbol ( Grammar.VisibleUnaryActionSymbol ) )
+				{
+					return Regex.IsMatch ( line.Representation.Trim (), Grammar.ToggleVisibleLineRegex, RegexOptions.IgnoreCase );
+				}
+
+				if ( line.HasSymbol ( Grammar.EnableUnaryActionSymbol ) )
+				{
+					return Regex.IsMatch ( line.Representation.Trim (), Grammar.ToggleEnableLineRegex, RegexOptions.IgnoreCase );
+				}
+
 			}
 
 			return false;

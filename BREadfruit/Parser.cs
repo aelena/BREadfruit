@@ -170,6 +170,8 @@ namespace BREadfruit
 					}
 					#endregion
 
+					#region " --- check for elses --- "
+
 					if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.ElseSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
 					{
 						// check we are in the current scope for else to appear
@@ -187,6 +189,8 @@ namespace BREadfruit
 							lineInfo.RemoveTokens ( 1 );
 						}
 					}
+
+					#endregion
 
 					#region " --- rules block --- "
 					if ( _currentScope == CurrentScope.RULES_BLOCK )
@@ -400,14 +404,48 @@ namespace BREadfruit
 								this._entities.Last ().AddResultAction ( _ra );
 							}
 						}
+
+						if ( lineInfo.Tokens.Count () == 3 )
+						{
+							if ( CheckForThreePartUnaryAction ( lineInfo, Grammar.MandatoryDefaultClause,
+																		  Grammar.MakeMandatoryUnaryActionSymbol,
+																		  Grammar.MakeNonMandatoryUnaryActionSymbol,
+																		  PropertyType.MANDATORY) )
+								continue;
+							if ( CheckForThreePartUnaryAction ( lineInfo, Grammar.VisibleDefaultClause,
+																		  Grammar.VisibleUnaryActionSymbol,
+																		  Grammar.HideUnaryActionSymbol,
+																		  PropertyType.VISIBLE ) )
+								continue;
+							if ( CheckForThreePartUnaryAction ( lineInfo, Grammar.EnabledDefaultClause,
+																		  Grammar.EnableUnaryActionSymbol,
+																		  Grammar.DisableUnaryActionSymbol,
+																		  PropertyType.ENABLED ) )
+								continue;
+
+						}
 						// or unary action
 						if ( lineInfo.Tokens.Count () == 2 )
 						{
 							if ( this._lineParser.IsAValidSentence ( lineInfo ) )
 							{
-								var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
-									lineInfo.Tokens.ElementAt ( 1 ).Token );
-								this._entities.Last ().AddUnaryAction ( _ua );
+								if ( !Grammar.Symbols.Contains ( lineInfo.Tokens.First ().Token ) &&
+									 Grammar.Symbols.Contains ( lineInfo.Tokens.Last ().Token ) )
+								{
+									var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
+										lineInfo.Tokens.First ().Token );
+									this._entities.Last ().AddUnaryAction ( _ua );
+									continue;
+								}
+								if ( Grammar.Symbols.Contains ( lineInfo.Tokens.First ().Token ) &&
+									 !Grammar.Symbols.Contains ( lineInfo.Tokens.Last ().Token ) )
+								{
+									var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+										lineInfo.Tokens.Last ().Token );
+									this._entities.Last ().AddUnaryAction ( _ua );
+									continue;
+								}
+								throw new InvalidLineFoundException ( String.Format ( Grammar.InvalidLineFoundExceptionDefaultTemplate, _currLine, line ) );
 							}
 							else
 								throw new InvalidLineFoundException ( String.Format ( Grammar.InvalidLineFoundExceptionDefaultTemplate, _currLine, line ) );
@@ -441,9 +479,7 @@ namespace BREadfruit
 						{
 							if ( lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause ) )
 							{
-								var _ua = new UnaryAction ( Grammar.MandatoryDefaultClause, this.Entities.Last ().Name );
-								this._entities.Last ().Rules.Last ().HasElseClause = _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK;
-								AddUnaryAction ( _ua, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
+								AddMandatoryUnaryAction ( _currentScope );
 								continue;
 							}
 						}
@@ -736,6 +772,39 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
+		private bool CheckForThreePartUnaryAction ( LineInfo lineInfo, Symbol symbolToCheck, Symbol ifTrueSymbol, Symbol ifFalseSymbol, PropertyType propertyType )
+		{
+			UnaryAction _ua = null;
+			if ( lineInfo.Tokens.ElementAt ( 1 ) == symbolToCheck )
+			{
+				if ( lineInfo.Tokens.Last () == Grammar.TrueSymbol )
+					_ua = new UnaryAction ( ifTrueSymbol, lineInfo.Tokens.ElementAt ( 0 ).Token );
+
+				if ( lineInfo.Tokens.Last () == Grammar.FalseSymbol )
+					_ua = new UnaryAction ( ifFalseSymbol, lineInfo.Tokens.ElementAt ( 0 ).Token );
+
+				_ua.Property = propertyType;
+				this._entities.Last ().AddUnaryAction ( _ua );
+				return true;
+			}
+			return false;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		private void AddMandatoryUnaryAction ( CurrentScope _currentScope )
+		{
+			var _ua = new UnaryAction ( Grammar.MandatoryDefaultClause, this.Entities.Last ().Name );
+			this._entities.Last ().Rules.Last ().HasElseClause = _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK;
+			AddUnaryAction ( _ua, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
 		private static ParameterizedResultAction ConfigureResultActionWithArguments ( LineInfo lineInfo )
 		{
 			// then it must be this sort of rule
@@ -760,11 +829,11 @@ namespace BREadfruit
 
 		private static ParameterizedResultAction ConfigureQueriedResultActionWithArguments ( LineInfo lineInfo )
 		{
-			 var _ = lineInfo.Tokens.IndexOf ( x => x ==  Grammar.WithQuerySymbol );
+			var _ = lineInfo.Tokens.IndexOf ( x => x == Grammar.WithQuerySymbol );
 
 			// then it must be this sort of rule
 			// load data from DATASOURCE.ACTIVE_CCs with arguments {"Country" : this.value} in DDLCDCompany
-			var _ra = new QueryResultAction ( lineInfo.Tokens.ElementAt(++_).Token.ReplaceFirstAndLastOnly("\""), Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
+			var _ra = new QueryResultAction ( lineInfo.Tokens.ElementAt ( ++_ ).Token.ReplaceFirstAndLastOnly ( "\"" ), Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
 					lineInfo.Tokens.ElementAt ( 1 ).Token, lineInfo.Tokens.Last ().Token );
 
 			// quite brittle this one here...
@@ -916,7 +985,7 @@ namespace BREadfruit
 		// ---------------------------------------------------------------------------------
 
 
-		private void ProcessUnaryAction ( LineInfo lineInfo, Symbol symbol, bool addToElseBranch = false )
+		private void ProcessUnaryAction ( LineInfo lineInfo, Symbol symbol, bool addToElseBranch = false, bool addToConditionlessActions = false )
 		{
 			if ( lineInfo.Tokens.Contains ( symbol ) )
 			{
@@ -927,7 +996,10 @@ namespace BREadfruit
 				else
 					_ua = new UnaryAction ( lineInfo.Tokens.Last (),
 						   lineInfo.Tokens.First ().Token == "this" ? this.Entities.First ().Name : lineInfo.Tokens.First ().Token );
-				this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
+				if ( !addToConditionlessActions )
+					this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
+				else
+					this._entities.Last ().AddUnaryAction ( _ua );
 			}
 		}
 
