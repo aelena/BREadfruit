@@ -669,7 +669,7 @@ Entity GD_Adr_Search is TextBox in frmMain
 		label LABELS.Search
 		max length 20
 		; put here the first 20 characters of the name (which in creations comes from search screen)
-		value SUBSTRING(GD_Adr_Name.Value,20)
+		value GD_Adr_Name.Value
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false

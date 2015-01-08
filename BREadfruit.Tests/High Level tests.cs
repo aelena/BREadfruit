@@ -905,7 +905,7 @@ namespace BREadfruit.Tests
 			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 0 ) ).Token == Grammar.AddValueActionSymbol );
 			Assert.IsTrue ( ( ( ResultAction ) e.ConditionlessActions.ElementAt ( 1 ) ).Token == Grammar.AddValueActionSymbol );
 
-			Assert.That ( e.ConditionlessActions.All ( x => x.Property == PropertyType.LABEL ) );
+			Assert.That ( e.ConditionlessActions.All ( x => x.Property == PropertyType.NOT_SET ) );
 
 		}
 

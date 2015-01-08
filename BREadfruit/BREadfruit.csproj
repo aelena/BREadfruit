@@ -78,6 +78,7 @@
     <Content Include="abnf_2.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="_documentation\Actions.cd" />
     <None Include="_documentation\General Class Diagram.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,14 +15,14 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABBAAAAAAAAAAgAEAAAAAAAAAAAAAAAAYAAgAAAAEAg=</HashCode>
+      <HashCode>ABBgAAAAAAAAAgAEAAAAAAACAABAAAAAYAAgAAAAEBg=</HashCode>
       <FileName>Grammar\DefaultClause.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BREadfruit.Symbol">
     <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAUgAEEEAEAAAAAAIAAABFAAAQBAiA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAUgAEEEAEAAAAAAIAAABFAAAQBAjA=</HashCode>
       <FileName>Symbol.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -40,7 +40,7 @@
       <Method Name="AddCondition" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>QAAIAAAAAAAAQAAEABAEAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <HashCode>QAAIAAAAAAACQAAEABAEAAAAAAAAABAAAAAAAAAAAQA=</HashCode>
       <FileName>Conditions\Rule.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -63,7 +63,7 @@
       <Property Name="SuffixLogicalOperator" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>ABAAghAAIAAQAAAEAAAAAAAAKAAMAAQAAAAgAAEAoAA=</HashCode>
+      <HashCode>ABACghBEMAAQAAAEAAAAAAAAKAAMAAQAAAAgAAEAoAA=</HashCode>
       <FileName>Conditions\Condition.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -74,14 +74,14 @@
   <Class Name="BREadfruit.Conditions.ResultAction">
     <Position X="17.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAQABQAAAYAAgAAAAAiA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEgAAAAAAAAAABQAAAAAAgAAAAAiA=</HashCode>
       <FileName>Conditions\ResultAction.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BREadfruit.Conditions.UnaryAction">
     <Position X="17.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAACAAAAAAAAEAAAAAAAAAAABQAAAAAAAAAAAAiQ=</HashCode>
+      <HashCode>AAAAAACAAAAAAAAEgAAAAAAAAAABQAAAAAAAAQAAAiQ=</HashCode>
       <FileName>Conditions\UnaryAction.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -109,9 +109,16 @@
       <Method Name="PopulateEntityTypes" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>NDF3ROYXqZ1HmHyrrbzHMIcAoAAwBEJgdCBZ20zqalI=</HashCode>
+      <HashCode>NHH3RuYXr/93u3yrvb3HsI8x7FIxXMJwdGjZ2tz+b1I=</HashCode>
       <FileName>Grammar\Grammar.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Enum Name="BREadfruit.Conditions.PropertyType" Collapsed="true">
+    <Position X="27.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAIAA=</HashCode>
+      <FileName>Conditions\UnaryAction.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
