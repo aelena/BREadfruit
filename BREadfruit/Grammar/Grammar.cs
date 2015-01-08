@@ -272,6 +272,9 @@ namespace BREadfruit
 		public const string AddRowToLineRegex = "^[\t\\s]*ADD_ROW[\t\\s]+(TO[\t\\s]+)?[A-Za-z0-9_-]+[\t\\s]+WITH_ARGS[\t\\s]+{[\t\\s]*(\"|'){1}[A-Za-z0-9-_\\.]*(\"|'){1}[\t\\s]*:[\t\\s]*(((\"|'){1}.*(\"|'){1})|[A-Za-z09_\\.-]+)[\t\\s]*}[\t\\s]*$";
 
 		public const string ClearValueLineRegex = @"^clear_element[\t\s]+([A-Za-z0-9'.'_])+[\t\s]*$";
+		public const string ToggleMandatoryLineRegex = @"^([A-Za-z0-9'.'_])+[\t\s]+MANDATORY(([\t\s]+TRUE)?(|[\t\s]*FALSE|[\t\s]*YES|[\t\s]*NO))?[\t\s]*$";
+		public const string ToggleEnableLineRegex = @"^([A-Za-z0-9'.'_])+[\t\s]+(ENABLE|ENABLED)(([\t\s]+TRUE)?(|[\t\s]*FALSE|[\t\s]*YES|[\t\s]*NO))?[\t\s]*$";
+		public const string ToggleVisibleLineRegex = @"^([A-Za-z0-9'.'_])+[\t\s]+VISIBLE(([\t\s]+TRUE)?(|[\t\s]*FALSE|[\t\s]*YES|[\t\s]*NO))?[\t\s]*$";
 
 		/// <summary>
 		/// Validates a line that instructs to change the current form shown
@@ -336,6 +339,8 @@ namespace BREadfruit
 		public const string MaxLengthLineRegex = @"^MAX_LENGTH[\t\s]+[0-9]+[\t\s]*$";
 		public const string MinLengthLineRegex = @"^MIN_LENGTH[\t\s]+[0-9]+[\t\s]*$";
 		public const string MandatoryLineRegex = @"^MANDATORY[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
+		public const string MandatoryOrNotLineRegex = @"^([A-Za-z0-9'.'_])+[\t\s]+(MANDATORY|(NOT[\t\s]+|NOT_)MANDATORY){1}[\t\s]*$";
+		public const string VisibleOrNotLineRegex = @"^([A-Za-z0-9'.'_])+[\t\s]+(VISIBLE|(NOT[\t\s]+|NOT_)VISIBLE){1}[\t\s]*$";
 		public const string EnabledLineRegex = @"^ENABLED[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
 		public const string VisibleLineRegex = @"^VISIBLE[\t' ']*((TRUE)?|FALSE|YES|NO)?[\t' ']*$";
 		public const string FreeValueLineRegex = "^VALUE[\t\\s]+(((\"|')(.*?)(\"|'))?|([A-Za-z0-9'.'_]+)?)[\t\\s]*$"; // ([\"'])(?:(?=(\\?))\2.)*?\1";
