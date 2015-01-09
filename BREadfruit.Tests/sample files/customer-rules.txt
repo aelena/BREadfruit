@@ -90,7 +90,7 @@ Entity TBCustomerNumber is TextBox in frmSearch
 	with rules
 		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
 		TBCustomerNumber.text starts with '0' then
-			set value MESSAGES.VALIDATIONS.SEARCH.NOTMANAGED in MESSAGE_POPUP
+			set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
 		TBCustomerNumber.text not starts with '0' then
 			set value '' in MESSAGE_POPUP
 
@@ -312,7 +312,7 @@ Entity btnSearch is Button in frmSearch
 		; this Company is deactivated for the moment
 		; DLCDCompany.Company is 563M and DDLCDCountry is empty or DDLCDCompany is empty then
 		;	; show this message : Fill fields Country and Company
-		;	set value MESSAGES.VALIDATIONS.SEARCH.FILL05 in MESSAGE_POPUP
+		;	set value MESSAGES.ERRCountryCompanyField in MESSAGE_POPUP
 
 
 	with triggers
@@ -946,7 +946,14 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 			max length 5
 			mandatory true 
 
-	
+		GD_Adr_CountryGD.Value is ES then
+			tooltip MESSAGES.ERRSpanishPC5
+
+		GD_Adr_CountryGD.Value is PT then
+			tooltip MESSAGES.ERRPortuguesePCFormat
+
+		GD_Adr_CountryGD.Value is IT then
+			tooltip MESSAGES.ERRItalianPC5
 
 ; ---------------------------------------------------------------------------- 
 
@@ -1320,7 +1327,7 @@ Entity F_GD_VF_Grid is Grid in frmMain
 Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 	with defaults
 		; move the tooltip text to the real dictionary
-		tooltip "the email is used generally for all the automatic communication with the supplier - e.g. payment advice"
+		tooltip MESSAGES.MSGEmailSupplier
 		label LABELS.labGD_VE_SmtpAddr
 		max length 241
 		mandatory true
