@@ -410,7 +410,7 @@ namespace BREadfruit
 							if ( CheckForThreePartUnaryAction ( lineInfo, Grammar.MandatoryDefaultClause,
 																		  Grammar.MakeMandatoryUnaryActionSymbol,
 																		  Grammar.MakeNonMandatoryUnaryActionSymbol,
-																		  PropertyType.MANDATORY) )
+																		  PropertyType.MANDATORY ) )
 								continue;
 							if ( CheckForThreePartUnaryAction ( lineInfo, Grammar.VisibleDefaultClause,
 																		  Grammar.VisibleUnaryActionSymbol,
@@ -434,6 +434,7 @@ namespace BREadfruit
 								{
 									var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
 										lineInfo.Tokens.First ().Token );
+									_ua.Property = MapToPropertyType ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
 									this._entities.Last ().AddUnaryAction ( _ua );
 									continue;
 								}
@@ -442,6 +443,7 @@ namespace BREadfruit
 								{
 									var _ua = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
 										lineInfo.Tokens.Last ().Token );
+									_ua.Property = MapToPropertyType ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ) );
 									this._entities.Last ().AddUnaryAction ( _ua );
 									continue;
 								}
@@ -766,6 +768,25 @@ namespace BREadfruit
 			return this.Entities;
 
 
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		private PropertyType MapToPropertyType ( Symbol s )
+		{
+			if ( s.In ( new Symbol [] { Grammar.MandatoryDefaultClause, Grammar.MakeMandatoryUnaryActionSymbol, Grammar.MakeNonMandatoryUnaryActionSymbol } ) )
+				return PropertyType.MANDATORY;
+			if ( s.In ( new Symbol [] { Grammar.VisibleUnaryActionSymbol, Grammar.NotVisibleUnaryActionSymbol, Grammar.VisibleDefaultClause } ) )
+				return PropertyType.VISIBLE;
+			if ( s.In ( new Symbol [] { Grammar.EnableUnaryActionSymbol, Grammar.EnabledDefaultClause } ) )
+				return PropertyType.ENABLED;
+
+			// TODO: add the rest....
+
+			// as default
+			return PropertyType.NOT_SET;
 		}
 
 

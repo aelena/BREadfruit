@@ -2195,11 +2195,22 @@ namespace BREadfruit.Tests
 
 			Assert.That ( e.ConditionlessActions.First ().Reference == "ATTACHMENT" );
 
+			Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).Reference == "COMMENT" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).Reference == "FIELD_A" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 3 ).Reference == "FIELD_B" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 4 ).Reference == "FIELD_C" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 5 ).Reference == "FIELD_D" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 6 ).Reference == "FIELD_E" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 7 ).Reference == "FIELD_F" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 8 ).Reference == "FIELD_G" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 9 ).Reference == "FIELD_H" );
+
+
 			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Value.ToString () == "32" );
 			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Reference == "GD_Adr_Street" );
 			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Token == Grammar.MaxlengthDefaultClause );
 
-
+			Assert.That ( e.ConditionlessActions.All ( x => x.Property != PropertyType.NOT_SET ), "There are NOT_SET props" );
 		}
 
 

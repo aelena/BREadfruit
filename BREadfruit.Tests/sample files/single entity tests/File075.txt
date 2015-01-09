@@ -8,9 +8,9 @@
 		ATTACHMENT mandatory
 		COMMENT mandatory false
 		FIELD_A visible false
-		FIELD_B visible
+	    FIELD_B visible
 		FIELD_C enabled false
-		
+		 
 		FIELD_D enabled
 		FIELD_E enable false
 		FIELD_F enable
