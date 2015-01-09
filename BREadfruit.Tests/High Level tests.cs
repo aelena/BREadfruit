@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DISABLECONSTRAINTS
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -47,7 +49,9 @@ namespace BREadfruit.Tests
 			Assert.That ( e.ConditionlessActions.Count () == 2 );
 			Assert.That ( e.ConditionlessActions.First ().ToString () == "hide btnCreateVendor" );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString () == "hide vendorSearchResultGrid" );
+#if !DISABLECONSTRAINTS
 			Assert.That ( e.Constraints.Count () == 0 );
+#endif
 			Assert.That ( e.Triggers.Count () == 1 );
 			Assert.That ( e.Triggers.First ().ToString () == "TBVendorName.value changed" );
 
@@ -96,7 +100,9 @@ namespace BREadfruit.Tests
 			Assert.That ( e.ConditionlessActions.Count () == 2 );
 			Assert.That ( e.ConditionlessActions.First ().ToString () == "hide btnCreateVendor" );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString () == "hide vendorSearchResultGrid" );
+#if !DISABLECONSTRAINTS
 			Assert.That ( e.Constraints.Count () == 0 );
+#endif
 			Assert.That ( e.Triggers.Count () == 1 );
 			Assert.That ( e.Triggers.First ().ToString () == "TBVendorCity.value changed" );
 
@@ -137,7 +143,9 @@ namespace BREadfruit.Tests
 			Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString () == "hide btnCreateVendor" );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).ToString () == "load_data_from DATASOURCE.WORLD_COUNTRIES" );
 			Assert.That ( e.Rules.Count () == 4 );
+#if !DISABLECONSTRAINTS
 			Assert.That ( e.Constraints.Count () == 0 );
+#endif
 			Assert.That ( e.Triggers.Count () == 1 );
 			Assert.That ( e.Triggers.First ().ToString () == "DDLVDCountry.value changed" );
 
@@ -184,13 +192,13 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.First ().Arguments.First ().Key == "\"Active\"" );
 			Assert.That ( e.Defaults.First ().Arguments.First ().Value == "true" );
 			Assert.That ( e.Defaults.First ().Arguments.Last ().Key == "\"Title\"" );
+			Assert.IsTrue ( e.Defaults.ElementAt ( 0 ).Token == Grammar.LoadDataDefaultClause );
 			Assert.That ( e.Defaults.First ().Arguments.Last ().Value == "\"Anything Goes\"" );
+#if !DISABLECONSTRAINTS
 			Assert.That ( e.Constraints.Count () == 1 );
 			Assert.That ( e.Constraints.First ().Name == "only_numbers" );
-
-			Assert.IsTrue ( e.Defaults.ElementAt ( 0 ).Token == Grammar.LoadDataDefaultClause );
 			Assert.IsTrue ( e.Constraints.ElementAt ( 0 ) == Grammar.OnlyNumbersConstraintSymbol );
-
+#endif
 
 
 		}
@@ -2240,7 +2248,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 0 ).Triggers.Count () == 1 );
 			Assert.That ( parser.Entities.ElementAt ( 0 ).Triggers.First ().Event == "changed" );
 			Assert.That ( parser.Entities.ElementAt ( 0 ).Triggers.First ().Target == "TBVendorName.value" );
-			Assert.That ( parser.Entities.ElementAt ( 0 ).Constraints.Count () == 0 );
 
 			// TBVendorCity
 			Assert.That ( parser.Entities.ElementAt ( 1 ).Name == "TBVendorCity" );
@@ -2250,7 +2257,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 1 ).ConditionlessActions.First ().ToString () == "hide btnCreateVendor" );
 			Assert.That ( parser.Entities.ElementAt ( 1 ).ConditionlessActions.Last ().ToString () == "hide vendorSearchResultGrid" );
 			Assert.That ( parser.Entities.ElementAt ( 1 ).Triggers.Count () == 1 );
-			Assert.That ( parser.Entities.ElementAt ( 1 ).Constraints.Count () == 0 );
 
 
 			Assert.That ( parser.Entities.ElementAt ( 2 ).Name == "TBVendorNumber" );
@@ -2270,7 +2276,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 2 ).Triggers.Count () == 1 );
 			Assert.That ( parser.Entities.ElementAt ( 2 ).Triggers.First ().Event == "changed" );
 			Assert.That ( parser.Entities.ElementAt ( 2 ).Triggers.First ().Target == "TBVendorNumber.value" );
-			Assert.That ( parser.Entities.ElementAt ( 2 ).Constraints.Count () == 1 );
 
 
 			Assert.That ( parser.Entities.ElementAt ( 3 ).Name == "TBVendorIFA" );
@@ -2280,7 +2285,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.Count () == 1 );
 			Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.First ().Event == "changed" );
 			Assert.That ( parser.Entities.ElementAt ( 3 ).Triggers.First ().Target == "TBVendorIFA.value" );
-			Assert.That ( parser.Entities.ElementAt ( 3 ).Constraints.Count () == 0 );
 
 
 			Assert.That ( parser.Entities.ElementAt ( 4 ).Name == "DDLVDCountry" );
@@ -2288,7 +2292,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 4 ).ConditionlessActions.Count () == 4 );
 			Assert.That ( parser.Entities.ElementAt ( 4 ).Rules.Count () == 4 );
 			Assert.That ( parser.Entities.ElementAt ( 4 ).Triggers.Count () == 1 );
-			Assert.That ( parser.Entities.ElementAt ( 4 ).Constraints.Count () == 0 );
 
 
 			Assert.That ( parser.Entities.ElementAt ( 5 ).Name == "TBVendorVAT" );
@@ -2296,7 +2299,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 5 ).ConditionlessActions.Count () == 2 );
 			Assert.That ( parser.Entities.ElementAt ( 5 ).Rules.Count () == 0 );
 			Assert.That ( parser.Entities.ElementAt ( 5 ).Triggers.Count () == 1 );
-			Assert.That ( parser.Entities.ElementAt ( 5 ).Constraints.Count () == 0 );
 
 
 			Assert.That ( parser.Entities.ElementAt ( 6 ).Name == "DDLCDCountry" );
@@ -2304,7 +2306,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 6 ).ConditionlessActions.Count () == 2 );
 			Assert.That ( parser.Entities.ElementAt ( 6 ).Rules.Count () == 0 );
 			Assert.That ( parser.Entities.ElementAt ( 6 ).Triggers.Count () == 1 );
-			Assert.That ( parser.Entities.ElementAt ( 6 ).Constraints.Count () == 0 );
 
 
 			Assert.That ( parser.Entities.ElementAt ( 7 ).Name == "DDLCDCompany" );
@@ -2312,7 +2313,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 7 ).ConditionlessActions.Count () == 1 );
 			Assert.That ( parser.Entities.ElementAt ( 7 ).Rules.Count () == 0 );
 			Assert.That ( parser.Entities.ElementAt ( 7 ).Triggers.Count () == 1 );
-			Assert.That ( parser.Entities.ElementAt ( 7 ).Constraints.Count () == 0 );
 
 
 			Assert.That ( parser.Entities.ElementAt ( 8 ).Name == "DDLCDPurchOrg" );
@@ -2320,7 +2320,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 8 ).ConditionlessActions.Count () == 0 );
 			Assert.That ( parser.Entities.ElementAt ( 8 ).Rules.Count () == 0 );
 			Assert.That ( parser.Entities.ElementAt ( 8 ).Triggers.Count () == 0 );
-			Assert.That ( parser.Entities.ElementAt ( 8 ).Constraints.Count () == 0 );
 
 
 			Assert.That ( parser.Entities.ElementAt ( 9 ).Name == "btnSearch" );
@@ -2328,7 +2327,6 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.ElementAt ( 9 ).ConditionlessActions.Count () == 2 );
 			Assert.That ( parser.Entities.ElementAt ( 9 ).Rules.Count () == 9 );
 			Assert.That ( parser.Entities.ElementAt ( 9 ).Triggers.Count () == 1 );
-			Assert.That ( parser.Entities.ElementAt ( 9 ).Constraints.Count () == 0 );
 
 		}
 

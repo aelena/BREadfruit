@@ -97,9 +97,6 @@ Entity TBCustomerNumber is TextBox in frmSearch
 	with triggers
 		this.value changes
 
-	with constraints
-		only numbers
-			
 ; ---------------------------------------------------------------------------- 
 
 Entity TBCustomerIFA is TextBox in frmSearch
@@ -3497,21 +3494,67 @@ Entity btnSubmit is Button in frmMain
 
 
 	with rules
+
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} then
+			this visible false
+		else
+			this visible true
+			this enable true
+
 		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			this visible false
+		
+		DDLDCReqAction is empty then
+			set value MESSAGES.ERRsubmitRequestAction in MESSAGE_POPUP
+		
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_CF is not empty and GD_Ctr_CF.Length < 9 then
+			set value MESSAGES.ERRsubmitRequestGDFieldCFShort in MESSAGE_POPUP
 
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
-			this enable false
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_CF is empty and REQUEST.REQUEST_TYPE is VC then
+			set value MESSAGES.ERRsubmitRequestGDFieldCFEmpty in MESSAGE_POPUP
 
 		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC and DDLDCComment.Value is empty then
-			set value ERRsubmitRequestComment in MESSAGE_POPUP
+			set value MESSAGES.ERRsubmitRequestComment in MESSAGE_POPUP
 
 		DDLDCComment.Value is not empty and DDLDCComment.Length > 2000 then 
-			set value ERRcommentLenght in MESSAGE_POPUP
+			set value MESSAGES.ERRcommentLenght in MESSAGE_POPUP
 
+		GD_Adr_Name is empty then
+			set value MESSAGES.ERRsubmitRequestGDfieldCName in MESSAGE_POPUP
+
+		GD_Adr_Street is empty then
+			set value MESSAGES.ERRsubmitRequestGDfieldCStreet in MESSAGE_POPUP
+
+		GD_Adr_Region is empty and GD_Adr_Region is mandatory then
+			set value MESSAGES.ERRsubmitRequestGDfieldCStreet in MESSAGE_POPUP
+
+		GD_Adr_City is empty then
+			set value MESSAGES.ERRsubmitRequestGDfieldCCity in MESSAGE_POPUP
+		
+		GD_Com_LanguageCode.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldLanguage in MESSAGE_POPUP	
+
+		GD_Adr_Country.Value is GR and GD_Adr_Name3.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldName3 in MESSAGE_POPUP
+		
+		GD_Adr_Country.Value is FR and GD_Adr_Name4.Value is empty and GD_Adr_Name4 is mandatory then
+			set value MESSAGES.ERRsubmitRequestGDFieldName4 in MESSAGE_POPUP
+					
 		GD_Adr_Country.Value is GR and GD_Adr_City2.Value is empty and GD_Adr_City2 is mandatory then
-			set value ERRsubmitRequestGDFieldDistrict in MESSAGE_POPUP
+			set value MESSAGES.ERRsubmitRequestGDfieldCSRegion in MESSAGE_POPUP
+
+		GD_Com_Telebox.Value is empty then
+			set value 'To submit the request fill all the mandatory fields: in General Data view the field Telebox is empty' in MESSAGE_POPUP
+
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YCT6, YVT6} and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsFieldMandatory and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} then
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1 in MESSAGE_POPUP			   
+
+		GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 then
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1Inv in MESSAGE_POPUP
+
+		REQUEST.COMPANY_CODE is 5240 and GD_Ctr_NIF.Value starts with {1,2} or GD_Ctr_TaxCode1 starts with {1,2} then
+			set label MESSAGES.MSGNiss in TBVendorVAT
 
 		; TODO: ValidateBankDetails
 

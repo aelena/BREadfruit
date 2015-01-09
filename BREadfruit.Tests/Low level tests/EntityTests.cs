@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DISABLECONSTRAINTS
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace BREadfruit.Tests.Low_level_tests
     [TestFixture]
     public class EntityTests
     {
+#if !DISABLECONSTRAINTS
         [TestCase ( "only_ascii", Result = true )]
         [TestCase ( "only_numbers", Result = true )]
         [TestCase ( "only_letters", Result = true )]
@@ -36,9 +38,10 @@ namespace BREadfruit.Tests.Low_level_tests
             Assert.That ( e.Constraints.Count () == 0 );
             return e.Constraints.First ().Name == constraintToken;
         }
+#endif
 
 
-        [TestCase ( "Entity XYZ is TextBox", Result = false )]
+		[TestCase ( "Entity XYZ is TextBox", Result = false )]
         [TestCase ( "Entity XYZ is TextBox in \"frmSearch\"", Result = true )]
         [TestCase ( "Entity XYZ is TextBox in 'frmSearch'", Result = true )]
         [TestCase ( "Entity XYZ is TextBox in frmSearch", Result = true )]

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DISABLECONSTRAINTS
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -77,8 +79,9 @@ namespace BREadfruit
         private IList<ResultAction> _resultactions;
         private IList<UnaryAction> _unaryactions;
         private IList<Trigger> _triggers;
+#if !DISABLECONSTRAINTS
         private IList<Constraint> _constraints;
-
+#endif
 
         public IEnumerable<Rule> Rules
         {
@@ -123,6 +126,7 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+#if !DISABLECONSTRAINTS
         public IEnumerable<Constraint> Constraints
         {
             get
@@ -130,7 +134,7 @@ namespace BREadfruit
                 return this._constraints;
             }
         }
-
+#endif
         
 		// ---------------------------------------------------------------------------------
 
@@ -155,7 +159,9 @@ namespace BREadfruit
             this._resultactions = new List<ResultAction> ();
             this._unaryactions = new List<UnaryAction> ();
             this._triggers = new List<Trigger> ();
+#if !DISABLECONSTRAINTS
             this._constraints = new List<Constraint> ();
+#endif
 			this.TextRepresentation = "";
         }
 
@@ -225,6 +231,7 @@ namespace BREadfruit
 
         // ---------------------------------------------------------------------------------
 
+#if !DISABLECONSTRAINTS
 
         public bool AddConstraint ( Constraint constraint )
         {
@@ -237,7 +244,7 @@ namespace BREadfruit
             else
                 throw new InvalidOperationException ( String.Format ( "Added wrong or unknown constraint type ('{0}')", constraint.Name ) );
         }
-
+#endif
         // ---------------------------------------------------------------------------------
 
 

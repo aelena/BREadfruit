@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DISABLECONSTRAINTS
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -79,6 +80,7 @@ namespace BREadfruit
 		{
 			return ParseRuleSet ( ruleSet.Split ( new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries ) );
 		}
+
 
 		// ---------------------------------------------------------------------------------
 
@@ -170,6 +172,7 @@ namespace BREadfruit
 					}
 					#endregion
 
+
 					#region " --- check for elses --- "
 
 					if ( lineInfo.Tokens.First ().Token.Equals ( Grammar.ElseSymbol.Token, StringComparison.InvariantCultureIgnoreCase ) )
@@ -191,6 +194,7 @@ namespace BREadfruit
 					}
 
 					#endregion
+
 
 					#region " --- rules block --- "
 					if ( _currentScope == CurrentScope.RULES_BLOCK )
@@ -746,13 +750,13 @@ namespace BREadfruit
 
 
 					#region " --- constraints block --- "
-
+#if !DISABLECONSTRAINTS
 					if ( _currentScope == CurrentScope.CONSTRAINTS_BLOCK )
 					{
 						// there should be only one token
 						this._entities.Last ().AddConstraint ( new Constraint ( lineInfo.Tokens.First ().Token ) );
 					}
-
+#endif
 					#endregion
 
 
@@ -1292,16 +1296,18 @@ namespace BREadfruit
 			var _4 = __testgenLine.FindAllMatching ( new Regex ( "TRIGGERS[\t\\s]*=[\t\\s]*[0-9]+" ) );
 			if ( _4.HasItems () )
 				__numOfTriggers = _4.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
-
+#if !DISABLECONSTRAINTS
 			var _5 = __testgenLine.FindAllMatching ( new Regex ( "CONSTRAINTS[\t\\s]*=[\t\\s]*[0-9]+" ) );
 			if ( _5.HasItems () )
 				__numOfConstraints = _5.First ().Split ( new [] { '=' }, StringSplitOptions.RemoveEmptyEntries ) [ 1 ].Trim ();
-
+#endif
 			__testBody.AppendFormat ( 3, "Assert.That ( e.Defaults.Count() == {0}, \"Should have '{0}' default clauses but has \" + e.Defaults.Count());", __numOfDefaults ).Append ( Environment.NewLine );
 			__testBody.AppendFormat ( 3, "Assert.That ( e.ConditionlessActions.Count() == {0}, \"Should have '{0}' Conditionless Actions but has \" + e.ConditionlessActions.Count());", __numOfActions ).Append ( Environment.NewLine );
 			__testBody.AppendFormat ( 3, "Assert.That ( e.Rules.Count() == {0}, \"Should have '{0}' Rules but has \" + e.Rules.Count());", __numOfRules ).Append ( Environment.NewLine );
 			__testBody.AppendFormat ( 3, "Assert.That ( e.Triggers.Count() == {0}, \"Should have '{0}' Triggers but has \" + e.Triggers.Count());", __numOfTriggers ).Append ( Environment.NewLine );
+#if !DISABLECONSTRAINTS
 			__testBody.AppendFormat ( 3, "Assert.That ( e.Constraints.Count() == {0}, \"Should have '{0}' Constraints but has \" + e.Constraints.Count());", __numOfConstraints ).Append ( Environment.NewLine );
+#endif
 
 			__testBody.Append ( "}", 2 ).Append ( Environment.NewLine );
 			__testBody.Append ( Environment.NewLine ).Append ( Environment.NewLine );

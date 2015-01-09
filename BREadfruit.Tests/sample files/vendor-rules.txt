@@ -76,7 +76,7 @@ Entity TBVendorCity is TextBox in frmSearch
 
 
 ; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, CONSTRAINTS=1,TRIGGERS=1
+; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, CONSTRAINTS=0,TRIGGERS=1
 
 Entity TBVendorNumber is TextBox in frmSearch
 	with defaults
@@ -99,9 +99,6 @@ Entity TBVendorNumber is TextBox in frmSearch
 			set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
 	with triggers
 		this.value changes
-
-	with constraints
-		only numbers
 			
 ; ----------------------------------------------------------------------------	
 
@@ -238,8 +235,13 @@ Entity btnSearch is Button in frmSearch
 
 	with actions
 		; TODO: missing defining arguments here...
+
+
 		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments {User : USER.USER_ID, Country : DDLCDCountry.Value, Company : DDLCDCompany.Value, PurchaseOrg : DDLCDPurchOrg.Value} in MESSAGE_POPUP
+		
 		load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
+		
+		
 		; this means the database has to be asked to see if current user has permissions for the selected combination
 		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
 		; show an error message or popup
@@ -372,7 +374,7 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 		enabled true
 		value "NG"
 		; values G  and NG
-		load data from DATASOURCE.labGD_Ctr_VendorClassification
+		; TODO: load data from DATASOURCE.labGD_Ctr_VendorClassification
 		mandatory true
 		label LABELS.labGD_Ctr_VendorClassification
 
@@ -402,7 +404,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		visible true
 		enabled true
 		value NORM
-		load data from DATASOURCE.BP_CLASSIFICATIONS
+		; TODO: load data from DATASOURCE.BP_CLASSIFICATIONS
 		mandatory true
 		label LABELS.labCC_AM_BPClassification
 
@@ -503,11 +505,11 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 		else
 			GD_NatP_Sex mandatory false 
 
-		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true
+		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true then
 			GD_Ctr_TaxCode1 mandatory true
 			GD_Ctr_TaxCode2 mandatory true
 
-		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is false
+		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is false then
 			GD_Ctr_TaxCode1 mandatory false
 			GD_Ctr_TaxCode2 mandatory false
 
@@ -3679,11 +3681,11 @@ Entity btnSubmit is Button in frmMain
 
 	with rules
 
-		REQUEST.REQUEST_STATE is CLOSED then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED}
 			this visible false
-
-		REQUEST.REQUEST_STATE is not CLOSED then
+		else
 			this visible true
+			this enable true
 
 		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3794,21 +3796,21 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Com_LanguageCode.Value is empty then
 			set value MESSAGES.ERRsubmitRequestGDFieldLanguage in MESSAGE_POPUP			   
 		
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Com_Telebox.Value is empty and REQUEST.VENDOR_COUNTRY is WF then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Com_Telebox.Value is empty and REQUEST.VENDOR_COUNTRY is not WF then
 			set value 'To submit the request fill all the mandatory fields: in General Data view the field Telebox is empty' in MESSAGE_POPUP			   
 		
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YCT6, YVT6} and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsFieldMandatory and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YCT6, YVT6} and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsFieldMandatory and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} then
 			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1 in MESSAGE_POPUP			   
 		
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 then
 			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1Inv in MESSAGE_POPUP			   
 		
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 and REQUEST.COMPANY_CODE is 5240 and GD_Ctr_NIF.Value starts with {1,2} then
-			; TODO: change label GD_Ctr_TaxCode2 to "NISS"
-			; TODO: change label GD_NatP_PlaceOfBirth to "Nº Employees"
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 and REQUEST.COMPANY_CODE is 5240 and GD_Ctr_NIF.Value starts with {1,2} then
+			set label MESSAGES.MSGNiss in GD_Ctr_TaxCode2
+			set label MESSAGES.MSGNEmployess in GD_NatP_PlaceOfBirth
 			set value MESSAGES.ERRsubmitRequestRHFieldOccasionalV in MESSAGE_POPUP
 		
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 and REQUEST.COMPANY_CODE is 5240 and GD_Ctr_NIF.Value starts with {1,2} and GD_Ctr_TaxCode2 is empty then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 and REQUEST.COMPANY_CODE is 5240 and GD_Ctr_NIF.Value starts with {1,2} and GD_Ctr_TaxCode2 is empty then
 			set value MESSAGES.ERRsubmitRequestGDFieldNISS in MESSAGE_POPUP
 
 		; TODO:                 if ( String.IsNullOrEmpty ( this.GD_NatP_PlaceOfBirth.Text ) || !int.TryParse ( this.GD_NatP_PlaceOfBirth.Text, out i ) )
