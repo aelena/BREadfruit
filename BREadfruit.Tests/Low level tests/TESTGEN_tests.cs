@@ -49,9 +49,31 @@ namespace BREadfruit.Tests.Low_level_tests
 		public void TESTGEN_test_04 ()
 		{
 			var parser = new Parser ();
-			var totalAutogenString = parser.CreateTestForEntities ( @"..\..\sample files\vendor-rules-simple.txt" );
+			var totalAutogenString = parser.CreateTestForEntities ( @"..\..\sample files\vendor-rules-simple.txt", "ExampleVendor" );
 
 			System.IO.File.WriteAllText ( @"..\..\autogen_tests\autogen.cs", totalAutogenString );
+
+			Assert.That ( totalAutogenString.IndexOf ( "[TestFixture]" ) > 0 );
+		}
+
+		[Test]
+		public void TESTGEN_test_05 ()
+		{
+			var parser = new Parser ();
+			var totalAutogenString = parser.CreateTestForEntities ( @"..\..\sample files\customer-rules.txt", "CustomerEntities" );
+
+			System.IO.File.WriteAllText ( @"..\..\autogen_tests\customer-autogen-tests.cs", totalAutogenString );
+
+			Assert.That ( totalAutogenString.IndexOf ( "[TestFixture]" ) > 0 );
+		}
+
+		[Test]
+		public void TESTGEN_test_06 ()
+		{
+			var parser = new Parser ();
+			var totalAutogenString = parser.CreateTestForEntities ( @"..\..\sample files\vendor-rules.txt", "VendorEntities" );
+
+			System.IO.File.WriteAllText ( @"..\..\autogen_tests\vendor-autogen-tests.cs", totalAutogenString );
 
 			Assert.That ( totalAutogenString.IndexOf ( "[TestFixture]" ) > 0 );
 		}
