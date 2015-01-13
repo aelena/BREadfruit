@@ -23,7 +23,7 @@
 
 ; ----------------------------------------------------------------------------
 
-
+; TESTGEN : DEFAULTS=4
 Entity rbSpiridon is RadioButton in frmSearch
 	with defaults
 		enabled false
@@ -32,6 +32,7 @@ Entity rbSpiridon is RadioButton in frmSearch
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=4
 Entity rbEPass is RadioButton in frmSearch
 	with defaults
 		enabled false
@@ -40,6 +41,7 @@ Entity rbEPass is RadioButton in frmSearch
 
 ; ----------------------------------------------------------------------------
 
+; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
 Entity TBCustomerName is TextBox in frmSearch
 	with defaults
 		label LABELS.labCustomerName
@@ -56,6 +58,7 @@ Entity TBCustomerName is TextBox in frmSearch
 		TBCustomerName.Value changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
 Entity TBCustomerCity is TextBox in frmSearch
 
 	with defaults
@@ -73,6 +76,7 @@ Entity TBCustomerCity is TextBox in frmSearch
 		TBCustomerName.Value changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, TRIGGERS=1
 Entity TBCustomerNumber is TextBox in frmSearch
 
 	with defaults
@@ -99,6 +103,7 @@ Entity TBCustomerNumber is TextBox in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, ACTIONS=3, RULES=2, TRIGGERS=1
 Entity TBCustomerIFA is TextBox in frmSearch
 
 	with defaults
@@ -119,6 +124,7 @@ Entity TBCustomerIFA is TextBox in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5, ACTIONS=5, RULES=4, TRIGGERS=1
 Entity DDLDCountry is DropDownList in frmSearch
 
 	with defaults
@@ -144,6 +150,7 @@ Entity DDLDCountry is DropDownList in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
 Entity TBCustomerVAT is TextBox in frmSearch
 
 	with defaults
@@ -160,6 +167,7 @@ Entity TBCustomerVAT is TextBox in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=6, ACTIONS=7, RULES=0, TRIGGERS=1
 Entity DDLCDCountry is DropDownList in frmSearch
 
 	with defaults
@@ -179,21 +187,18 @@ Entity DDLCDCountry is DropDownList in frmSearch
 		DDLCDDistribChannel visible true
 		hide btnCreateVendor
 
-
 	with triggers
 		this.value changes
 
-
-
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5	, ACTIONS=4, RULES=0, TRIGGERS=1
 Entity DDLCDCompany is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labCompany
 		mandatory true
 		value USER.COST_LOCATION_UNIT			; another data constant
-		mandatory true
 
 	with actions
 		; load active companies for this country
@@ -207,6 +212,7 @@ Entity DDLCDCompany is DropDownList in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5, ACTIONS=4, RULES=0, TRIGGERS=1
 Entity DDLCDSalesOrg is DropDownList in frmSearch
 
 	with defaults
@@ -228,6 +234,7 @@ Entity DDLCDSalesOrg is DropDownList in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
 Entity DDLCDDistribChannel is DropDownList in frmSearch
 
 	with defaults
@@ -243,6 +250,7 @@ Entity DDLCDDistribChannel is DropDownList in frmSearch
 		this.value changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, ACTIONS=0, RULES=3, TRIGGERS=0
 Entity DDLCDivision is DropDownList in frmSearch
 
 	with defaults
@@ -261,6 +269,7 @@ Entity DDLCDivision is DropDownList in frmSearch
 		
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, ACTIONS=2, RULES=8, TRIGGERS=1
 Entity btnSearch is Button in frmSearch
 
 	with defaults
@@ -317,6 +326,7 @@ Entity btnSearch is Button in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, ACTIONS=1, RULES=0, TRIGGERS=1
 Entity btnCreateCustomer is Button in frmSearch
 
 	with defaults
@@ -336,12 +346,14 @@ Entity btnCreateCustomer is Button in frmSearch
 		this click
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=2
 Entity LBLSearchResultMessage is Label in frmSearch
 
 	with defaults
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=2
 Entity CustomerSearchResultGrid is Grid in frmSearch
 	with defaults
 		visible false
@@ -540,6 +552,7 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ; ----------------------------------------------------------------------------
 
 
+; TESTGEN : DEFAULTS=3
 Entity labOpInfoCustomer is Label in frmMain
 
 	with defaults
@@ -549,6 +562,7 @@ Entity labOpInfoCustomer is Label in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3
 Entity labOpInfoCountry is Label in frmMain
 
 	with defaults
@@ -557,6 +571,7 @@ Entity labOpInfoCountry is Label in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3
 Entity labOpInfoCC is Label in frmMain
 
 	with defaults
@@ -565,6 +580,7 @@ Entity labOpInfoCC is Label in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3
 Entity labOpInfoSO is Label in frmMain
 
 	with defaults
@@ -573,6 +589,7 @@ Entity labOpInfoSO is Label in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3
 Entity labOpInfoDC is Label in frmMain
 
 	with defaults
@@ -581,6 +598,7 @@ Entity labOpInfoDC is Label in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5, RULES=5, ACTIONS=3, TRIGGERS=1
 Entity GD_Adr_Name is TextBox in frmMain
 
 	with defaults
@@ -607,6 +625,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 		this on change
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_Name2 is TextBox in frmMain
 
 	with defaults
@@ -630,6 +649,7 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=4
 Entity GD_Adr_Name3 is TextBox in frmMain
 
 	with defaults
@@ -647,6 +667,7 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 			this mandatory true
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=3
 Entity GD_Adr_Name4 is TextBox in frmMain
 
 	with defaults
@@ -660,6 +681,7 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 			this mandatory true
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5, RULES=2
 Entity GD_Adr_Search is TextBox in frmMain
 
 	with defaults
@@ -675,6 +697,7 @@ Entity GD_Adr_Search is TextBox in frmMain
 			
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=1
 Entity GD_Com_Comment is TextBox in frmMain
 
 	with defaults
@@ -685,6 +708,7 @@ Entity GD_Com_Comment is TextBox in frmMain
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5, RULES=3, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_Street is TextBox in frmMain
 
 	with defaults
@@ -705,6 +729,7 @@ Entity GD_Adr_Street is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_Street2 is TextBox in frmMain
 
 	with defaults
@@ -725,6 +750,7 @@ Entity GD_Adr_Street2 is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_Street3 is TextBox in frmMain
 
 	with defaults
@@ -745,6 +771,7 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_Street4 is TextBox in frmMain
 
 	with defaults
@@ -765,6 +792,7 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_Street5 is TextBox in frmMain
 
 	with defaults
@@ -781,6 +809,7 @@ Entity GD_Adr_Street5 is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5
 Entity GD_Adr_CountryGD is DropDownList in frmMain
 
 	with defaults
@@ -802,13 +831,20 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 
 ; TODO: I THINK THERE ARE MORE RULES
 
+; TESTGEN : DEFAULTS=4, RULES=11, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_Region is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labRegion
-		load data from DATASOURCE.MDM_Regions with arguments {"FlagActive" : true, "CountryCode" : REQUEST.VENDOR_COUNTRY }
+		load data from DATASOURCE.MDM_Regions with arguments {"FlagActive" : true, "CountryCode" : REQUEST.CUSTOMER_COUNTRY }
 
+	with actions
+		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
+		
 	with rules
+		REQUEST.Region_IsMandatory is true and REQUEST.REQUEST_TYPE is CC then
+			GD_Adr_Region mandatory true
+		
 		REQUEST.ACCOUNT_GROUP in {YCT1, YCT6, YCT9} then
 			GD_Adr_Region mandatory true
 
@@ -829,9 +865,22 @@ Entity GD_Adr_Region is DropDownList in frmMain
 
 		REQUEST.COUNTRY is FR then
 			this mandatory true
+
+		REQUEST.COUNTRY is BE and GD_Adr_Region.Value is 01 then
+			set value NL in GD_Com_LanguageCode
+
+		REQUEST.COUNTRY is BE and GD_Adr_Region.Value is not 01 then
+			set value FR in GD_Com_LanguageCode
+
+		REQUEST.REQUEST_TYPE is CC and REQUEST.COUNTRY in {BE, LU} then
+			this mandatory true
+			
+	with triggers
+		this changes
 			
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_City is TextBox in frmMain
 
 	with defaults
@@ -849,21 +898,25 @@ Entity GD_Adr_City is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=3, ACTIONS=1, TRIGGERS=1
 Entity GD_Adr_City2 is TextBox in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labDistrict
+		max length 35
 
 	with rules
-		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is GR then
+		REQUEST.CUSTOMER_COUNTRY is GR and REQUEST.COUNTRY is GR then
 			GD_Adr_City2 visible true
-
-		REQUEST.VENDOR_COUNTRY is GR and REQUEST.COUNTRY is not GR then
-			GD_Adr_City2 mandatory true
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
+
+		REQUEST.COUNTRY is GR and REQUEST.CUSTOMER_COUNTRY is not GR and REQUEST.REQUEST_TYPE is not CM_BLK then
+			GD_Adr_City2 visible true
+			GD_Adr_City2 mandatory true
+
 ; ---------------------------------------------------------------------------- 
 
 ;	"25-07-2014(RG): 1)By default maxlength = 10
@@ -883,6 +936,7 @@ Entity GD_Adr_City2 is TextBox in frmMain
 ;	region 01 -> must be >=1500 and <=3999 OR >=8000 and <=9999
 ;	region 02 -> must be >=1300 and <=1499 OR >=4000 and <=7999
 ;	region 03 -> must be >=1000 and <=1299"
+
 
 ; TODO: TERMINAR DE REVISAR TODAS LAS REGLAS EN CODIGO 
 
@@ -911,30 +965,30 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 			max length 8
 			validation ^[0-9]{4}-[0-9]{3}$
 
-		REQUEST.VENDOR_COUNTRY in {IT, GR} then
+		REQUEST.CUSTOMER_COUNTRY in {IT, GR} then
 			max length 5
 
-		REQUEST.VENDOR_COUNTRY is ES then
+		REQUEST.CUSTOMER_COUNTRY is ES then
 			max length 5
 			validation ^[0-5]{1}[1-2]{1}[0-9]{3}$
 
 		; post code must be >=1500 and <=3999 OR >=8000 and <=9999
 		; the regular expression covers the ranges
-		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 01 then
+		REQUEST.CUSTOMER_COUNTRY is BE and GD_Adr_Region is 01 then
 			max length 4
 			validation ^(1[5-9][0-9]{2}){1}|((2|3)[0-9]{3}){1}|((8|9)[0-9]{3})$
 		
 		; post code must be >=1300 and <=1499 OR >=4000 and <=7999
-		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 02 then
+		REQUEST.CUSTOMER_COUNTRY is BE and GD_Adr_Region is 02 then
 			max length 4
 			validation ^(1[3-4][0-9]{2}){1}|([4-7][0-9]{3})$
 
 		; post code must be >=1000 and <=1299
-		REQUEST.VENDOR_COUNTRY is BE and GD_Adr_Region is 03 then
+		REQUEST.CUSTOMER_COUNTRY is BE and GD_Adr_Region is 03 then
 			max length 4
 			validation ^(1[0-2][0-9]{2})$
 
-		REQUEST.VENDOR_COUNTRY in {FR, GF, GP, MC, MQ, NC, PF, PM, RE, WF, YT} then
+		REQUEST.CUSTOMER_COUNTRY in {FR, GF, GP, MC, MQ, NC, PF, PM, RE, WF, YT} then
 			max length 5
 			validation ^[0-9]{5}$
 			set value substring(GD_Adr_PostalCode,2) in GD_Adr_Region
@@ -951,6 +1005,13 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 
 		GD_Adr_CountryGD.Value is IT then
 			tooltip MESSAGES.ERRItalianPC5
+
+		; SPAIN or ANDORRA
+		REQUEST.CUSTOMER_COUNTRY in {ES,AD} and REQUEST.REQUEST_TYPE in {CC, CC_CC} and GD_Adr_PostalCode.Value.Length >= 2 then
+			load data from DATASOURCES.SelectAccountingClerkByPostCodeAndSalesArea with arguments {} in CC_CO_AccountingClerk
+		
+	with triggers
+		this changes
 
 ; ---------------------------------------------------------------------------- 
 
@@ -972,11 +1033,11 @@ Entity GD_Adr_POBox is TextBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 			
-		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is not empty then
+		REQUEST.CUSTOMER_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is not empty then
 			GD_Adr_POBoxPostalCode mandatory true
 			GD_Adr_POBoxLoc mandatory true
 
-		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is empty then
+		REQUEST.CUSTOMER_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is empty then
 			GD_Adr_POBoxPostalCode mandatory false
 			GD_Adr_POBoxLoc mandatory false
 
@@ -1100,7 +1161,7 @@ Entity GD_Com_DataLine is TextBox in frmMain
 Entity P_GD_VT_Country is DropDownList in frmMain
 	with defaults
 		load data from DATASOURCE.MDMC_Countries
-		value REQUEST.VENDOR_COUNTRY
+		value REQUEST.CUSTOMER_COUNTRY
 		mandatory true
 	
 	with actions
@@ -1216,7 +1277,7 @@ Entity P_GD_VT_Grid is Grid in frmMain
 Entity F_GD_VF_Country is DropDownList in frmMain
 	with defaults
 		load data from DATASOURCE.MDMC_Countries
-		value REQUEST.VENDOR_COUNTRY
+		value REQUEST.CUSTOMER_COUNTRY
 
 	with actions
 		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
@@ -1368,7 +1429,7 @@ Entity E_GD_VE_ConsNumber is TextBox in frmMain
 
 Entity E_GD_VE_btnInsert is Button in frmMain
 	with defaults
-		label LABELS.labIinsert
+		label LABELS.labInsert
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this visible false		
@@ -1421,7 +1482,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		visible true
 		label LABELS.labIndustries
 		; if there are no specific data for this specific country, data for "EN" should be loaded
-		load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
+		load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : REQUEST.CUSTOMER_COUNTRY}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -1531,6 +1592,7 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 	with triggers 
 		on change
 		B_GD_VB_Country changes
+
 ; ---------------------------------------------------------------------------- 
 
 Entity B_GD_VB_BankAccount is TextBox in frmMain
@@ -1546,7 +1608,7 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 			max length 11
 		else
 			max length 18
-		B_GD_VB_Country.Value is BE and GD_VB_BankAccount.Length >= 3 then
+		B_GD_VB_Country.Value is BE and GD_VB_BankAccount.Value.Length >= 3 then
 			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
 	with actions
 		ATTACHMENT mandatory  true  
@@ -1668,7 +1730,7 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this visible false	
 			this visible false
-		REQUEST.COUNTRY is IT and B_GD_VB_Country.Value is IT and B_GD_VB_SWIFT.Length is not 11 then
+		REQUEST.COUNTRY is IT and B_GD_VB_Country.Value is IT and B_GD_VB_SWIFT.Value.Length is not 11 then
 			set value MESSAGES.ERRfieldSWIFT in MESSAGE_POPUP
 		B_GD_VB_IBAN is empty and B_GD_VB_BankAccount is empty then
 			set value MESSAGES.ERRfieldIban in MESSAGE_POPUP
@@ -1748,6 +1810,9 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 
 		REQUEST.CUSTOMER_COUNTRY in {FR, GF, GP, RE, MQ, YT} then
 			this visible true
+
+	with triggers
+		this changes
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_PIVA is TextBox in frmMain
@@ -1810,6 +1875,7 @@ Entity GD_Ctr_VendorNumber is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
+
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_IFANumber is TextBox in frmMain
@@ -1862,7 +1928,8 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 		
 		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
 			this mandatory false
-			; ---------------------------------------------------------------------------- 
+	
+; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 
@@ -1901,6 +1968,8 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 	with defaults
 		label LABELS.labVATRegistrationNumber
 	with rules
+		REQUEST.VAT_IsMandatory is true and REQUEST.REQUEST_TYPE is CC then
+			this mandatory true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.COUNTRY is IT then
@@ -2131,16 +2200,16 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 		REQUEST.COUNTRY is FR and CC_PT_PaymentMethods.Value in {M, A} then
 			B_GD_VB_BankKey mandatory true
 
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is ES and REQUEST.VENDOR_COUNTRY is ES then
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is ES and REQUEST.CUSTOMER_COUNTRY is ES then
 			set value G in CC_PT_PaymentMethods
 
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is ES and REQUEST.VENDOR_COUNTRY is not ES then
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is ES and REQUEST.CUSTOMER_COUNTRY is not ES then
 			set value Y in CC_PT_PaymentMethods
 
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY is FR then
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is FR and REQUEST.CUSTOMER_COUNTRY is FR then
 			set value G in CC_PT_PaymentMethods
 
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY is not FR then
+		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {CM, CM_BLK} and REQUEST.COUNTRY is FR and REQUEST.CUSTOMER_COUNTRY is not FR then
 			set value Y in CC_PT_PaymentMethods
 
 ; ---------------------------------------------------------------------------- 
@@ -2266,7 +2335,7 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 		REQUEST.COUNTRY is LU then
 			set value Y203 in CC_DD_DunningProcedure
 
-		REQUEST.VENDOR_COUNTRY is GR then
+		REQUEST.CUSTOMER_COUNTRY is GR then
 			set value Y704 in CC_DD_DunningProcedure
 
 		; TODO: ;5)specific rules for company 5140 see attachemnt RulesDunningArea5140 and sheet ""Dunning Procedure"" in sheet “Other documents”
@@ -2558,10 +2627,10 @@ Entity SO_CustomerShippingConditions is DropDownList in frmMain
 		REQUEST.COUNTRY is GR then
 			set value 21 in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is ES and REQUEST.VENDOR_COUNTRY is ES then
+		REQUEST.COUNTRY is ES and REQUEST.CUSTOMER_COUNTRY is ES then
 			set value 31 in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is ES and REQUEST.VENDOR_COUNTRY is not ES then
+		REQUEST.COUNTRY is ES and REQUEST.CUSTOMER_COUNTRY is not ES then
 			set value 33 in SO_CustomerShippingConditions
 
 ; ---------------------------------------------------------------------------- 
@@ -2839,13 +2908,13 @@ Entity SO_TaxClassification is DropDownList in frmMain
 		SO_TaxClassification.Value is empty then
 			set value 1 in SO_TaxClassification
 
-		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is PT then
+		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.CUSTOMER_COUNTRY is PT then
 			set value 1 in SO_TaxClassification
 
-		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is not PT REQUEST.IsEU is true then
+		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.CUSTOMER_COUNTRY is not PT REQUEST.IsEU is true then
 			set value B in SO_TaxClassification
 
-		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is not PT and REQUEST.IsEU is false then
+		REQUEST.REQUEST_TYPE is not CM_BLK and REQUEST.COUNTRY is PT and REQUEST.CUSTOMER_COUNTRY is not PT and REQUEST.IsEU is false then
 			set value A in SO_TaxClassification
 
 		REQUEST.COUNTRY is FR then
@@ -2876,7 +2945,7 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 	with defaults
 		visible false
 		label LABELS.labCreditControlGroups
-		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { "FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
+		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { "CompanyCode" : REQUEST.COMPANY_CODE}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
@@ -2891,7 +2960,14 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 
 		REQUEST.COMPANY_CODE in {5140,491E} then
 			this mandatory false	
-			
+		
+		; TODO: WHAT IS THIS DISCREPANCY	
+		REQUEST.REQUEST_TYPE in {CC, CC_SO} then
+			load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
+
+		REQUEST.ACCOUNT_GROUP in {YCT6,YVT6,YCT9,YVT9} and GD_Adr_PostalCode.Value.Length >= 2 then
+			load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
+
 ; ---------------------------------------------------------------------------- 
 
 Entity KNVV_KVGR1 is DropDownList in frmMain
@@ -3508,7 +3584,7 @@ Entity btnSubmit is Button in frmMain
 		DDLDCReqAction is empty then
 			set value MESSAGES.ERRsubmitRequestAction in MESSAGE_POPUP
 		
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_CF is not empty and GD_Ctr_CF.Length < 9 then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_CF is not empty and GD_Ctr_CF.Value.Length < 9 then
 			set value MESSAGES.ERRsubmitRequestGDFieldCFShort in MESSAGE_POPUP
 
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_CF is empty and REQUEST.REQUEST_TYPE is VC then
@@ -3517,7 +3593,7 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC and DDLDCComment.Value is empty then
 			set value MESSAGES.ERRsubmitRequestComment in MESSAGE_POPUP
 
-		DDLDCComment.Value is not empty and DDLDCComment.Length > 2000 then 
+		DDLDCComment.Value is not empty and DDLDCComment.Value.Length > 2000 then 
 			set value MESSAGES.ERRcommentLenght in MESSAGE_POPUP
 
 		GD_Adr_Name is empty then
@@ -3550,11 +3626,12 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YCT6, YVT6} and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsFieldMandatory and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} then
 			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1 in MESSAGE_POPUP			   
 
-		GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Length < 9 then
+		GD_Adr_Country.Value is PT and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Value.Length < 9 then
 			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1Inv in MESSAGE_POPUP
 
 		REQUEST.COMPANY_CODE is 5240 and GD_Ctr_NIF.Value starts with {1,2} or GD_Ctr_TaxCode1 starts with {1,2} then
 			set label MESSAGES.MSGNiss in TBVendorVAT
+
 
 		; TODO: ValidateBankDetails
 
@@ -3563,6 +3640,7 @@ Entity btnSubmit is Button in frmMain
 	with triggers
 
 		this on click
+	
 
 ; ---------------------------------------------------------------------------- 
 
@@ -3634,7 +3712,7 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		value USER.COUNTRY				; -- depends on country selected in search form, so this data has to be passed
 		load data from DATASOURCE.MDMC_Countries
 		mandatory true
-		label LABELS.labGD_GD_Adr_Country
+		label LABELS.labGD_Adr_Country
 
 	with rules
 		GD_Adr_Country.Value is ES and GD_Ctr_VendorClassification is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S,U} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is CC then
