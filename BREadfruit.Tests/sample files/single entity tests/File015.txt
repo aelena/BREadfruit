@@ -1,6 +1,6 @@
 ﻿; small file to test for change form to instructions
 Entity TBVendorCity is TextBox in frmSearch
 	with actions
-		change form to "frmMain"
-		change form to frmMain
-		change form to "frmMain" with arguments {"ARG1" : "hello world"}
+		change to "frmMain"
+		change to frmMain
+		change to "frmMain" with arguments {"ARG1" : "hello world"}

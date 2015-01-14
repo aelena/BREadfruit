@@ -124,7 +124,7 @@ namespace BREadfruit
 						_currentScope = CurrentScope.RULES_BLOCK;
 
 
-					if ( lineInfo.Tokens.Contains ( Grammar.ReturnSymbol ) && _currentScope == CurrentScope.RULES_BLOCK )
+					if ( lineInfo.Tokens.Contains ( Grammar.ReturnSymbol ) && _currentScope.In ( new [] { CurrentScope.RULES_BLOCK, CurrentScope.CONDITION_ACTIONS_BLOCK, CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK } ) )
 						this._entities.Last ().Rules.Last ().IsFinalRule = true;
 
 					#region " --- entity block --- "

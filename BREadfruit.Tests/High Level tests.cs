@@ -537,9 +537,9 @@ namespace BREadfruit.Tests
 			Assert.That ( parser.Entities.Count () == 1 );
 			var e = parser.Entities.First ();
 			Assert.That ( e.ConditionlessActions.Count () == 3 );
-			Assert.That ( e.ConditionlessActions.First ().ToString ().Equals ( "change_form_to \"frmMain\"" ) );
-			Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString ().Equals ( "change_form_to frmMain" ) );
-			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).ToString ().Equals ( "change_form_to \"frmMain\" this" ) );
+			Assert.That ( e.ConditionlessActions.First ().ToString ().Equals ( "change_to \"frmMain\"" ) );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 1 ).ToString ().Equals ( "change_to frmMain" ) );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).ToString ().Equals ( "change_to \"frmMain\" this" ) );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 2 ).IsResultAction );
 			Assert.That ( ( ( ParameterizedResultAction ) e.ConditionlessActions.ElementAt ( 2 ) ).Arguments.Count () == 1 );
 

@@ -2,4 +2,10 @@
 
 	with rules
 		
-		
+		; if the user is not in role and is not also deputy then
+		DATASOURCE.IsUserInROLE with arguments { UserAccount : USER.USER_ACCOUNT, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value, IsIndirectMaterial : REQUEST.IS_INDIRECT_MATERIAL } is false AND DATASOURCE.CanProcessAsDeputy with arguments { UserAccount : USER.USER_ACCOUNT, RequestID : REQUEST.REQUEST_ID} is false then
+			set value 'You are not authorized to edit this request' in MESSAGE_POPUP
+		ELSE
+			
+
+			

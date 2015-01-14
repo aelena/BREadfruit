@@ -281,7 +281,7 @@ namespace BREadfruit
 		/// This is when there are no arguments to pass to the second form
 		///  
 		/// </summary>
-		public const string ChangeFormNoArgumentsLineRegex = "^CHANGE_FORM_TO[\t\\s]+(((\"|')?(([A-Za-z0-9'.'_])+(\"|')?)){1}|((\"|'){1}(([A-Za-z0-9'.'_\\s])+(\"|'){1})){1})[\t\\s]*$";
+		public const string ChangeFormNoArgumentsLineRegex = "^CHANGE_TO[\t\\s]+(((\"|')?(([A-Za-z0-9'.'_])+(\"|')?)){1}|((\"|'){1}(([A-Za-z0-9'.'_\\s])+(\"|'){1})){1})[\t\\s]*$";
 
 		/// <summary>
 		/// Regular expression to validate a substring expression.
@@ -468,7 +468,7 @@ namespace BREadfruit
 		public static UnaryAction ClearValueUnaryActionSymbol = new UnaryAction ( "clear_element", 2, true, new [] { "clear element", "clear" } );
 		public static UnaryAction LoadDataUnaryActionSymbol = new UnaryAction ( "load_data_from", 2, true, new [] { "load data from" } );
 		public static UnaryAction SaveDataUnaryActionSymbol = new UnaryAction ( "save_data_to", 2, true, new [] { "save data to" } );
-		public static UnaryAction ChangeFormUnaryActionSymbol = new UnaryAction ( "change_form_to", 2, true, new [] { "change form to" } );
+		public static UnaryAction ChangeFormUnaryActionSymbol = new UnaryAction ( "change_to", 2, true, new [] { "change to" } );
 		public static UnaryAction SetValidationRegexUnaryActionSymbol = new UnaryAction ( "validation_regex", 2, true, new [] { "validation regex", "validation" } );
 
 		public static UnaryAction AddRowUnaryActionSymbol = new UnaryAction ( "add_row", 2, true, new [] { "add row to", "add row" } );
