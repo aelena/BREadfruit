@@ -1360,6 +1360,10 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Triggers.ElementAt ( 2 ).Event == Grammar.RowUpdatedEventSymbol );
 			Assert.That ( e.Triggers.ElementAt ( 2 ).Target == e.Name );
 
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Token == Grammar.LoadDataDefaultClause.Token );
+			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Token == Grammar.LoadDataDefaultClause.Token );
+
 		}
 
 
@@ -2219,6 +2223,96 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Token == Grammar.MaxlengthDefaultClause );
 
 			Assert.That ( e.ConditionlessActions.All ( x => x.Property != PropertyType.NOT_SET ), "There are NOT_SET props" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile076 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File076 - New btnSearch.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "btnSearch", "Entity name should be 'btnSearch' but is " + e.Name );
+			Assert.That ( e.Defaults.Count () == 3, "should have 3 defaults but has " + e.Defaults.Count () );
+			Assert.That ( e.ConditionlessActions.Count () == 0, "should have 0 actions but has " + e.ConditionlessActions.Count () );
+
+			Assert.That ( e.Rules.Count () == 1 );
+			Assert.IsTrue ( e.Rules.First ().HasElseClause );
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Last ().Else.Count () == 8 );
+
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Last ().Else.Last () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 0 ).Conditions.Last ().Else.Last () ).Arguments.Count () == 10 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 0 ).Conditions.Last ().Else.Last () ).OutputArguments == null );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 0 ).Conditions.Last ().Else.Last () ).Reference == "vendorSearchResultGrid" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
+		[Test]
+		public void ParseSampleFile077 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File077 - Load revised.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "btnSearch", "Entity name should be 'btnSearch' but is " + e.Name );
+			Assert.That ( e.Defaults.Count () == 3, "should have 3 defaults but has " + e.Defaults.Count () );
+
+			Assert.That ( e.Rules.Count () == 6 );
+			Assert.IsTrue ( e.Rules.All ( x => x.HasElseClause == true ) );
+
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Last ().ResultActions.First ().Token == Grammar.LoadDataSymbol.Token );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Token == Grammar.LoadDataSymbol.Token );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First ().Token == Grammar.LoadDataSymbol.Token );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.First ().Token == Grammar.LoadDataSymbol.Token );
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First ().Token == Grammar.LoadDataSymbol.Token );
+
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Last ().Else.First ().Token == Grammar.LoadDataSymbol.Token );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().Else.First ().Token == Grammar.LoadDataSymbol.Token );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().Else.First ().Token == Grammar.LoadDataSymbol.Token );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().Else.First ().Token == Grammar.LoadDataSymbol.Token );
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().Else.First ().Token == Grammar.LoadDataSymbol.Token );
+
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First () ).Arguments == null );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 2 ).Conditions.Last ().ResultActions.First () ).OutputArguments.Count () == 2 );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().Else.First () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 2 ).Conditions.Last ().Else.First () ).Arguments == null );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 2 ).Conditions.Last ().Else.First () ).OutputArguments.Count () == 2 );
+
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.First () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.First () ).Arguments.Count () == 2 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 3 ).Conditions.Last ().ResultActions.First () ).OutputArguments.Count () == 2 );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().Else.First () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 3 ).Conditions.Last ().Else.First () ).Arguments.Count () == 2 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 3 ).Conditions.Last ().Else.First () ).OutputArguments.Count () == 2 );
+
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First () ).Arguments.Count () == 2 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First () ).OutputArguments == null );
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().Else.First () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 4 ).Conditions.Last ().Else.First () ).Arguments.Count () == 2 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 4 ).Conditions.Last ().Else.First () ).OutputArguments == null );
+
+			Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First () ).Arguments.Count () == 2 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First () ).OutputArguments == null );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First () ).Reference == "XXXX" );
+			Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().Else.Last () is ParameterizedResultAction );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 5 ).Conditions.Last ().Else.Last () ).Arguments.Count () == 2 );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 5 ).Conditions.Last ().Else.Last () ).OutputArguments == null );
+			Assert.That ( ( ( ParameterizedResultAction ) e.Rules.ElementAt ( 5 ).Conditions.Last ().Else.Last () ).Reference == "XXXX" );
+
 		}
 
 

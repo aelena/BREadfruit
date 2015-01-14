@@ -224,7 +224,7 @@ Entity DDLCDSalesOrg is DropDownList in frmSearch
 		; load active companies for this country
 		; this means the current ìmplementation needs to change a bit...
 		; TODO: REORGANIZE THE TABLE TO REFLECT THIS CHANGES IN TEH VALUES LOADED IN THIS DIST CHANNEL COMBO ISNTEAD OF REMOVING BY CODE
-		load data from DATASOURCE.MDMC_ClusterDistributionChannels with arguments {"FlagActive": true, "Country" : DDLCDCountry.Value} in DDLCDDistribChannel 
+		load data from DATASOURCE.MDMC_ClusterDistributionChannels with arguments {"FlagActive": true, "Code" : DDLCDCountry.Value} in DDLCDDistribChannel 
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
 		hide btnCreateVendor
@@ -239,7 +239,7 @@ Entity DDLCDDistribChannel is DropDownList in frmSearch
 
 	with defaults
 		label LABELS.labDistribChannel
-		load data from DATASOURCE.MDMC_ClusterDistributionChannels with arguments {Country: DDLCDCountry.Value, Company:DDLCDCompany.Value, SalesOrg:DDLCDSalesOrg.Value}
+		load data from DATASOURCE.SelectDistributionChannels with arguments {countrycode : DDLCDCountry.Value, companycode :DDLCDCompany.Value, salesorgcode :DDLCDSalesOrg.Value}
 
 	with actions
 		hide CustomerSearchResultGrid
@@ -269,56 +269,50 @@ Entity DDLCDivision is DropDownList in frmSearch
 		
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, ACTIONS=2, RULES=8, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, ACTIONS=0, RULES=8, TRIGGERS=1
 Entity btnSearch is Button in frmSearch
 
 	with defaults
 		label LABELS.btnSearch
 
-	with actions
-		; TODO: CHECK LATER ON
-		
-		load data from DATASOURCE.USER_HAS_PERMISSIONS with arguments { User : USER.USER_ID, Country : DDLCDCountry.Value, Company : DDLCDCompany.Value, SalesOrganization : DDLCDSalesOrg.Value} in MESSAGE_POPUP
-		load data from WEBSERVICE.CUSTOMER_SEARCH_SERVICE with arguments {CustomerName:TBCustomerName.Value, CustomerCity:TBCustomerCity, CustomerNumber:TBCustomerNumber.Value, CustomerCountry:DDLVDCountry.Value,TaxCode1:TBCustomerVAT.Value,TaxCode4:TBCustomerIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in CustomerSearchResultGrid
-
-		; this means the database has to be asked to see if current user has permissions for the selected combination
-		; of COUNTRY + COMPANY + PURCHASE ORG. If the user has permission, then go ahead, but if not
-		; show an error message or popup
-		; maybe this has to be defined a bit better
-		; would this be DATASOURCE or maybe WEBSERVICE call?
-		; what properties should be passed to identify the user? or shall this be somehow managed or injected by environment?
-		
 	with rules
 
-		TBCustomerIFA.value is not empty then DDLDCountry mandatory
+		; yes, teh function defines the last parameter as ClusterPOCode, not ClusterSOCode, so this is right
+		DATASOURCE.IsUserInROLE with arguments { UserAccount : USER.USER_ACCOUNT, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value } is false then
+			set value 'XXXXXXXXXXXXXXXXXX' in MESSAGE_POPUP
+		else
 
-		DDLDCountry is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			TBCustomerIFA.value is not empty then DDLDCountry mandatory
+
+			DDLDCountry is empty then
+				set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 		
-		TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty then
+				set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 	
-		TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in MESSAGE_POPUP
+			TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
+				set value MESSAGES.VALIDATIONS.SEARCH.FILL02 in MESSAGE_POPUP
 		
-		TBCustomerName is empty and TBCustomerCity is not empty and TBCustomerName is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			TBCustomerName is empty and TBCustomerCity is not empty and TBCustomerName is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
+				set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 	
-		DDLCDCountry is empty or DDLCDCompany is empty or DDLCDSalesOrg is empty then
-			; message: Fill fields Country, Company and Sales Organization
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in MESSAGE_POPUP
+			DDLCDCountry is empty or DDLCDCompany is empty or DDLCDSalesOrg is empty then
+				; message: Fill fields Country, Company and Sales Organization
+				set value MESSAGES.VALIDATIONS.SEARCH.FILL03 in MESSAGE_POPUP
 		
-		TBCustomerName is not empty and DDLDCountry is empty then
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			TBCustomerName is not empty and DDLDCountry is empty then
+				set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 
-		DDLCDivision is visible and DDLCDivision is empty then
-			; show this message : Fill the field of Division Country
-			set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			DDLCDivision is visible and DDLCDivision is empty then
+				; show this message : Fill the field of Division Country
+				set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
 
-		; this Company is deactivated for the moment
-		; DLCDCompany.Company is 563M and DDLCDCountry is empty or DDLCDCompany is empty then
-		;	; show this message : Fill fields Country and Company
-		;	set value MESSAGES.ERRCountryCompanyField in MESSAGE_POPUP
+			; this Company is deactivated for the moment
+			; DLCDCompany.Company is 563M and DDLCDCountry is empty or DDLCDCompany is empty then
+			;	; show this message : Fill fields Country and Company
+			;	set value MESSAGES.ERRCountryCompanyField in MESSAGE_POPUP
+
+			load data from WEBSERVICE.CUSTOMER_SEARCH_SERVICE with arguments {CustomerName:TBCustomerName.Value, CustomerCity:TBCustomerCity, CustomerNumber:TBCustomerNumber.Value, CustomerCountry:DDLVDCountry.Value,TaxCode1:TBCustomerVAT.Value,TaxCode4:TBCustomerIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in CustomerSearchResultGrid
 
 
 	with triggers
@@ -940,28 +934,29 @@ Entity GD_Adr_City2 is TextBox in frmMain
 
 ; TODO: TERMINAR DE REVISAR TODAS LAS REGLAS EN CODIGO 
 
+; TESTGEN : DEFAULTS=5, RULES=15, ACTIONS=0, TRIGGERS=1
+
 Entity GD_Adr_PostalCode is TextBox in frmMain
 
 	with defaults
 		label LABELS.labPostalCode
 		mandatory true
-		max length 5
+		max length 10
 
 	with rules
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 		
-		;	IF vendor country belongs to YVT1/YVT2 -> Maxlength = 4 (only numbers - Format: XXXX)
-		REQUEST.ACCOUNT_GROUP in {YVT1, YVT2} then
+		REQUEST.ACCOUNT_GROUP in {YCT1, YCT2} then
 			max length 4
 			validation ^[0-9]{4}$
 
-		REQUEST.ACCOUNT_GROUP in {YVT3, YVT5, YVT7} then
+		REQUEST.ACCOUNT_GROUP in {YCT3, YCT5, YCT7} then
 			max length 5
 			validation ^[0-9]{5}$
 
-		REQUEST.ACCOUNT_GROUP is YVT4 then
+		REQUEST.ACCOUNT_GROUP is YCT4 then
 			max length 8
 			validation ^[0-9]{4}-[0-9]{3}$
 
@@ -1007,8 +1002,10 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 			tooltip MESSAGES.ERRItalianPC5
 
 		; SPAIN or ANDORRA
+		; TODO : CONTINUE HERE - TEST THIS LINE ERROR WHY?
 		REQUEST.CUSTOMER_COUNTRY in {ES,AD} and REQUEST.REQUEST_TYPE in {CC, CC_CC} and GD_Adr_PostalCode.Value.Length >= 2 then
-			load data from DATASOURCES.SelectAccountingClerkByPostCodeAndSalesArea with arguments {} in CC_CO_AccountingClerk
+			; load data from DATASOURCES.SelectAccountingClerkByPostCodeAndSalesArea with arguments {} in CC_CO_AccountingClerk
+			load data from DATASOURCES.SelectAccountingClerkByPostCodeAndSalesArea in CC_CO_AccountingClerk
 		
 	with triggers
 		this changes

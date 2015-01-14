@@ -1,0 +1,45 @@
+﻿Entity btnSearch is Button in frmSearch
+
+	with defaults
+		label LABELS.btnSearch
+		
+	with rules
+
+		DATASOURCE.IsUserInROLE with arguments { UserAccount : USER.USER_ACCOUNT, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value, IsIndirectMaterial : 0} is false then
+			; set value 'XXXXXXXXXXXXXXXXXX' in MESSAGE_POPUP
+			load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
+
+		else
+		
+			TBVendorNumber is not empty and TBVendorNumber.Value.Length is not 10 then
+				set value MESSAGES.ERRVendorNumeber10 in MESSAGE_POPUP
+			
+			; TODO: CHECK THIS
+			; TBVendorIFA.value is not empty then DDLVDCountry mandatory
+			; TBVendorIFA.value is not empty then DDLVDCountry not mandatory
+			
+			DDLVDCountry is empty then
+				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
+			
+			TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
+				set value 'Fill the fields KeyTax or Vendor or IFA Number or Country + Name or Country + City' in MESSAGE_POPUP
+			
+			TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+				set value 'Fill the fields KeyTax or Vendor or IFA Number or Country + Name or Country + City' in MESSAGE_POPUP
+			
+			TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+				set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
+			
+			DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
+				set value MESSAGES.SEARCH.FILL03 in MESSAGE_POPUP
+			
+			TBVendorName is not empty and DDLVDCountry is empty then
+				set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
+
+			load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
+		
+						
+
+	with triggers
+
+		this on click

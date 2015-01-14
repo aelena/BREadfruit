@@ -1,0 +1,35 @@
+﻿Entity btnSearch is Button in frmSearch
+
+	with defaults
+		label LABELS.btnSearch
+		
+	with rules
+		FIELD_A.Value is 0 then
+			load data from DATASOURCE.ABC
+		ELSE
+			load data from DATASOURCE.XYZ
+		
+		FIELD_B.Value is 0 then
+			load data from DATASOURCE.ABC in FIELD_FOO
+		ELSE
+			load data from DATASOURCE.XYZ in FIELD_FOO
+		
+		FIELD_C.Value is 0 then
+			load data from DATASOURCE.ABC with output {FIELD_A : COLUMN_A, FIELD_Z : COLUMN_Z }
+		ELSE
+			load data from DATASOURCE.XYZ with output {FIELD_A : COLUMN_A, FIELD_Z : COLUMN_Z }
+		
+		FIELD_D.Value is 0 then
+			load data from DATASOURCE.ABC with arguments {COLUMN_A : FIELD_A.VALUE, COLUMN_Z : "FOO" } with output {FIELD_A : COLUMN_A, FIELD_Z : COLUMN_Z }
+		ELSE
+			load data from DATASOURCE.XYZ with arguments {COLUMN_A : FIELD_A.VALUE, COLUMN_Z : "FOO" } with output {FIELD_A : COLUMN_A, FIELD_Z : COLUMN_Z }
+
+		FIELD_E.Value is 0 then
+			load data from DATASOURCE.ABC with arguments {COLUMN_A : FIELD_A.VALUE, COLUMN_Z : "FOO" } 
+		ELSE
+			load data from DATASOURCE.XYZ with arguments {COLUMN_A : FIELD_A.VALUE, COLUMN_Z : "FOO" } 
+
+		FIELD_A.Value is 0 then
+			load data from DATASOURCE.ABC with arguments {COLUMN_A : FIELD_A.VALUE, COLUMN_Z : "FOO" } in XXXX
+		ELSE
+			load data from DATASOURCE.XYZ with arguments {COLUMN_A : FIELD_A.VALUE, COLUMN_Z : "FOO" } in XXXX
