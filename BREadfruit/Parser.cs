@@ -137,6 +137,7 @@ namespace BREadfruit
 						this._entities.Last ().TextRepresentation += line;
 						this._entities.Last ().TextRepresentation += Environment.NewLine;
 						__lastTestGenCommandFound = "";
+						continue;
 					}
 					#endregion
 
@@ -1155,10 +1156,16 @@ namespace BREadfruit
 					throw new DuplicateEntityFoundException ( String.Format ( Grammar.DuplicateEntityFoundExceptionDefaultTemplate,
 						lineInfo.Tokens.ElementAt ( 1 ).Token, _currLine ) );
 
-				this._entities.Add ( new Entity (
-					lineInfo.Tokens.ElementAt ( 1 ).Token,
-					lineInfo.Tokens.ElementAt ( 3 ).Token,
-					lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ).Replace ( "'", "" ) ) );               // last token in form's name where the entity belongs
+				if ( !( line.ToUpperInvariant ().Trim ().EndsWith ( "IS FORM" ) ) )
+					this._entities.Add ( new Entity (
+						lineInfo.Tokens.ElementAt ( 1 ).Token,
+						lineInfo.Tokens.ElementAt ( 3 ).Token,
+						lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ).Replace ( "'", "" ) ) );               // last token in form's name where the entity belongs
+				else
+					this._entities.Add ( new Entity (
+						lineInfo.Tokens.ElementAt ( 1 ).Token,
+						lineInfo.Tokens.ElementAt ( 3 ).Token, "" ) );               // last token in form's name where the entity belongs
+
 			}
 			else
 				// throw an exception if the regex validation fails 

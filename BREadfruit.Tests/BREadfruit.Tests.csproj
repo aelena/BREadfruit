@@ -164,6 +164,7 @@
     <Content Include="sample files\single entity tests\File075.txt" />
     <Content Include="sample files\single entity tests\File076 - New btnSearch.txt" />
     <Content Include="sample files\single entity tests\File077 - Load revised.txt" />
+    <Content Include="sample files\single entity tests\File078 - Form Entity.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
     <Content Include="__sketchpad.txt" />

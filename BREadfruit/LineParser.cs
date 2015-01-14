@@ -405,8 +405,11 @@ namespace BREadfruit
 
 		internal bool ValidateEntityStatement ( string line )
 		{
-			var _entityLineRegex = new Regex ( Grammar.EntityLineRegex );
-			return _entityLineRegex.IsMatch ( line.ToUpperInvariant () );
+			if ( !( line.ToUpperInvariant ().Trim ().EndsWith ( "IS FORM" ) ) )
+				return new Regex ( Grammar.EntityLineRegex ).IsMatch ( line.ToUpperInvariant () );
+			else
+				return Grammar.EntityFormLineRegex.IsMatch ( line.ToUpperInvariant () );
+
 		}
 
 

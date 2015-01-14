@@ -315,6 +315,7 @@ namespace BREadfruit
 		public static Regex LineWithQuotedStringAndNoOutsideBrackets = new Regex ( "^[^{}]*(\"|'){1}.*(\"|'){1}[^{}]*$", RegexOptions.IgnoreCase );
 		public static Regex LineWithOutsideBracketsAndNoOutsideQuotes = new Regex ( "^[^\"']*{{1}.*}{1}[^\"']*$", RegexOptions.IgnoreCase );
 
+		public static Regex EntityFormLineRegex = new Regex (@"^ENTITY[\s]+[A-Za-z0-9-_\.]+[\s]+IS[\s]+FORM[\s]*$", RegexOptions.IgnoreCase );
 
 		public static string EntityLineRegex
 		{
@@ -420,6 +421,7 @@ namespace BREadfruit
 		public static Symbol ListBoxSymbol = new Symbol ( "ListBox", 0, true );
 		public static Symbol CalendarSymbol = new Symbol ( "Calendar", 0, true );
 		public static Symbol AttachmentManagerSymbol = new Symbol ( "AttachmentManager", 0, true );
+		public static Symbol FormSymbol = new Symbol ( "Form", 0, true );
 		//public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
 		//public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
@@ -879,7 +881,7 @@ namespace BREadfruit
 			Grammar._entityTypes.Add ( ListBoxSymbol );
 			Grammar._entityTypes.Add ( CalendarSymbol );
 			Grammar._entityTypes.Add ( AttachmentManagerSymbol );
-
+			Grammar._entityTypes.Add ( FormSymbol );
 		}
 
 
@@ -1009,6 +1011,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( ListBoxSymbol );
 			Grammar._symbols.Add ( CalendarSymbol );
 			Grammar._symbols.Add ( AttachmentManagerSymbol );
+			Grammar._symbols.Add ( FormSymbol );
 
 			Grammar._symbols.Add ( ElseSymbol );
 			Grammar._symbols.Add ( ThenSymbol );
