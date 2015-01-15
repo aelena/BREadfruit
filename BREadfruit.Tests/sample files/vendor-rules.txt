@@ -1424,7 +1424,7 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 Entity GD_Com_Telebox is DropDownList in frmMain
 	with defaults
 		mandatory true
-		load data from DATASOURCE.MDMC_Telebox with arguments {"FlagActive" : true}
+		load data from DATASOURCE.MDM_Telebox with arguments {"FlagActive" : true}
 		value PRT
 		label LABELS.labTelebox
 	with rules
