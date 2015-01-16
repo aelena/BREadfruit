@@ -1,0 +1,4 @@
+﻿Entity FIELD_ABC is Grid in frmMain
+	with defaults
+		data field 'COLUMN A'
+		value field "COLUMB ZK09"

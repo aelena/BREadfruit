@@ -166,6 +166,8 @@
     <Content Include="sample files\single entity tests\File077 - Load revised.txt" />
     <Content Include="sample files\single entity tests\File078 - Form Entity.txt" />
     <Content Include="sample files\single entity tests\File079 - Data and Value.txt" />
+    <Content Include="sample files\single entity tests\File080 - Wrong data value field.txt" />
+    <Content Include="sample files\single entity tests\File081 - Wrong data value field 2.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
     <Content Include="__sketchpad.txt" />

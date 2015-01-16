@@ -165,11 +165,15 @@ namespace BREadfruit
 							// then try and parse a default clause
 							if ( lineInfo.Tokens.First () == Grammar.DefineColumnDefaultClause && this._entities.Last ().TypeDescription != Grammar.GridSymbol.Token )
 								throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a default column in an Entity that is not a grid." );
+							if ( lineInfo.Tokens.First () == Grammar.ValueFieldDefaultClause && this._entities.Last ().TypeDescription != Grammar.DropDownListSymbol.Token )
+								throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a Value Field in an Entity that is not a dropdown list." );
+							if ( lineInfo.Tokens.First () == Grammar.DataFieldDefaultClause && !this._entities.Last ().TypeDescription.In ( new [] { Grammar.DropDownListSymbol.Token, Grammar.CheckBoxSymbol.Token, Grammar.LabelDefaultClause.Token, Grammar.TextBoxSymbol.Token } ) )
+								throw new UnexpectedClauseException ( Grammar.UnexpectedDefaultClauseExceptionDefaultMessage + "\r\n" + "Cannot define a Data Field in an Entity that is not a dropdown list." );
 							this._entities.Last ().AddDefaultClause ( this.ConfigureDefaultClause ( lineInfo ) );
 						}
 						catch ( Exception ex )
 						{
-							throw new Exception ( String.Format ( "Line {2} {0} caused exception : {1}", lineInfo.Representation, ex.Message, _currLine ) );
+							throw new UnexpectedClauseException ( String.Format ( "Line {2} {0} caused exception : {1}", lineInfo.Representation, ex.Message, _currLine ) );
 						}
 					}
 					#endregion

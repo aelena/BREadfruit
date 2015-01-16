@@ -2359,6 +2359,32 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		[ExpectedException ( ExpectedException = typeof ( UnexpectedClauseException ),
+			ExpectedMessage = "Line 4 VALUEFIELD \"COLUMB ZK09\" caused exception : An unexpected clause was found\r\nCannot define a Value Field in an Entity that is not a dropdown list." )]
+		public void ParseSampleFile080 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File080 - Wrong data value field.txt" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		[ExpectedException ( ExpectedException = typeof ( UnexpectedClauseException ),
+			ExpectedMessage = "Line 3 DATAFIELD 'COLUMN A' caused exception : An unexpected clause was found\r\nCannot define a Data Field in an Entity that is not a dropdown list." )]
+		public void ParseSampleFile081 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File081 - Wrong data value field 2.txt" );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{
 			var parser = new Parser ();
