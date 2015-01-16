@@ -128,6 +128,8 @@ Entity TBVendorIFA is TextBox in frmSearch
 
  Entity DDLVDCountry is DropDownList in frmSearch
 	with defaults
+		data field DisplayName
+		value field Code
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
 		load data from DATASOURCE.MDM_Countries
 		label LABELS.COUNTRY
@@ -170,7 +172,8 @@ Entity TBVendorVAT is TextBox in frmSearch
 
 Entity DDLCDCountry is DropDownList in frmSearch
 	with defaults
-		visible true
+		data field DisplayName
+		value field Code
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
 		load data from DATASOURCE.MDM_ClusterCountries
 		label LABELS.labCountry
@@ -178,11 +181,9 @@ Entity DDLCDCountry is DropDownList in frmSearch
 	
 	with actions
 		; load active companies for this country
-		load data from DATASOURCE.MDM_ClusterCompanies with arguments {"Country" : this.value} in DDLCDCompany
-		; purge the data in this dropdownlist
-		clear DDLCDPurchOrg
-		set hidden vendorSearchResultGrid
+		load data from DATASOURCE.MDM_ClusterCompanies with arguments {CountryCode : DDLCDCountry.Value} in DDLCDCompany
 		clear vendorSearchResultGrid
+		set hidden vendorSearchResultGrid
 		hide btnCreateVendor
 
 	with triggers
@@ -193,16 +194,17 @@ Entity DDLCDCountry is DropDownList in frmSearch
 
 Entity DDLCDCompany is DropDownList in frmSearch
 	with defaults
-		visible true
+		data field DisplayName
+		value field Code
 		value USER.COST_LOCATION_UNIT			; another data constant
 		label LABELS.labCompany
 		mandatory true
 
 	with actions
 		; load active companies for this country
-		load data from DATASOURCE.MDM_ClusterPurchaseOrganizations with arguments {CompanyCode: this.value} in DDLCDPurchOrg 
-		set hidden vendorSearchResultGrid
+		load data from DATASOURCE.MDM_ClusterPurchaseOrganizations with arguments {ClusterCompanyCode: DDLCDCompany.Value} in DDLCDPurchOrg 
 		clear vendorSearchResultGrid
+		set hidden vendorSearchResultGrid
 		hide btnCreateVendor
 
 	with triggers
@@ -213,6 +215,8 @@ Entity DDLCDCompany is DropDownList in frmSearch
 
 Entity DDLCDPurchOrg is DropDownList in frmSearch
 	with defaults
+		data field DisplayName
+		value field Code
 		visible true
 		value ''
 		label LABELS.labPURCHASEORG
@@ -310,8 +314,8 @@ Entity vendorSearchResultGrid is Grid in frmSearch
 Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 	with defaults
-		enabled true
-		visible true
+		data field DisplayName
+		value field Code
 		value "00"
 		; only two values, 00 and 09
 		load data from DATASOURCE.MDM_RiskClassifications
@@ -343,7 +347,8 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 Entity GD_Adr_Country is DropDownList in frmMain
 
 	with defaults
-		visible true
+		data field DisplayName
+		value field Code
 		enabled false					; this control is always disabled
 		value USER.COUNTRY				; -- depends on country selected in search form, so this data has to be passed
 		load data from DATASOURCE.MDM_Countries
@@ -359,11 +364,12 @@ Entity GD_Adr_Country is DropDownList in frmMain
 Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 
 	with defaults
+		data field DisplayName
+		value field Code
 		visible true
 		enabled true
 		value "NG"
-		; values G  and NG
-		; TODO: load data from DATASOURCE.labGD_Ctr_VendorClassification
+		load data from DATASOURCE.MDM_PartnerClassification
 		mandatory true
 		label LABELS.labGD_Ctr_VendorClassification
 
@@ -390,10 +396,10 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 Entity CC_AM_BPClassification is DropDownList in frmMain
 
 	with defaults
-		visible true
-		enabled true
+		data field DisplayName
+		value field Code
 		value NORM
-		; TODO: load data from DATASOURCE.BP_CLASSIFICATIONS
+		TODO: load data from DATASOURCE.MDM_ReleaseGroups
 		mandatory true
 		label LABELS.labCC_AM_BPClassification
 
@@ -417,10 +423,10 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 
 Entity GD_Damex is DropDownList in frmMain
 	with defaults
-		visible true
-		enabled true
+		data field DisplayName
+		value field Code
 		value ''
-		load data from DATASOURCE.YES_NO
+		load data from DATASOURCE.MDM_YES_NO
 		mandatory true
 		label LABELS.labGD_Damex
 
@@ -538,8 +544,11 @@ Entity GD_Procur_Reason_Supplier is TextBox in frmMain
 
 Entity GD_Procur_Supplier_OnContractBasis is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		label LABELS.labGD_Procur_Supplier_OnContractBasis
-
+		load data from DATASOURCE.MDM_YES_NO
+		
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -550,7 +559,10 @@ Entity GD_Procur_Supplier_OnContractBasis is DropDownList in frmMain
 
 Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		label LABELS.labGD_Procur_Supplier_IsOneTimeVendor
+		load data from DATASOURCE.MDM_YES_NO
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -579,7 +591,7 @@ Entity GD_Procur_Supplier_ContactPhone is TextBox in frmMain
 			this visible false
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Procur_Supplier_ContactPerson is DropDownList in frmMain
+Entity GD_Procur_Supplier_ContactPerson is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_Procur_Supplier_ContactPerson
 		max length 47		
@@ -612,7 +624,7 @@ Entity lGD_Procur_Supplier_ContactEmail is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-Entity GD_Procur_MainProducts is DropDownList in frmMain
+Entity GD_Procur_MainProducts is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_Procur_MainProducts
 
@@ -709,10 +721,10 @@ Entity GD_Procur_Supplier_ExpectedPVO is DropDownList in frmMain
 		label LABELS.labGD_Procur_Supplier_ExpectedPVO
 		mandatory true
 		; by default it shows the first item in the list which is blank
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.YearlyTurnover
 		value ''
-		; the rest of values to show in the dropdown list are to be loaded from DB
-		; I think this is hardcoded now in the app itself...
-		load data from DATASOURCE.EXPECTED_PVO_RANGES
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -751,11 +763,13 @@ Entity GD_Procur_Supplier_ExpectedPVO is DropDownList in frmMain
 
 Entity GD_PVO_Question1 is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		visible false
 		label LABELS.labGD_PVO_Question1
 		mandatory false
 		value ''
-		load data from DATASOURCE.YES_NO
+		load data from DATASOURCE.MDM_YES_NO
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -772,30 +786,36 @@ Entity GD_PVO_Question2 is DropDownList in frmMain
 		visible false
 		label LABELS.labGD_PVO_Question2
 		mandatory false
-		value ''
 		; high risk country or low risk country
-		load data from DATASOURCE.COUNTRY_RISK_CLASSIFICATION
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.PVO_Question2_Options
+		value ''
+
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
+		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+			this visible false
+
 		GD_PVO_Question2.Value is "HR" then GD_PVO_Link2 visible
 		GD_PVO_Question2.Value is "LR" then GD_PVO_Link2 not visible
 
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
-			this visible false
 
 ; ----------------------------------------------------------------------------	
 	
 Entity GD_PVO_Question3 is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		visible false
 		label LABELS.labGD_PVO_Question3
 		mandatory false
-		value ''
 		; high risk country or low risk country
-		load data from DATASOURCE.YES_NO
-
+		load data from DATASOURCE.MDM_YES_NO
+		value ''
+		
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -807,12 +827,15 @@ Entity GD_PVO_Question3 is DropDownList in frmMain
 
 Entity GD_PVO_Question4 is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		visible false
 		label LABELS.labGD_PVO_Question4
 		mandatory false
-		value ''
 		; values: low, average, high
-		load data from DATASOURCE.LOW_AVERAGE_HIGH
+		load data from DATASOURCE.PVO_Question4_Options
+		value ''
+		
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -827,12 +850,13 @@ Entity GD_PVO_Question4 is DropDownList in frmMain
 
 Entity GD_PVO_Question5 is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		visible false
 		label LABELS.labGD_PVO_Question5
 		mandatory false
 		value ''
-		; high risk country or low risk country
-		load data from DATASOURCE.YES_NO
+		load data from DATASOURCE.MDM_YES_NO
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -1202,7 +1226,9 @@ Entity GD_Adr_Region is DropDownList in frmMain
 	with defaults
 		enabled true
 		visible true
-		load data from DATASOURCE.MDM_Regions with arguments {"FlagActive" : true, "CountryCode" : REQUEST.VENDOR_COUNTRY }
+		load data from DATASOURCE.MDM_Regions with arguments {FlagActive : true, CountryCode : REQUEST.VENDOR_COUNTRY }
+		data field DisplayName
+		value field Code
 
 	; "16-07-2014(RG): 1) In customer creation from scratch MADAM has to check in table in sheet “Mandatory Region List” if it is mandatory and MADAM has to show in DDL the values according to the customer country.
 	 
@@ -1400,7 +1426,9 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 	with defaults
 		mandatory true
 		; obtain the code for the vendor country, if there is no specific code, then 'EN' is default language
-		load data from DATASOURCE.MDM_Languages	with arguments {"FlagActive" : true}	
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_Languages	with arguments {FlagActive : true}	
 		label LABELS.labLanguages
 
 	with rules
@@ -1424,7 +1452,9 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 Entity GD_Com_Telebox is DropDownList in frmMain
 	with defaults
 		mandatory true
-		load data from DATASOURCE.MDM_Telebox with arguments {"FlagActive" : true}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_Telebox with arguments {FlagActive : true, AccountGroup : REQUEST.ACCOUNT_GROUP}
 		value PRT
 		label LABELS.labTelebox
 	with rules
@@ -1452,12 +1482,14 @@ Entity GD_Com_DataLine is TextBox in frmMain
 
 Entity P_GD_VT_Country is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		load data from DATASOURCE.MDM_Countries
 		value REQUEST.VENDOR_COUNTRY
 		mandatory true
 	
 	with actions
-		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Country : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false	
@@ -1553,11 +1585,13 @@ Entity P_GD_VT_Grid is Grid in frmMain
 
 Entity F_GD_VF_Country is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		load data from DATASOURCE.MDM_Countries
 		value REQUEST.VENDOR_COUNTRY
 
 	with actions
-		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {"COUNTRY" : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Country : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false	
@@ -1755,7 +1789,9 @@ Entity GD_NatP_Profession is TextBox in frmMain
 
 Entity GD_NatP_Sex is DropDownList in frmMain
 	with defaults
-		load data from DATASOURCE.GENERIC.MDM_Sex
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_Sex
 		value ''
 		label LABELS.labSex
 	with rules
@@ -1799,13 +1835,15 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		visible true
 		label LABELS.labIndustries
 		; if there are no specific data for this specific country, data for "EN" should be loaded
-		load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : REQUEST.VENDOR_COUNTRY}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : REQUEST.VENDOR_COUNTRY}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
-			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : FR}
+			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : FR}
 			; this equals to this line in original code
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 			set value FR in REQUEST.INDUSTRY_COUNTRY
@@ -1813,7 +1851,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 			set width 680px		
 
 		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
-			load data from DATASOURCE.MDM_Industries with arguments {"FlagActive": true, "Country" : "EN"}
+			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : "EN"}
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 			set value "EN" in REQUEST.INDUSTRY_COUNTRY
 			mandatory false
@@ -1827,7 +1865,9 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		label LABELS.labLegalForm
 		visible false
 		; data source is same for vendors and customers
-		load data from DATASOURCE.MDM_LegalForms with arguments {"FlagActive" : true }
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_LegalForms with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY }
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -2124,7 +2164,6 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 
 Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
 	with defaults
-		max length 20
 		label LABELS.chkSales
 		visible false
 		value REQUEST.GD_Ctr_SalesPurTax_SAP
@@ -2207,15 +2246,13 @@ Entity GD_Ctr_CreditInfoNo is TextBox in frmMain
 	
 ; ----------------------------------------------------------------------------	
 
-; TODO: THE DATASOURCE INDICATED DOES NOT EXIST, CURRENTLY VALUES ARE LOADED IN CODE, SO THE DATASOURCE HAS TO BE CREATED
-; VALUES ARE
-; "", ""
-; "D - Unsubscribe", "D"
-; "V - Unsubscribed from CMD", "V"
+
 Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with defaults
 		label LABELS.labUnsubscribeCMD
-		load data from DATASOURCE.MDM_UnsubscribeCMD_Options
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.UnsubscribeOptions
 
 	with actions
 		set value GD_Ctr_UnsubscribeCMD.Value in BLK_GD_Ctr_UnsubscribeCMD
@@ -2227,16 +2264,13 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 		this changes
 
 
-; ----------------------------------------------------------------------------	
-
-; TODO: DECIDE LATER ON WHAT TO DO WITH CONTROLS INSIDE COMPOSITE CONTROLS....
-
-; ---------------------------------------------------------------------------- 
-
 
 Entity V_Country is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		label LABELS.labCountry
+		load data from DATASOURCE.MDM_Countries
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -2294,6 +2328,8 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCountry
+		data field DisplayName
+		value field Code
 		load data from DATASOURCE.MDM_Countries
 		mandatory true
 	with rules
@@ -2558,7 +2594,9 @@ Entity LFB1_REPRF is TextBox in frmMain
 Entity CC_AM_SortKey is DropDownList in frmMain
 	with defaults
 		label LABELS.labAMSortKeys
-		load data from DATASOURCE.MDM_SortKeys with arguments {"FlagActive" : true}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_SortKeys with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
 		mandatory
 
 	with rules
@@ -2613,9 +2651,9 @@ Entity CC_AM_SubjectedToWHTax is CheckBox in frmMain
 Entity CC_AM_WithholdingTaxCode	is DropDownList in frmMain
 	with defaults
 		label LABELS.labAMWithholdingTaxCode
-
-	with defaults
-		load data from DATASOURCE.MDM_WithholdingTaxCodes with arguments {"FlagActive" : true, "ClusteROLES.RCOuntry" : REQUEST.COUNTRY}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_WithholdingTaxCodes with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -2659,10 +2697,9 @@ Entity GD_NatP_Exemption is DropDownList in frmMain
 	with defaults
 		label LABELS.labExemption
 		visible false
-		; PUT INTO DATABASE 
-		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "0 - No exemption", "0" ) );
-		; this.GD_NatP_Exemption.Items.Add ( new ListItem ( "2 - Exemption", "2" ) );
-		; does not exist in Customerload data from DATASOURCE.MDM_NaturalPersonExemptions
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.NaturalPersonExemption
 		value ''
 
 	with rules
@@ -2689,7 +2726,9 @@ Entity CC_PT_ValidityDate is Calendar in frmMain
 Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 	with defaults
 		label LABELS.labAMCashManagementGroup
-		load data from DATASOURCE.MDM_CashManagementGroups with arguments {"FlagActive" : true}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_CashManagementGroups with arguments {FlagActive : true}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -2725,7 +2764,9 @@ Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 
 Entity CC_PT_PaymentTerms is DropDownList in frmMain
 	with defaults
-		load data from DATASOURCE.MDM_PaymentTerms with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
 		; 1) By default mandatory
 		label LABELS.labPTPaymentTerms
 		mandatory
@@ -2779,8 +2820,10 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 Entity CC_PT_PaymentBlock is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 		label LABELS.labPTPaymentBlock
-		load data from DATASOURCE.MDM_PaymentBlocks with arguments {"FlagActive" : true}
+		load data from DATASOURCE.MDM_PaymentBlocks with arguments {FlagActive : true}
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -2808,7 +2851,9 @@ Entity CC_PT_PaymentMethods	is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTPaymentMethods
 		mandatory
-		load data from DATASOURCE.MDM_PaymentMethods with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_PaymentMethods with arguments {FlagActive : true, ClusterCountryCode: REQUEST.COUNTRY}
 
 
 	with rules
@@ -2884,7 +2929,9 @@ Entity CC_PT_IndividualPayment	is CheckBox in frmMain
 Entity CC_PT_HouseBank is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTHouseBank
-		load data from DATASOURCE.MDM_HouseBanks with arguments {"FlagActive" : true}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_HouseBanks with arguments {FlagActive : true}
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -2894,13 +2941,11 @@ Entity CC_PT_HouseBank is DropDownList in frmMain
 ; 2) Only used for company code 5240:
 ;    value is always 4112 (is value from SAP different, do not maintain)
 ; in fact control does not exist in form, just a field, always write 4112 for 5240
-Entity CC_PT_ForCreditMemos	is DropDownList in frmMain
+Entity CC_PT_ForCreditMemos	is TextBox in frmMain
 	with defaults
 		visible false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
-			this enable false
 		REQUEST.COMPANY_CODE is 5240 then
 			set value 4112 in CC_PT_ForCreditMemos
 
@@ -2910,7 +2955,9 @@ Entity CC_PT_ForCreditMemos	is DropDownList in frmMain
 Entity CC_DD_DunningProcedure is DropDownList in frmMain
 	with defaults
 		label LABELS.labDDDunningprocedure
-		load data from DATASOURCE.MDM_DunningProcedure with arguments {"FlagActive" : true, "Country": REQUEST.COUNTRY}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_DunningProcedure with arguments {FlagActive : true, ClusterCountryCode: REQUEST.COUNTRY}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -2975,7 +3022,9 @@ Entity CC_DD_DunningBlock is DropDownList in frmMain
 	with defaults
 		visible true
 		label LABELS.labDDDunningBlock
-		load data from DATASOURCE.MDM_DunningBlocks with arguments {"FlagActive" : true}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_DunningBlocks with arguments {FlagActive : true}
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
@@ -3001,7 +3050,9 @@ Entity CC_DD_DunningClerk is DropDownList in frmMain
 	with defaults
 		visible false
 		label LABELS.labDDDunningClerk
-		load data from DATASOURCE.MDM_AccountingClerks with arguments {"FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_AccountingClerks with arguments {FlagActive : true, CompanyCode : REQUEST.COMPANY_CODE}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -3021,7 +3072,9 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 	with defaults
 		visible false
 		label LABELS.labCOAccountingClerk
-		load data from DATASOURCE.MDM_AccountingClerks with arguments {"FlagActive" : true, "CompanyCode" : REQUEST.COMPANY_CODE}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_AccountingClerks with arguments {FlagActive : true, CompanyCode : REQUEST.COMPANY_CODE}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -3173,7 +3226,9 @@ Entity PO_PurchaseOrderCurrency	is DropDownList in frmMain
 		mandatory
 		label LABELS.labPurchaseOrderCurrency
 		; the company code country, not vendor's country
-		load data from DATASOURCE.MDM_Currencies with arguments {"FlagActive" : true }
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_Currencies with arguments {FlagActive : true }
 		value EUR
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -3191,7 +3246,9 @@ Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 		mandatory
 		label LABELS.labPO_TermsOfPaymentKey
 		; the company code country, not vendor's country
-		load data from DATASOURCE.MDM_PaymentTerms with arguments {"FlagActive" : true, "Country" : REQUEST.COUNTRY}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -3249,7 +3306,9 @@ Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 Entity PO_Incoterms	is DropDownList in frmMain
 	with defaults
 		label LABELS.labIncoterms
-		load data from DATASOURCE.MDM_Incoterms with arguments {"FlagActive" : true}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_Incoterms with arguments {FlagActive : true}
 		mandatory true
 
 	with actions
@@ -3351,7 +3410,9 @@ Entity PO_ConfirmationControl is DropDownList in frmMain
 	with defaults
 		label LABELS.labConfirmationControl
 		visible false
-		load data from DATASOURCE.MDM_ConfirmationControl with arguments {"FlagActive" : true}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_ConfirmationControl with arguments {FlagActive : true}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -3429,7 +3490,9 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with defaults
 		label LABELS.labUnsubscribeCMD
-		load data from DATASOURCE.MDM_UnsubscribeCMD_Options
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.UnsubscribeOptions
 
 	with actions
 		set value BLK_GD_Ctr_UnsubscribeCMD.Value in GD_Ctr_UnsubscribeCMD
@@ -3449,7 +3512,9 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 Entity BLK_CC_PT_PaymentBlock is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTPaymentBlock
-		load data from DATASOURCE.MDM_PaymentBlocks with arguments {"FlagActive" : true}
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_PaymentBlocks with arguments {FlagActive : true}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
@@ -4097,6 +4162,10 @@ Entity DDLDCReqAction is DropDownList in frmMain
 		; TODO: the dataloading seems too complex
 		; DDLDCReqAction.DataSource = _w4e.W4E_StateMap.Where ( GetActionFilter ( _sessionInfo.CurrentBPCode, flowtype, GeneralRequestData.WFRoleCode, GeneralRequestData.WFStatusCode, Evaluator ) );
 		; Evaluator?????
+
+		data field DisplayName
+		value field Code
+
         load data from DATASOURCE.W4E_StateMap with arguments {"BPCode" : REQUEST.BP_CODE, "FlowType" : REQUEST.REQUEST_TYPE, "CurrentRole" : REQUEST.CURRENT_ROLE, "Status" : REQUEST.REQUEST_STATUS }
 
 	with rules
@@ -4126,6 +4195,8 @@ Entity DDLDCReqAction is DropDownList in frmMain
 Entity labNextRole is DropDownList in frmMain
 	with defaults
 		label LABELS.NextRole
+		data field DisplayName
+		value field Code
 
 	with rules
 		REQUEST.REQUEST_STATE is CLOSED then
@@ -4136,8 +4207,12 @@ Entity labNextRole is DropDownList in frmMain
 
 ; in spite of the name 'labNextAction' this is correct
 ; has no text label
+; TODO: The data loading of this, is a total mess
+; 
 Entity labNextAction is DropDownList in frmMain
 	with defaults
+		data field DisplayName
+		value field Code
 
 	with rules
 		REQUEST.REQUEST_STATE is CLOSED then
