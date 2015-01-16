@@ -174,8 +174,8 @@ Entity DDLCDCountry is DropDownList in frmSearch
 	with defaults
 		data field DisplayName
 		value field Code
-		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
 		load data from DATASOURCE.MDM_ClusterCountries
+		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
 		label LABELS.labCountry
 		mandatory true
 	
@@ -399,7 +399,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		value NORM
-		TODO: load data from DATASOURCE.MDM_ReleaseGroups
+		load data from DATASOURCE.MDM_ReleaseGroups
 		mandatory true
 		label LABELS.labCC_AM_BPClassification
 
@@ -1255,15 +1255,18 @@ Entity GD_Adr_Region is DropDownList in frmMain
 ; ----------------------------------------------------------------------------	
 
 
-Entity GD_Adr_CountryGD is TextBox in frmMain
+; TESTGEN : DEFAULTS=9
+Entity GD_Adr_CountryGD is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCountry
 		mandatory true
 		enabled false		; always disabled
 		; TODO: PENDING FINAL MODEL DEFINITION FROM FD
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_Countries
 		value REQUEST.VENDOR_COUNTRY
-
 
 ; ----------------------------------------------------------------------------	
 
@@ -1591,7 +1594,7 @@ Entity F_GD_VF_Country is DropDownList in frmMain
 		value REQUEST.VENDOR_COUNTRY
 
 	with actions
-		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Country : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Code : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false	
