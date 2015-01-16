@@ -860,7 +860,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.First ().Value.ToString () == "LABELS.GENERIC.labInsert", "Expected  e.Defaults.First ().Token, not" + e.Defaults.First ().Value.ToString () );
 
 			Assert.That ( e.ConditionlessActions.Count () == 1, "should have 1 ConditionlessActions but has " + e.ConditionlessActions.Count () );
-			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).ToString () == "save_data_to DATASOURCE.MDM_Requests_PhoneEntry this" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).ToString ().Trim() == "save_data_to DATASOURCE.MDM_Requests_PhoneEntry this" );
 
 			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.SaveDataUnaryActionSymbol );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).Reference == "this" );
@@ -2329,6 +2329,29 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Form == "", "Entity form should be '' but is " + e.Form );
 			Assert.That ( e.Name == "frmMain", "Entity name should be 'frmMain' but is " + e.Name );
 			Assert.That ( e.Defaults.Count () == 2, "should have 2 defaults but has " + e.Defaults.Count () );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile079 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File079 - Data and Value.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "FIELD_ABC", "Entity name should be 'FIELD_ABC' but is " + e.Name );
+			Assert.That ( e.Defaults.Count () == 5, "should have 5 defaults but has " + e.Defaults.Count () );
+
+			Assert.That ( e.Defaults.First ().Token == Grammar.DataFieldDefaultClause.Token );
+			Assert.That ( e.Defaults.First ().ValueAsString == "COLUMN A" );
+			Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.ValueFieldDefaultClause.Token );
+			Assert.That ( e.Defaults.ElementAt ( 1 ).ValueAsString == "COLUMB ZK09" );
+
+
 		}
 
 

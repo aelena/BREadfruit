@@ -276,6 +276,8 @@ namespace BREadfruit
 		public const string ToggleEnableLineRegex = @"^([A-Za-z0-9'.'_])+[\t\s]+(ENABLE|ENABLED)(([\t\s]+TRUE)?(|[\t\s]*FALSE|[\t\s]*YES|[\t\s]*NO))?[\t\s]*$";
 		public const string ToggleVisibleLineRegex = @"^([A-Za-z0-9'.'_])+[\t\s]+VISIBLE(([\t\s]+TRUE)?(|[\t\s]*FALSE|[\t\s]*YES|[\t\s]*NO))?[\t\s]*$";
 
+		public const string DataOrValueFieldLineRegex = "^(DATAFIELD|VALUEFIELD){1}[\\s]+(\"|')?[A-Za-z_\\-0-9\\.]+(\"|')?[\\s]*$";
+		public const string DataOrValueFieldValueRegex = "^((\"|'){1}[A-Za-z_\\-0-9\\.\\s]+(\"|'){1}[\\s]*|[A-Za-z_\\-0-9\\.]+)$";
 		/// <summary>
 		/// Validates a line that instructs to change the current form shown
 		/// This is when there are no arguments to pass to the second form
@@ -315,7 +317,7 @@ namespace BREadfruit
 		public static Regex LineWithQuotedStringAndNoOutsideBrackets = new Regex ( "^[^{}]*(\"|'){1}.*(\"|'){1}[^{}]*$", RegexOptions.IgnoreCase );
 		public static Regex LineWithOutsideBracketsAndNoOutsideQuotes = new Regex ( "^[^\"']*{{1}.*}{1}[^\"']*$", RegexOptions.IgnoreCase );
 
-		public static Regex EntityFormLineRegex = new Regex (@"^ENTITY[\s]+[A-Za-z0-9-_\.]+[\s]+IS[\s]+FORM[\s]*$", RegexOptions.IgnoreCase );
+		public static Regex EntityFormLineRegex = new Regex ( @"^ENTITY[\s]+[A-Za-z0-9-_\.]+[\s]+IS[\s]+FORM[\s]*$", RegexOptions.IgnoreCase );
 
 		public static string EntityLineRegex
 		{
@@ -442,7 +444,7 @@ namespace BREadfruit
 
 		public static Symbol WithArgumentsSymbol = new Symbol ( "with_args", 2, false, new [] { "with args", "with arguments" } );
 		public static Symbol WithOutputArgumentsSymbol = new Symbol ( "with_output", 2, false, new [] { "with output", "with output arguments" } );
-		public static Symbol WithQuerySymbol = new Symbol ( "with_query", 2, false, new [] { "with query"  } );
+		public static Symbol WithQuerySymbol = new Symbol ( "with_query", 2, false, new [] { "with query" } );
 
 
 		public static Symbol DataSourceSymbol = new Symbol ( "DATASOURCE", 2, false );
@@ -481,7 +483,7 @@ namespace BREadfruit
 		public static ResultAction RemoveValueActionSymbol = new ResultAction ( "remove_value", 2, true, new [] { "remove", "remove value" } );
 
 		public static ResultAction SetLabelActionSymbol = new ResultAction ( "set_label", 2, true, new [] { "set label" } );
-		
+
 
 		#endregion
 
@@ -601,8 +603,10 @@ namespace BREadfruit
 		public static DefaultClause LoadDataDefaultClause = new DefaultClause ( "load_data_from", LoadDataFromValueRegex, new List<string> () { "load data from" } );
 		public static DefaultClause ValidationRegexDefaultClause = new DefaultClause ( "validation_regex", ValidationRegexValueRegex, new [] { "validation regex", "set validation", "validation" } );
 		public static DefaultClause ToolTipDefaultClause = new DefaultClause ( "tooltip", ValidationRegexValueRegex, new [] { "set tooltip" } );
-
 		public static DefaultClause DefineColumnDefaultClause = new DefaultClause ( "define_column", ".", new List<string> () { "define column" } );
+
+		public static DefaultClause DataFieldDefaultClause = new DefaultClause ( "DATAFIELD", Grammar.DataOrValueFieldValueRegex, new List<string> () { "data field" } );
+		public static DefaultClause ValueFieldDefaultClause = new DefaultClause ( "VALUEFIELD", Grammar.DataOrValueFieldValueRegex, new List<string> () { "value field" } );
 
 
 
@@ -989,7 +993,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( TrueSymbol );
 			Grammar._symbols.Add ( FalseSymbol );
 			Grammar._symbols.Add ( ReturnSymbol );
-			
+
 			// add scope symbols
 			Grammar._symbols.Add ( EntitySymbol );
 			Grammar._symbols.Add ( WithSymbol );
@@ -1020,8 +1024,8 @@ namespace BREadfruit
 			Grammar._symbols.Add ( WithArgumentsSymbol );
 			Grammar._symbols.Add ( WithOutputArgumentsSymbol );
 			Grammar._symbols.Add ( WithQuerySymbol );
-			
-			
+
+
 			// add default symbols
 			Grammar._symbols.Add ( ValueSymbol );
 			// add operator symbols
@@ -1136,6 +1140,8 @@ namespace BREadfruit
 			_defaultsTokens.Add ( ValidationRegexDefaultClause );
 			_defaultsTokens.Add ( ToolTipDefaultClause );
 			_defaultsTokens.Add ( DefineColumnDefaultClause );
+			_defaultsTokens.Add ( DataFieldDefaultClause );
+			_defaultsTokens.Add ( ValueFieldDefaultClause );
 
 			Grammar._symbols.Add ( MaxlengthDefaultClause );
 			Grammar._symbols.Add ( MinLengthDefaultClause );
@@ -1148,6 +1154,8 @@ namespace BREadfruit
 			Grammar._symbols.Add ( ValidationRegexDefaultClause );
 			Grammar._symbols.Add ( ToolTipDefaultClause );
 			Grammar._symbols.Add ( DefineColumnDefaultClause );
+			Grammar._symbols.Add ( DataFieldDefaultClause );
+			Grammar._symbols.Add ( ValueFieldDefaultClause );
 
 		}
 

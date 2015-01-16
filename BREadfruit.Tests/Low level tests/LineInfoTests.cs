@@ -134,7 +134,7 @@ namespace BREadfruit.Tests.Low_level_tests
 
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments {\"A\" : \"B\"}", "load_data_from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with_args", "with_args {\"A\":\"B\"}", true, true )]
         [TestCase ( "load data from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES with arguments {\"A\" : \"B\"}", "load_data_from DATASOURCE.ENTERPRISE.WORLD_COUNTRIES", "{\"A\":\"B\"}", false, false )]
-        [TestCase ( "change form to \"frmVendor\" with arguments {\"A\" : \"B\"}", "change_form_to \"frmVendor\"", "with_args {\"A\":\"B\"}", false, true )]
+        [TestCase ( "change to \"frmVendor\" with arguments {\"A\" : \"B\"}", "change_to \"frmVendor\"", "with_args {\"A\":\"B\"}", false, true )]
         public void LineInfo_TakeFromTests1 ( string line, string expected1, string expected2, bool includeCurrentToken1, bool includeCurrentToken2 )
         {
             var lineInfo = lineParser.ParseLine ( lineParser.TokenizeMultiplePartOperators ( new LineInfo ( line ) ) );

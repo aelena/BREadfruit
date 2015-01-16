@@ -1,0 +1,5 @@
+﻿Entity FIELD_ABC is DropDownList in frmMain
+	with defaults
+		data field 'COLUMN A'
+		value field "COLUMB ZK09"
+		load data from DATASOURCE.RAXRAX

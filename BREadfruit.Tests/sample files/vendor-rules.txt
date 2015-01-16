@@ -284,7 +284,7 @@ Entity btnCreateVendor is Button in frmSearch
 		; TODO: guess we will have to pass some arguments here and map things to the conceptual model
 		; this works already anyway
 		; TODO: PROBABLY NOT NEEDED
-		change form to frmMain with arguments {"A" : "B"}
+		; change to frmMain with arguments {"A" : "B"}
 
 
 	with triggers

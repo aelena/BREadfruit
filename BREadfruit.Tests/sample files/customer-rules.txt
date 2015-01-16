@@ -269,7 +269,7 @@ Entity DDLCDivision is DropDownList in frmSearch
 		
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, ACTIONS=0, RULES=8, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, ACTIONS=0, RULES=1, TRIGGERS=1
 Entity btnSearch is Button in frmSearch
 
 	with defaults
@@ -330,7 +330,7 @@ Entity btnCreateCustomer is Button in frmSearch
 		; transition to the main form
 		; TODO : guess we will have to pass some arguments here and map things to the conceptual model
 		; TODO: PROBABLY NOT NEEDED
-		change form to frmMain with arguments {"A" : "B"}
+		; change form to frmMain with arguments {"A" : "B"}
 
 	with rules
 		; how to specify all that happens server side here?
@@ -892,7 +892,7 @@ Entity GD_Adr_City is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=3, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, RULES=3, ACTIONS=0, TRIGGERS=1
 Entity GD_Adr_City2 is TextBox in frmMain
 
 	with defaults

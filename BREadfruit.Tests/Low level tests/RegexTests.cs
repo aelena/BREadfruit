@@ -98,16 +98,16 @@ namespace BREadfruit.Tests.Low_level_tests
         // ---------------------------------------------------------------------------------
 
 
-        [TestCase ( "CHANGE_FORM_TO fmrSearch", Result = true )]
-        [TestCase ( "CHANGE_FORM_TO 'fmrSearch'", Result = true )]
-        [TestCase ( "CHANGE_FORM_TO \"fmrSearch\"", Result = true )]
-        [TestCase ( "CHANGE_FORM_TO     \"fmrSearch\"", Result = true )]
-        [TestCase ( "CHANGE_FORM_TO     \"fmrSearch\"   ", Result = true )]
+        [TestCase ( "CHANGE_TO fmrSearch", Result = true )]
+        [TestCase ( "CHANGE_TO 'fmrSearch'", Result = true )]
+        [TestCase ( "CHANGE_TO \"fmrSearch\"", Result = true )]
+        [TestCase ( "CHANGE_TO     \"fmrSearch\"", Result = true )]
+        [TestCase ( "CHANGE_TO     \"fmrSearch\"   ", Result = true )]
         // allow for identifiers with spaces in them when quoted
-        [TestCase ( "CHANGE_FORM_TO \"Vendor Search Screen\"", Result = true )]
-        [TestCase ( "CHANGE_FORM_TO 'Vendor Search Screen'", Result = true )]
-        [TestCase ( "CHANGE_FORM_TO Vendor Search Screen", Result = false )]
-        [TestCase ( "CHANGE_FORM_TO Vendor Search Screen    ", Result = false )]
+        [TestCase ( "CHANGE_TO \"Vendor Search Screen\"", Result = true )]
+        [TestCase ( "CHANGE_TO 'Vendor Search Screen'", Result = true )]
+        [TestCase ( "CHANGE_TO Vendor Search Screen", Result = false )]
+        [TestCase ( "CHANGE_TO Vendor Search Screen    ", Result = false )]
         public bool ChangeFormNoArgumentsLineRegexTests ( string line )
         {
             return Regex.IsMatch ( line, Grammar.ChangeFormNoArgumentsLineRegex, RegexOptions.IgnoreCase );

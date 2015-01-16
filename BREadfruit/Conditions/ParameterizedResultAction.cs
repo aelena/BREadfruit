@@ -53,11 +53,11 @@ namespace BREadfruit.Conditions
 		// ---------------------------------------------------------------------------------
 
 
-		protected internal ParameterizedResultAction ( Symbol s, object value, string reference = "this" ) :
+		protected internal ParameterizedResultAction ( Symbol s, object value, string reference = "this", LineInfo lineInfo = null ) :
             base ( s.Token, s.IndentLevel, s.IsTerminal )
         {
             this.Value = value;
-            this.Reference = reference;
+			this.Reference = reference == null ? "this" : reference;
         }
 
 
@@ -71,7 +71,7 @@ namespace BREadfruit.Conditions
             string reference = "this" )
             : base ( identifier, indentLevel, isTerminal, aliases, reference )
         {
-
+			this.Reference = reference == null ? "this" : reference;
         }
 
 

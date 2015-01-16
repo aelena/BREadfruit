@@ -158,7 +158,7 @@ namespace BREadfruit
 					{
 						try
 						{
-							if ( lineInfo.Tokens.First () == Grammar.ToolTipDefaultClause )
+							if ( lineInfo.Tokens.First ().In ( new [] { Grammar.ToolTipDefaultClause, Grammar.DataFieldDefaultClause, Grammar.ValueFieldDefaultClause } ) )
 							{
 								CheckForStringTokens ( line, lineInfo );
 							}
@@ -383,7 +383,7 @@ namespace BREadfruit
 							if ( lineInfo.Tokens.Contains ( Grammar.WithArgumentsSymbol ) )
 							{
 								var _r = new ParameterizedResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ),
-									   lineInfo.Tokens.ElementAt ( 1 ).Token );
+									   lineInfo.Tokens.ElementAt ( 1 ).Token, null, lineInfo );
 								var _args = lineInfo.Tokens.ElementAt ( 3 ).Token.Split ( new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries );
 								foreach ( var _a in _args )
 								{
