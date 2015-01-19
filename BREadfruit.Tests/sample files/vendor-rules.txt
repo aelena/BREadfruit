@@ -436,7 +436,7 @@ Entity GD_Damex is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE not in {VC, VC_CC} then 
+		REQUEST.REQUEST_TYPE not in {VC, VC_CC} then 
 			GD_Damex not mandatory
 			GD_Damex not visible
 
@@ -463,7 +463,7 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM} then
 			this enable false
 
-		REQUEST.REQUEST.ACCOUNT_GROUP in {YVT4, YVT5} then
+		REQUEST.ACCOUNT_GROUP in {YVT4, YVT5} then
 			show this
 			show DIV_ADDITIONAL_INFO_NATURAL_PERSON	
 			; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
@@ -537,7 +537,7 @@ Entity GD_Procur_Reason_Supplier is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -552,7 +552,7 @@ Entity GD_Procur_Supplier_OnContractBasis is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -567,7 +567,7 @@ Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -587,7 +587,7 @@ Entity GD_Procur_Supplier_ContactPhone is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 ; ----------------------------------------------------------------------------	
 
@@ -599,7 +599,7 @@ Entity GD_Procur_Supplier_ContactPerson is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -619,7 +619,7 @@ Entity lGD_Procur_Supplier_ContactEmail is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -631,7 +631,7 @@ Entity GD_Procur_MainProducts is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -644,7 +644,7 @@ Entity GD_Procur_SuppliersName is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -658,7 +658,7 @@ Entity GD_Procur_SuppliersName2 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -671,7 +671,7 @@ Entity GD_Procur_SuppliersName3 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 				
 
@@ -685,7 +685,7 @@ Entity GD_Procur_SuppliersName4 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -699,7 +699,7 @@ Entity GD_Procur_Reason_Justification is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 			this mandatory false
 
@@ -712,7 +712,7 @@ Entity GD_Procur_MainActivity is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 ; ----------------------------------------------------------------------------	
 
@@ -755,7 +755,7 @@ Entity GD_Procur_Supplier_ExpectedPVO is DropDownList in frmMain
 			GD_PVO_Question5 visible false
 			GD_PVO_Question5 mandatory false
 
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 			this mandatory false
 
@@ -776,7 +776,7 @@ Entity GD_PVO_Question1 is DropDownList in frmMain
 			this enable false
 		GD_PVO_Question1.Value is YES then GD_PVO_Link1 visible
 		GD_PVO_Question1.Value is NO then GD_PVO_Link1 not visible
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 			
 ; ----------------------------------------------------------------------------	
@@ -796,7 +796,7 @@ Entity GD_PVO_Question2 is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 		GD_PVO_Question2.Value is "HR" then GD_PVO_Link2 visible
@@ -821,7 +821,7 @@ Entity GD_PVO_Question3 is DropDownList in frmMain
 			this enable false
 		this.Value is YES then GD_PVO_Link3 visible
 		this.Value is NO then GD_PVO_Link3 not visible
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 ; ----------------------------------------------------------------------------	
 
@@ -843,7 +843,7 @@ Entity GD_PVO_Question4 is DropDownList in frmMain
 		GD_PVO_Question4.Value is "HR" then GD_PVO_Link4 visible
 		GD_PVO_Question4.Value is not "HR" then GD_PVO_Link4 not visible
 
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -864,7 +864,7 @@ Entity GD_PVO_Question5 is DropDownList in frmMain
 		GD_PVO_Question5.Value is YES then GD_PVO_Link5 visible
 		GD_PVO_Question5.Value is NO then GD_PVO_Link5 not visible
 
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -885,7 +885,7 @@ Entity GD_PVO_Link1 is HyperLink in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -899,7 +899,7 @@ Entity GD_PVO_Link2 is HyperLink in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -913,7 +913,7 @@ Entity GD_PVO_Link3 is HyperLink in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -927,7 +927,7 @@ Entity GD_PVO_Link4 is HyperLink in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 ; ----------------------------------------------------------------------------	
 
@@ -940,7 +940,7 @@ Entity GD_PVO_Link5 is HyperLink in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 ; ----------------------------------------------------------------------------	
 
@@ -955,7 +955,7 @@ Entity GD_Procur_GoodsToSiemens is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 			this mandatory false
 
@@ -970,10 +970,10 @@ Entity GD_Procur_ESNCode  is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VC, VC_CC} then 
+		REQUEST.REQUEST_TYPE in {VC, VC_CC} then 
 			GD_Procur_ESNCode mandatory
 
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 			this mandatory false
 			
@@ -988,7 +988,7 @@ Entity GD_Procur_ESNCode2 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -1000,7 +1000,7 @@ Entity GD_Procur_ESNCode3 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 ; ----------------------------------------------------------------------------	
 
@@ -1011,7 +1011,7 @@ Entity GD_Procur_ESNCode4 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.FLOWTYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
+		REQUEST.REQUEST_TYPE in {VM, VC_PO, VM_BLK, VM_UBLK} then 
 			this visible false
 
 ; ----------------------------------------------------------------------------	
@@ -1064,7 +1064,7 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+		REQUEST.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			mandatory true
 
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
@@ -1099,7 +1099,7 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 		REQUEST.COMPANY_CODE is 5150 and REQUEST.CURRENT_ROLE is ROLES.ENQ then 
 			GD_Adr_Name4 mandatory true
 		
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+		REQUEST.ACCOUNT_GROUP is YVT7 and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			mandatory true
 
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
@@ -1170,7 +1170,7 @@ Entity GD_Adr_Street2 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REGIONAL_COUNTRY is FR then GD_Adr_Street2 not visible
+		REQUEST.COUNTRY is FR then GD_Adr_Street2 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
 	with triggers
@@ -1184,7 +1184,7 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REGIONAL_COUNTRY is FR then GD_Adr_Street3 not visible
+		REQUEST.COUNTRY is FR then GD_Adr_Street3 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
 	with actions
@@ -1200,7 +1200,7 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REGIONAL_COUNTRY is FR then GD_Adr_Street4 not visible
+		REQUEST.COUNTRY is FR then GD_Adr_Street4 not visible
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			max length 32
 	with actions
@@ -1217,7 +1217,7 @@ Entity GD_Adr_Street5 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REGIONAL_COUNTRY is FR then GD_Adr_Street5 not visible
+		REQUEST.COUNTRY is FR then GD_Adr_Street5 not visible
 		
 ; ----------------------------------------------------------------------------	
 
@@ -1238,9 +1238,9 @@ Entity GD_Adr_Region is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
+		REQUEST.ACCOUNT_GROUP is YVT7 then
 			mandatory false
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT1 then
+		REQUEST.ACCOUNT_GROUP is YVT1 then
 			mandatory true
 
 		REQUEST.ACCOUNT_GROUP is YVT1 and GD_Adr_Region.Value is 01 then
@@ -1249,7 +1249,7 @@ Entity GD_Adr_Region is DropDownList in frmMain
 		REQUEST.ACCOUNT_GROUP is YVT1 and GD_Adr_Region.Value in {02,03} then
 			set value FR in GD_Com_Language
 
-		REQUEST.ACCOUNT_GROUP in {YCT6,YVT6,YCT9,YVT9} and REQUEST.Region_IsMandatory and REQUEST.TYPE is VC then
+		REQUEST.ACCOUNT_GROUP in {YCT6,YVT6,YCT9,YVT9} and REQUEST.Region_IsMandatory is true and REQUEST.REQUEST_TYPE is VC then
 			this mandatory true
 
 ; ----------------------------------------------------------------------------	
@@ -1404,7 +1404,7 @@ Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
 		REQUEST.VENDOR_COUNTRY is COUNTRIES.FRANCE then this max length 10
 		REQUEST.VENDOR_COUNTRY is ES then this max length 5
 
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
+		REQUEST.ACCOUNT_GROUP is YVT7 then
 			max length 5
 ; ----------------------------------------------------------------------------	
 
@@ -1574,10 +1574,10 @@ Entity P_GD_VT_Grid is Grid in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.RCO, ROLES.CLERK} then
-			load data from DATASOURCE.MDM_Request_VendorPhoneDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
-			load data from DATASOURCE.MDM_Request_VendorPhoneDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		; REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.RCO, ROLES.CLERK} then
+		; 	load data from DATASOURCE.MDM_Request_VendorPhoneDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		; REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
+		; 	load data from DATASOURCE.MDM_Request_VendorPhoneDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
 		on row inserted
@@ -1672,10 +1672,10 @@ Entity F_GD_VF_Grid is Grid in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
-			load data from DATASOURCE.MDM_Request_VendorFaxDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
-			load data from DATASOURCE.MDM_Request_VendorFaxDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		; REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
+		; 	load data from DATASOURCE.MDM_Request_VendorFaxDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		; REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
+		; 	load data from DATASOURCE.MDM_Request_VendorFaxDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
 		on row inserted
@@ -1698,7 +1698,8 @@ Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 		; check this is true
-		REQUEST.REQUEST_TYPE is VC then mandatory true
+		REQUEST.REQUEST_TYPE is VC then 
+			this mandatory true
 		
 ; ----------------------------------------------------------------------------	
 
@@ -1740,10 +1741,10 @@ Entity E_GD_VE_Grid is Grid in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
-			load data from DATASOURCE.MDM_Request_VendorEmailDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
-			load data from DATASOURCE.MDM_Request_VendorEmailDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		; REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
+		; 	load data from DATASOURCE.MDM_Request_VendorEmailDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
+		; REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
+		; 	load data from DATASOURCE.MDM_Request_VendorEmailDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
 		on row inserted
@@ -1815,17 +1816,17 @@ Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
 		
-		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
+		REQUEST.STATE is not STATE.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is empty then
 			mandatory true
 			
-		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
+		REQUEST.STATE is not STATE.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is true and GD_Ctr_CustomerNumber.OldDisplayValue is not empty then
 			this mandatory
 			
-		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is false then
+		REQUEST.STATE is not STATE.CLOSED and REQUEST.REQUEST_TYPE is VM and PO_ReturnsVendor.Checked is false then
 			this not mandatory
 			GD_Abc_DEMO mandatory
 			
-		REQUEST.STATUS is not REQUEST.CLOSED and REQUEST.REQUEST_TYPE is not VM then
+		REQUEST.STATE is not STATE.CLOSED and REQUEST.REQUEST_TYPE is not VM then
 			mandatory true	
 
 
@@ -1837,7 +1838,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		mandatory false
 		visible true
 		label LABELS.labIndustries
-		; if there are no specific data for this specific country, data for "EN" should be loaded
+		; if there are no specific data for this specific country, data for EN should be loaded
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : REQUEST.VENDOR_COUNTRY}
@@ -1845,21 +1846,19 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+		REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
 			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : FR}
 			; this equals to this line in original code
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
-			set value FR in REQUEST.INDUSTRY_COUNTRY
+			; TODO: DO WE NEED THIS? set value FR in REQUEST.INDUSTRY_COUNTRY
 			; can or should we do something like this?
 			set width 680px		
 
-		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
-			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : "EN"}
+		REQUEST.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
+			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : EN}
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
-			set value "EN" in REQUEST.INDUSTRY_COUNTRY
+			; TODO: DO WE NEED THIS? set value EN in REQUEST.INDUSTRY_COUNTRY
 			mandatory false
-			; TODO: can or should we do something like this?
-			; set width 680px		
 			
 ; ----------------------------------------------------------------------------	
 
@@ -1875,10 +1874,10 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+		REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
 			visible true
 
-		REQUEST.REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.ROLE is ROLES.CLERK then
+		REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} and REQUEST.CURRENT_ROLE is ROLES.CLERK then
 			mandatory true
 
 ; ----------------------------------------------------------------------------	
@@ -1979,14 +1978,14 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			set value SUBSTRING(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
-		REQUEST.VENDOR_COUNTRY is FR and REQUEST.REQUEST.ACCOUNT_GROUP is YVT6 then
+		REQUEST.VENDOR_COUNTRY is FR and REQUEST.ACCOUNT_GROUP is YVT6 then
 			pad left 0,14
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value SUBSTRING(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
 		; ny EU country ; finish the list....
-		REQUEST.REQUEST.ACCOUNT_GROUP is not "YVT6" and REQUEST.VENDOR_COUNTRY in {ES, IT, PT, GR } then
+		REQUEST.ACCOUNT_GROUP is not "YVT6" and REQUEST.VENDOR_COUNTRY in {ES, IT, PT, GR } then
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 
 		REQUEST.VENDOR_COUNTRY is not ES then
@@ -2077,11 +2076,11 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
+		REQUEST.ACCOUNT_GROUP is YVT7 then
 			mandatory false
 			visible false
 
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT5 then
+		REQUEST.ACCOUNT_GROUP is YVT5 then
 			max length 16
 
 		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is VC and REQUEST.TaxCode1_IsMandatory then
@@ -2096,9 +2095,9 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} then
 			this enable false
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
+		REQUEST.ACCOUNT_GROUP is YVT7 then
 			max length 9
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT5 then
+		REQUEST.ACCOUNT_GROUP is YVT5 then
 			max length 11
 		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
 			enabled false
@@ -2152,7 +2151,7 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 			GD_Ctr_VATRegistrationNumber mandatory true
 			GD_Ctr_VATRegistrationNumber enabled true
 
-		REQUEST.REQUEST.ACCOUNT_GROUP is YVT7 then
+		REQUEST.ACCOUNT_GROUP is YVT7 then
 			this enable false
 			this mandatory false
 
@@ -3777,6 +3776,7 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Ctr_IsNaturalPerson.Value is true and GD_Adr_Country.Value is IT and GD_NatP_Exemption.Value and GD_NatP_Exemption.Visible is true is empty then
 			set value MESSAGES.ERRsubmitRequestGDFieldExemption in MESSAGE_POPUP
 		
+		; TODO: CHANGE PHONE DETAILS HERE
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.PHONE_DETAILS is empty and REQUEST.COUNTRY is not BE then
 			set value MESSAGES.ERRsubmitRequestGDFieldTelephone in MESSAGE_POPUP
 			

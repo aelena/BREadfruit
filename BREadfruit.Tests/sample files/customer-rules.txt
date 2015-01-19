@@ -133,8 +133,6 @@ Entity DDLDCountry is DropDownList in frmSearch
 		load data from DATASOURCE.MDMC_Countries
 		label LABELS.labCountry
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
-		data field DisplayName
-		value field Code
 
 	with actions
 		set value '' in MESSAGE_POPUP
@@ -189,8 +187,6 @@ Entity DDLCDCountry is DropDownList in frmSearch
 		clear DDLCDSalesOrg
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
-		load data from DATASOURCE.MDMC_ClusterDistributionChannels with arguments {Country: DDLCDCountry.Value, Company:DDLCDCompany.Value, SalesOrg:DDLCDSalesOrg.Value} in DDLCDDistribChannel
-		DDLCDDistribChannel visible true
 		hide btnCreateVendor
 
 	with triggers
@@ -239,6 +235,10 @@ Entity DDLCDSalesOrg is DropDownList in frmSearch
 		clear CustomerSearchResultGrid
 		hide btnCreateVendor
 
+	with rules
+		DDLCDDistribChannel.HasItems is true then
+			DDLCDDistribChannel visible true
+
 	with triggers
 		this.value changes
 
@@ -251,11 +251,20 @@ Entity DDLCDDistribChannel is DropDownList in frmSearch
 		label LABELS.labDistribChannel
 		data field DisplayName
 		value field Code
+		visible false
 		
 	with actions
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
 		hide btnCreateVendor
+
+	with rules
+		DDLCDDistribChannel.Count > 0 then
+			DDLCDDistribChannel visible true
+		else
+			DDLCDDistribChannel visible false
+		DDLCDDistribChannel is visible and DDLCDivision is empty then
+			DDLCDDistribChannel mandatory
 
 	with triggers
 		this.value changes
@@ -273,12 +282,12 @@ Entity DDLCDivision is DropDownList in frmSearch
 
 	; TODO: WHEN DOES THIS CONTROL BECOME VISIBLE
 	with rules
-		DDLCDivision is visible and DDLCDivision is empty then
-			DDLCDivision mandatory
 		DDLCDivision.Count > 0 then
 			this visible true
-		DDLCDivision.Count <= 0 then
+		else
 			this visible false
+		DDLCDivision is visible and DDLCDivision is empty then
+			DDLCDivision mandatory
 		
 ; ---------------------------------------------------------------------------- 
 
@@ -1506,16 +1515,17 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		; if there are no specific data for this specific country, data for "EN" should be loaded
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : REQUEST.CUSTOMER_COUNTRY}
+		load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : REQUEST.COUNTRY}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
 		REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
-			load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : "FR"}
+			load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : FR}
 			; this equals to this line in original code
-			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
-			set value "FR" in REQUEST.INDUSTRY_COUNTRY
+			; TODO: WHY? this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
+			; most likely unneeded?
+			; set value FR in REQUEST.INDUSTRY_COUNTRY
 
 		REQUEST.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
 			load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : "EN"}
@@ -1523,7 +1533,30 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 			set value "EN" in REQUEST.INDUSTRY_COUNTRY
 			mandatory false
 
+
+		REQUEST.COUNTRY is IT and GD_Ctr_Industry is not empty then
+			;	3) for account group YCT5, use DDL the excel file attached called ""ISIC italian convertion"". 
+			;		the DDL shown to the ROLES.ENQ is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
+			load data from DATASOURCE.MDMC_ItalyIndustries with arguments {FlagActive: true, Code:GD_Ctr_Industry.Value} with output {GD_Ctr_IndustryCode.Value : KNA1_BRAN1} 
+
+
 ; ---------------------------------------------------------------------------- 
+
+Entity GD_Ctr_IndustryCode is DropDownList in frmMain
+	; always like this except for Italy
+	with defaults
+		enabled false
+		visible false
+		label LABELS.lblIndustryCode
+		load data from DATASOURCE.MDMC_ItalyIndustries with arguments {FlagActive: true}
+
+	with rules
+		REQUEST.COUNTRY is IT then
+			this visible true
+
+; ---------------------------------------------------------------------------- 
+
+
 
 Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
@@ -2315,14 +2348,17 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_DunningProcedure with arguments {FlagActive : true, ClusterCountryCode: REQUEST.COUNTRY}
+		visible false
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false	
-		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is not FR then
-			this visible false
+		
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is  FR then
+			this visible true
+
 		REQUEST.COUNTRY is FR then
-			this mandatory trye
+			this mandatory true
 
 		REQUEST.COUNTRY is ES then
 			set value Y302 in CC_DD_DunningProcedure
@@ -2379,7 +2415,7 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 		; TODO: EVALUATION ORDER IS IMPORTANT IN A CASE LIKE THIS...
 
 		REQUEST.REQUEST_TYPE in {CC, CC_CC} then
-			set value 'WE' in CC_AR_PledgeIndicator
+			set value WE in CC_AR_PledgeIndicator
 
 		REQUEST.COUNTRY in {ES,FR,GR} then
 			set value '' in CC_AR_PledgeIndicator
@@ -3004,7 +3040,7 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} then
 			this enable false
 		
-		REQUEST.COMPANY_CODE in {5180, 596G,5140,491E} then
+		REQUEST.COMPANY_CODE in {5180,596G,5140,491E} then
 			this visible true
 
 		REQUEST.COUNTRY is FR then
@@ -3016,10 +3052,10 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 		
 		; TODO: WHAT IS THIS DISCREPANCY	
 		REQUEST.REQUEST_TYPE in {CC, CC_SO} then
-			load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
+			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
 
 		REQUEST.ACCOUNT_GROUP in {YCT6,YVT6,YCT9,YVT9} and GD_Adr_PostalCode.Value.Length >= 2 then
-			load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
+			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
 
 ; ---------------------------------------------------------------------------- 
 
