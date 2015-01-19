@@ -77,6 +77,7 @@
     <Compile Include="Low level tests\TESTGEN_tests.cs" />
     <Compile Include="Low level tests\WithLineTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="sample files\single entity tests\File082 - Data Value field 2.txt" />
     <Content Include="sample files\single entity tests\File073 - Output in Default.txt" />
     <Content Include="sample files\single entity tests\File069 - Return.txt" />
   </ItemGroup>
@@ -168,6 +169,7 @@
     <Content Include="sample files\single entity tests\File079 - Data and Value.txt" />
     <Content Include="sample files\single entity tests\File080 - Wrong data value field.txt" />
     <Content Include="sample files\single entity tests\File081 - Wrong data value field 2.txt" />
+    <Content Include="sample files\single entity tests\File083 - New mandatory.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
     <Content Include="__sketchpad.txt" />

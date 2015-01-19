@@ -490,12 +490,12 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 		GD_Ctr_IsNaturalPerson.Value is true and GD_Adr_Country.Value is IT then
 			GD_NatP_DateOfBirth mandatory true
 
-		GD_NatP_DateOfBirth is mandatory or GD_NatP_DateOfBirth is mandatory then
+		GD_NatP_DateOfBirth.IsMandatory is true or GD_NatP_DateOfBirth.IsMandatory is true then
 			GD_NatP_PlaceOfBirth mandatory true
 		else
 			GD_NatP_PlaceOfBirth mandatory false
 			
-		GD_NatP_DateOfBirth is mandatory then
+		GD_NatP_DateOfBirth.IsMandatory is true then
 			GD_NatP_Sex mandatory true
 		else
 			GD_NatP_Sex mandatory false 
@@ -3887,7 +3887,7 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode2 is empty and GD_Ctr_TaxCode2 is mandatory then
 			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode2Empty in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_VATRegistrationNumber is empty and GD_Ctr_VATRegistrationNumber is mandatory then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is not IT and REQUEST.ACCOUNT_GROUP not in {YVT6, YVT9, YCT6, YCT9} and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_VATRegistrationNumber is empty and GD_Ctr_VATRegistrationNumber.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestGDFieldVatReg in MESSAGE_POPUP
 
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true then
@@ -3906,19 +3906,19 @@ Entity btnSubmit is Button in frmMain
 
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.CLERK} and F_GD_VF_Grid.HasRows is true and F_GD_VF_Grid.HasDefaultRow is false then
 			; TODO: DEFINE THESE THINGS
-			; meaning, there must be one selected default row in the grid if there are rowsLERKC and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_PIVA.Value is empty and 	GD_Ctr_PIVA is mandatory then
+			; meaning, there must be one selected default row in the grid if there are rowsLERKC and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_PIVA.Value is empty and 	GD_Ctr_PIVA.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestGDFieldSIRET in MESSAGE_POPUP
 
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.REQUEST_TYPE is VC and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_PIVA.Value.Value.Length is not 14 then
 			set value MESSAGES.ERRsubmitRequestGDFieldSIRET_14 in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.REQUEST_TYPE is VC and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_VATRegistrationNumber.Value is empty and GD_Ctr_VATRegistrationNumber is mandatory then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.REQUEST_TYPE is VC and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_VATRegistrationNumber.Value is empty and GD_Ctr_VATRegistrationNumber.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestGDFieldVatEmplty in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.REQUEST_TYPE is VC and GD_Adr_POBoxLoc.Value is empty and GD_Adr_POBoxLoc is mandatory then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.REQUEST_TYPE is VC and GD_Adr_POBoxLoc.Value is empty and GD_Adr_POBoxLoc.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestPOBOXinformed in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.CURRENT_ROLE is ROLES.CLERK and GD_Ctr_GFORM.Value is empty and GD_Ctr_GFORM is mandatory then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.VENDOR_COUNTRY in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} and REQUEST.CURRENT_ROLE is ROLES.CLERK and GD_Ctr_GFORM.Value is empty and GD_Ctr_GFORM.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestFieldLegalForm in MESSAGE_POPUP
 
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_SAPNumber.Visible is true and DDLDCReqAction.Value is STATES.SUBMITTED and REQUEST.COUNTRY in {BE,LU} and GD_SAPNumber.Value is empty then
@@ -3930,13 +3930,13 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_SAPNumber.Visible is true and DDLDCReqAction.Value is STATES.SUBMITTED and REQUEST.COUNTRY is LU and GD_SAPNumber.Value is not empty and GD_SAPNumber.Value < 2000000000 or GD_SAPNumber.Value > 2999999999 then
 			set value MESSAGES.ERRsubmitRequestRHFieldSAPInv2 in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and CC_AM_WithholdingTaxCode is mandatory and CC_AM_WithholdingTaxCode.Value is empty then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and CC_AM_WithholdingTaxCode.IsMandatory is true and CC_AM_WithholdingTaxCode.Value is empty then
 			set value MESSAGES.ERRsubmitRequestCCTaxCode in MESSAGE_POPUP
 
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and REQUEST.COUNTRY is IT and CC_AM_SubjectedToWHTax.Value is true and CC_AM_WithholdingTaxCode.Value is empty then
 			set value MESSAGES.ERRsubmitRequestCCTaxCode in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Damex is mandatory and GD_Damex.Value is empty then
+		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Damex.IsMandatory is true and GD_Damex.Value is empty then
 			set value MESSAGES.ERRsubmitRequestRHFieldDamex in MESSAGE_POPUP
 		
 		REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} and GD_Damex.Value is true and ATTACHMENT.Count is 0 then
@@ -3955,7 +3955,7 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.REQUEST_TYPE in {VC,CC} and GD_Adr_Country.Value is GR and GD_Adr_Name4.Value is empty then
 			set value MESSAGES.ERRsubmitRequestGDFieldName4 in MESSAGE_POPUP
 
-		GD_Adr_Country.Value is GR and GD_Ctr_IsNaturalPerson.Value is true and CC_AM_WithholdingTaxCode is mandatory and CC_AM_WithholdingTaxCode.Value is empty then
+		GD_Adr_Country.Value is GR and GD_Ctr_IsNaturalPerson.Value is true and CC_AM_WithholdingTaxCode.IsMandatory is true and CC_AM_WithholdingTaxCode.Value is empty then
 			set value MESSAGES.ERRsubmitRequestCCWithholding in MESSAGE_POPUP
 		
 		GD_Adr_Country.Value is GR and and GD_Ctr_TaxCode2.Value is empty then
@@ -3970,7 +3970,7 @@ Entity btnSubmit is Button in frmMain
 		GD_Adr_Country.Value is GR and and PO_Incoterms2.Value is empty then
 			set value MESSAGES.ERRsubmitRequestPOFieldIncoterms2 in MESSAGE_POPUP
 
-		GD_Adr_Country.Value is GR and GD_Adr_City2.Value is empty and GD_Adr_City2 is mandatory then
+		GD_Adr_Country.Value is GR and GD_Adr_City2.Value is empty and GD_Adr_City2.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestGDFieldDistrict in MESSAGE_POPUP
 
 		CC_AM_BPClassification.Value is empty then
@@ -3988,7 +3988,7 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.COUNTRY is ES and CC_DD_DunningProcedure.Value is not empty and CC_DD_LegalProceedings.Value is empty then
 			set value MESSAGES.ERRsubmitRequestCCFieldLegalDunnig in MESSAGE_POPUP
 
-		REQUEST.COUNTRY not in {IT, PT} and REQUEST.CURRENT_ROLE in {ROLES.ENQ,ROLES.CLERK} and CC_PT_PaymentMethods is mandatory and CC_PT_PaymentMethods.Value is empty then
+		REQUEST.COUNTRY not in {IT, PT} and REQUEST.CURRENT_ROLE in {ROLES.ENQ,ROLES.CLERK} and CC_PT_PaymentMethods.IsMandatory is true and CC_PT_PaymentMethods.Value is empty then
 			set value MESSAGES.ERRsubmitRequestCCViewFieldPaymentMethod in MESSAGE_POPUP
 	 
 		PO_PurchaseOrderCurrency.Value is empty and REQUEST.COMPANY_CODE is 563M then
@@ -4047,7 +4047,7 @@ Entity btnSubmit is Button in frmMain
 		GD_Adr_Country.Value is GR and GD_Adr_POBoxPostalCode.Value is not empty and GD_Adr_POBoxPostalCode.Value.Length is not 5 then 
 			set value MESSAGES.ERRsubmitRequestGDPOBoxValid in MESSAGE_POPUP
 
-		GD_Adr_Country.Value is GR and GD_Adr_POBoxPostalCode is mandatory and GD_Adr_POBoxPostalCode.Value is empty then
+		GD_Adr_Country.Value is GR and GD_Adr_POBoxPostalCode.IsMandatory is true and GD_Adr_POBoxPostalCode.Value is empty then
 			set value MESSAGES.ERRsubmitRequestGDPOBox in MESSAGE_POPUP
 
 		GD_SAPNumber is Visible and DDLDCReqAction.Value is SUBMITTED and GD_Adr_CountryGD.Value is BE and REQUEST.REQUEST_TYPE is VC and GD_SAPNumber.Value is empty then
@@ -4062,13 +4062,13 @@ Entity btnSubmit is Button in frmMain
 		GD_SAPNumber is Visible and DDLDCReqAction.Value is SUBMITTED and GD_Adr_CountryGD.Value is LU and REQUEST.REQUEST_TYPE is VC and GD_SAPNumber.Value is not empty and GD_SAPNumber.Value not in range {2000000000,2999999999} then
 			set value MESSAGES.ERRsubmitRequestRHFieldSAPInv2 in MESSAGE_POPUP
 
-		CC_AM_WithholdingTaxCode is mandatory and CC_AM_WithholdingTaxCode.Value is empty then
+		CC_AM_WithholdingTaxCode.IsMandatory is true and CC_AM_WithholdingTaxCode.Value is empty then
 			set value MESSAGES.ERRsubmitRequestCCTaxCode in MESSAGE_POPUP
 
 		REQUEST.COUNTRY is IT and CC_AM_WithholdingTaxCode.Value is empty then
 			set value MESSAGES.ERRsubmitRequestCCTaxCode in MESSAGE_POPUP
 
-		GD_Damex is mandatory and GD_Damex.Value is emtpy then
+		GD_Damex.IsMandatory is true and GD_Damex.Value is emtpy then
 			set value MESSAGES.ERRsubmitRequestRHFieldDamexE in MESSAGE_POPUP
 
 		GD_Damex.Value is true and ATTACHMENT.Count is 0 then

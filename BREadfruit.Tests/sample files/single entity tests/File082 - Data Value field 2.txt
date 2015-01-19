@@ -1,0 +1,25 @@
+﻿Entity DDLVDCountry is DropDownList in frmSearch
+	with defaults
+		;comment
+		data field DisplayName
+		value field Code
+		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
+		load data from DATASOURCE.MDM_Countries
+		label LABELS.COUNTRY
+
+	with actions
+		set value '' in MESSAGE_POPUP
+		hide vendorSearchResultGrid
+		hide btnCreateVendor
+		load data from DATASOURCE.MDM_Countries
+		clear vendorSearchResultGrid
+
+
+	with rules
+		DDLVDCountry.value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then label LABELS.labSIRET in TBVendorVAT
+		DDLVDCountry.value in {PT,ES} then label LABELS.labNIF in TBVendorVAT
+		DDLVDCountry.value is IT then label LABELS.labPartitaIVA in TBVendorVAT
+		DDLVDCountry.value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then label LABELS.labVAT in TBVendorVAT
+	
+	with triggers
+		this.value changes 

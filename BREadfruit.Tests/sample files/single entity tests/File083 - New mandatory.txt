@@ -1,0 +1,4 @@
+﻿Entity xARKANEx is TextBox in frmMain
+	with rules
+		GD_Ctr_TaxCode2 is empty and GD_Ctr_TaxCode2.IsMandatory is true then
+			set value ERRsubmitRequestGDFieldTaxCode2Empty in MESSAGE_POPUP

@@ -3693,7 +3693,7 @@ Entity btnSubmit is Button in frmMain
 		GD_Adr_Street is empty then
 			set value MESSAGES.ERRsubmitRequestGDfieldCStreet in MESSAGE_POPUP
 
-		GD_Adr_Region is empty and GD_Adr_Region is mandatory then
+		GD_Adr_Region is empty and GD_Adr_Region.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestGDfieldCStreet in MESSAGE_POPUP
 
 		GD_Adr_City is empty then
@@ -3705,10 +3705,10 @@ Entity btnSubmit is Button in frmMain
 		GD_Adr_Country.Value is GR and GD_Adr_Name3.Value is empty then
 			set value MESSAGES.ERRsubmitRequestGDFieldName3 in MESSAGE_POPUP
 		
-		GD_Adr_Country.Value is FR and GD_Adr_Name4.Value is empty and GD_Adr_Name4 is mandatory then
+		GD_Adr_Country.Value is FR and GD_Adr_Name4.Value is empty and GD_Adr_Name4.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestGDFieldName4 in MESSAGE_POPUP
 					
-		GD_Adr_Country.Value is GR and GD_Adr_City2.Value is empty and GD_Adr_City2 is mandatory then
+		GD_Adr_Country.Value is GR and GD_Adr_City2.Value is empty and GD_Adr_City2.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestGDfieldCSRegion in MESSAGE_POPUP
 
 		GD_Com_Telebox.Value is empty then
