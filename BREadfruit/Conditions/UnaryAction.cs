@@ -60,6 +60,9 @@ namespace BREadfruit.Conditions
 		internal UnaryAction ( Symbol s, string reference = "this" ) :
 			base ( s.Token, s.IndentLevel, s.IsTerminal )
 		{
+			if ( s == null )
+				throw new ArgumentNullException ( "s", "Symbol cannot be null" );
+
 			if ( s.Children != null )
 				foreach ( var c in s.Children )
 					base.AddValidChild ( c );

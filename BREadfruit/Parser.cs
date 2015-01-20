@@ -235,9 +235,18 @@ namespace BREadfruit
 										this._entities.Last ().Rules.Last ().IsFinalRule = true;
 										continue;
 									}
-									var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
-										this.Entities.Last ().Name );
-									_rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
+									try
+									{
+										var _unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
+											this.Entities.Last ().Name );
+
+										_rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
+									}
+									catch ( Exception ex )
+									{
+										throw new Exception ( String.Format ( "Error on creation Unary Action from line -> {0} (line #{1})",
+											lineInfo.Representation, _currLine ) );
+									}
 									continue;
 								}
 								// then it's a long result action line
@@ -252,20 +261,29 @@ namespace BREadfruit
 									}
 									if ( _resClause.First () == Grammar.ThisSymbol )
 									{
-										var _ra = new ResultAction ( _resClause.ElementAt ( 1 ), _resClause.ElementAt ( 2 ), this.Entities.Last ().Name );
+										var _ra = new ResultAction ( _resClause.ElementAt ( 1 ),
+											_resClause.Count () == 2 ? Grammar.TrueSymbol : _resClause.ElementAt ( 2 ), this.Entities.Last ().Name );
 										this._entities.Last ().Rules.Last ().Conditions.Last ().AddResultAction ( _ra );
 										continue;
 									}
 
 									var _penultimate = Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token );
-									UnaryAction _unaryAction = null;
-									if ( _penultimate != null )
-										_unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
-										   lineInfo.Tokens.Last ().Token );
-									else
-										_unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
-											lineInfo.Tokens.Penultimate ().Token );
-									_rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
+									try
+									{
+										UnaryAction _unaryAction = null;
+										if ( _penultimate != null )
+											_unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Penultimate ().Token ),
+											   lineInfo.Tokens.Last ().Token );
+										else
+											_unaryAction = new UnaryAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.Last ().Token ),
+												lineInfo.Tokens.Penultimate ().Token );
+										_rule.Conditions.Last ().AddUnaryAction ( _unaryAction );
+									}
+									catch ( Exception ex )
+									{
+										throw new Exception ( String.Format ( "Error on creation Unary Action from line -> {0} (line #{1})",
+											lineInfo.Representation, _currLine ), ex );
+									}
 									continue;
 
 								}
@@ -480,7 +498,15 @@ namespace BREadfruit
 						{
 							if ( lineInfo.Tokens.Contains ( Grammar.MandatoryDefaultClause ) )
 							{
-								AddMandatoryUnaryAction ( _currentScope );
+								try
+								{
+									AddMandatoryUnaryAction ( _currentScope );
+								}
+								catch ( Exception ex )
+								{
+									throw new Exception ( String.Format ( "Error on creation Unary Action from line -> {0} (line #{1})",
+										lineInfo.Representation, _currLine ), ex );
+								}
 								continue;
 							}
 						}
@@ -493,9 +519,17 @@ namespace BREadfruit
 							{
 								if ( Regex.IsMatch ( lineInfo.Representation.Trim (), Grammar.ShowElementLineRegex, RegexOptions.IgnoreCase ) )
 								{
-									var _ua = new UnaryAction ( lineInfo.Tokens.First (),
-										lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
-									AddUnaryActionToCurrentRule ( _currentScope, _ua );
+									try
+									{
+										var _ua = new UnaryAction ( lineInfo.Tokens.First (),
+											lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
+										AddUnaryActionToCurrentRule ( _currentScope, _ua );
+									}
+									catch ( Exception ex )
+									{
+										throw new Exception ( String.Format ( "Error on creation Unary Action from line -> {0} (line #{1})",
+											lineInfo.Representation, _currLine ), ex );
+									}
 								}
 								else
 									throw new InvalidShowStatementClauseException (
@@ -1050,17 +1084,24 @@ namespace BREadfruit
 
 		private void AddTrueFalseAction ( LineInfo lineInfo, Symbol trueSymbol, Symbol falseSymbol, bool addToElseBranch = false )
 		{
-			var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
-			var _indexOfThis = lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol );
-			UnaryAction _ua = null;
-			if ( _booleanValue.Item2 == Grammar.TrueSymbol )
-				_ua = new UnaryAction ( trueSymbol,
+			try
+			{
+				var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
+				var _indexOfThis = lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol );
+				UnaryAction _ua = null;
+				if ( _booleanValue.Item2 == Grammar.TrueSymbol )
+					_ua = new UnaryAction ( trueSymbol,
+						_indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
+				else
+					_ua = new UnaryAction ( falseSymbol,
 					_indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
-			else
-				_ua = new UnaryAction ( falseSymbol,
-				_indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
 
-			this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
+				this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
+			}
+			catch ( Exception ex )
+			{
+				throw new Exception ( String.Format ( "Error on creation Unary Action from line -> {0}", lineInfo.Representation ), ex );
+			}
 		}
 
 
@@ -1118,19 +1159,26 @@ namespace BREadfruit
 
 		private void ProcessUnaryAction ( LineInfo lineInfo, Symbol symbol, bool addToElseBranch = false, bool addToConditionlessActions = false )
 		{
-			if ( lineInfo.Tokens.Contains ( symbol ) )
+			try
 			{
-				UnaryAction _ua = null;
-				if ( lineInfo.Tokens.First () == symbol )
-					_ua = new UnaryAction ( lineInfo.Tokens.First (),
-						   lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
-				else
-					_ua = new UnaryAction ( lineInfo.Tokens.Last (),
-						   lineInfo.Tokens.First ().Token == "this" ? this.Entities.First ().Name : lineInfo.Tokens.First ().Token );
-				if ( !addToConditionlessActions )
-					this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
-				else
-					this._entities.Last ().AddUnaryAction ( _ua );
+				if ( lineInfo.Tokens.Contains ( symbol ) )
+				{
+					UnaryAction _ua = null;
+					if ( lineInfo.Tokens.First () == symbol )
+						_ua = new UnaryAction ( lineInfo.Tokens.First (),
+							   lineInfo.Tokens.Last ().Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.Last ().Token );
+					else
+						_ua = new UnaryAction ( lineInfo.Tokens.Last (),
+							   lineInfo.Tokens.First ().Token == "this" ? this.Entities.First ().Name : lineInfo.Tokens.First ().Token );
+					if ( !addToConditionlessActions )
+						this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
+					else
+						this._entities.Last ().AddUnaryAction ( _ua );
+				}
+			}
+			catch ( Exception ex )
+			{
+				throw new Exception ( String.Format ( "Error on creation Unary Action from line -> {0}", lineInfo.Representation ) );
 			}
 		}
 
