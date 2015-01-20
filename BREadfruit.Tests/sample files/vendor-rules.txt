@@ -268,7 +268,9 @@ Entity btnSearch is Button in frmSearch
 			TBVendorName is not empty and DDLVDCountry is empty then
 				set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
 
-			load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
+			; TODO: VERIFY THIS WITH SEB
+			MESSAGE_POPUP is empty then
+				load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
 		
 						
 
