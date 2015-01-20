@@ -860,7 +860,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.First ().Value.ToString () == "LABELS.GENERIC.labInsert", "Expected  e.Defaults.First ().Token, not" + e.Defaults.First ().Value.ToString () );
 
 			Assert.That ( e.ConditionlessActions.Count () == 1, "should have 1 ConditionlessActions but has " + e.ConditionlessActions.Count () );
-			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).ToString ().Trim() == "save_data_to DATASOURCE.MDM_Requests_PhoneEntry this" );
+			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).ToString ().Trim () == "save_data_to DATASOURCE.MDM_Requests_PhoneEntry this" );
 
 			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).Action == Grammar.SaveDataUnaryActionSymbol );
 			Assert.That ( e.ConditionlessActions.ElementAt ( 0 ).Reference == "this" );
@@ -2418,12 +2418,32 @@ namespace BREadfruit.Tests
 
 			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "GD_Ctr_TaxCode2" );
 			Assert.That ( e.Rules.First ().Conditions.First ().Operator.Token == Grammar.EqualityOperator.Token );
-			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString() == Grammar.EmptyStringSymbol.Token);
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == Grammar.EmptyStringSymbol.Token );
 
 			Assert.That ( e.Rules.First ().Conditions.Last ().Operand == "GD_Ctr_TaxCode2.IsMandatory" );
 			Assert.That ( e.Rules.First ().Conditions.Last ().Operator.Token == Grammar.IsOperator );
-			Assert.That ( e.Rules.First ().Conditions.Last ().Value.ToString() == Grammar.TrueSymbol.Token );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Value.ToString () == Grammar.TrueSymbol.Token );
 
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile084 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File084 - Disabled.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_SAPNumber", "Entity name should be 'GD_SAPNumber' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.TextBoxSymbol.Token, "Entity name should be " + Grammar.TextBoxSymbol.Token + " but is " + e.TypeDescription );
+
+			Assert.That ( e.Rules.First ().Conditions.Count () == 4 );
+			Assert.That ( e.Rules.First ().Conditions.Take(3).All ( x => x.SuffixLogicalOperator == Grammar.ORSymbol ) );
 
 		}
 
