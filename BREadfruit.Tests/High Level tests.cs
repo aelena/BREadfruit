@@ -2443,13 +2443,130 @@ namespace BREadfruit.Tests
 			Assert.That ( e.TypeDescription == Grammar.TextBoxSymbol.Token, "Entity name should be " + Grammar.TextBoxSymbol.Token + " but is " + e.TypeDescription );
 
 			Assert.That ( e.Rules.First ().Conditions.Count () == 4 );
-			Assert.That ( e.Rules.First ().Conditions.Take(3).All ( x => x.SuffixLogicalOperator == Grammar.ORSymbol ) );
+			Assert.That ( e.Rules.First ().Conditions.Take ( 3 ).All ( x => x.SuffixLogicalOperator == Grammar.ORSymbol ) );
 
 		}
 
 
 		// ---------------------------------------------------------------------------------
 
+
+
+		[Test]
+		public void ParseSampleFile085 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File085.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "DDLDCountry", "Entity name should be 'DDLDCountry' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.DropDownListSymbol.Token, "Entity name should be " + Grammar.DropDownListSymbol.Token + " but is " + e.TypeDescription );
+			var i = 0;
+			Assert.That ( e.Rules.Count () == 4, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.All ( x => x.Conditions.Count () == 1 ), String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.Take ( 2 ).All ( x => x.Operator == Grammar.InOperator ), String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator == Grammar.IsOperator, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.First ().Operator == Grammar.NotInOperator, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.All ( x => x.Conditions.Last ().ResultActions.Count () == 1 ), String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.All ( x => x.Conditions.Last ().ResultActions.All ( y => y.Action == Grammar.LabelDefaultClause ) ), String.Format ( "Assert {0}", ++i ) );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile086 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File086.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_Ctr_CustomerClassification", "Entity name should be 'GD_Ctr_CustomerClassification' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.DropDownListSymbol.Token, "Entity name should be " + Grammar.DropDownListSymbol.Token + " but is " + e.TypeDescription );
+			var i = 0;
+			Assert.That ( e.Rules.Count () == 2, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.Count () == 2, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Reference == "GD_Ctr_CustomerClassification", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.First ().Value.ToString () == "G", String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.Last ().Conditions.Count () == 2, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Last ().Conditions.First ().SuffixLogicalOperator == Grammar.ANDSymbol, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Action == Grammar.EnableUnaryActionSymbol.Token, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Last ().Conditions.Last ().ResultActions.First ().Reference == "GD_Ctr_CustomerClassification", String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
+		[Test]
+		public void ParseSampleFile087 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File087.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_Adr_POBox", "Entity name should be 'GD_Adr_POBox' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.TextBoxSymbol.Token, "Entity name should be " + Grammar.TextBoxSymbol.Token + " but is " + e.TypeDescription );
+			var i = 0;
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().Value.ToString () == ".", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().ResultActions.First ().Value.ToString () == ".", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Last ().Conditions.Last ().Value.ToString () == "\".\"", String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
+		[Test]
+		public void ParseSampleFile088 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File088.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_Adr_POBox", "Entity name should be 'GD_Adr_POBox' but is " + e.Name );
+			Assert.That ( e.TypeDescription == Grammar.TextBoxSymbol.Token, "Entity name should be " + Grammar.TextBoxSymbol.Token + " but is " + e.TypeDescription );
+			var i = 0;
+			Assert.IsTrue ( e.Rules.First ().Conditions.Last ().ResultActions.Count () + e.Rules.First ().Conditions.Last ().Results.Count () == 4 );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile089 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File089.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_Ctr_TaxCode2", "Entity name should be 'GD_Ctr_TaxCode2' but is " + e.Name );
+			var i = 0;
+			
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Count () == 2, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.All ( x => x.Reference == "GD_Ctr_TaxCode2" ), String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 		[Test]
 		public void ShouldFindEntities_Vendor ()

@@ -171,6 +171,11 @@
     <Content Include="sample files\single entity tests\File081 - Wrong data value field 2.txt" />
     <Content Include="sample files\single entity tests\File083 - New mandatory.txt" />
     <Content Include="sample files\single entity tests\File084 - Disabled.txt" />
+    <Content Include="sample files\single entity tests\File085.txt" />
+    <Content Include="sample files\single entity tests\File086.txt" />
+    <Content Include="sample files\single entity tests\File087.txt" />
+    <Content Include="sample files\single entity tests\File088.txt" />
+    <Content Include="sample files\single entity tests\File089.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
     <Content Include="__sketchpad.txt" />

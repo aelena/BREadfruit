@@ -472,6 +472,7 @@ namespace BREadfruit
 		public static UnaryAction SaveDataUnaryActionSymbol = new UnaryAction ( "save_data_to", 2, true, new [] { "save data to" } );
 		public static UnaryAction ChangeFormUnaryActionSymbol = new UnaryAction ( "change_to", 2, true, new [] { "change to" } );
 		public static UnaryAction SetValidationRegexUnaryActionSymbol = new UnaryAction ( "validation_regex", 2, true, new [] { "validation regex", "validation" } );
+		public static UnaryAction SetMaxLengthActionSymbol = new UnaryAction ( "max_length", 2, true, new [] { "max length", "set length", "length" } );
 
 		public static UnaryAction AddRowUnaryActionSymbol = new UnaryAction ( "add_row", 2, true, new [] { "add row to", "add row" } );
 

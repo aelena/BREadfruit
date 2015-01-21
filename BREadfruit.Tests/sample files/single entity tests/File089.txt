@@ -1,0 +1,5 @@
+﻿Entity GD_Ctr_TaxCode2 is TextBox in frmMain
+	with rules
+		REQUEST.ACCOUNT_GROUP is YCT5 then
+			max length 11
+			validation ^[0-9]{11}$

@@ -1,0 +1,17 @@
+﻿Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
+
+	with defaults
+		data field DisplayName
+		value field Code
+		label LABELS.labGD_Ctr_VendorClassification
+		mandatory true
+		visible true
+		enabled true
+		value NG
+		; values G  and NG
+		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
+
+	with rules
+
+		REQUEST.CUSTOMER_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value G in GD_Ctr_CustomerClassification
+		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then this enabled 

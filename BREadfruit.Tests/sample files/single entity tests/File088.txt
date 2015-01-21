@@ -1,0 +1,10 @@
+﻿Entity GD_Adr_POBox is TextBox in frmMain
+	with rules
+		REQUEST.ACCOUNT_GROUP is YCT4 and GD_Ctr_VATRegistrationNumber starts with {1,2,3} then
+			this visible true
+			set value true in GD_Ctr_IsNaturalPerson
+			GD_Ctr_TaxCode2 mandatory true
+			; TODO: REQUIRES PARSER CHANGE
+			GD_Ctr_TaxCode2 max length 11
+			; TODO: DOES NOT WORK WELL
+			; GD_Ctr_TaxCode2 validation "^[0-9]{11}$"

@@ -647,14 +647,7 @@ namespace BREadfruit
 						#region " --- 3 tokens --- "
 						if ( lineInfo.Tokens.Count () == 3 )
 						{
-							if ( lineInfo.Tokens.First () == Grammar.EnabledDefaultClause )
-							{
-								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
-								   lineInfo.Tokens.ElementAt ( 1 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 1 ).Token );
-								AddResultActionToCurrentRule ( _currentScope, _ra );
-								continue;
-							}
-							if ( lineInfo.Tokens.First () == Grammar.VisibleDefaultClause )
+							if ( lineInfo.Tokens.First ().In ( new [] { Grammar.EnabledDefaultClause, Grammar.VisibleDefaultClause } ) )
 							{
 								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.First ().Token ), lineInfo.Tokens.Last ().Token.Replace ( "\"", "" ),
 								   lineInfo.Tokens.ElementAt ( 1 ).Token == "this" ? this.Entities.Last ().Name : lineInfo.Tokens.ElementAt ( 1 ).Token );
@@ -691,7 +684,12 @@ namespace BREadfruit
 								AddTrueFalseAction ( lineInfo, Grammar.VisibleUnaryActionSymbol, Grammar.NotVisibleUnaryActionSymbol, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
 								continue;
 							}
-
+							if ( lineInfo.Tokens.ContainsAny ( new [] { Grammar.MaxlengthDefaultClause, Grammar.ValidationRegexDefaultClause } ) )
+							{
+								var _ra = new ResultAction ( Grammar.GetSymbolByToken ( lineInfo.Tokens.ElementAt ( 1 ).Token ), lineInfo.Tokens.Last ().Token, lineInfo.Tokens.First ().Token );
+								AddResultActionToCurrentRule ( _currentScope, _ra );
+								continue;
+							}
 
 						}
 						#endregion
