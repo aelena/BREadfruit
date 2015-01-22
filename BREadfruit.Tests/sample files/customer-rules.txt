@@ -2607,6 +2607,11 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
+; TODO: INJECT ABOUT KNB1_XAUSZ in WEB SERVICE?  -- CHECK WITH SEB ABOUT HIDDEN FIELDS, CAN WE INCLUDE HERE?
+; TODO: ALSO ABOUT CC_DD_DunningClerk
+
+; ---------------------------------------------------------------------------- 
+
 ;	For RC Italy (company codes (5180, 596G)) values WA and WC should NOT be showed in DDL of Madam
 
 Entity CC_AR_PledgeIndicator is DropDownList in frmMain
@@ -2644,7 +2649,7 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 ; ---------------------------------------------------------------------------- 
 
 ; --- BEGIN SALES ORDER PART ---
-
+; TESTGEN : DEFAULTS=6, RULES=4
 Entity KNVV_BZIRK is DropDownList in frmMain
 
 	with defaults
@@ -2655,24 +2660,21 @@ Entity KNVV_BZIRK is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_SalesDistrict
 
 	with rules
-		
 		REQUEST.COUNTRY is FR then
-			KNVV_BZIRK visible true
+			this visible true
+
+		REQUEST.COUNTRY is FR AND REQUEST.KNVV_BZIRK is empty then
 			set value '' in KNVV_BZIRK
-			mandatory false
 
 		REQUEST.ACCOUNT_GROUP in {YCT6, YCT9, YVT6, YVT9} then
 			this mandatory true
 
-		REQUEST.COUNTRY is FR then
-			this visible true
-
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+
 ; ---------------------------------------------------------------------------- 
 
-;	TODO:  if Sales Area 10L0 country Belgium value ""LA, LB, LC,LD, LE, LF, LG, LH, LI, LJ,LK, LO, LM, LN, LO, LZ""; 
-
+; TESTGEN : DEFAULTS=8, RULES=3
 Entity SO_CustomerGroup is DropDownList in frmMain
 
 	with defaults
@@ -2692,34 +2694,36 @@ Entity SO_CustomerGroup is DropDownList in frmMain
 		REQUEST.COUNTRY in {IT, LU} and REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} then
 			set value 12 in SO_CustomerGroup
 
-		REQUEST.COUNTRY is FR then
-			set value 01 in SO_CustomerGroup
-
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false		
 ; ---------------------------------------------------------------------------- 
 
 
+; TESTGEN : DEFAULTS=7, RULES=2
 Entity SO_SalesOffice is DropDownList in frmMain
 
 	with defaults
-		visible false
+		; visible false
+		; TODO: CHECK in code only visible if items are loaded
+		visible true
 		label LABELS.labSO_SalesOffice
 		mandatory true
 		data field DisplayName
-		value field Code
+		value field SalesOffice
 		load data from DATASOURCE.MDMC_SalesOffice with arguments { ClusterPOCode : REQUEST.SALES_ORGANIZATION, ClusterCompanyCode : REQUEST.COMPANY_CODE, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL, FlagActive : true}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
 		; only show the control if there are data loaded from the 'load data from' instruction
+		; TODO: CHECK WITH SEB about this
 		this.Items.Count > 0 then
 			SO_SalesOffice visible true
-
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false	
+	
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=2
 Entity KNVV_EIKTO is TextBox in frmMain
 
 	with defaults
@@ -2736,40 +2740,29 @@ Entity KNVV_EIKTO is TextBox in frmMain
 ; ---------------------------------------------------------------------------- 
 
 
-; TODO: WE HAVE TO IMITATE THIS QUERY, SUGGEST CREATING A SPECIFIC STORED PROC OR SIMILAR
-; SO THAT WE AVOID HAVING TO SPECIFY THE JOIN HERE
-;MDMC_WORKSPACE
-;		IQueryable query = from sosg in this.mdmc_lookup.MDMC_SalesOfficeSalesGroup
-;		                        join sg in this.mdmc_lookup.MDMC_SalesGroup on sosg.CodeSalesGroup equals sg.Code
-;		                        where sosg.CodeSalesOffice == selectedsalesoffice
-;		                        select new { sg.Code, sg.DisplayName };
-
-
+; TESTGEN : DEFAULTS=5, RULES=2
 Entity KNVV_VKGRP is DropDownList in frmMain
 
 
 	with defaults
-		visible false
 		label LABELS.labVKGRP
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_SalesOfficeSalesGroup with arguments {CodeSalesOffice : REQUEST.SALES_ORGANIZATION}
 
 	with rules
-		REQUEST.COUNTRY is FR then
-			this visible true
-			this mandatory false
+		; REQUEST.COUNTRY is FR then
+		; 	this visible true
+		; 	this mandatory false
+
+		REQUEST.REQUEST_TYPE not in {CC,CC_CC} and SO_SalesOffice.Value is not empty then
+			load data from DATASOURCE.[MDMC_GetSalesGroups] with arguments {SalesOffice : REQUEST.SALES_ORGANIZATION}
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 ; ---------------------------------------------------------------------------- 
 
-; TODO: This datasource has to be a bit special, since the ordering of items has to be 
-; EUR
-; GBP
-; USD
-; so maybe the datasource should be configured to return data in that order.
-
+; TESTGEN : DEFAULTS=7, RULES=2
 Entity SO_SalesOrderCurrency is DropDownList in frmMain
 	with defaults
 		label LABELS.labSaleOrderCurrency
@@ -2777,49 +2770,60 @@ Entity SO_SalesOrderCurrency is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDMC_Currencies with arguments {FlagActive : true}
-		value EUR
 	with rules
+		REQUEST.SO_SalesOrderCurrencySAP.Value is empty then
+			set value EUR in SO_SalesOrderCurrency
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=7, RULES=1
 Entity KNVV_KONDA is DropDownList in frmMain
 
 	with defaults
-		visible false
+		visible true
+		; visible false
 		label LABELS.labkONDA
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDMC_PriceGroup
+		value ''
 
 	with rules
+		; REQUEST.COUNTRY is FR then
+		; 	this visible true
+		; 	this mandatory false
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		REQUEST.COUNTRY is FR then
-			this visible true
-			this mandatory false
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=7, RULES=2
 Entity KNVV_PLTYP is DropDownList in frmMain
 
 	with defaults
-		visible false
+		visible true
+		; visible false
 		label LABELS.labPLTYP
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDMC_PriceListType
+		value ''
 
 	with rules
+		; REQUEST.COUNTRY in {BE, FR} then
+		; 	KNVV_PLTYP visible true
+		REQUEST.COUNTRY is BE then
+			set value 2G in KNVV_PLTYP
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		REQUEST.COUNTRY in {BE, FR} then
-			KNVV_PLTYP visible true
-			this mandatory false
-
+		
 
 ; ---------------------------------------------------------------------------- 
 
+
+; TESTGEN : DEFAULTS=8, RULES=4
 Entity SO_CustPricingProc is DropDownList in frmMain
 
 	with defaults
@@ -2831,21 +2835,30 @@ Entity SO_CustPricingProc is DropDownList in frmMain
 		value ''
 	
 	with rules
+		REQUEST.COUNTRY in {FR,GR} then
+			this enabled true
+			set value 1 in SO_CustPricingProc
+
+		REQUEST.COUNTRY in {PT, BE, LU, GR} or REQUEST.COMPANY_CODE in {5180, 5116} or REQUEST.SALES_ORGANIZATION in {10A0,10A1,10A9,10L0} then
+			this enabled false
+			set value 1 in SO_CustPricingProc
+		
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		REQUEST.COUNTRY is FR then
-			set value 1 in SO_CustPricingProc
-
-		REQUEST.COUNTRY in {PT, BE, LU, GR} then
-			this enabled false
-			set value 1 in SO_CustPricingProc
-
-		REQUEST.COMPANY_CODE in {5180, 5116} then
-			this enabled false
-			set value 1 in SO_CustPricingProc
+		
 
 ; ---------------------------------------------------------------------------- 
 
+If Regional country Belgium -> selected value 1 not enabled
+If Regional country Italy and company 5180/5116-> selected value 1 not enabled
+If regional country Portugal -> selected value 1 not enabled
+If regional country Belgium-> selected value 1 not enabled
+If regional country Belgium and company code 5101 and sales org 10A0/10A1/10A9/10L0 -> selected value 1 not enabled
+If regional country Luxemburg -> selected value 1 not enabled
+If regional country France and Spain -> selected value 1 enabled
+If regional country Greece -> selected value 1 enabled
+
+; TESTGEN : DEFAULTS=8, RULES=5
 Entity SO_CustomerStatsGroup is DropDownList in frmMain
 
 	with defaults
@@ -2859,30 +2872,31 @@ Entity SO_CustomerStatsGroup is DropDownList in frmMain
 	with rules
 			
 		REQUEST.COUNTRY is FR then
-			set value 01 in SO_CustPricingProc
+			set value 1 in SO_CustPricingProc
 
-		REQUEST.COUNTRY in {PT, BE, LU, GR} then
+		REQUEST.COUNTRY in {PT, BE, LU} or REQUEST.COMPANY_CODE in {5180, 5116} then
 			this enabled false
 			set value 1 in SO_CustPricingProc
 
-		REQUEST.COMPANY_CODE in {5180, 5116} then
-			this enabled false
+		REQUEST.COUNTRY in {ES,FR,GR} then
 			set value 1 in SO_CustPricingProc
+			this enabled true
+
+		REQUEST.ACCOUNT_GROUP is YCT7 then
+			this mandatory true
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
-; TODO: what is REQUEST.CLUSTER_COUNTRY_CODE exactly?
-
+; TESTGEN : DEFAULTS=6, RULES=10
 Entity SO_CustomerShippingConditions is DropDownList in frmMain
-
 	with defaults
 		label LABELS.labShippingCond
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CustomerShippingCondition with arguments {FlagActive : true, "ClusterCountryCode" : REQUEST.CLUSTER_COUNTRY_CODE}
+		load data from DATASOURCE.MDMC_CustomerShippingCondition with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
 
 	with rules
 
@@ -2918,41 +2932,51 @@ Entity SO_CustomerShippingConditions is DropDownList in frmMain
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
+; 1) If requestype creation from scratch/company/sales org and company 5140 :
+;  if distribution channel 11 -> default value 6010, if its distribution channel 12 -> default value 6020
+; 2) data are loaded by distribution channel from master table
+
+; TESTGEN : DEFAULTS=6, RULES=4
 Entity KNVV_VWERK is DropDownList in frmMain
 
 	with defaults
 		visible false
+		enabled false
 		label LABELS.labVWERK
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_DeliveryPlant with arguments {DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL}
+		load data from DATASOURCE.MDMC_DeliveryPlant with arguments {CodeSalesOrg : REQUEST.SALES_ORGANIZATION, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL}
 
 	with rules
-			
-		REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} and REQUEST.COMPANY_CODE is 5140 and REQUEST.DISTRIBUTION_CHANNEL is 11 then
-			KNVV_VWERK visible true
-			set value 6010 in KNVV_VWERK
-
-		REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} and REQUEST.COMPANY_CODE is 5140 and REQUEST.DISTRIBUTION_CHANNEL is 12 then
-			KNVV_VWERK visible true
-			set value 6020 in KNVV_VWERK
-
+		
 		REQUEST.COUNTRY is FR then
 			this visible true
 			this mandatory false
 
+		REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} and REQUEST.COMPANY_CODE is 5140 and REQUEST.DISTRIBUTION_CHANNEL is 11 then
+			; KNVV_VWERK visible true
+			set value 6010 in KNVV_VWERK
+
+		REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} and REQUEST.COMPANY_CODE is 5140 and REQUEST.DISTRIBUTION_CHANNEL is 12 then
+			; KNVV_VWERK visible true
+			set value 6020 in KNVV_VWERK
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5, RULES=4, TRIGGERS=1
 Entity KNVV_AUTLF is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labAUTLF
+		visible false
 
 	with rules
 	
 		REQUEST.COUNTRY is FR then
+			visible true
 			set value true in KNVV_AUTLF
 
 		KNVV_AUTLF.Value is true then
@@ -2963,8 +2987,12 @@ Entity KNVV_AUTLF is CheckBox in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+
+	with triggers
+		this changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=5, RULES=5, TRIGGERS=1
 Entity KNVV_ANTLF is DropDownList in frmMain
 
 	with defaults
@@ -2980,58 +3008,79 @@ Entity KNVV_ANTLF is DropDownList in frmMain
 			visible true
 			set value 9 in KNVV_ANTLF
 
+		; TODO: Check with SEB about how to reference the model like this
+		REQUEST.COUNTRY is FR and KNVV_AUTLF.Value and REQUEST.KNVV_ANTLFSAP.Value is true then
+			set value 0 in KNVV_ANTLF
+
+		KNVV_AUTLF is visible and KNVV_KZTLF.Value in {A,B,C} and KNVV_ANTLF.Value > 1 then
+			set value 'In Sales Area Data view the field Number of partial deliveries, may not be larger than 1' in MESSAGE_POPUP
+
 		REQUEST.COUNTRY is {IT, BE, GR} and REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} then
+			visible true
 			set value 0 in KNVV_ANTLF
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
+			this enable false
+
+	with triggers
+		this changes	
 ; ---------------------------------------------------------------------------- 
 
-
+; TESTGEN : DEFAULTS=6, RULES=2
 Entity KNVV_LPRIO is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labLPRIO
-		data field DisplayName
+		data field Displayname
 		value field Code
 		load data from DATASOURCE.MDMC_DeliverPriority
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
 		REQUEST.COUNTRY in {ES, IT, BE, LU, FR, GR, PT} then
 			set value 02 in KNVV_LPRIO
-
+			this enable false
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false	
+		
 ; ---------------------------------------------------------------------------- 
 
-;	TODO:
-;	if KNVV_AUTLF is visible and flagged:
-;	if KNVV_KZTLF is visible and KNVV_KZTLF is empty or value is D-> message:In Sales Area Data view the field Part.dlv./item should be informed with a valid value when Complete delivery is checked
-;	if KNVV_KZTLF is visible and KNVV_KZTLF value is A/B/C and KNVV_ANTLF value > 1 -> message: In Sales Area Data view the field Number of partial deliveries, may not be larger than 1 else
-;	if KNVV_AUTLF is visible but not flagged:
-;	if KNVV_KZTLF is visible and value is A/B and KNVV_ANTLF value > 1-> message:In Sales Area Data view the field Number of partial deliveries, may not be larger than 1
-
+; TESTGEN : DEFAULTS=7, RULES=4, TRIGGERS=1
 Entity KNVV_KZTLF is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labKZTLF
 		load data from DATASOURCE.MDMC_PartDeliveryItem
-		value 9
+		; TODO: CLarify this value does not exist in DB
+		; value 9
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDMC_PartDeliveryItem
 	with rules
+		KNVV_AUTLF is visible and KNVV_AUTLF.Value is true and KNVV_KZTLF is visible and KNVV_KZTLF is empty then
+			set value 'In Sales Area Data view the field Part.dlv./item should be informed with a valid value when Complete delivery is checked' in MESSAGE_POPUP
+
+		KNVV_AUTLF is visible and KNVV_AUTLF.Value is true and KNVV_KZTLF is visible and KNVV_KZTLF.Value is D then
+			set value 'In Sales Area Data view the field Part.dlv./item should be informed with a valid value when Complete delivery is checked' in MESSAGE_POPUP
+		
+		KNVV_AUTLF is visible and KNVV_AUTLF.Value is false and KNVV_KZTLF.Value in {A,B} and KNVV_ANTLF.Value > 1 then
+			set value 'In Sales Area Data view the field Number of partial deliveries, may not be larger than 1' in MESSAGE_POPUP
+			
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+
+	with triggers
+		this changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=2
 Entity KNVV_PRFRE is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labPRFRE
+		value false
 
 	with rules
-
+		; NOTE: not in FM
 		REQUEST.COUNTRY is FR then
 			KNVV_PRFRE mandatory false
 
@@ -3039,18 +3088,8 @@ Entity KNVV_PRFRE is CheckBox in frmMain
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
-;   TODO: this query has to be combined in a single datasource - CREATE A SP
 
-;   if (this.m_mdmSessionInfo.RegionalCountry == "FR")
-;      /* MADAM II Ana A. 20120927: Issue 92, values for France. */
-;       this.SO_Incoterms.DataSource = this.mdmc_lookup.MDMC_Incoterms.Where(x => x.FlagActive == true && (x.Code.Equals("EXW") || x.Code.Equals("FAS") || x.Code.Equals("DAT")
-;                                                                               || x.Code.Equals("FCA") || x.Code.Equals("FOB") || x.Code.Equals("CFR") || x.Code.Equals("CIF")
-;                                                                               || x.Code.Equals("CIP") || x.Code.Equals("CPT") || x.Code.Equals("DDP") || x.Code.Equals("DAP"))).OrderBy(x => x.DisplayName);
-;   else
-;       this.SO_Incoterms.DataSource = this.mdmc_lookup.MDMC_Incoterms.Where(x => x.FlagActive == true).OrderBy(x => x.DisplayName);
-            
-
-; TESTGEN : DEFAULTS=6, RULES=7
+; TESTGEN : DEFAULTS=6, RULES=8
 Entity SO_Incoterms is DropDownList in frmMain
 
 	with defaults
@@ -3059,12 +3098,11 @@ Entity SO_Incoterms is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		; TODO: Crate SP
-		load data from DATASOURCE.MDMC_Incoterms with arguments {CountryCode : REQUEST.REQUEST_COUNTRY}
+		load data from DATASOURCE.MDMC_GetIncotermsByCountry with arguments {CountryCode : REQUEST.REQUEST_COUNTRY}
 
 	with rules
 
 		REQUEST.COUNTRY is FR then
-			
 			set value DAP in SO_Incoterms
 
 		REQUEST.COUNTRY is PT then

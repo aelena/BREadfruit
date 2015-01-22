@@ -327,7 +327,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 	with rules
 		
 		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
-			this enabled true
+			this enable true
 
 		REQUEST.CURRENT_ROLE not in {ROLES.ENQ,ROLES.CLERK} then enabled false
 
