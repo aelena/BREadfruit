@@ -1,232 +1,74 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BREadfruit.Conditions
-{
-
-	/// <summary>
-	/// Represents a rule instance
-	/// </summary>
-	public class Rule
-	{
-
-
-		private List<Rule> _nestedRules = new List<Rule> ();
-
-		public IEnumerable<Rule> NestedRules
-		{
-			get { return _nestedRules; }
-		}
-
-
-		/// <summary>
-		/// A rule can have one or more conditions.
-		/// </summary>
-		private List<Condition> _conditions = new List<Condition> ();
-
-		/// <summary>
-		/// Gets a list of the conditions that this rule has.
-		/// </summary>
-		public IEnumerable<Condition> Conditions
-		{
-			get
-			{
-				return this._conditions;
-			}
-		}
-
-
-		/// <summary>
-		/// Indicates if the Rule has a series of conditions acting as Else branch
-		/// </summary>
-		public bool HasElseClause { get; protected internal set; }
-
-
-
-		// ---------------------------------------------------------------------------------
-
-
-		/// <summary>
-		/// Gets the number of conditions the rule has.
-		/// </summary>
-		public int NumberOfConditions
-		{
-			get
-			{
-				return this._conditions.Count ();
-			}
-		}
-
-
-		// ---------------------------------------------------------------------------------
-
-
-		/// <summary>
-		/// Returns a boolean value that indicates whether this is a 
-		/// "simple rule rule", that is, that it only has a rule.
-		/// </summary>
-		public bool IsSimpleConditionRule
-		{
-			get
-			{
-				return this._conditions.Count () == 1;
-			}
-		}
-
-		// ---------------------------------------------------------------------------------
-
-
-		/// <summary>
-		/// Returns a boolean value that indicates whether this is a 
-		/// "multiple rule rule", that is, that it has more than a rule.
-		/// </summary>
-		public bool IsMultipleConditionRule
-		{
-			get
-			{
-				return this._conditions.Count () > 1;
-			}
-		}
-
-
-		// ---------------------------------------------------------------------------------
-
-
-		/// <summary>
-		/// Allows privileged callers (protected internal) to add conditions to the rule
-		/// as these conditions are parsed from the file.
-		/// </summary>
-		/// <param name="rule">Condition instance.</param>
-		/// <returns></returns>
-		protected internal Rule AddCondition ( Condition condition )
-		{
-			if ( condition == null )
-				throw new ArgumentNullException ( "condition" );
-
-			this._conditions.Add ( condition );
-			return this;
-		}
-
-
-		// ---------------------------------------------------------------------------------
-
-
-		/// <summary>
-		/// Allows privileged callers (protected internal) to add nested rules to the rule
-		/// as these conditions are parsed from the file.
-		/// </summary>
-		/// <param name="rule">Condition instance.</param>
-		/// <returns></returns>
-		protected internal Rule AddNestedRule ( Rule rule )
-		{
-			if ( rule == null )
-				throw new ArgumentNullException ( "rule" );
-
-			this._nestedRules.Add ( rule );
-			return this;
-		}
-
-
-		// ---------------------------------------------------------------------------------
-
-
-		public override string ToString ()
-		{
-			string _ = "";
-			this._conditions.ForEach ( x => _ += x.ToString () + Environment.NewLine );
-			return _;
-		}
-
-
-		// ---------------------------------------------------------------------------------
-
-	}
-}
-
-
-
-
-
-FOR THE PARSER
-
-		Rule __ruleInScope = null;
-
-
-
-
-
-
-
-
-
-
-	if ( lineInfo.IndentLevel >= 3 && lineInfo.HasSymbol ( Grammar.ThenSymbol ) )
-					{
-						// and if so, set the scope correctly
-						_currentScope = CurrentScope.RULES_BLOCK;
-						// and set a flag accordingly
-						_inNestedRuleScope = true;
-					}
-
-						// TODO: RESET TO FALSE IN THE RIGHT PLACE OF COURSE
-
-
-
-
-						if ( _inNestedRuleScope )
-							this._entities.Last ().Rules.Last ().AddNestedRule ( _rule );
-						else
-							this._entities.Last ().AddRule ( _rule );
-
-						__ruleInScope = _rule;
-
-
-
-		AFTER LINE 605
-
-				__ruleInScope.HasElseClause = _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK;
-								AddTrueFalseAction2 ( lineInfo, Grammar.MakeMandatoryUnaryActionSymbol, Grammar.MakeNonMandatoryUnaryActionSymbol, __ruleInScope, _currentScope == CurrentScope.CONDITION_ACTIONS_ELSE_BLOCK );
-
-
-
-		
-		private void AddTrueFalseAction2 ( LineInfo lineInfo, Symbol trueSymbol, Symbol falseSymbol, Rule rule, bool addToElseBranch = false )
-		{
-			var _booleanValue = lineInfo.Tokens.ContainsAny2 ( new List<Symbol> () { Grammar.TrueSymbol, Grammar.FalseSymbol } );
-			var _indexOfThis = lineInfo.Tokens.ToList ().IndexOf ( Grammar.ThisSymbol );
-			UnaryAction _ua = null;
-			if ( _booleanValue.Item2 == Grammar.TrueSymbol )
-				_ua = new UnaryAction ( trueSymbol,
-					_indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
-			else
-				_ua = new UnaryAction ( falseSymbol,
-				_indexOfThis >= 0 ? this.Entities.Last ().Name : lineInfo.Tokens.First ().Token );
-
-			//this._entities.Last ().Rules.Last ().Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
-
-			rule.Conditions.Last ().AddUnaryAction ( _ua, addToElseBranch );
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+﻿INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','4000','10',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40A0','01',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40A1','01',1)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40A9','01',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40B0','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40B1','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40C0','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40D0','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40E0','05',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40F0','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40F1','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40F2','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40F3','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40G0','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40G1','10',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40G2','10',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40G3','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40H0','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40I0','02',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40K0','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40L0','01',1)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40M0','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40N0','10',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40N1','10',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40N2','10',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40O0','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40P0','10',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40Q0','08',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','40Z0','10',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','4100','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','41K0','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('PT','5240','42E0','',0)
+
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10A0','93',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10A1','93',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10B0','93',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10D0','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10D1','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10E0','95',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10F0','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10F1','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10F2','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10F3','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10G0','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10G1','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10H0','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10I0','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10L0','87',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10M0','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10P0','92',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10Q0','87',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('BE','5101','10Z0','92',1)	
+
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22A0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22A1','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22A9','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22B0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22C0','',0)
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22D0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22E0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22F0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22F1','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22F2','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22F3','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22G0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22G1','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22H0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22I0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22L0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22M0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22P0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22Q0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22X0','MM',1)	
+INSERT INTO [MDMC].[MDMC_AccountingClerksFORPTBELU] VALUES ('LU','5109','22Z0','MM',1)	

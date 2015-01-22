@@ -2263,8 +2263,9 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 
 
 ; TODO: SEVERAL THINGS PENDING HERE ... HOW TO REFER TO THE MODEL DATA, BOTH EXISTING SAP DATA AND THE NEW REQUEST
-; TODO: ALSO CHECK HOW TO SPECIFY OPERATIONS LIKE SUBSTRING....
+; TODO: CHECK RULES IN CODE
 
+; TESTGEN : DEFAULTS=2
 Entity GD_Com_TransportZone is TextBox in frmMain
 	with defaults
 		visible false
@@ -2278,6 +2279,8 @@ Entity GD_Com_TransportZone is TextBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TESGTEN : DEFAULTS=3, RULES=2
+; TODO: CHECK FOR VISIBLE IN DIFFERENT FLOWTYPES
 Entity GD_MainlyMilitary is RadioButton in frmMain
 
 	with defaults
@@ -2291,6 +2294,8 @@ Entity GD_MainlyMilitary is RadioButton in frmMain
 		
 ; ---------------------------------------------------------------------------- 
 
+; TESGTEN : DEFAULTS=3, RULES=2
+; TODO: CHECK FOR VISIBLE IN DIFFERENT FLOWTYPES
 Entity GD_MainlyCivilian is RadioButton in frmMain
 
 	with defaults
@@ -2304,6 +2309,8 @@ Entity GD_MainlyCivilian is RadioButton in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TESGTEN : DEFAULTS=3, RULES=1
+; TODO: CHECK FOR VISIBLE IN DIFFERENT FLOWTYPES
 Entity GD_Nuclear is CheckBox in frmMain
 
 	with defaults
@@ -2313,56 +2320,66 @@ Entity GD_Nuclear is CheckBox in frmMain
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
+; TESGTEN : DEFAULTS=3
+; TODO: CHECK FOR VISIBLE IN DIFFERENT FLOWTYPES
 Entity labGD_FreeZone is Label in frmMain
 
 	with defaults
 		label LABELS.labGD_FreeZone
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
 ; ---------------------------------------------------------------------------- 
 
+; TESGTEN : DEFAULTS=3
+; TODO: CHECK FOR VISIBLE IN DIFFERENT FLOWTYPES
 Entity labGD_Embassy is Label in frmMain
 
 	with defaults
 		label LABELS.labGD_Embassy
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
 ; ---------------------------------------------------------------------------- 
 
+;TESGTEN : DEFAULTS=6, RULES=4, TRIGGERS=1
 Entity CC_CO_ReconAccount is DropDownList in frmMain
 
 	with defaults
 		visible false
 		label LABELS.labCC_CO_ReconAccount
-		label LABELS.labAMSortKeys
 		data field DisplayName
+		value field Code
 		load data from DATASOURCE.ReconciliationAccounts
+		value 0024110000
 	with rules
 		GD_Adr_Country is GR and GD_Ctr_CustomerClassification.Value is G and GD_Ctr_IsNaturalPerson.Value is false then
 			this visible true
 			this mandatory true
-		REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} then
-			set value 0024110090 in CC_CO_ReconAccount
+
+		GD_Adr_Country is GR and GD_Ctr_CustomerClassification.Value is G and GD_Adr_Country.Value is GR then
+			this visible true
+
+		GD_Adr_Country is GR and GD_Ctr_CustomerClassification.Value is G and GD_Adr_Country.Value is not GR then
+			set value 0024110050 in CC_CO_ReconAccount
+
+		; TODO: CHECK THIS ONE IN CODE
+		; REQUEST.REQUEST_TYPE in {CC, CC_CC, CC_SO} then
+		; 	set value 0024110090 in CC_CO_ReconAccount
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+
+	with triggers
+		this changes
 		
 ; ---------------------------------------------------------------------------- 
 
-;	"2.6.14(MI) GSS, please, check and provide the business rule. For RC Greece... I don't undertand the meaning of ""if customer is na ICC""
-;	19-06-2014(RG)
-;	1) Default values for all type of requests (all types of creation, changes), independently if value from SAP is empty but enquirer can change:
-;	1.1) If company code 5140 and customer country ISO  (FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC) -> 6115
-;	1.2) If company code 5140 and customer country != ISO  (FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC) -> 6000
-;	1.3) if company code luxembourg -> 1113
-;	1.4) if company code Spain-> 3E60
-;	1.5) if company code Belgium and Luxembourg-> 1109
-;	1.6) if company code Portugal: If company code Portugal (5240) -> not visible
-;	1.7) if company code 5240 and customer country PT -> 4216
-;	1.8) if  company code 5240 and !=customer country PT -> 4116
-;	1,9) if company code greece (5150) and Italy (5180, 596G) value default blank
+"2.6.14(MI) GSS, please, check and provide the business rule. For RC Greece... I don't undertand the meaning of ""if customer is na ICC""
+19-06-2014(RG)
+1) Default values for all type of requests (all types of creation, changes), independently if value from SAP is empty but enquirer can change:
+1.4) if company code Spain-> 3E60
+1.5) if company code Belgium and Luxembourg-> 1109
+1.6) if company code Portugal: If company code Portugal (5240) -> not visible
 
+1,9) if company code greece (5150) and Italy (5180, 596G) value default blank
+"
+
+; TESTGEN : DEFAULTS=7, RULES=9
 Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 	with defaults
@@ -2373,46 +2390,51 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
 
 	with rules
-		
 
-		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
-			hide this
+		REQUEST.COMPANY_CODE is 5140 and GD_Adr_Country.Value in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+			set value 6115 in CC_PT_PaymentTerms
+			set value 6115 in SO_TermsOfPaymentKey
+
+		REQUEST.COMPANY_CODE is 5140 and GD_Adr_Country.Value not in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+			set value 6000 in CC_PT_PaymentTerms
+			set value 6000 in SO_TermsOfPaymentKey
+			
+		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE in {CC, VC_CC} then
+			this visible false
 			CC_PT_PaymentTerms mandatory false
 	
 		REQUEST.COUNTRY in {BE,LU} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 1109 in CC_PT_PaymentTerms
 
 		REQUEST.COUNTRY is ES and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
-			set value 3M60 in CC_PT_PaymentTerms
+			; set value 3M60 in CC_PT_PaymentTerms
+			set value 3E60 in CC_PT_PaymentTerms
 
 		REQUEST.COUNTRY is LU and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 1113 in CC_PT_PaymentTerms
 			set value 1113 in SO_TermsOfPaymentKey
 
-		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} and REQUEST.CUSTOMER_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
-			set value 6115 in CC_PT_PaymentTerms
-			set value 6115 in SO_TermsOfPaymentKey
-		
-		REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} and REQUEST.CUSTOMER_COUNTRY not in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
-			set value 6000 in CC_PT_PaymentTerms
-			set value 6000 in SO_TermsOfPaymentKey
+		; REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} and REQUEST.CUSTOMER_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+		; 	set value 6115 in CC_PT_PaymentTerms
+		; 	set value 6115 in SO_TermsOfPaymentKey
+		; 
+		; REQUEST.COMPANY_CODE is 5140 and REQUEST.REQUEST_TYPE in {VC, VC_CC} and REQUEST.CUSTOMER_COUNTRY not in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+		; 	set value 6000 in CC_PT_PaymentTerms
+		; 	set value 6000 in SO_TermsOfPaymentKey
 
-		REQUEST.COMPANY_CODE in {5150,5180,596G} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+		; REQUEST.COMPANY_CODE in {5150,5180,596G} and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+		REQUEST.COMPANY_CODE in {5150,5180,596G} then
 			set value '' in CC_PT_PaymentTerms
 
 		REQUEST.COUNTRY is FR then
 			this mandatory true
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
-;	"2.6.14(MI) GSS, please, check and provide the business rule. Additionally, CR ""IA_SEPA_payment methods"" ispending on clarification in your side yet
-;	19-06-2014(RG): 1) Field visible for all company codes and enquirer can choose
-;	1) If company code Spain (All), France (5140) -> mandatory
-;	2) if company code Italy (5180,596G) and ROLES.ENQ chooses Payment Methods ""L"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
-;	3) if company code Portugal (5240) and ROLES.ENQ chooses Payment Methods ""P"" or ""M"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
-;	4) if company code France (5140) and ROLES.ENQ chooses Payment Methods ""M"" or ""A"", then field ""Bank Key/National sort code"" in payment transactions becomes mandatory
-
+; TODO: "2.6.14(MI) GSS, please, check and provide the business rule. Additionally, CR ""IA_SEPA_payment methods"" ispending on clarification in your side yet
+; TESTGEN : DEFAULTS=6, RULES=10, TRIGGERS=1
 Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
 	with defaults
@@ -2422,7 +2444,6 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_PaymentMethods with arguments {FlagActive : true, ClusterCountryCode: REQUEST.COUNTRY}
 
 	with rules
-		
 
 		REQUEST.COUNTRY in {ES, FR} then
 			this mandatory true
@@ -2453,17 +2474,25 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+
+	with triggers
+		this changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=2
 Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labCC_PT_ClearingWithCustomer
 	with rules
+		; TODO: CHECK WITH SEB MODEL
+		REQUEST.COMPANY_CODE in {5101, 5109} and REQUEST.CC_PT_ClearingWithCustomer then
+			set value true in CC_PT_ClearingWithCustomer
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=2
 Entity CC_PT_IndividualPayment is CheckBox in frmMain
 
 	with defaults
@@ -2478,14 +2507,7 @@ Entity CC_PT_IndividualPayment is CheckBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-;"2.6.14(MI) Pending on CR 101707213 MADAM:Credit Responsible Group
-;04-07-2014 (FM): 
-;1) field visible for all company code 
-;2) if company code France -> mandatory only for MDClerk
-;3)Default values for creations from scratch and company code:
-;   if company code Spain, Portugal and Belux-> see file: Sales areas _accounting clerks BE_PTand ES in sheet ""other documents""
-;4) if company code IT and GR -> not mandatory 
-
+; TESTGEN : DEFAULTS=7, RULES=12
 Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 	with defaults
@@ -2503,15 +2525,13 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 		REQUEST.COUNTRY in {IT, GR} then
 			this mandatory false
 
-		; TODO: PENDING THIS ----> if company code Spain, Portugal and Belux-> see file: Sales areas _accounting clerks BE_PT and ES in sheet ""other documents""
-
-		
 		REQUEST.COUNTRY is FR then
 			this mandatory true
 
-		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.COUNTRY is ES then
-			set value 81 in CC_CO_AccountingClerk
-			set value 81 in CC_CO_AccountingClerk.OldDisplayValue
+		; Seems deprecated
+		; REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.COUNTRY is ES then
+		; 	set value 81 in CC_CO_AccountingClerk
+		; 	set value 81 in CC_CO_AccountingClerk.OldDisplayValue
 
 		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.COMPANY_CODE is 5109 then
 			set value MM in CC_CO_AccountingClerk
@@ -2537,22 +2557,21 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 			set value 20 in CC_CO_AccountingClerk
 			set value 20 in CC_CO_AccountingClerk.OldDisplayValue
 
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.COUNTRY in {ES,AD} then
+			load data from DATASOURCE.MDMC_AccountingClerkByPostCodeAndSalesArea with arguments {PostCode : SUBSTRING(GD_Adr_PostalCode,2), SalesArea: REQUEST.SALES_ORGANIZATION} in CC_CO_AccountingClerk
+		
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and REQUEST.COMPANY_CODE in {5240,5101,5109} then
+			load data from DATASOURCE.MDMC_AccountingClerksFORPTBELU with arguments { SalesOrganization: REQUEST.SALES_ORGANIZATION, FlagActive: true} with output {CC_CO_AccountingClerk: AccountingClerk}
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 ; ---------------------------------------------------------------------------- 
 
-;"For creation from scratch and company code -> hidden except RC France.
-;For remaining actions -> visible for all RCs
-; If creation from scratch/company code:
-;  if regional country Spain-> Y302
-;  if regional country Italy-> Y502 (only value available)
-;  if regional country Portugal-> Y400
-;  if regional country Belgium ->if customer classification NG->Y104 else ->Y102
-;  if regional country Luxemburg->Y203
-;  if regional country Greece -> Y704
-
-
+; TODO: ;5)specific rules for company 5140 see attachemnt RulesDunningArea5140 and sheet ""Dunning Procedure"" in sheet “Other documents”
+; TODO: THIS HAS TO BE MOVED TO THE WEB SERVICE
+		
+; TESTGEN : DEFAULTS=6, RULES=11
 Entity CC_DD_DunningProcedure is DropDownList in frmMain
 	with defaults
 		label LABELS.labDDDunningprocedure
@@ -2563,39 +2582,43 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 
 	with rules
 
-		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is  FR then
-			this visible true
-
 		REQUEST.COUNTRY is FR then
 			this mandatory true
 
-		REQUEST.COUNTRY is ES then
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is FR then
+			this visible true
+
+		REQUEST.REQUEST_TYPE not in {CC,CC_CC} then
+			this visible true
+			
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is ES then
 			set value Y302 in CC_DD_DunningProcedure
 
-		REQUEST.COUNTRY is IT then
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is IT then
 			set value Y502 in CC_DD_DunningProcedure
 
-		REQUEST.COUNTRY is PT then
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is PT then
 			set value Y400 in CC_DD_DunningProcedure
 
-		REQUEST.COUNTRY is BE and GD_Ctr_CustomerClassification.Value is NG then
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is BE and GD_Ctr_CustomerClassification.Value is NG then
 			set value Y104 in CC_DD_DunningProcedure
-		REQUEST.COUNTRY is BE and GD_Ctr_CustomerClassification.Value is G then
+		
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is BE and GD_Ctr_CustomerClassification.Value is G then
 			set value Y102 in CC_DD_DunningProcedure
 
-		REQUEST.COUNTRY is LU then
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.COUNTRY is LU then
 			set value Y203 in CC_DD_DunningProcedure
 
-		REQUEST.CUSTOMER_COUNTRY is GR then
+		REQUEST.REQUEST_TYPE in {CC,CC_CC} and REQUEST.CUSTOMER_COUNTRY is GR then
 			set value Y704 in CC_DD_DunningProcedure
 
-		; TODO: ;5)specific rules for company 5140 see attachemnt RulesDunningArea5140 and sheet ""Dunning Procedure"" in sheet “Other documents”
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=1
 ; SEEM USELESS, never made visible
 Entity CC_DD_DunningArea is DropDownList in frmMain
 
@@ -2612,37 +2635,39 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-;	For RC Italy (company codes (5180, 596G)) values WA and WC should NOT be showed in DDL of Madam
-
+; TESTGEN : DEFAULTS=6, RULES=5, ACTIONS=1, TRIGGERS=1
 Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labARPledgeIndicator
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_ARPledgeIndicators with arguments {FlagActive : true, CompanyCode : REQUEST.COMPANY_CODE}
+		load data from DATASOURCE.MDMC_GetARPledgeIndicators with arguments {CompanyCode : REQUEST.COMPANY_CODE}
 
 	with rules
 		
 		REQUEST.COMPANY_CODE in { 5109, 4297, 461D, 596G, 596G } then
 			this visible false
 
-		; TODO: EVALUATION ORDER IS IMPORTANT IN A CASE LIKE THIS...
-
-		REQUEST.REQUEST_TYPE in {CC, CC_CC} then
+		REQUEST.REQUEST_TYPE in {CC, CC_CC} and CC_AR_PledgeIndicator.OldDisplayValue is empty then
 			set value WE in CC_AR_PledgeIndicator
+			set value WE in CC_AR_PledgeIndicator.OldDisplayValue
 
-		REQUEST.COUNTRY in {ES,FR,GR} then
+		REQUEST.COUNTRY in {ES,FR,GR} and CC_AR_PledgeIndicator.OldDisplayValue is empty then
 			set value '' in CC_AR_PledgeIndicator
+			set value '' in CC_AR_PledgeIndicator.OldDisplayValue
 
-		REQUEST.COMPANY_CODE is 5101 then
+		REQUEST.COMPANY_CODE is 5101 and CC_AR_PledgeIndicator.OldDisplayValue is empty then
 			set value '' in CC_AR_PledgeIndicator
+			set value '' in CC_AR_PledgeIndicator.OldDisplayValue
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
+			this enable false
+				
 	with actions
 		; ATTACHMENT mandatory  false
 		_COMMENT_ mandatory  true  
+
 	with triggers 
 		on change
 

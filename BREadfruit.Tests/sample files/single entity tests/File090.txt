@@ -1,0 +1,26 @@
+﻿Entity GD_Ctr_RiskClassification is DropDownList in frmMain
+
+	with rules
+		
+		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
+			this enable true
+
+		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
+			this enabled true
+
+		; TODO: this fails
+		REQUEST.CURRENT_ROLE not in {ROLES.ENQ,ROLES.CLERK} then enabled false
+
+		; TODO: this fails
+		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then enabled true
+
+		REQUEST.SO_SalesOrderCurrencySAP.Value is empty then
+			set value EUR
+
+		; TODO: this fails
+		; REQUEST.SO_SalesOrderCurrencySAP.Value is empty then set value EUR
+
+		REQUEST.SO_SalesOrderCurrencySAP.Value is empty then set value EUR in FIELD_A
+
+		REQUEST.SO_SalesOrderCurrencySAP.Value is empty then 
+			set value EUR in FIELD_A

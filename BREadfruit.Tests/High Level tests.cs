@@ -2559,7 +2559,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
 			Assert.That ( e.Name == "GD_Ctr_TaxCode2", "Entity name should be 'GD_Ctr_TaxCode2' but is " + e.Name );
 			var i = 0;
-			
+
 			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.Count () == 2, String.Format ( "Assert {0}", ++i ) );
 			Assert.That ( e.Rules.First ().Conditions.Last ().ResultActions.All ( x => x.Reference == "GD_Ctr_TaxCode2" ), String.Format ( "Assert {0}", ++i ) );
 
@@ -2567,6 +2567,85 @@ namespace BREadfruit.Tests
 
 
 		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile090 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File090.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_Ctr_RiskClassification", "Entity name should be 'GD_Ctr_RiskClassification' but is " + e.Name );
+			var i = 0;
+
+			Assert.That ( e.Rules.Count () == 7, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Take ( 2 ).All ( x => x.Conditions.Count () == 2 ), String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Skip ( 2 ).All ( x => x.Conditions.Count () == 1 ), String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Take ( 2 ).All ( x => x.Conditions.First ().SuffixLogicalOperator == Grammar.ANDSymbol ), String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Last ().Results.First ().Action == Grammar.EnabledDefaultClause, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Last ().Results.First ().Reference == "GD_Ctr_RiskClassification", String.Format ( "Assert {0}", ++i ) );
+			//Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.Last ().Results.First ().Value.ToString() == Grammar.TrueSymbol.Token, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().Results.First ().Action == Grammar.EnabledDefaultClause, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().Results.First ().Reference == "GD_Ctr_RiskClassification", String.Format ( "Assert {0}", ++i ) );
+			//Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.Last ().Results.First ().Value.ToString () == Grammar.TrueSymbol.Token, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().Results.First ().Action == Grammar.EnabledDefaultClause, String.Format ( "Assert {0}", ++i ) );
+			// TODO: this fails
+			//Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().Results.First ().Reference == "GD_Ctr_RiskClassification", String.Format ( "Assert {0}", ++i ) );
+			//Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.Last ().Results.First ().Value.ToString () == Grammar.FalseSymbol.Token, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().Results.First ().Action == Grammar.EnabledDefaultClause, String.Format ( "Assert {0}", ++i ) );
+			// TODO: this fails
+			//Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().Results.First ().Reference == "GD_Ctr_RiskClassification", String.Format ( "Assert {0}", ++i ) );
+			//Assert.That ( e.Rules.ElementAt ( 3 ).Conditions.Last ().Results.First ().Value.ToString () == Grammar.TrueSymbol.Token, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Ctr_RiskClassification", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 4 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "EUR", String.Format ( "Assert {0}", ++i ) );
+
+			// TODO: this fails
+			// Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol, String.Format ( "Assert {0}", ++i ) );
+			// Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Reference == "GD_Ctr_RiskClassification", String.Format ( "Assert {0}", ++i ) );
+			// Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "EUR", String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Reference == "FIELD_A", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 5 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "EUR", String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.First ().Action == Grammar.SetValueActionSymbol, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.First ().Reference == "FIELD_A", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.ElementAt ( 6 ).Conditions.Last ().ResultActions.First ().Value.ToString () == "EUR", String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+		[Test]
+		public void ParseSampleFile091 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File091.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "CC_PT_PaymentTerms", "Entity name should be 'CC_PT_PaymentTerms' but is " + e.Name );
+			var i = 0;
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().Operator == Grammar.InOperator, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Last().Conditions.Last ().Operator == Grammar.NotInOperator, String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 		[Test]
 		public void ShouldFindEntities_Vendor ()

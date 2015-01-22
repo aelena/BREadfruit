@@ -1,0 +1,8 @@
+﻿Entity CC_PT_PaymentTerms is DropDownList in frmMain
+	with rules
+
+		REQUEST.COMPANY_CODE is 5140 and GD_Adr_Country.Value in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+			set value 6115 in CC_PT_PaymentTerms
+
+		REQUEST.COMPANY_CODE is 5140 and GD_Adr_Country.Value not in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
+			set value 6000 in CC_PT_PaymentTerms
