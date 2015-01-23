@@ -2639,7 +2639,29 @@ namespace BREadfruit.Tests
 			var i = 0;
 
 			Assert.That ( e.Rules.First ().Conditions.Last ().Operator == Grammar.InOperator, String.Format ( "Assert {0}", ++i ) );
-			Assert.That ( e.Rules.Last().Conditions.Last ().Operator == Grammar.NotInOperator, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Last ().Conditions.Last ().Operator == Grammar.NotInOperator, String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile092 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File092.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "CC_PT_PaymentTerms", "Entity name should be 'CC_PT_PaymentTerms' but is " + e.Name );
+			var i = 0;
+
+			Assert.That ( e.Rules.First ().Conditions.Last ().Operator == Grammar.InOperator, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Operand == "GD_Adr_POBox.Value", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.Last ().Value.ToString () == "{'',.}", String.Format ( "Assert {0}", ++i ) );
 
 		}
 

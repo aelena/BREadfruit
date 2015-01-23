@@ -1,0 +1,4 @@
+﻿Entity CC_PT_PaymentTerms is DropDownList in frmMain
+	with rules
+		GD_Adr_POBox.Value in {'',.} then
+			GD_Adr_POBoxPostalCode mandatory false
