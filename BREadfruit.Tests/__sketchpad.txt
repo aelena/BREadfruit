@@ -252,3 +252,72 @@ INSERT INTO dbo.BankConfigurationTable VALUES('YU',0,0,0,NULL,NULL,NULL,NULL,NUL
 INSERT INTO dbo.BankConfigurationTable VALUES('ZR',0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL)
 INSERT INTO dbo.BankConfigurationTable VALUES('ZM',0,0,
 INSERT INTO dbo.BankConfigurationTable VALUES('ZW',0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL)
+
+
+
+
+
+
+
+define column GRID_P_GD_VT_Country		with arguments {ControlType : DropDownList, DataField : GD_VT_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+
+
+define column Customer with arguments { ControlType: Label, DataField: Customer, Header : LABELS.Customer, DataSource : DATASOURCE.XXX, Visible : true }
+define column Vendor with arguments { ControlType: Label, DataField: Vendor, Header : LABELS.Vendor, DataSource : DATASOURCE.XXX, Visible : true }  
+define column name1 with arguments { ControlType: Label, DataField: name1, Header : LABELS.Name, DataSource : DATASOURCE.XXX, Visible : true }  
+define column name3 with arguments { ControlType: Label, DataField: name3, Header : LABELS.Comment, DataSource : DATASOURCE.XXX, Visible : true }  
+define column Street with arguments { ControlType: Label, DataField: Street, Header : LABELS.Street, DataSource : DATASOURCE.XXX, Visible : true }  
+define column City with arguments { ControlType: Label, DataField: City, Header : LABELS.City, DataSource : DATASOURCE.XXX, Visible : true }  
+define column Country with arguments { ControlType: Label, DataField: Country, Header : LABELS.Country, DataSource : DATASOURCE.XXX, Visible : true }
+define column Taxcode with arguments { ControlType: Label, DataField: Taxcode, Header : LABELS.Local_Tax_Code, DataSource : DATASOURCE.XXX, Visible : true }  
+define column VAT with arguments { ControlType: Label, DataField: VAT, Header : LABELS.EU_Registration_Nr, DataSource : DATASOURCE.XXX, Visible : true }  
+define column NaturalPerson with arguments { ControlType: Label, DataField: NaturalPerson, Header : LABELS.Natural_Person, DataSource : DATASOURCE.XXX, Visible : true }
+define column Risk with arguments { ControlType: Label, DataField: Risk, Header : LABELS.Risk Class, DataSource : DATASOURCE.XXX, Visible : true }
+define column KNA1_SPERR with arguments { ControlType: Label, DataField: KNA1_SPERR, Header : LABELS.Central_Posting_Block , DataSource : DATASOURCE.XXX, Visible : true }
+define column KNA1_AUFSD with arguments { ControlType: Label, DataField: KNA1_AUFSD, Header : LABELS.Central_Order_Block   , DataSource : DATASOURCE.XXX, Visible : true }
+define column KNA1_LIFSD with arguments { ControlType: Label, DataField: KNA1_LIFSD, Header : LABELS.Central_Delivery_Block, DataSource : DATASOURCE.XXX, Visible : true }  
+define column KNA1_FAKSD with arguments { ControlType: Label, DataField: KNA1_FAKSD, Header : LABELS.Central_Billing_Block , DataSource : DATASOURCE.XXX, Visible : true } 
+define column Company with arguments { ControlType: Label, DataField: Company, Header : LABELS.Company   , DataSource : DATASOURCE.XXX, Visible : true }
+define column KNB1_FRGRP with arguments { ControlType: Label, DataField: KNB1_FRGRP, Header : LABELS.Business_Partner_Class  , DataSource : DATASOURCE.XXX, Visible : true }
+define column KNB1_ZTERM with arguments { ControlType: Label, DataField: KNB1_ZTERM, Header : LABELS.Payment_Terms  , DataSource : DATASOURCE.XXX, Visible : true }
+define column KNB1_SPERR with arguments { ControlType: Label, DataField: KNB1_SPERR, Header : LABELS.Posting_Block  	, DataSource : DATASOURCE.XXX, Visible : true }
+define column SO with arguments { ControlType: Label, DataField: SO, Header : LABELS.Sales_Organiz., DataSource : DATASOURCE.XXX, Visible : true }
+define column DistChannel with arguments { ControlType: Label, DataField: DistChannel, Header : LABELS.Channel , DataSource : DATASOURCE.XXX, Visible : true }
+define column KNVV_ZTERM with arguments { ControlType: Label, DataField: KNVV_ZTERM, Header : LABELS.Payment_Terms(SO)  , DataSource : DATASOURCE.XXX, Visible : true }
+define column KNVV_AUFSD with arguments { ControlType: Label, DataField: KNVV_AUFSD, Header : LABELS.Sales_Org._Order_Block  , DataSource : DATASOURCE.XXX, Visible : true }
+define column KNVV_LIFSD with arguments { ControlType: Label, DataField: KNVV_LIFSD, Header : LABELS.Sales_Org._Delivery_Block , DataSource : DATASOURCE.XXX, Visible : true } 
+define column KNVV_FAKSD with arguments { ControlType: Label, DataField: KNVV_FAKSD, Header : LABELS.Sales_Org._Billing_Block  , DataSource : DATASOURCE.XXX, Visible : true }
+
+<asp:ButtonField ButtonType="Button" Header : LABELS."Actions1" Text="Create" CommandName="CC"
+	ControlStyle-CssClass="ButtonGreyForm" />
+<asp:ButtonField ButtonType="Button" Header : LABELS."Actions2" Text="Modify" CommandName="CM"
+	ControlStyle-CssClass="ButtonGreyForm" />
+<asp:ButtonField ButtonType="Button" Header : LABELS."Actions3" Text="(Un)Blocking" CommandName="CM_BLK"
+	ControlStyle-CssClass="ButtonGreyForm" />
+
+Customer
+Vendor
+Name
+Comment
+Street
+City
+Country
+Local Tax Code
+EU Registration Nr
+Natural Person
+Risk Class
+Central Posting Block
+Central Order Block
+Central Delivery Block
+Central Billing Block
+Company 
+Business Partner Class
+Payment Terms
+Posting Block
+Sales Organiz.
+Channel
+Payment Terms(SO)
+Sales Org. Order Block
+Sales Org. Delivery Block
+Sales Org. Billing Block
+Actions

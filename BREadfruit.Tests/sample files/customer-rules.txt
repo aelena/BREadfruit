@@ -230,7 +230,6 @@ Entity DDLCDSalesOrg is DropDownList in frmSearch
 	with actions
 		; load active companies for this country
 		; this means the current ìmplementation needs to change a bit...
-		; TODO: REORGANIZE THE TABLE TO REFLECT THIS CHANGES IN TEH VALUES LOADED IN THIS DIST CHANNEL COMBO ISNTEAD OF REMOVING BY CODE
 		load data from DATASOURCE.SelectDistributionChannels with arguments {countrycode : DDLCDCountry.Value, companycode :DDLCDCompany.Value, salesorgcode :DDLCDSalesOrg.Value} in DDLCDDistribChannel
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
@@ -282,9 +281,8 @@ Entity DDLCDivision is DropDownList in frmSearch
 		value field Code
 		load data from DATASOURCE.MDMC_Divisions with arguments {ClusterCountryCode: DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterSalesOrganization : DDLCDSalesOrg.Value, FlagActive : true }
 
-	; TODO: WHEN DOES THIS CONTROL BECOME VISIBLE
 	with rules
-		DDLCDivision.Count > 0 then
+		DDLCDivision.Items.Count > 0 then
 			this visible true
 		else
 			this visible false
@@ -369,10 +367,35 @@ Entity btnCreateCustomer is Button in frmSearch
 Entity CustomerSearchResultGrid is Grid in frmSearch
 	with defaults
 		visible false
+		define column Customer with arguments { ControlType: Label, DataField: Customer, Header : LABELS.Customer, Visible : true }
+		define column Vendor with arguments { ControlType: Label, DataField: Vendor, Header : LABELS.Vendor, Visible : true }  
+		define column name1 with arguments { ControlType: Label, DataField: name1, Header : LABELS.Name, Visible : true }  
+		define column name3 with arguments { ControlType: Label, DataField: name3, Header : LABELS.Comment, Visible : true }  
+		define column Street with arguments { ControlType: Label, DataField: Street, Header : LABELS.Street, Visible : true }  
+		define column City with arguments { ControlType: Label, DataField: City, Header : LABELS.City, Visible : true }  
+		define column Country with arguments { ControlType: Label, DataField: Country, Header : LABELS.Country, Visible : true }
+		define column Taxcode with arguments { ControlType: Label, DataField: Taxcode, Header : LABELS.Local_Tax_Code, Visible : true }  
+		define column VAT with arguments { ControlType: Label, DataField: VAT, Header : LABELS.EU_Registration_Nr, Visible : true }  
+		define column NaturalPerson with arguments { ControlType: Label, DataField: NaturalPerson, Header : LABELS.Natural_Person, Visible : true }
+		define column Risk with arguments { ControlType: Label, DataField: Risk, Header : LABELS.Risk Class, Visible : true }
+		define column KNA1_SPERR with arguments { ControlType: Label, DataField: KNA1_SPERR, Header : LABELS.Central_Posting_Block , Visible : true }
+		define column KNA1_AUFSD with arguments { ControlType: Label, DataField: KNA1_AUFSD, Header : LABELS.Central_Order_Block   , Visible : true }
+		define column KNA1_LIFSD with arguments { ControlType: Label, DataField: KNA1_LIFSD, Header : LABELS.Central_Delivery_Block, Visible : true }  
+		define column KNA1_FAKSD with arguments { ControlType: Label, DataField: KNA1_FAKSD, Header : LABELS.Central_Billing_Block , Visible : true } 
+		define column Company with arguments { ControlType: Label, DataField: Company, Header : LABELS.Company   , Visible : true }
+		define column KNB1_FRGRP with arguments { ControlType: Label, DataField: KNB1_FRGRP, Header : LABELS.Business_Partner_Class  , Visible : true }
+		define column KNB1_ZTERM with arguments { ControlType: Label, DataField: KNB1_ZTERM, Header : LABELS.Payment_Terms  , Visible : true }
+		define column KNB1_SPERR with arguments { ControlType: Label, DataField: KNB1_SPERR, Header : LABELS.Posting_Block  	, Visible : true }
+		define column SO with arguments { ControlType: Label, DataField: SO, Header : LABELS.Sales_Organiz., Visible : true }
+		define column DistChannel with arguments { ControlType: Label, DataField: DistChannel, Header : LABELS.Channel , Visible : true }
+		define column KNVV_ZTERM with arguments { ControlType: Label, DataField: KNVV_ZTERM, Header : LABELS.Payment_Terms(SO)  , Visible : true }
+		define column KNVV_AUFSD with arguments { ControlType: Label, DataField: KNVV_AUFSD, Header : LABELS.Sales_Org._Order_Block  , Visible : true }
+		define column KNVV_LIFSD with arguments { ControlType: Label, DataField: KNVV_LIFSD, Header : LABELS.Sales_Org._Delivery_Block , Visible : true } 
+		define column KNVV_FAKSD with arguments { ControlType: Label, DataField: KNVV_FAKSD, Header : LABELS.Sales_Org._Billing_Block  , Visible : true }
 
-	; TODO: DEFINE CONVENTIONS FOR GRID BETTER
+		; TODO: PENDING BUTTON DEFINITION
 
-	; MISSING ACTIOSN ON GRID BUTTONS
+	; TODO: MISSING ACTIOSN ON GRID BUTTONS
 
 
 ; ----------------------------------------------------------------------------	
@@ -2089,6 +2112,7 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		this changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=16, TRIGGERS=1
 Entity GD_Ctr_PIVA is TextBox in frmMain
 
 	with defaults
@@ -2104,21 +2128,19 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
 		REQUEST.ACCOUNT_GROUP is YCT2 then
-			max length 10
-
-		REQUEST.ACCOUNT_GROUP is YCT3 then
-			max length 9
-
-		REQUEST.ACCOUNT_GROUP is YCT3 and REQUEST.REQUEST_TYPE is CC and REQUEST.COUNTRY is not ES then
+			max length 8
 			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
+		REQUEST.ACCOUNT_GROUP is YCT3 then
+			max length 9
+		REQUEST.ACCOUNT_GROUP is YCT3 and REQUEST.REQUEST_TYPE is CC and REQUEST.COUNTRY is not ES then
+			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 		REQUEST.ACCOUNT_GROUP is YCT3 and GD_Ctr_PIVA.Value starts with {P,Q,S} then
 			set value G in GD_Ctr_CustomerClassification
-
 		REQUEST.ACCOUNT_GROUP is YCT3 and GD_Ctr_PIVA.Value starts with {X,0,1,2,3,4,5,6,7,8,9} then
 			set value true in GD_Ctr_IsNaturalPerson
-		
 		REQUEST.ACCOUNT_GROUP is YCT3 and GD_Ctr_PIVA.Value not starts with {X,0,1,2,3,4,5,6,7,8,9} then
 			set value false in GD_Ctr_IsNaturalPerson
 
@@ -2126,27 +2148,26 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			max length 9
 			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
-
 		REQUEST.ACCOUNT_GROUP is YCT4 and GD_Ctr_VATRegistrationNumber starts with {1,2,3} then
 			set value true in GD_Ctr_IsNaturalPerson
 			GD_Ctr_TaxCode2 mandatory true
 			; TODO: REQUIRES PARSER CHANGE
 			GD_Ctr_TaxCode2 max length 11
 			; TODO: DOES NOT WORK WELL
-			; GD_Ctr_TaxCode2 validation "^[0-9]{11}$"
-		
+			; GD_Ctr_TaxCode2 validation "^[0-9]{11}$"		
 		REQUEST.ACCOUNT_GROUP is YCT4 and GD_Ctr_VATRegistrationNumber not starts with {1,2,3} then
 			set value false in GD_Ctr_IsNaturalPerson
 			
 		REQUEST.ACCOUNT_GROUP is YCT5 then
 			max length 16
-			
+						
+		REQUEST.ACCOUNT_GROUP is YCT6 
+			max length 14
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			set value SUBSTRING(GD_Adr_Country.Code,0,9) in GD_Ctr_TaxCode2
 		REQUEST.ACCOUNT_GROUP is YCT6 and GD_Adr_Country.Value in {FR,GF,RP,MQ,RE} then
 			this mandatory true
 			validation ^[0-9]{14}$
-
-		; REQUEST.ACCOUNT_GROUP is YCT6 and GD_Adr_Country.Value in {FR,GF,RP,MQ,RE} and REQUEST.CURRENT_ROLE is ROLES.ENQ then
-
 		REQUEST.ACCOUNT_GROUP is YCT6 and GD_Adr_Country.Value in {MC,NC,PF,PM,WE,YT} then
 			this visible false
 			GD_Ctr_TaxCode1 mandatory false
@@ -2158,38 +2179,45 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value SUBSTRING(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode1
 
+		REQUEST.ACCOUNT_GROUP is YCT7 then
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
-		REQUEST.REQUEST_TYPE is CC or REQUEST.COUNTRY is FR then
-			this enable true
-		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is CC then
-			this visible true
-		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is not CC then
-			this visible false
-
-
-		REQUEST.ACCOUNT_GROUP in YCT5 is YCT3 then
-			max length 11
-		REQUEST.ACCOUNT_GROUP is YCT6 and REQUEST.REQUEST_TYPE is CC and GD_Ctr_IsNaturalPerson.Value is false then
-			this mandatory true
-		REQUEST.ACCOUNT_GROUP is YCT6 and REQUEST.CURRENT_ROLE in {ROLES.CLERK, ROLES.ENQ} then
-			this enable true
-		REQUEST.ACCOUNT_GROUP is YCT9 then 
-			max length 5
-			this mandatory false
-		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
-			this mandatory false
+		; REQUEST.REQUEST_TYPE is CC or REQUEST.COUNTRY is FR then
+		; 	this enable true
+		; REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is CC then
+		; 	this visible true
+		; REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is not CC then
+		; 	this visible false
+		; 
+		; 
+		; REQUEST.ACCOUNT_GROUP in YCT5 is YCT3 then
+		; 	max length 11
+		; REQUEST.ACCOUNT_GROUP is YCT6 and REQUEST.REQUEST_TYPE is CC and GD_Ctr_IsNaturalPerson.Value is false then
+		; 	this mandatory true
+		; REQUEST.ACCOUNT_GROUP is YCT6 and REQUEST.CURRENT_ROLE in {ROLES.CLERK, ROLES.ENQ} then
+		; 	this enable true
+		; REQUEST.ACCOUNT_GROUP is YCT9 then 
+		; 	max length 5
+		; 	this mandatory false
+		; GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
+		; 	this mandatory false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
-
+	with triggers
+		this changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=2
 Entity GD_Ctr_CF is TextBox in frmMain
 
 	with defaults
 		label LABELS.labCF
+		visible false
 	with rules
-		REQUEST.COUNTRY is FR and REQUEST.REQUEST_TYPE is CC then
+		REQUEST.COMPANY_CODE in {5180,5116,596G} and REQUEST.REQUEST_TYPE is CC then
 			this enable true
 			this visible true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -2216,33 +2244,41 @@ Entity GD_Ctr_IFANumber is TextBox in frmMain
 		
 ; ---------------------------------------------------------------------------- 
 
+; TODO: THE RULES ARE A MESS, SPECIALLY FOR CUSTOMER COUNTRY
 Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 
 	with defaults
 		label LABELS.labTaxCode1
+		max length 16
 	with rules
-		REQUEST.COUNTRY is IT then
+		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
+			this mandatory false
+		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is not CC then
+			this visible false
+		GD_Adr_Country.Value is IT then
 			this enable false
-		REQUEST.ACCOUNT_GROUP is YCT6 then
 			max length 16
-		REQUEST.ACCOUNT_GROUP is YCT9 then
-			max length 16
-		REQUEST.ACCOUNT_GROUP is YCT6 and REQUEST.REQUEST_TYPE is not CC then
+		GD_Adr_Country.Value is IT and GD_Ctr_IsNaturalPerson.Value is true then
+			this mandatory true
+		REQUEST.COUNTRY in {BE,LU} and REQUEST.CURRENT_ROLE is ROLES.CLERK then
+			this mandatory false
+			GD_Ctr_VATRegistrationNumber mandatory false
+
+
+		; YCT6 countries
+		GD_Adr_Country.Value in {FR,GF,GP,MQ,RE} and REQUEST.REQUEST_TYPE is not CC then
 			this enable false
+			set value SUBSTRING(GD_Ctr_TaxCode1.Value,0,9) in GD_Ctr_TaxCode2
+
 		REQUEST.ACCOUNT_GROUP is YCT9 and REQUEST.REQUEST_TYPE is not CC then
 			this enable false
 		REQUEST.ACCOUNT_GROUP is YCT6 and REQUEST.REQUEST_TYPE is CC and GD_Ctr_IsNaturalPerson.Value is false then
 			this mandatory true
 		REQUEST.ACCOUNT_GROUP is YCT9 then
 			mandatory false
-		
 		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is CC and REQUEST.TaxCode1_IsMandatory then
 			this mandatory true
 
-		REQUEST.COUNTRY in {BE,LU} and REQUEST.CURRENT_ROLE is ROLES.CLERK then
-			this mandatory false
-			GD_Ctr_VATRegistrationNumber mandatory false
-		
 		GD_Adr_Country.Value is GR and REQUEST.REQUEST_TYPE is CC then
 			this mandatory false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
