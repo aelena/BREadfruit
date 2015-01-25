@@ -2670,6 +2670,32 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		public void ParseSampleFile093 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File093 - btnSearch_C.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "btnSearch", "Entity name should be 'btnSearch' but is " + e.Name );
+			var i = 0;
+
+			Assert.That ( e.Rules.Count() == 1, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DATASOURCE.IsUserInROLE with_args {UserAccount:USER.USER_ACCOUNT,RoleCode:USER.CURRENT_ROLE,ClusterCountryCode:DDLCDCountry.Value,ClusterCompanyCode:DDLCDCompany.Value,ClusterPOCode:DDLCDSalesOrg.Value}", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.IsOperator, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString() == "false", String.Format ( "Assert {0}", ++i ) );
+
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
+		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{
 			var parser = new Parser ();

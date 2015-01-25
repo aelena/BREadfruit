@@ -1819,7 +1819,7 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 	with rules
 
 		; call SP to find out if selected value is Tax Haven
-		DATASOURCE.MDMC_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true
+		DATASOURCE.MDMC_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true then
 			set value 09 in GD_Ctr_RiskClassification
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -2169,7 +2169,7 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP is YCT5 then
 			max length 16
 						
-		REQUEST.ACCOUNT_GROUP is YCT6 
+		REQUEST.ACCOUNT_GROUP is YCT6 then
 			max length 14
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value SUBSTRING(GD_Adr_Country.Code,0,9) in GD_Ctr_TaxCode2

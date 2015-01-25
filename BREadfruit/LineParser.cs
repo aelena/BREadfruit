@@ -472,6 +472,15 @@ namespace BREadfruit
 				}
 				else
 				{
+
+					if ( _operandToken.Trim ().StartsWith ( Grammar.DataSourceSymbol.Token ) &&
+						lineInfo.Tokens.ElementAt ( i + 1 ) == Grammar.WithArgumentsSymbol )
+					{
+						// this needs to be fused into one
+						// this is dangerous....
+
+						_operandToken += String.Format ( " {0} {1}", lineInfo.Tokens.ElementAt ( ++i ), lineInfo.Tokens.ElementAt ( ++i ) );
+					}
 					_c = new Condition ( _operandToken,
 											Grammar.GetOperator ( lineInfo.Tokens.ElementAt ( ++i ).Token ),
 											lineInfo.Tokens.ElementAt ( ++i ).Token );

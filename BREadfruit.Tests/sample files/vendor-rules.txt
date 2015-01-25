@@ -3915,7 +3915,7 @@ Entity BLK_MFD_DeletionBlockCompanyCode	is CheckBox in frmMain
 
 ; --- BUTTON BLOCK -----------------------------------------------------------
 
-; NOTE: REMOVED AS IT IS ALWAYS INVISIBLE
+; NOTE: TELL SEB - REMOVED AS IT IS ALWAYS INVISIBLE
 ; Entity GD_Ctr_CapCostNumber	is Button in frmMain
 ; 	with defaults
 ; 		label LABELS.btnCaptureCostumerNumber
@@ -3925,7 +3925,7 @@ Entity BLK_MFD_DeletionBlockCompanyCode	is CheckBox in frmMain
 ; 			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TODO: Pending more stuff
+; TODO: PENDING FINAL REVISION
 Entity btnSubmit is Button in frmMain
 	with defaults
 		label LABELS.btnSubmit
@@ -4290,6 +4290,7 @@ Entity btnSubmit is Button in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TODO: SEB probably we do not need this?		
+; TESTGEN : DEFAULTS=3
 Entity btnClose	is Button in frmMain
 	with defaults
 		label LABELS.btnClose
@@ -4297,7 +4298,8 @@ Entity btnClose	is Button in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TODO: SEB probably we do not need this?		
+; TODO: SEB probably we do not need this?	
+; TESTGEN : DEFAULTS=3,	RULES=3
 Entity btnSCClose is Button in frmMain
 	with defaults
 		label LABELS.btnClose
@@ -4311,20 +4313,27 @@ Entity btnSCClose is Button in frmMain
 		else
 			this visible true
 
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false	
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=3, ACTIONS=1, TRIGGERS=1, RULES=1
+; TODO: CHECK if this is useful, there's no really going "back" so probably this is not useful
 Entity btnBack2 is Button in frmMain
 	with defaults
 		label LABELS.btnBack
 
 	with rules
-		REQUEST.REQUEST_STATE is CLOSED then
-			this visible false
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false	
 
 ; ----------------------------------------------------------------------------	
 
 ; TODO: SEB what about this?
+; TESTGEN : DEFAULTS=3, ACTIONS=1, TRIGGERS=1, RULES=1
 Entity btnSave is Button in frmMain
 	with defaults
 		label LABELS.btnSave
@@ -4333,16 +4342,17 @@ Entity btnSave is Button in frmMain
 		this enable false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} then
-			this enable false	
-		else
-			this enable true
+
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false	
 
 	with triggers
 		this on click
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=3, RULES=2
 Entity btnCloseFinal is Button in frmMain
 	with defaults
 		label LABELS.btnClose
@@ -4353,6 +4363,9 @@ Entity btnCloseFinal is Button in frmMain
 		else
 			this visible false
 
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false	
 
 ; --- WORKFLOW RELATED CONTROLS ----------------------------------------------
 

@@ -1,0 +1,48 @@
+﻿Entity btnSearch is Button in frmSearch
+
+	with defaults
+		label LABELS.btnSearch
+
+	with rules
+
+		; yes, teh function defines the last parameter as ClusterPOCode, not ClusterSOCode, so this is right
+		DATASOURCE.IsUserInROLE with arguments { UserAccount : USER.USER_ACCOUNT, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value } is false then
+			set value MESSAGES.ERRauthCCPO in MESSAGE_POPUP
+		else
+			TBCustomerNumber.text starts with '0' then
+				set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
+			
+			DDLCDivision is visible and DDLCDivision is empty then
+				; show this message : Fill the field of Division Country
+				set value MESSAGES.ERRfieldDivisionCountry in MESSAGE_POPUP
+
+			TBCustomerNumber.Length is not 10 then
+				set value MESSAGES.ERRfieldCNumer_10 in MESSAGE_POPUP
+
+			DDLDCountry is empty and TBCustomerIFA is empty then
+				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
+
+			TBCustomerVAT is not empty and DDLDCountry is empty then
+				set value MESSAGES.ERRfieldCCountry in MESSAGE_POPUP
+		
+			TBCustomerVAT is empty and TBCustomerVAT is empty and TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty then
+				set value "Fill the fields KeyTax or Customer or IFA Number or Country + Name or Country + City" in MESSAGE_POPUP
+
+			TBCustomerVAT is empty and TBCustomerVAT is empty and DDLDCountry is empty then
+				set value MESSAGES.ERRfieldCCountry in MESSAGE_POPUP
+				
+			; TBCustomerName is empty and TBCustomerCity is not empty and TBCustomerName is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
+			; 	set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+	
+			DDLCDCountry is empty or DDLCDCompany is empty or DDLCDSalesOrg is empty then
+				set value MESSAGES.ERRSOfieldCCS in MESSAGE_POPUP
+		
+			; TODO: VERIFY THIS WITH SEB
+			MESSAGE_POPUP is empty then
+				load data from WEBSERVICE.CUSTOMER_SEARCH_SERVICE with arguments {CustomerName:TBCustomerName.Value, CustomerCity:TBCustomerCity, CustomerNumber:TBCustomerNumber.Value, CustomerCountry:DDLVDCountry.Value,TaxCode1:TBCustomerVAT.Value,TaxCode4:TBCustomerIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in CustomerSearchResultGrid
+
+
+	with triggers
+		this on click	
+
+; ---------------------------------------------------------------------------- 

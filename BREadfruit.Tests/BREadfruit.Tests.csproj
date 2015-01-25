@@ -179,6 +179,7 @@
     <Content Include="sample files\single entity tests\File090.txt" />
     <Content Include="sample files\single entity tests\File091.txt" />
     <Content Include="sample files\single entity tests\File092.txt" />
+    <Content Include="sample files\single entity tests\File093 - btnSearch_C.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
     <Content Include="__sketchpad.txt" />
