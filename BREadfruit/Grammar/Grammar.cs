@@ -411,6 +411,7 @@ namespace BREadfruit
 		#region " --- symbol for entities --- "
 
 		public static Symbol TextBoxSymbol = new Symbol ( "TextBox", 0, true );
+		public static Symbol NumericBoxSymbol = new Symbol ( "NumericBox", 0, true );
 		public static Symbol CheckBoxSymbol = new Symbol ( "CheckBox", 0, true );
 		public static Symbol DropDownListSymbol = new Symbol ( "DropDownList", 0, true );
 		public static Symbol RadioButtonSymbol = new Symbol ( "RadioButton", 0, true );
@@ -874,6 +875,7 @@ namespace BREadfruit
 		private static void PopulateEntityTypes ()
 		{
 			Grammar._entityTypes.Add ( TextBoxSymbol );
+			Grammar._entityTypes.Add ( NumericBoxSymbol );
 			Grammar._entityTypes.Add ( CheckBoxSymbol );
 			Grammar._entityTypes.Add ( DropDownListSymbol );
 			Grammar._entityTypes.Add ( RadioButtonSymbol );
@@ -1005,6 +1007,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( ActionsSymbol );
 			// add entity types symbols
 			Grammar._symbols.Add ( TextBoxSymbol );
+			Grammar._symbols.Add ( NumericBoxSymbol );
 			Grammar._symbols.Add ( CheckBoxSymbol );
 			Grammar._symbols.Add ( DropDownListSymbol );
 			Grammar._symbols.Add ( RadioButtonSymbol );
