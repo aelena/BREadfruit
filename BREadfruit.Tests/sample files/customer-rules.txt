@@ -63,7 +63,7 @@ Entity TBCustomerCity is TextBox in frmSearch
 
 	with defaults
 		label LABELS.labCustomerCity
-		value   ''
+		value  ''
 
 	with actions
 		hide btnCreateCustomer
@@ -73,7 +73,7 @@ Entity TBCustomerCity is TextBox in frmSearch
 	with rules
 		
 	with triggers
-		TBCustomerName.Value changes
+		this	 changes
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, TRIGGERS=1
@@ -143,7 +143,7 @@ Entity DDLDCountry is DropDownList in frmSearch
 		clear CustomerSearchResultGrid
 
 	with rules
-		DDLCDCountry.Value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then label LABELS.labSIRET in TBVendorVAT
+		DDLCDCountry.Value in {FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC,TF} then label LABELS.labSIRET in TBVendorVAT
 		DDLCDCountry.Value in {PT,ES} then label LABELS.labNIF in TBVendorVAT
 		DDLCDCountry.Value is IT then label LABELS.labPartitaIVA in TBVendorVAT
 		DDLCDCountry.Value not in {PT,ES,IT,FR,GF,GP,RE,MQ,YT,NC,PF,PM,WF,MC} then label LABELS.labVAT in TBVendorVAT
@@ -170,7 +170,7 @@ Entity TBCustomerVAT is TextBox in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=8, ACTIONS=7, RULES=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=8, ACTIONS=5, RULES=0, TRIGGERS=1
 Entity DDLCDCountry is DropDownList in frmSearch
 
 	with defaults
@@ -189,6 +189,7 @@ Entity DDLCDCountry is DropDownList in frmSearch
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
 		hide btnCreateVendor
+
 
 	with triggers
 		this.Value changes
@@ -217,7 +218,7 @@ Entity DDLCDCompany is DropDownList in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=7, ACTIONS=4, RULES=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=7, ACTIONS=4, RULES=1, TRIGGERS=1
 Entity DDLCDSalesOrg is DropDownList in frmSearch
 
 	with defaults
@@ -363,7 +364,7 @@ Entity btnCreateCustomer is Button in frmSearch
 ; ---------------------------------------------------------------------------- 
 
 
-; TESTGEN : DEFAULTS=2
+; TESTGEN : DEFAULTS=27, RULES=1, TRIGGERS=1
 Entity CustomerSearchResultGrid is Grid in frmSearch
 	with defaults
 		visible false
@@ -397,6 +398,14 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 
 	; TODO: MISSING ACTIOSN ON GRID BUTTONS
 
+	with rules
+		CustomerSearchResultGrid.Items.Count is 0 then
+			btnCreateCustomer visible true
+		else
+			btnCreateCustomer visible false
+
+	with triggers
+		this loads
 
 ; ----------------------------------------------------------------------------	
 ;     END OF SEARCH FORM DEFINITION
@@ -1276,7 +1285,6 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 
 ; TESTGEN : DEFAULTS=8, RULES=2, ACTIONS=0, TRIGGERS=0
 Entity GD_Com_Telebox is DropDownList in frmMain
-
 	with defaults
 		label LABELS.labTelebox
 		data field DisplayName
@@ -1284,7 +1292,6 @@ Entity GD_Com_Telebox is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_Telebox with arguments {FlagActive : true, AccountGroup : REQUEST.ACCOUNT_GROUP}
 		mandatory true
 		value PRT
-
 	with rules
 		REQUEST.REQUEST_TYPE is CC then
 			set value PRT in GD_Com_Telebox
@@ -1369,7 +1376,7 @@ Entity P_GD_VT_Notes is TextBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Default is TextBox in frmMain
+Entity P_GD_VT_Default is CheckBox in frmMain
 	with defaults
 		; by defaults appears checked and disabled
 		value true
@@ -1508,7 +1515,7 @@ Entity F_GD_VF_ConsNumber is TextBox in frmMain
 ; ----------------------------------------------------------------------------
 
 ; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity F_GD_VF_Default is TextBox in frmMain
+Entity F_GD_VF_Default is CheckBox in frmMain
 	with defaults
 		value false
 		label LABELS.labGD_VF_Default
@@ -1580,7 +1587,7 @@ Entity E_GD_VE_Notes is TextBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity E_GD_VE_Default is TextBox in frmMain
+Entity E_GD_VE_Default is CheckBox in frmMain
 	with defaults
 		value false
 		label LABELS.labGD_VE_Default
@@ -1590,14 +1597,15 @@ Entity E_GD_VE_Default is TextBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity E_GD_VE_ConsNumber is TextBox in frmMain
 
-	with defaults
-		visible false
-		label LABELS.labGD_VE_ConsNumber
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
+Entity E_GD_VE_ConsNumber is TextBox in frmMain
+ 
+ 	with defaults
+ 		visible false
+ 		label LABELS.labGD_VE_ConsNumber
+ 	with rules
+ 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+ 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
