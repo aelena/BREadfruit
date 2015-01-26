@@ -2038,7 +2038,7 @@ Entity GD_Ctr_CustomerNumber is TextBox in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
-
+; TESTGEN : DEFAULTS=7, RULES=4
 Entity GD_Ctr_Industry is DropDownList in frmMain
 	with defaults
 		mandatory false
@@ -2051,22 +2051,29 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 
 	with rules
 
-		REQUEST.ACCOUNT_GROUP in {"YCT6", "YVT6"} then
+		; TODO: USE APE LIST HERE
+		
+		REQUEST.ACCOUNT_GROUP in {YCT6, YVT6} then
 			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : FR}
 			; this equals to this line in original code
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 			; TODO: DO WE NEED THIS? set value FR in REQUEST.INDUSTRY_COUNTRY
-			; can or should we do something like this?
-			set width 680px		
+
+		REQUEST.ACCOUNT_GROUP in {YCT6, YVT6} and REQUEST.CURRENT_ROLE is ROLES.CLERK then
+			this mandatory true
 
 		REQUEST.ACCOUNT_GROUP in {"YCT9", "YVT9"} then
 			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : EN}
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 			; TODO: DO WE NEED THIS? set value EN in REQUEST.INDUSTRY_COUNTRY
 			mandatory false
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false			
+
 ; ----------------------------------------------------------------------------	
+
+; TODO: FINISH THIS PART
 
 Entity GD_Ctr_GFORM is DropDownList in frmMain
 	with defaults
@@ -2371,6 +2378,7 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=4, RULES=3
 Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
 	with defaults
 		label LABELS.chkSales
@@ -2379,22 +2387,26 @@ Entity GD_Ctr_SalesPurTax is CheckBox in frmMain
 	
 	with rules
 
-		REQUEST.REQUEST_TYPE is VM then
-			this visible true
+		; TODO: CHECK THIS IN SOURCECODE
+		; REQUEST.REQUEST_TYPE is VM then
+		; 	this visible true
+		; 
+		; REQUEST.ACCOUNT_GROUP in {YVT1, YVT3, YVT1} and REQUEST.COMPANY_CODE in {5101, 563M, 5109} then
+		; 	set value true in GD_Ctr_SalesPurTax
 
-		REQUEST.ACCOUNT_GROUP in {YVT1, YVT3, YVT1} and REQUEST.COMPANY_CODE in {5101, 563M, 5109} then
-			set value true in GD_Ctr_SalesPurTax
-
-		REQUEST.ACCOUNT_GROUP in {YVT1, YVT1} then
-			show GD_Ctr_SalesPurTax
+		REQUEST.ACCOUNT_GROUP in {YVT1, YVT2} then
+			GD_Ctr_SalesPurTax visible true
 			set value true in GD_Ctr_SalesPurTax
 
 		REQUEST.COMPANY_CODE in {5101,563M,5109} and REQUEST.ACCOUNT_GROUP is YVT1 then
 			set value true ; check the checkbox
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=4, RULES=3
 Entity GD_Ctr_IFANumber is TextBox in frmMain
 	with defaults
 		max length 20
@@ -2403,16 +2415,21 @@ Entity GD_Ctr_IFANumber is TextBox in frmMain
 		enabled false
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
-		REQUEST.REQUEST_TYPE is VM then
+
+		; TODO: CHECK ADDITIONAL RULES IN CODEBASE
+
+		REQUEST.REQUEST_TYPE is not VM then
 			this visible true
 
 		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY in {BE, LU} then
 			this visible true
-			
+	
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+		
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=4, RULES=2
 Entity GD_Ctr_RepresentiveName is TextBox in frmMain
 	with defaults
 		max length 10
@@ -2428,6 +2445,8 @@ Entity GD_Ctr_RepresentiveName is TextBox in frmMain
 					
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=3, RULES=2
+; TODO: SEE IF NEEDS TO BE REMOVED
 Entity GD_Ctr_TaxNumber	is TextBox in frmMain
 	with defaults
 		visible false
@@ -2441,6 +2460,7 @@ Entity GD_Ctr_TaxNumber	is TextBox in frmMain
 			
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=4, RULES=2
 Entity GD_Ctr_CreditInfoNo is TextBox in frmMain
 	with defaults
 		max length 11
@@ -2455,7 +2475,7 @@ Entity GD_Ctr_CreditInfoNo is TextBox in frmMain
 	
 ; ----------------------------------------------------------------------------	
 
-
+; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=1, TRIGGERS=1
 Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with defaults
 		label LABELS.labUnsubscribeCMD
@@ -2466,6 +2486,9 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with actions
 		set value GD_Ctr_UnsubscribeCMD.Value in BLK_GD_Ctr_UnsubscribeCMD
 	with rules
+		REQUEST.REQUEST_TYPE is CC then
+			this enable false
+			this visile false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
@@ -2473,7 +2496,9 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 		this changes
 
 
+; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity V_Country is DropDownList in frmMain
 	with defaults
 		data field DisplayName
@@ -2487,9 +2512,10 @@ Entity V_Country is DropDownList in frmMain
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with triggers 
-		on change
+		this changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity V_VATNumber is TextBox in frmMain
 	with defaults
 		label LABELS.labNumber
@@ -2503,6 +2529,7 @@ Entity V_VATNumber is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
 Entity V_btnInsert is Button in frmMain
 	with defaults
 		label LABELS.labInsert
@@ -2511,6 +2538,7 @@ Entity V_btnInsert is Button in frmMain
 			this enable false
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=3
 Entity V_Grid is Grid in frmMain
 	with defaults
 		define column GRID_V_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
@@ -2533,6 +2561,7 @@ Entity V_Grid is Grid in frmMain
 
 ; THIS IS THE BANK DETAILS
 
+; TESTGEN : DEFAULTS=7, RULES=2, ACTIONS=1, TRIGGERS=1
 Entity B_GD_VB_Country is DropDownList in frmMain
 
 	with defaults
@@ -2548,10 +2577,11 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with triggers 
-		on change
+		this changes
 
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=2, ACTIONS=1, TRIGGERS=2
 Entity B_GD_VB_BankKey is TextBox in frmMain
 
 	with defaults
@@ -2572,20 +2602,21 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=3, ACTIONS=1, TRIGGERS=2
 Entity B_GD_VB_BankAccount is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_BankAccount
 		max length 11
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.ACCOUNT_GROUP in {YCT6,YCT9,YVT6,YVT9} then
 			max length 11
 		else
 			max length 18
 		B_GD_VB_Country.Value is BE and GD_VB_BankAccount.Value.Length >= 3 then
 			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
@@ -2594,6 +2625,7 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity B_GD_VB_BankControlKey is TextBox in frmMain
 
 	with defaults
@@ -2609,10 +2641,17 @@ Entity B_GD_VB_BankControlKey is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
+; TODO: CHECK VENDOR SPECIFIC BANK RULES IN VENDOR FIELDMAPPING FILE
+
+; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=2
 Entity B_GD_VB_IBAN is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_IBAN
+	with actions
+		; TODO: POPULATION FOR THE UNDERLYING TABLE HAS TO BE FINISHED
+		load data from DATASOURCE.MDMC_GetIBANConfigurationForCountry with arguments {CountryCode:B_GD_VB_Country.Value, IBAN:B_GD_VB_IBAN.Value} with output {B_GD_VB_BankKey:BankKey,B_GD_VB_BankAccount:BankAccount,B_GD_VB_BankControlKey:BankControlKey}
+
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -2628,6 +2667,8 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
+; TODO: TO BE CONNECTED IN THE WEB SERVICES TO AND FROM SAP
+; TESTGEN : DEFAULTS=3, RULES=1
 Entity B_GD_VB_SWIFT is TextBox in frmMain
 
 	with defaults
@@ -2643,6 +2684,7 @@ Entity B_GD_VB_SWIFT is TextBox in frmMain
 			
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity B_GD_VB_AccountHolder is TextBox in frmMain
 
 	with defaults
@@ -2655,12 +2697,15 @@ Entity B_GD_VB_AccountHolder is TextBox in frmMain
 		; _COMMENT_ mandatory  false 
 	with triggers 
 		on change
+
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=4, RULES=1
 Entity B_GD_VB_BankCity is TextBox in frmMain
 
 	with defaults
 		label LABELS.labGD_VD_BankCity
+		max length 20
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -2762,30 +2807,41 @@ Entity B_GD_VB_Grid is Grid in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; ALWAYS HIDDEN
-; TODO: DECIDE WHAT TO DO WITH THIS SORT OF FIELDS...
+; TESTGEN : RULES=5, DEFAULTS=3
 Entity CC_CO_ReconAccount is TextBox in frmMain
 	with defaults
 		visible false
 		value REQUEST.CC_CO_ReconAccount_SAP
 	with rules
+
+		REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			set value 0044110000 in CC_CO_ReconAccount
+
+		REQUEST.COUNTRY is GR and GD_Ctr_VendorClassification.Value is G and REQUEST.VENDOR_COUNTRY is GR then
+			this visible true
+			; TODO: ONLY TWO VALUES HERE
+			; 44110090 y 44110080
+			
+		REQUEST.COUNTRY is GR and GD_Ctr_VendorClassification.Value is G and REQUEST.VENDOR_COUNTRY is not GR then
+			set value 44110050 in CC_CO_ReconAccount
+
+		REQUEST.COUNTRY is GR and GD_Ctr_VendorClassification.Value is NG then
+			set value 44110000 in CC_CO_ReconAccount
+			
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 ; ----------------------------------------------------------------------------	
 
-; ALWAYS HIDDEN
-; TODO: DECIDE WHAT TO DO WITH THIS SORT OF FIELDS...
+; TESTGEN : DEFAULTS=3, RULES=0
 Entity LFB1_LNRZE is TextBox in frmMain
 	with defaults
 		visible false
+		enable false
+		; TODO: CHECK WITH SEB ABOUT THIS
 		value REQUEST.LFB1_LNRZE_SAP
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; ALWAYS HIDDEN
-; TODO: DECIDE WHAT TO DO WITH THIS SORT OF FIELDS....
+; TESTGEN : DEFAULTS=2, RULES=3
 Entity LFB1_REPRF is TextBox in frmMain
 	with defaults
 		visible false
@@ -2795,6 +2851,7 @@ Entity LFB1_REPRF is TextBox in frmMain
 		REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value X in LFB1_REPRF
 
+		; TODO: Clarify model access
 		REQUEST.REQUEST_TYPE not in {VC, VC_CC} then
 			; in this case send the old value from SAP
 			set value REQUEST.LFB1_REPRF_SAP in LFB1_REPRF
@@ -2803,7 +2860,8 @@ Entity LFB1_REPRF is TextBox in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TODO: CLARIFY - THE RULES ARE A TOTAL FUCKING MESS
+; TODO: CLARIFY - THE RULES ARE A TOTAL FUCKING MESS - TODO: CHECK IN APP OR IN MADAM CODE
+; TESTGEN : DEFAULTS=7, RULES=9
 Entity CC_AM_SortKey is DropDownList in frmMain
 	with defaults
 		label LABELS.labAMSortKeys
@@ -2814,21 +2872,41 @@ Entity CC_AM_SortKey is DropDownList in frmMain
 
 	with rules
 
+		; TODO: ACCESS TO MODEL EXPOSING OBTAINED SAP DATA
 		; this means the value that was retrieved from SAP
 		REQUEST.CC_AM_SortKey_SAP is not empty then
 			set value REQUEST.CC_AM_SortKey_SAP in CC_AM_SortKey
+		
+		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.COUNTRY is ES then
+			set value 000 in CC_AM_SortKey
 
-		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.VENDOR_COUNTRY is FR then
+		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.COUNTRY is IT then
+			set value 002 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.COUNTRY is PT then
 			set value 003 in CC_AM_SortKey
 
-		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.VENDOR_COUNTRY is GR then
+		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.COUNTRY in {BE,LU} then
+			set value 009 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.COUNTRY is FR then
+			set value 007 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.COUNTRY is GR then
 			set value 001 in CC_AM_SortKey
 
-		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is FR then
-			set value 003 in CC_AM_SortKey
 
-		REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is GR then
-			set value 001 in CC_AM_SortKey
+		; REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.VENDOR_COUNTRY is FR then
+		; 	set value 003 in CC_AM_SortKey
+		; 
+		; REQUEST.CC_AM_SortKey_SAP is empty and REQUEST.VENDOR_COUNTRY is GR then
+		; 	set value 001 in CC_AM_SortKey
+		; 
+		; REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is FR then
+		; 	set value 003 in CC_AM_SortKey
+		; 
+		; REQUEST.REQUEST_TYPE not in {VM, VM_BLK, VM_UBLK} and REQUEST.COUNTRY is GR then
+		; 	set value 001 in CC_AM_SortKey
 
 		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} then
 			this visible false
@@ -2840,7 +2918,8 @@ Entity CC_AM_SortKey is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TODO: TEST
+; TODO: THIS SEEMS TO BE FOR ANOTHER CONTROL, NOT THIS ONE -> CC_AM_WithholdingTaxCode
+
 Entity CC_AM_SubjectedToWHTax is CheckBox in frmMain
 	with defaults
 		label LABELS.labAMSubjectedWithholdingTax
@@ -2848,8 +2927,11 @@ Entity CC_AM_SubjectedToWHTax is CheckBox in frmMain
 	with rules
 
 
-		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.COUNTRY in {ES, IT} then
-			CC_AM_WithholdingTaxCode mandatory CC_AM_SubjectedToWHTax.Checked
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.COUNTRY in {ES, IT} and CC_AM_SubjectedToWHTax.Value is true then
+			CC_AM_WithholdingTaxCode mandatory true
+
+		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.COUNTRY in {ES, IT} and CC_AM_SubjectedToWHTax.Value is false then
+			CC_AM_WithholdingTaxCode mandatory false
 
 		REQUEST.COUNTRY is ES and GD_Ctr_IsNaturalPerson.Checked is true and REQUEST.REQUEST_TYPE is VM then
 			CC_AM_WithholdingTaxCode mandatory false
@@ -2862,7 +2944,7 @@ Entity CC_AM_SubjectedToWHTax is CheckBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TODO: TEST
-
+; TODO: CHECK WITH PREVIOUS ELEMENT - I THINK RULES ARE MIXED
 Entity CC_AM_WithholdingTaxCode	is DropDownList in frmMain
 	with defaults
 		label LABELS.labAMWithholdingTaxCode
@@ -2885,6 +2967,7 @@ Entity CC_AM_WithholdingTaxCode	is DropDownList in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
+; TODO: CHECK RULES
 Entity CC_AM_ExemptionNumber is TextBox in frmMain
 	with defaults
 		label LABELS.labAMExemptionNumber
@@ -2929,22 +3012,26 @@ Entity GD_NatP_Exemption is DropDownList in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=3, RULES=1
 Entity CC_PT_ValidityDate is Calendar in frmMain
 	with defaults
 		label LABELS.labValidityDate
 	with rules
+		; TODO: CALENDAR SHOULD BE DISABLED IN ALL DATES PRIOR TO TODAY - CHECK WITH SEB
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 ; ----------------------------------------------------------------------------	
 
 ; backed by test 037
+; TODO: IS THIS VISIBLE?
+; TESTGEN : DEFAULTS=6, RULES=4
 Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 	with defaults
 		label LABELS.labAMCashManagementGroup
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_CashManagementGroups with arguments {FlagActive : true}
-
+		visible false
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -2956,7 +3043,6 @@ Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 			set value A2
 
 		REQUEST.COUNTRY is FR and REQUEST.VENDOR_COUNTRY in {FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC} then
-			hide this
 			set value A1
 
 ; ----------------------------------------------------------------------------	
@@ -2976,13 +3062,12 @@ Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 ; b) if partner country PT-> default value ""4217""
 ; C) if partner country not PT -> default value ""4117""
 
-
+; TESTGEN : DEFAULTS=7, ACTIONS=2, RULES=9, TRIGGERS=1
 Entity CC_PT_PaymentTerms is DropDownList in frmMain
 	with defaults
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
-		; 1) By default mandatory
 		label LABELS.labPTPaymentTerms
 		mandatory
 		
@@ -2994,11 +3079,10 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-		; 2) visible for all except for CoCd Portugal in creation from scratch and cocd is not visible
-		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
-			hide this
-			CC_PT_PaymentTerms mandatory false
 
+		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			this visible false
+			this mandatory false
 
 		REQUEST.COUNTRY is ES and REQUEST.REQUEST_TYPE in {VC, VC_CC} then
 			set value 3M60 in CC_PT_PaymentTerms
@@ -3033,6 +3117,7 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity CC_PT_PaymentBlock is DropDownList in frmMain
 	with defaults
 		data field DisplayName
@@ -3050,18 +3135,15 @@ Entity CC_PT_PaymentBlock is DropDownList in frmMain
 ; ----------------------------------------------------------------------------	
 
 
-; "1) field visible and mandatory for all company codes
-; 2) If company code country and vendor country equal -> value G; except for company code PT, BE and LU;
-; 3) If company code country and vendor country different -> value Y; except for company code PT, BE and LU;
+; TODO: FINISH THESE VALIDATIONS IN VALIDATE OF BTNSUBMIT
 ; 4) For company code France:
 ;     if bank country belongs to YVt6 (FR, GF, GP, RE, MQ and YT) and payment methods = Y->error:in Company Code Data it is not possible to inform Payment Methods with value 'Y - VIREMENT SFS - FRS'
 ;     if bank country doesn't belong to YVT6 and payment methods = G->in Company Code Data it is not possible to informPayment Methods with value 'G - Domestic payments thru SFS' for foreign banks
-; 5) if company code Belgium/Luxemburg:  value GY and enabled false 
-; 6) if company code Portugal: value 2GHY and enabled false 
 ; 4)if selected payment methods 2 and vendor country Spain and house bank empty-> mandatory inform house bank
 ; "
 
 ; backed by file File038 - CC_PT_PaymentMethods
+; TESTGEN : DEFAULTS=7, RULES=6
 Entity CC_PT_PaymentMethods	is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTPaymentMethods
@@ -3079,7 +3161,7 @@ Entity CC_PT_PaymentMethods	is DropDownList in frmMain
 		REQUEST.VENDOR_COUNTRY is not REQUEST.COUNTRY and REQUEST.COUNTRY not in {PT, BE, LU} then
 			set value Y
 
-		REQUEST.COUNTRY is BE then
+		REQUEST.COUNTRY in {BE,LU} then
 			set value GY
 			this enable false
 
@@ -3094,6 +3176,7 @@ Entity CC_PT_PaymentMethods	is DropDownList in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=3, RULES=2
 Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
 	with defaults
 		label LABELS.labCC_PT_ClearingWithCustomer
@@ -3102,14 +3185,15 @@ Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 		REQUEST.COMPANY_CODE in {5101, 5109} then
-			; meaning, make it checked
 			set value true in CC_PT_ClearingWithCustomer
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=4, ACTIONS=1, RULES=1, TRIGGERS=1
 Entity CC_PT_AlternativePayee is TextBox in frmMain
 	with defaults
 		label LABELS.labPTAlternativePayee
+		max length 10
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3120,6 +3204,7 @@ Entity CC_PT_AlternativePayee is TextBox in frmMain
 		on change
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=4, RULES=2
 Entity CC_PT_IndividualPayment	is CheckBox in frmMain
 	with defaults
 		label LABELS.labPTIndividualPayment
@@ -3129,18 +3214,11 @@ Entity CC_PT_IndividualPayment	is CheckBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 		REQUEST.COUNTRY in {IT, BE, LU} then
-			show CC_PT_IndividualPayment
-
+			CC_PT_IndividualPayment visible true
 
 ; ----------------------------------------------------------------------------	
 
-; so far this is being loaded manually, must move to a datasource
-;			lic.Add ( new ListItem ( "BEC - Banesto", "BEC" ) );
-;            lic.Add ( new ListItem ( "BSB - Sabadell", "BSB" ) );
-;            lic.Add ( new ListItem ( "BCH - Santander", "BCH" ) );
-;            lic.Add ( new ListItem ( "JPM - JP Morgan", "JPM" ) );
-;            lic.Add ( new ListItem ( "DB - Deutsche Bank", "DB" ) );
-
+; TESTGEN : RULES=2, DEFAULTS=6
 Entity CC_PT_HouseBank is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTHouseBank
@@ -3148,14 +3226,13 @@ Entity CC_PT_HouseBank is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDM_HouseBanks with arguments {FlagActive : true}
 	with rules
+		REQUEST.COUNTRY is ES and CC_PT_PaymentMethods.Value is 2 then
+			this mandatory true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 ; ----------------------------------------------------------------------------	
 
-; 1) Not visible to all company codes
-; 2) Only used for company code 5240:
-;    value is always 4112 (is value from SAP different, do not maintain)
-; in fact control does not exist in form, just a field, always write 4112 for 5240
+; TESTGEN : DEFAULTS=2, RULES=1
 Entity CC_PT_ForCreditMemos	is TextBox in frmMain
 	with defaults
 		visible false
@@ -3166,41 +3243,48 @@ Entity CC_PT_ForCreditMemos	is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-
+; TESTGEN : DEFAULTS=6, RULES=4
 Entity CC_DD_DunningProcedure is DropDownList in frmMain
 	with defaults
 		label LABELS.labDDDunningprocedure
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_DunningProcedure with arguments {FlagActive : true, ClusterCountryCode: REQUEST.COUNTRY}
+		; TODO: REALLY?
+		; visible false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.COUNTRY is BE then
 			set value Y1VE in CC_DD_DunningProcedure
 
 		REQUEST.COUNTRY is LU then
 			set value Y001 in CC_DD_DunningProcedure
 
-		REQUEST.COMPANY_CODE in {5101, 563M, 5109} then
-			set value 10 in CC_DD_DunningProcedure
-			CC_DD_DunningClerk enable false
+		; REQUEST.COMPANY_CODE in {5101, 563M, 5109} then
+		; 	set value 10 in CC_DD_DunningProcedure
+		; 	CC_DD_DunningClerk enable false
 
-		REQUEST.COUNTRY is PT then 
-			this visible false
+		REQUEST.COUNTRY is ES and CC_DD_DunningProcedure.Value is empty then
+			CC_DD_LegalProceedings mandatory true
 
+		; REQUEST.COUNTRY is PT then 
+		; 	this visible false
+
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+		
 ; ----------------------------------------------------------------------------	
 
-
+; TESTGEN : DEFAULTS=3, RULES=6
 Entity CC_DD_LegalProceedings is Calendar in frmMain
 	with defaults
 		visible true
 		label LABELS.labLegalProceedings	
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
+		REQUEST.COUNTRY in {PT,BE,LU} then
+			this visible false
+
 		REQUEST.COUNTRY is ES and CC_DD_LastDunnedOn is not empty then
 			CC_DD_DunningProcedure mandatory
 
@@ -3210,18 +3294,20 @@ Entity CC_DD_LegalProceedings is Calendar in frmMain
 		REQUEST.COUNTRY is not ES and CC_DD_LegalProceedings is empty then
 			set value Y3PR in CC_DD_DunningProcedure
 
+		REQUEST.COUNTRY is ES and CC_DD_LegalProceedings.Value is empty then
+			CC_DD_DunningProcedure mandatory true
 
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TODO: add test
+; TESTGEN : DEFAULTS=3, RULES=4
 Entity CC_DD_LastDunnedOn is Calendar in frmMain
 	with defaults
 		visible true
 		label LABELS.labLastDunnedOn
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.COUNTRY is PT then 
 			this visible false
 
@@ -3231,11 +3317,14 @@ Entity CC_DD_LastDunnedOn is Calendar in frmMain
 		REQUEST.COUNTRY is ES and CC_DD_LegalProceedings is not empty then
 			CC_DD_LastDunnedOn mandatory
 
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=6, RULES=1
 Entity CC_DD_DunningBlock is DropDownList in frmMain
 	with defaults
-		visible true
+		visible false
 		label LABELS.labDDDunningBlock
 		data field DisplayName
 		value field Code
@@ -3260,7 +3349,7 @@ Entity CC_DD_Level is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TODO: PENDING TESTS
+; TESTGEN : DEFAULTS=6, RULES=3
 Entity CC_DD_DunningClerk is DropDownList in frmMain
 	with defaults
 		visible false
@@ -3276,8 +3365,8 @@ Entity CC_DD_DunningClerk is DropDownList in frmMain
 			this disabled
 			; show this
 
-		REQUEST.COUNTRY is PT then
-			show this
+		REQUEST.COUNTRY not in {PT, BE, LU, GR} then
+			this visible true
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3341,11 +3430,10 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 ; 			this enable false
 ; ----------------------------------------------------------------------------	
 
-
+; TESTGEN : DEFAULTS=4, RULES=1
 Entity CC_CO_OurAccountWithVendor is TextBox in frmMain
 	with defaults
-		; this is only in schema
-		max length 50
+		max length 12
 		label LABELS.labCOOurAccountWithVendor
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -3353,59 +3441,61 @@ Entity CC_CO_OurAccountWithVendor is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+
+; TESTGEN : DEFAULTS=3, RULES=4
 Entity PO_AutomaticGenerationPO	is CheckBox in frmMain
 	with defaults
 		visible true
 		label LABELS.labAutomaticGenerationPO
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.COUNTRY is GR then
-			PO_AutomaticGenerationPO visible true
-			set value false in PO_AutomaticGenerationPO
-
-		REQUEST.COUNTRY is GR then
-			set value false in PO_AutomaticGenerationPO
 			this visible true
 
+		REQUEST.COUNTRY is not GR then
+			this visible true
+			PO_AutomaticGenerationPO visible true
+
 		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} then
-			set value true in PO_OrderAcknowledgmentReq
+			set value true in PO_AutomaticGenerationPO
+
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=3, RULES=2
 Entity PO_OrderAcknowledgmentReq is CheckBox in frmMain
 	with defaults
 		visible false
 		label LABELS.labOrderAcknowledgmentReq
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
-		; checkbox must be checked in these request types...
 		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} then
 			set value true in PO_OrderAcknowledgmentReq
-
-		REQUEST.COUNTRY is not GR then
-			PO_OrderAcknowledgmentReq visible false
-
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+		
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=3, RULES=1
 Entity PO_GRBasedInvoiceVerification is CheckBox in frmMain
 	with defaults
-		visible true
+		; visible false
 		label LABELS.labPO_GRBasedInvoiceVerification
 	with rules
+		; REQUEST.COUNTRY is GR then
+		; 	this visible true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=3, RULES=6
 Entity PO_ReturnsVendor	is CheckBox in frmMain
 	with defaults
 		visible true
 		label LABELS.labPO_ReturnsVendor
-
 
 	with rules
 
@@ -3438,64 +3528,77 @@ Entity PO_ReturnsVendor	is CheckBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=7, RULES=2, ACTIONS=1, RULES=1
 Entity PO_PurchaseOrderCurrency	is DropDownList in frmMain
 	with defaults
 		mandatory
 		label LABELS.labPurchaseOrderCurrency
-		; the company code country, not vendor's country
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_Currencies with arguments {FlagActive : true }
 		value EUR
 	with rules
+		REQUEST.REQUEST_TYPE is VC then
+			set value EUR in SO_SalesOrderCurrency
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
 ; ----------------------------------------------------------------------------	
 
-
+; TESTGEN : DEFAULTS=7, RULES=11, ACTIONS=0, TRIGGERS=1
 Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 	with defaults
 		mandatory
 		label LABELS.labPO_TermsOfPaymentKey
-		; the company code country, not vendor's country
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
 
 	with rules
 
-		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is ES then
+		; TODO: CHECK WITH SEB - RESOLVE REFERENCES TO SAP MODEL ?
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is ES and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
 			set value 3M60 in PO_TermsOfPaymentKey
 			set value 3M60 in PO_TermsOfPaymentKey.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE is VC and REQUEST.CURRENT_ROLE is ENQ and REQUEST.COUNTRY is IT then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.CURRENT_ROLE is ENQ and REQUEST.COUNTRY is IT  and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
 			set value 5510 in PO_TermsOfPaymentKey
 			set value 5510 in PO_TermsOfPaymentKey.OldDisplayValue
 	
-		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is LU then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is LU  and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
 			set value 1113 in PO_TermsOfPaymentKey
 			set value 1113 in PO_TermsOfPaymentKey.OldDisplayValue
 	
-		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is BE then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is BE and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
 			set value 1301 in PO_TermsOfPaymentKey
 			set value 1301 in PO_TermsOfPaymentKey.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is GR then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is GR and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
 			set value 7A90 in PO_TermsOfPaymentKey
 			set value 7A90 in PO_TermsOfPaymentKey.OldDisplayValue
+		
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COMPANY_CODE is 5140 and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
+			set value 6115 in PO_TermsOfPaymentKey
+			set value 6115 in PO_TermsOfPaymentKey.OldDisplayValue
 
-		REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is PT then
+		REQUEST.REQUEST_TYPE is VC and REQUEST.COMPANY_CODE in {5924,592F} and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
+			set value 6000 in PO_TermsOfPaymentKey
+			set value 6000 in PO_TermsOfPaymentKey.OldDisplayValue
+
+		REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is PT and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
 			set value 4217 in PO_TermsOfPaymentKey
 			set value 4217 in PO_TermsOfPaymentKey.OldDisplayValue
 			
-		REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is not PT then
+		REQUEST.COUNTRY is PT and REQUEST.VENDOR_COUNTRY is not PT and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
 			set value 4117 in PO_TermsOfPaymentKey
 			set value 4117 in PO_TermsOfPaymentKey.OldDisplayValue
+
+		REQUEST.REQUEST_TYPE in {VC, VC_CC} then
+			set value PO_TermsOfPaymentKey.Value in CC_PT_PaymentTerms
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3504,24 +3607,12 @@ Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 		; ; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
+		; TODO: DO WE NEED TO INDICATE ALL LOADING EVENTS? CHECK WITH SEB
+
 ; ----------------------------------------------------------------------------	
 
-;	"26.5.14(MI), please, GSS, can you confirm the business rule for RC Greece?...No value by default is implemented for RC Greece.
-;	05-06-2014(RG): rules confirmed
-;	
-;	04-07-2014 (MC)
-;	By default mandatory
-;	Values in dropdown are loaded hardcode
-;	1)if company code Spain -> default value DAP (if exists)
-;	2)if company code Italy -> default value EXW (if exists)
-;	3)if company code Portugal/Belgium/Luxemburg -> default value DDP (if exists)
-;	4)validation: if empty ->mandatory error message
-;	6)if regional country France:
-;	 if company 5140 -> DAP
-;	 if company 5924/592F->DAP 
-;	7)if comapny code 5150 -> CIF"
-
+; TODO: DEFAULTS=7, RULES=7, ACTIONS=3, TRIGGERS=1
 Entity PO_Incoterms	is DropDownList in frmMain
 	with defaults
 		label LABELS.labIncoterms
@@ -3533,50 +3624,35 @@ Entity PO_Incoterms	is DropDownList in frmMain
 	with actions
 		; whenever the value of this dropdown list changes, copy the text, not the value to PO_IncotermsPart2
 		set value PO_Incoterms.Text in PO_IncotermsPart2
+		set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
 		; ; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
-
-		set value PO_Incoterms.SelectedText in PO_IncotermsPart2
-		set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
 
 	with rules
 
 		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COUNTRY is ES then
-			set value "DAP" in PO_Incoterms
-			set value "DAP" in PO_Incoterms.OldDisplayValue
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
-
+			set value DAP in PO_Incoterms
+			set value DAP in PO_Incoterms.OldDisplayValue
 
 		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COUNTRY is IT then
-			set value "EXW" in PO_Incoterms
-			set value "EXW" in PO_Incoterms.OldDisplayValue
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
+			set value EXW in PO_Incoterms
+			set value EXW in PO_Incoterms.OldDisplayValue
 
 		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COUNTRY in {PT, BE, LU} then
-			set value "DDP" in PO_Incoterms
-			set value "DDP" in PO_Incoterms.OldDisplayValue
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
+			set value DDP in PO_Incoterms
+			set value DDP in PO_Incoterms.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COMPANY_CODE is 5140 then
-			set value "SAP" in PO_Incoterms
-			set value "SAP" in PO_Incoterms.OldDisplayValue
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COMPANY_CODE in {5140,5924,592F} then
+			set value DAP in PO_Incoterms
+			set value DAP in PO_Incoterms.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COMPANY_CODE is 5150 then
-			set value "CIF" in PO_Incoterms
-			set value "CIF" in PO_Incoterms.OldDisplayValue
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.COMPANY_CODE in 5150 then
+			set value CIF in PO_Incoterms
+			set value CIF in PO_Incoterms.OldDisplayValue
 
 		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} and REQUEST.PURCHASE_ORGANIZATION in {65G0, 65Q0} then
-			set value "FCA" in PO_Incoterms
-			set value "FCA" in PO_Incoterms.OldDisplayValue
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2
-			set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
+			set value FCA in PO_Incoterms
+			set value FCA in PO_Incoterms.OldDisplayValue
 		
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3587,17 +3663,7 @@ Entity PO_Incoterms	is DropDownList in frmMain
 ; ----------------------------------------------------------------------------	
 
 
-;	By default mandatory (ROLES.ENQuirer can change)
-;	1)if regional country Spain -> default value DAP (same as incoterms)
-;	2)if regional country Italy -> default value EXW (same as incoterms)
-;	3)if regional country Portugal/Belgium/Luxemburg -> default value DDP (same as incoterms)
-;	4)validation: if empty ->mandatory error message
-;	5)if regional country France:
-;	 if company 5140 -> France Metropolitaine
-;	 if company 5924/5924->Saint Denis
-;	6.A)if regonal country Greece-> Athens
-;	6.b)when change district in adress-> incoterms2=city2 (district is only visible for company code  greece or vendor country greece)
-
+; TESTGEN : DEFAULT=4, RULES=9
 Entity PO_IncotermsPart2 is TextBox in frmMain
 	with defaults
 		label LABELS.labIncotermsPart2
@@ -3605,28 +3671,29 @@ Entity PO_IncotermsPart2 is TextBox in frmMain
 
 	with rules
 
-		REQUEST.COMPANY_CODE is 5150 then
+		REQUEST.COMPANY_CODE is 5150 and REQUEST_SAP.PO_IncotermsPart2 is empty then
 			set value "ATHENS" in PO_IncotermsPart2
-		REQUEST.COMPANY_CODE is 5150 and GD_Adr_City2 is not empty then
+		REQUEST.COMPANY_CODE is 5150 and GD_Adr_City2 is not empty and REQUEST_SAP.PO_IncotermsPart2 is empty then
 			set value GD_Adr_City2.Value in PO_IncotermsPart2
-		REQUEST.COMPANY_CODE in {5924,592F} then
+		REQUEST.COMPANY_CODE in {5924,592F} and REQUEST_SAP.PO_IncotermsPart2 is empty then
 			set value "Saint Denis" in PO_IncotermsPart2
-		REQUEST.COMPANY_CODE is 491E and REQUEST.PURCHASE_ORGANIZATION in {65G0, 65Q0} then
+		REQUEST.COMPANY_CODE is 491E and REQUEST.PURCHASE_ORGANIZATION in {65G0, 65Q0} and REQUEST_SAP.PO_IncotermsPart2 is empty then
 			set value "GRENOBLE" in PO_IncotermsPart2
-		REQUEST.COMPANY_CODE is 491E and REQUEST.PURCHASE_ORGANIZATION not in {65G0, 65Q0} then
+		REQUEST.COMPANY_CODE is 491E and REQUEST.PURCHASE_ORGANIZATION not in {65G0, 65Q0} and REQUEST_SAP.PO_IncotermsPart2 is empty then
 			set value "France Metropolitaine" in PO_IncotermsPart2
-		REQUEST.COMPANY_CODE is 5140 then
+		REQUEST.COMPANY_CODE is 5140 and REQUEST_SAP.PO_IncotermsPart2 is empty then
 			set value "France Metropolitaine" in PO_IncotermsPart2
-		REQUEST.COUNTRY in {BE,LU} then
+		REQUEST.COUNTRY in {BE,LU} and REQUEST_SAP.PO_IncotermsPart2 is empty then
 			set value "Brussels" in PO_IncotermsPart2.OldDisplayValue
 			set value "Brussels" in PO_IncotermsPart2.Value
-		REQUEST.COUNTRY is IT then
+		REQUEST.COUNTRY is IT and REQUEST_SAP.PO_IncotermsPart2 is empty then
 			set value "VS. MAGAZZINO" in PO_IncotermsPart2.OldDisplayValue
 			set value "VS. MAGAZZINO" in PO_IncotermsPart2.Value
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=6,RULES=2
 Entity PO_ConfirmationControl is DropDownList in frmMain
 	with defaults
 		label LABELS.labConfirmationControl
@@ -3644,17 +3711,19 @@ Entity PO_ConfirmationControl is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-Entity CostCenter is TextBox in frmMain
-	with defaults
-		label LABELS.labCostCenter
-		
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
+; Entity CostCenter is TextBox in frmMain
+; 	with defaults
+; 		label LABELS.labCostCenter
+; 		
+; 	with rules
+; 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+; 			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TODO: THIS TEXTBOX HAS A LOT OF LOGIC
-; WHEN IT IS READIER.... PERFORM TESTS
+; TODO: THIS TEXTBOX HAS A LOT OF LOGIC - TODO: PENDING CALCULATEEXTERNALNUMBER etc.
+; NOTE: NOT IN FIELDMAPPING
+
+; TESTGEN : DEFAULTS=5, RULES=4
 Entity GD_SAPNumber is TextBox in frmMain
 	with defaults
 		label LABELS.labSAPNumber
@@ -3664,18 +3733,29 @@ Entity GD_SAPNumber is TextBox in frmMain
 		max length 10
 
 	with rules
+		REQUEST.REQUEST_TYPE is VC then
+			this visible true
+			this enable true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+		REQUEST.COUNTRY in {BE,LU} and REQUEST.CURRENT_ROLE is ROLES.CLERK then
+			this mandatory true
 		REQUEST.COMPANY_CODE in {5101, 5109, 563M} then 
 			GD_SAPNumber mandatory true
 
+		; REQUEST.COUNTRY is BE and REQUEST.REQUEST_TYPE is VC and REQUEST.CURRENT_ROLE is ROLES.CLERK and REQUEST.SAP_MESSAGE is empty then
+		; 	set value '' in GD_SAPNumber
+
+		; TODO: MOVE TO VALIDATE
+		; GD_SAPNumber is visible and DDLDCReqAction.Value is STATUS.SUBMITTED and REQUEST.COUNTRY is BE and REQUEST.REQUEST_TYPE is VC then
+
 ; ----------------------------------------------------------------------------	
 
-; TODO: MISSING FUNCTIONALITY HERE ... QUITE SOME OF IT
+; TESTGEN : DEFAULTS=3, RULES=1
+; TODO: CHECK WITH SEB IF THEY KNOW WHAT THIS IS FOR...
 Entity SAP_Message is TextBox in frmMain
 	with defaults
 		label LABELS.labSAP_Message
-		; TODO: Search for divSAP_Message too...
 		visible false
 		enable false
 
@@ -3686,11 +3766,11 @@ Entity SAP_Message is TextBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-
+; TESTGEN : DEFAULTS=4, RULES=2
 Entity TS_IsUrgentRequest is CheckBox in frmMain
 	with defaults
 		label LABES.labUrgentRequest
-		value ''
+		value false
 	with rules
 
 		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -3702,12 +3782,7 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 
 ; --- CONTROLS IN BLOCKING DATA TAB -------------------------------------------
 
-; TODO: THE DATASOURCE INDICATED DOES NOT EXIST, CURRENTLY VALUES ARE LOADED IN CODE, SO THE DATASOURCE HAS TO BE CREATED
-; VALUES ARE
-; "", ""
-; "D - Unsubscribe", "D"
-; "V - Unsubscribed from CMD", "V"
-; which are the same as for GD_Ctr_UnsubscribeCMD
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with defaults
 		label LABELS.labUnsubscribeCMD
@@ -3728,22 +3803,21 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity BLK_CC_PT_PaymentBlock is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTPaymentBlock
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_PaymentBlocks with arguments {FlagActive : true}
-
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-
 	with actions
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
 
 ; ----------------------------------------------------------------------------	
 
