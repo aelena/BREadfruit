@@ -250,29 +250,23 @@ Entity btnSearch is Button in frmSearch
 			TBVendorNumber is not empty and TBVendorNumber.Value.Length is not 10 then
 				set value MESSAGES.ERRVendorNumeber10 in MESSAGE_POPUP
 
-			; TODO: CHECK THIS
-			; TBVendorIFA.value is not empty then DDLVDCountry mandatory
-			; TBVendorIFA.value is not empty then DDLVDCountry not mandatory
-
-
-			; TODO: REPLACE TEXT FOR LABEL ALIASES
 			DDLVDCountry is empty then
 				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
 		
 			TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
-				set value 'Fill the fields KeyTax or Vendor or IFA Number or Country + Name or Country + City' in MESSAGE_POPUP
+				set value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
 	
 			TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-				set value 'Fill the fields KeyTax or Vendor or IFA Number or Country + Name or Country + City' in MESSAGE_POPUP
-		
+				set value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
+
 			TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-				set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
+				set value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
 	
 			DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
-				set value MESSAGES.SEARCH.FILL03 in MESSAGE_POPUP
+				set value MESSAGES.ERRfieldCCPO in MESSAGE_POPUP
 		
-			TBVendorName is not empty and DDLVDCountry is empty then
-				set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
+			; TBVendorName is not empty and DDLVDCountry is empty then
+			; 	set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
 
 			; TODO: VERIFY THIS WITH SEB
 			MESSAGE_POPUP is empty then
@@ -291,13 +285,7 @@ Entity btnCreateVendor is Button in frmSearch
 		visible false
 		label LABELS.btnCreateVendor
 
-	with actions
-		; transition to the main form
-		; TODO: guess we will have to pass some arguments here and map things to the conceptual model
-		; this works already anyway
-		; TODO: PROBABLY NOT NEEDED
-		; change to frmMain with arguments {"A" : "B"}
-
+	; TODO: CHECK WITH SEB; DO WE NEED SOMETHING HERE? LIKE POPULATING THE REQUEST MODEL OR SOME OF IT?
 
 	with triggers
 		this clicked
@@ -311,26 +299,35 @@ Entity vendorSearchResultGrid is Grid in frmSearch
 
 		; TODO: MISSING COLUMN DEFINITION AND SEB'S INPUT TOO
 
+		define column Country with arguments { ControlType: Label, DataField: Country, Header : LABELS.lblCountry, Visible : true }
+		define column Vat with arguments { ControlType: Label, DataField: VAT, Header : LABELS.lblVatRegNo, Visible : true }
 		define column Customer with arguments { ControlType: Label, DataField: Customer, Header : LABELS.Customer, Visible : true }
 		define column Vendor with arguments { ControlType: Label, DataField: Vendor, Header : LABELS.Vendor, Visible : true }  
+		define column NaturalPerson with arguments { ControlType: Label, DataField: NaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
 		define column name1 with arguments { ControlType: Label, DataField: name1, Header : LABELS.Name, Visible : true }  
 		define column name3 with arguments { ControlType: Label, DataField: name3, Header : LABELS.Comment, Visible : true }  
 		define column Street with arguments { ControlType: Label, DataField: Street, Header : LABELS.Street, Visible : true }  
 		define column City with arguments { ControlType: Label, DataField: City, Header : LABELS.City, Visible : true }  
-		define column Country with arguments { ControlType: Label, DataField: Country, Header : LABELS.Country, Visible : true }
 		define column Taxcode with arguments { ControlType: Label, DataField: Taxcode, Header : LABELS.Local_Tax_Code, Visible : true }  
-		define column VAT with arguments { ControlType: Label, DataField: VAT, Header : LABELS.EU_Registration_Nr, Visible : true }  
-		define column NaturalPerson with arguments { ControlType: Label, DataField: NaturalPerson, Header : LABELS.Natural_Person, Visible : true }
+		; define column VAT with arguments { ControlType: Label, DataField: VAT, Header : LABELS.EU_Registration_Nr, Visible : true }  
 		define column Risk with arguments { ControlType: Label, DataField: Risk, Header : LABELS.Risk Class, Visible : true }
-		define column KNA1_SPERR with arguments { ControlType: Label, DataField: KNA1_SPERR, Header : LABELS.Central_Posting_Block , Visible : true }
-		define column KNA1_AUFSD with arguments { ControlType: Label, DataField: KNA1_AUFSD, Header : LABELS.Central_Order_Block   , Visible : true }
-		define column KNA1_LIFSD with arguments { ControlType: Label, DataField: KNA1_LIFSD, Header : LABELS.Central_Delivery_Block, Visible : true }  
+		define column LFA1_SPERR with arguments { ControlType: Label, DataField: LFA1_SPERR, Header : LABELS.lblCentralPostingBlock , Visible : true }
+		define column LFA1_SPERM with arguments { ControlType: Label, DataField: LFA1_SPERM, Header : LABELS.lblCentralPurchBlock , Visible : true }
+
+		; TODO: CHECK WITH SEB IF NEED FINISH THIS
+
+		define column LFB1_LOEVM with arguments { ControlType: Label, DataField: LFB1_LOEVM, Header : LABELS.lblDeletionFlag   , Visible : true }
+		define column LFM1_LOEVM with arguments { ControlType: Label, DataField: LFM1_LOEVM, Header : LABELS.lblDeletionBlock, Visible : true }  
+		define column Company with arguments { ControlType: Label, DataField: Company, Header : LABELS.Company   , Visible : true }
+
 		define column KNA1_FAKSD with arguments { ControlType: Label, DataField: KNA1_FAKSD, Header : LABELS.Central_Billing_Block , Visible : true } 
+		
 		define column Company with arguments { ControlType: Label, DataField: Company, Header : LABELS.Company   , Visible : true }
 		define column KNB1_FRGRP with arguments { ControlType: Label, DataField: KNB1_FRGRP, Header : LABELS.Business_Partner_Class  , Visible : true }
 		define column KNB1_ZTERM with arguments { ControlType: Label, DataField: KNB1_ZTERM, Header : LABELS.Payment_Terms  , Visible : true }
 		define column KNB1_SPERR with arguments { ControlType: Label, DataField: KNB1_SPERR, Header : LABELS.Posting_Block  	, Visible : true }
 		define column SO with arguments { ControlType: Label, DataField: SO, Header : LABELS.Sales_Organiz., Visible : true }
+		
 		define column DistChannel with arguments { ControlType: Label, DataField: DistChannel, Header : LABELS.Channel , Visible : true }
 		define column KNVV_ZTERM with arguments { ControlType: Label, DataField: KNVV_ZTERM, Header : LABELS.Payment_Terms(SO)  , Visible : true }
 		define column KNVV_AUFSD with arguments { ControlType: Label, DataField: KNVV_AUFSD, Header : LABELS.Sales_Org._Order_Block  , Visible : true }
@@ -503,7 +500,6 @@ Entity GD_Damex is DropDownList in frmMain
 		this changes
 ; ----------------------------------------------------------------------------	
 
-; TODO: I THINK THIS HAS MAYBE MORE RULES
 ; TESTGEN : DEFAULTS=3, RULES=1, TRIGGERS=1
 Entity GD_DamexNote is CheckBox in frmMain
 	with defaults
@@ -654,7 +650,6 @@ Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 ; 		; move to phone control
 ; 
 ; 	with triggers
-; 		; TODO: TEST THIS AUTOFOCUS
 ; 		this exit
 ; 
 ; 	with rules
@@ -691,7 +686,6 @@ Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 ; 		; move to email control
 ; 
 ;	with triggers
-;		; TODO: TEST THIS AUTOFOCUS
 ;		this exit
 ;
 ;	with rules
@@ -708,7 +702,6 @@ Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 Entity GD_Procur_MainProducts is TextBox in frmMain
 	with defaults
 		label LABELS.labGD_Procur_MainProducts
-		; TODO: max length
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -1378,7 +1371,6 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 		label LABELS.labCountry
 		mandatory true
 		enabled false		; always disabled
-		; TODO: PENDING FINAL MODEL DEFINITION FROM FD
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_Countries
@@ -3821,6 +3813,7 @@ Entity BLK_CC_PT_PaymentBlock is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=1, TRIGGERS=1
 Entity BLK_CentralPO is CheckBox in frmMain
 	with defaults
 		enabled false
@@ -3837,8 +3830,9 @@ Entity BLK_CentralPO is CheckBox in frmMain
 		on change
 ; ----------------------------------------------------------------------------	
 
-; this was not even in the field mapping, but is visible false as default, 
-; so probably not used...
+; this was not even in the field mapping, but is visible false as default, so probably not used...
+; TODO: CHECK AT RUNTIME
+; TESTGEN : RULES=1, DEFAULTS=3
 Entity BLK_24_hour is CheckBox in frmMain
 	with defaults
 		enabled false
@@ -3853,6 +3847,7 @@ Entity BLK_24_hour is CheckBox in frmMain
 
 ;	1)Get data from SAP from field LFB1.SPERR
 ;	2)SEND data to SAP in field SPERB_B
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=1, TRIGGERS=1
 Entity BLK_CompanyCode is CheckBox in frmMain
 	with defaults
 		enabled false
@@ -3865,16 +3860,14 @@ Entity BLK_CompanyCode is CheckBox in frmMain
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
 ; ----------------------------------------------------------------------------	
 
-;	1)Get data from SAP from field LFA1.SPERM
-;	2)SEND data to SAP in field SPERM_X
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=1, TRIGGERS=1
 Entity BLK_Central is CheckBox in frmMain
 	with defaults
 		enabled false
 		label LABELS.labCentrallyPurchasingBlock
-	
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3882,16 +3875,14 @@ Entity BLK_Central is CheckBox in frmMain
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
 ; ----------------------------------------------------------------------------	
 
-;	1)Get data from SAP from field LFM1.SPERM
-;	2)SEND data to SAP in field SPERM_M
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=1, TRIGGERS=1
 Entity BLK_PO is CheckBox in frmMain
 	with defaults
 		enabled false
 		label LABELS.labPursachingBlockAtOrganization
-	
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3899,16 +3890,16 @@ Entity BLK_PO is CheckBox in frmMain
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
 ; ----------------------------------------------------------------------------	
 
 ;	1)Get data from SAP from field LFA1.LOEVM
 ;	2)SEND data to SAP in field LOEVM_X
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity BLK_MFD_Central is CheckBox in frmMain
 	with defaults
 		enabled false
 		label LABELS.labBLK_MFD_Central
-	
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3916,16 +3907,17 @@ Entity BLK_MFD_Central is CheckBox in frmMain
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
 ; ----------------------------------------------------------------------------	
 
-;	1)Get data from SAP from field LFB1.LOEVM
+;	1)Get data from SAP from field LFB1.LOEVM not available on services
 ;	2)SEND data to SAP in field LOEVM_B
+
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity BLK_MFD_CompanyCode is CheckBox in frmMain
 	with defaults
 		enabled false
 		label LABELS.labBLK_MFD_CompanyCode
-	
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3933,12 +3925,12 @@ Entity BLK_MFD_CompanyCode is CheckBox in frmMain
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
-
+		this changes
 ; ----------------------------------------------------------------------------	
 
 ; LFA1.LOEVM
 ; SEND TO SAP IN FIELD LOEVM_M
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity BLK_MFD_PO is CheckBox in frmMain
 	with defaults
 		enabled false
@@ -3952,10 +3944,11 @@ Entity BLK_MFD_PO is CheckBox in frmMain
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
 ; ----------------------------------------------------------------------------	
 
 ; LFA1.NODEL
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity BLK_MFD_DeletionBlockCentral	is CheckBox in frmMain
 	with defaults
 		enabled false
@@ -3968,24 +3961,23 @@ Entity BLK_MFD_DeletionBlockCentral	is CheckBox in frmMain
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
 	with triggers 
-		on change
+		this changes
 ; ----------------------------------------------------------------------------	
 
 ; not sent to SAP, only retrieve from LFB1.NODEL
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
 Entity BLK_MFD_DeletionBlockCompanyCode	is CheckBox in frmMain
 	with defaults
 		enabled false
 		label LABELS.labBLK_MFD_DeletionBlockCompanyCode
-	
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is not {VM_BLK,VM_UBLK} or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
 		_COMMENT_ mandatory  true  
-
 	with triggers 
-		on change
+		this changes
 
 ; --- BUTTON BLOCK -----------------------------------------------------------
 
@@ -4458,6 +4450,7 @@ Entity DDLDCReqAction is DropDownList in frmMain
 
         load data from DATASOURCE.W4E_StateMap with arguments {"BPCode" : REQUEST.BP_CODE, "FlowType" : REQUEST.REQUEST_TYPE, "CurrentRole" : REQUEST.CURRENT_ROLE, "Status" : REQUEST.REQUEST_STATUS }
 
+	
 	with rules
 
 		REQUEST.REQUEST_STATE is CLOSED then
@@ -4470,9 +4463,10 @@ Entity DDLDCReqAction is DropDownList in frmMain
 		REQUEST.COUNTRY in {ES,IT,BE,LU} then
 			remove "Info Requested to CPM" in DDLDCReqAction.Items
 
-		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-			this visible false
+			this visible false	
+
 
 	; with triggers
 	; 	this.value changes
@@ -4482,32 +4476,37 @@ Entity DDLDCReqAction is DropDownList in frmMain
 
 ; in spite of the name 'labNextRole' this is correct
 ; TODO: The data loading of this, is a total mess
+; TESTGEN : DEFAULTS=5, RULES=2
 Entity labNextRole is DropDownList in frmMain
 	with defaults
 		label LABELS.NextRole
 		data field DisplayName
 		value field Code
+		enable false
 
 	with rules
 		REQUEST.REQUEST_STATE is CLOSED then
 			this visible false
-
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false
 ; ----------------------------------------------------------------------------	
 
 
-; in spite of the name 'labNextAction' this is correct
-; has no text label
 ; TODO: The data loading of this, is a total mess
-; 
+; TESTGEN : DEFAULTS=4, RULES=2
 Entity labNextAction is DropDownList in frmMain
 	with defaults
 		data field DisplayName
 		value field Code
+		enable false
 
 	with rules
 		REQUEST.REQUEST_STATE is CLOSED then
 			this visible false
-
+		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+			this visible false
 ; ----------------------------------------------------------------------------	
 
 ; --- LIST OF PURCHASE ORGANIZATION SELECTION IN THE PURCHASE ORG TAB --------
@@ -4524,6 +4523,7 @@ Entity PO_lbxPODPursacheOrganization2 is ListBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
+; TODO: FINALLY CHECK THIS ONE TOO WITH SEB
 Entity btnPODAll is Button in frmMain
 	with defaults
 		label LABELS.lab_____		; this label is actually this -->    >>

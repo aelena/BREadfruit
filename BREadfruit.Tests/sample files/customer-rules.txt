@@ -308,6 +308,9 @@ Entity btnSearch is Button in frmSearch
 			TBCustomerNumber.text starts with '0' then
 				set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
 			
+			DDLCDCountry is empty then
+				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
+
 			DDLCDivision is visible and DDLCDivision is empty then
 				; show this message : Fill the field of Division Country
 				set value MESSAGES.ERRfieldDivisionCountry in MESSAGE_POPUP
@@ -4201,6 +4204,8 @@ Entity btnSubmit is Button in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
+; TODO: SEB probably we do not need this?		
+; TESTGEN : DEFAULTS=3
 Entity btnClose is Button in frmMain
 
 	with defaults
