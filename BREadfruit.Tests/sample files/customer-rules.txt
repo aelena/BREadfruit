@@ -353,10 +353,6 @@ Entity btnCreateCustomer is Button in frmSearch
 		label LABELS.btnCreateCustomer
 
 	with actions
-		; transition to the main form
-		; TODO: guess we will have to pass some arguments here and map things to the conceptual model
-		; TODO: PROBABLY NOT NEEDED - CHECK WITH SEB
-		; change form to frmMain with arguments {"A" : "B"}
 
 	with rules
 		; how to specify all that happens server side here?
@@ -371,31 +367,31 @@ Entity btnCreateCustomer is Button in frmSearch
 Entity CustomerSearchResultGrid is Grid in frmSearch
 	with defaults
 		visible false
-		define column Customer with arguments { ControlType: Label, DataField: Customer, Header : LABELS.Customer, Visible : true }
-		define column Vendor with arguments { ControlType: Label, DataField: Vendor, Header : LABELS.Vendor, Visible : true }  
-		define column name1 with arguments { ControlType: Label, DataField: name1, Header : LABELS.Name, Visible : true }  
-		define column name3 with arguments { ControlType: Label, DataField: name3, Header : LABELS.Comment, Visible : true }  
-		define column Street with arguments { ControlType: Label, DataField: Street, Header : LABELS.Street, Visible : true }  
-		define column City with arguments { ControlType: Label, DataField: City, Header : LABELS.City, Visible : true }  
-		define column Country with arguments { ControlType: Label, DataField: Country, Header : LABELS.Country, Visible : true }
-		define column Taxcode with arguments { ControlType: Label, DataField: Taxcode, Header : LABELS.Local_Tax_Code, Visible : true }  
-		define column VAT with arguments { ControlType: Label, DataField: VAT, Header : LABELS.EU_Registration_Nr, Visible : true }  
-		define column NaturalPerson with arguments { ControlType: Label, DataField: NaturalPerson, Header : LABELS.Natural_Person, Visible : true }
-		define column Risk with arguments { ControlType: Label, DataField: Risk, Header : LABELS.Risk Class, Visible : true }
-		define column KNA1_SPERR with arguments { ControlType: Label, DataField: KNA1_SPERR, Header : LABELS.Central_Posting_Block , Visible : true }
-		define column KNA1_AUFSD with arguments { ControlType: Label, DataField: KNA1_AUFSD, Header : LABELS.Central_Order_Block   , Visible : true }
-		define column KNA1_LIFSD with arguments { ControlType: Label, DataField: KNA1_LIFSD, Header : LABELS.Central_Delivery_Block, Visible : true }  
-		define column KNA1_FAKSD with arguments { ControlType: Label, DataField: KNA1_FAKSD, Header : LABELS.Central_Billing_Block , Visible : true } 
-		define column Company with arguments { ControlType: Label, DataField: Company, Header : LABELS.Company   , Visible : true }
-		define column KNB1_FRGRP with arguments { ControlType: Label, DataField: KNB1_FRGRP, Header : LABELS.Business_Partner_Class  , Visible : true }
-		define column KNB1_ZTERM with arguments { ControlType: Label, DataField: KNB1_ZTERM, Header : LABELS.Payment_Terms  , Visible : true }
-		define column KNB1_SPERR with arguments { ControlType: Label, DataField: KNB1_SPERR, Header : LABELS.Posting_Block  	, Visible : true }
-		define column SO with arguments { ControlType: Label, DataField: SO, Header : LABELS.Sales_Organiz., Visible : true }
-		define column DistChannel with arguments { ControlType: Label, DataField: DistChannel, Header : LABELS.Channel , Visible : true }
-		define column KNVV_ZTERM with arguments { ControlType: Label, DataField: KNVV_ZTERM, Header : LABELS.Payment_Terms(SO)  , Visible : true }
-		define column KNVV_AUFSD with arguments { ControlType: Label, DataField: KNVV_AUFSD, Header : LABELS.Sales_Org._Order_Block  , Visible : true }
-		define column KNVV_LIFSD with arguments { ControlType: Label, DataField: KNVV_LIFSD, Header : LABELS.Sales_Org._Delivery_Block , Visible : true } 
-		define column KNVV_FAKSD with arguments { ControlType: Label, DataField: KNVV_FAKSD, Header : LABELS.Sales_Org._Billing_Block  , Visible : true }
+		define column Customer with arguments {  DataField: Customer, Header : LABELS.Customer, Visible : true }
+		define column Vendor with arguments {  DataField: Vendor, Header : LABELS.Vendor, Visible : true }  
+		define column name1 with arguments {  DataField: name1, Header : LABELS.Name, Visible : true }  
+		define column name3 with arguments {  DataField: name3, Header : LABELS.Comment, Visible : true }  
+		define column Street with arguments {  DataField: Street, Header : LABELS.Street, Visible : true }  
+		define column City with arguments {  DataField: City, Header : LABELS.City, Visible : true }  
+		define column Country with arguments {  DataField: Country, Header : LABELS.Country, Visible : true }
+		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.Local_Tax_Code, Visible : true }  
+		define column VAT with arguments {  DataField: VAT, Header : LABELS.EU_Registration_Nr, Visible : true }  
+		define column NaturalPerson with arguments {  DataField: NaturalPerson, Header : LABELS.Natural_Person, Visible : true }
+		define column Risk with arguments {  DataField: Risk, Header : LABELS.Risk Class, Visible : true }
+		define column KNA1_SPERR with arguments {  DataField: KNA1_SPERR, Header : LABELS.Central_Posting_Block , Visible : true }
+		define column KNA1_AUFSD with arguments {  DataField: KNA1_AUFSD, Header : LABELS.Central_Order_Block   , Visible : true }
+		define column KNA1_LIFSD with arguments {  DataField: KNA1_LIFSD, Header : LABELS.Central_Delivery_Block, Visible : true }  
+		define column KNA1_FAKSD with arguments {  DataField: KNA1_FAKSD, Header : LABELS.Central_Billing_Block , Visible : true } 
+		define column Company with arguments {  DataField: Company, Header : LABELS.Company   , Visible : true }
+		define column KNB1_FRGRP with arguments {  DataField: KNB1_FRGRP, Header : LABELS.Business_Partner_Class  , Visible : true }
+		define column KNB1_ZTERM with arguments {  DataField: KNB1_ZTERM, Header : LABELS.Payment_Terms  , Visible : true }
+		define column KNB1_SPERR with arguments {  DataField: KNB1_SPERR, Header : LABELS.Posting_Block  	, Visible : true }
+		define column SO with arguments {  DataField: SO, Header : LABELS.Sales_Organiz., Visible : true }
+		define column DistChannel with arguments {  DataField: DistChannel, Header : LABELS.Channel , Visible : true }
+		define column KNVV_ZTERM with arguments {  DataField: KNVV_ZTERM, Header : LABELS.Payment_Terms(SO)  , Visible : true }
+		define column KNVV_AUFSD with arguments {  DataField: KNVV_AUFSD, Header : LABELS.Sales_Org._Order_Block  , Visible : true }
+		define column KNVV_LIFSD with arguments {  DataField: KNVV_LIFSD, Header : LABELS.Sales_Org._Delivery_Block , Visible : true } 
+		define column KNVV_FAKSD with arguments {  DataField: KNVV_FAKSD, Header : LABELS.Sales_Org._Billing_Block  , Visible : true }
 
 		; TODO: PENDING BUTTON DEFINITION
 
@@ -1419,13 +1415,13 @@ Entity P_GD_VT_btnInsert is Button in frmMain
 Entity P_GD_VT_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_P_GD_VT_Country		with arguments {ControlType : DropDownList, DataField : GD_VT_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDMC_Countries, Visible : true}
-		define column GRID_P_GD_VT_CountryCode	with arguments {ControlType : TextBox,		DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
-		define column GRID_P_GD_VT_Number		with arguments {ControlType : TextBox,		DataField : GD_VT_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_Extension	with arguments {ControlType : TextBox,		DataField : GD_VT_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_Notes		with arguments {ControlType : TextBox,		DataField : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_P_GD_VT_Default		with arguments {ControlType : CheckBox,		DataField : GD_VT_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VT_ConsNumber, Visible : false}
+		define column GRID_P_GD_VT_Country		with arguments { DataField : GD_VT_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDMC_Countries, Visible : true}
+		define column GRID_P_GD_VT_CountryCode	with arguments {		DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_P_GD_VT_Number		with arguments {		DataField : GD_VT_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_Extension	with arguments {		DataField : GD_VT_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_Notes		with arguments {		DataField : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_P_GD_VT_Default		with arguments {		DataField : GD_VT_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_ConsNumber	with arguments {		DataField : GD_VT_ConsNumber, Visible : false}
 
 	with rules
 		; REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.RCO, ROLES.SUS, ROLES.CLERK} then
@@ -1543,13 +1539,13 @@ Entity F_GD_VF_btnInsert is Button in frmMain
 Entity F_GD_VF_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_F_GD_VF_Country		with arguments {ControlType : DropDownList, DataField : GD_VF_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDMC_Countries, Visible : true}
-		define column GRID_F_GD_VF_CountryCode	with arguments {ControlType : TextBox,		DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
-		define column GRID_F_GD_VF_Number		with arguments {ControlType : TextBox,		DataField : GD_VF_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_Extension	with arguments {ControlType : TextBox,		DataField : GD_VF_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_Notes		with arguments {ControlType : TextBox,		DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_F_GD_VF_Default		with arguments {ControlType : CheckBox,		DataField : GD_VF_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VF_ConsNumber, Visible : false}
+		define column GRID_F_GD_VF_Country		with arguments { DataField : GD_VF_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDMC_Countries, Visible : true}
+		define column GRID_F_GD_VF_CountryCode	with arguments {		DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_F_GD_VF_Number		with arguments {		DataField : GD_VF_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_Extension	with arguments {		DataField : GD_VF_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_Notes		with arguments {		DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_F_GD_VF_Default		with arguments {		DataField : GD_VF_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_ConsNumber	with arguments {		DataField : GD_VF_ConsNumber, Visible : false}
 
 	with rules
 		
@@ -1624,10 +1620,10 @@ Entity E_GD_VE_btnInsert is Button in frmMain
 Entity E_GD_VE_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_E_GD_VE_SmtpAddr		with arguments {ControlType : TextBox,		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_E_GD_VE_Notes		with arguments {ControlType : TextBox,		DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_E_GD_VE_Default		with arguments {ControlType : CheckBox,		DataField : GD_VE_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_E_GD_VE_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VE_ConsNumber, Visible : false}
+		define column GRID_E_GD_VE_SmtpAddr		with arguments {		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_E_GD_VE_Notes		with arguments {		DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_E_GD_VE_Default		with arguments {		DataField : GD_VE_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_E_GD_VE_ConsNumber	with arguments {		DataField : GD_VE_ConsNumber, Visible : false}
 
 	with rules
 		
@@ -1792,8 +1788,8 @@ Entity V_btnInsert is Button in frmMain
 ; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=3
 Entity V_Grid is Grid in frmMain
 	with defaults
-		define column GRID_V_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDMC_Countries, Visible : true}
-		define column GRID_V_VATNumber		with arguments {ControlType : TextBox,		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
+		define column GRID_V_Country		with arguments { DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDMC_Countries, Visible : true}
+		define column GRID_V_VATNumber		with arguments {		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
 	with rules
 		
@@ -2038,18 +2034,18 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 ; TESTGEN : DEFAULTS=14, RULES=1, ACTIONS=1, TRIGGERS=3
 Entity B_GD_VB_Grid is Grid in frmMain
 	with defaults
-		define column GRID_B_GD_VB_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDMC_Countries, Visible : true}
-		define column GRID_B_GD_VB_BankKey		with arguments {ControlType : TextBox,		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
-		define column GRID_B_GD_VB_BankAccount	with arguments {ControlType : TextBox,	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
-		define column GRID_B_GD_VB_BankControlKey	with arguments {ControlType : TextBox,	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
-		define column GRID_B_GD_VB_IBAN			with arguments {ControlType : TextBox,	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
-		define column GRID_B_GD_VB_SWIFT		with arguments {ControlType : TextBox,	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : false}
-		define column GRID_B_GD_VB_NameOfBank	with arguments {ControlType : TextBox,	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
-		define column GRID_B_GD_VB_AccountHolder	with arguments {ControlType : TextBox,	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
-		define column GRID_B_GD_VB_BankCity	with arguments {ControlType : TextBox,	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
-		define column GRID_B_GD_VB_PartBankType	with arguments {ControlType : TextBox,	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
-		define column GRID_B_GD_VB_BankReferDetails	with arguments {ControlType : TextBox,	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
-		define column GRID_RelevantFlag	with arguments {ControlType : CheckBox,	DataField : RelevantFlag, Visible : false}
+		define column GRID_B_GD_VB_Country		with arguments { DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDMC_Countries, Visible : true}
+		define column GRID_B_GD_VB_BankKey		with arguments {		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
+		define column GRID_B_GD_VB_BankAccount	with arguments {	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
+		define column GRID_B_GD_VB_BankControlKey	with arguments {	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
+		define column GRID_B_GD_VB_IBAN			with arguments {	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
+		define column GRID_B_GD_VB_SWIFT		with arguments {	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : false}
+		define column GRID_B_GD_VB_NameOfBank	with arguments {	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
+		define column GRID_B_GD_VB_AccountHolder	with arguments {	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
+		define column GRID_B_GD_VB_BankCity	with arguments {	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
+		define column GRID_B_GD_VB_PartBankType	with arguments {	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
+		define column GRID_B_GD_VB_BankReferDetails	with arguments {	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
+		define column GRID_RelevantFlag	with arguments {	DataField : RelevantFlag, Visible : false}
 
 		
 	with rules
@@ -4403,9 +4399,9 @@ Entity PF_btnInsert is Button in frmMain
 
 Entity PF_Grid is Grid in frmMain
 	with defaults
-		define column GRID_PF_PartnerFunction	with arguments {ControlType : DropDownList, DataField : PartnerFunction, Header : LABELS.labSurname, Visible : true}
-		define column GRID_PF_Number			with arguments {ControlType : Label, DataField : Number, Header : LABELS.labNumber, Visible : true, MaxLength : 15}
-		define column GRID_PF_Default			with arguments {ControlType : CheckBox,	DataField : IsDefault, Visible : true}
+		define column GRID_PF_PartnerFunction	with arguments { DataField : PartnerFunction, Header : LABELS.labSurname, Visible : true}
+		define column GRID_PF_Number			with arguments { DataField : Number, Header : LABELS.labNumber, Visible : true, MaxLength : 15}
+		define column GRID_PF_Default			with arguments {	DataField : IsDefault, Visible : true}
 		
 	with rules
 
@@ -4539,14 +4535,14 @@ Entity CP_btnInsert is Button in frmMain
 ; TESTGEN : DEFAULTS=10, RULES=2, ACTIONS=0, TRIGGERS=3
 Entity CP_Grid is Grid in frmMain
 	with defaults
-		define column GRID_CP_Name				with arguments {ControlType : TextBox, DataField : Name, Header : LABELS.labName, MaxLength : 100, Visible : true}
-		define column GRID_CP_Surname			with arguments {ControlType : TextBox, DataField : Surname, Header : LABELS.labSurname, MaxLength : 100, Visible : true}
-		define column GRID_CP_Department		with arguments {ControlType : TextBox, DataField : Deparment, Header : LABELS.labDepartment, Visible : true}
-		define column GRID_CP_Telephone			with arguments {ControlType : TextBox, DataField : Telephone, Header : LABELS.labBankControlKey, Visible : true}
-		define column GRID_CP_Fax				with arguments {ControlType : TextBox, DataField : Fax, Header : LABELS.labFax, Visible : true}
-		define column GRID_CP_Email				with arguments {ControlType : TextBox, DataField : Email, Header : LABELS.labEmail, Visible : true}
-		define column GRID_CP_KNVK_NAME1		with arguments {ControlType : TextBox, DataField : KNVK_NAME1, Visible : false}
-		define column GRID_CP_Default			with arguments {ControlType : CheckBox,	DataField : Default, Visible : true}
+		define column GRID_CP_Name				with arguments { DataField : Name, Header : LABELS.labName, MaxLength : 100, Visible : true}
+		define column GRID_CP_Surname			with arguments { DataField : Surname, Header : LABELS.labSurname, MaxLength : 100, Visible : true}
+		define column GRID_CP_Department		with arguments { DataField : Deparment, Header : LABELS.labDepartment, Visible : true}
+		define column GRID_CP_Telephone			with arguments { DataField : Telephone, Header : LABELS.labBankControlKey, Visible : true}
+		define column GRID_CP_Fax				with arguments { DataField : Fax, Header : LABELS.labFax, Visible : true}
+		define column GRID_CP_Email				with arguments { DataField : Email, Header : LABELS.labEmail, Visible : true}
+		define column GRID_CP_KNVK_NAME1		with arguments { DataField : KNVK_NAME1, Visible : false}
+		define column GRID_CP_Default			with arguments {	DataField : Default, Visible : true}
 		
 	with rules
 		REQUEST.ACCOUNT_GROUP in {YCT6, YCT9} then

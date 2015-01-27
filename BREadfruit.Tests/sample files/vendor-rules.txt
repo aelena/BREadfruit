@@ -235,7 +235,20 @@ Entity DDLCDPurchOrg is DropDownList in frmSearch
 
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=3, ACTIONS=0, RULES=1, TRIGGERS=1
+; replacing REQUEST.STATE 
+; TODO: Pending on SEB and FD input?
+; Entity HF_RequestState is TextBox in frmMain
+; 	with defaults
+; 		visible false
+; 
+; Entity HF_SearchOKFlag is CheckBox in frmMain
+; 	with defaults
+; 		visible false
+; ----------------------------------------------------------------------------	
+
+
+
+; TESTGEN : DEFAULTS=3, ACTIONS=0, RULES=2, TRIGGERS=1
 Entity btnSearch is Button in frmSearch
 
 	with defaults
@@ -249,28 +262,30 @@ Entity btnSearch is Button in frmSearch
 		
 			TBVendorNumber is not empty and TBVendorNumber.Value.Length is not 10 then
 				set value MESSAGES.ERRVendorNumeber10 in MESSAGE_POPUP
+				set value true HF_SearchKOFlag
 
 			DDLVDCountry is empty then
-				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
+				add value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
 		
 			TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
-				set value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
+				add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
 	
 			TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-				set value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
+				add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
 
 			TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-				set value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
+				add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
 	
 			DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
-				set value MESSAGES.ERRfieldCCPO in MESSAGE_POPUP
+				add value MESSAGES.ERRfieldCCPO in MESSAGE_POPUP
 		
 			; TBVendorName is not empty and DDLVDCountry is empty then
 			; 	set value MESSAGES.SEARCH.FILL01 in MESSAGE_POPUP
 
-			; TODO: VERIFY THIS WITH SEB
-			MESSAGE_POPUP is empty then
-				load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
+			
+		; TODO: VERIFY THIS WITH SEB
+		HF_SearchKOFlag is false then
+			load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
 		
 
 	with triggers
@@ -285,7 +300,9 @@ Entity btnCreateVendor is Button in frmSearch
 		visible false
 		label LABELS.btnCreateVendor
 
-	; TODO: CHECK WITH SEB; DO WE NEED SOMETHING HERE? LIKE POPULATING THE REQUEST MODEL OR SOME OF IT?
+	with actions
+		frmMain visible true
+		frmSearch visible false
 
 	with triggers
 		this clicked
@@ -299,42 +316,43 @@ Entity vendorSearchResultGrid is Grid in frmSearch
 
 		; TODO: MISSING COLUMN DEFINITION AND SEB'S INPUT TOO
 
-		define column Country with arguments { ControlType: Label, DataField: Country, Header : LABELS.lblCountry, Visible : true }
-		define column Vat with arguments { ControlType: Label, DataField: VAT, Header : LABELS.lblVatRegNo, Visible : true }
-		define column Customer with arguments { ControlType: Label, DataField: Customer, Header : LABELS.Customer, Visible : true }
-		define column Vendor with arguments { ControlType: Label, DataField: Vendor, Header : LABELS.Vendor, Visible : true }  
-		define column NaturalPerson with arguments { ControlType: Label, DataField: NaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
-		define column name1 with arguments { ControlType: Label, DataField: name1, Header : LABELS.Name, Visible : true }  
-		define column name3 with arguments { ControlType: Label, DataField: name3, Header : LABELS.Comment, Visible : true }  
-		define column Street with arguments { ControlType: Label, DataField: Street, Header : LABELS.Street, Visible : true }  
-		define column City with arguments { ControlType: Label, DataField: City, Header : LABELS.City, Visible : true }  
-		define column Taxcode with arguments { ControlType: Label, DataField: Taxcode, Header : LABELS.Local_Tax_Code, Visible : true }  
-		; define column VAT with arguments { ControlType: Label, DataField: VAT, Header : LABELS.EU_Registration_Nr, Visible : true }  
-		define column Risk with arguments { ControlType: Label, DataField: Risk, Header : LABELS.Risk Class, Visible : true }
-		define column LFA1_SPERR with arguments { ControlType: Label, DataField: LFA1_SPERR, Header : LABELS.lblCentralPostingBlock , Visible : true }
-		define column LFA1_SPERM with arguments { ControlType: Label, DataField: LFA1_SPERM, Header : LABELS.lblCentralPurchBlock , Visible : true }
+		define column Country with arguments {  DataField: Country, Header : LABELS.lblCountry, Visible : true }
+		define column Vat with arguments {  DataField: VAT, Header : LABELS.lblVatRegNo, Visible : true }
+		define column Customer with arguments {  DataField: Customer, Header : LABELS.Customer, Visible : true }
+		define column Vendor with arguments {  DataField: Vendor, Header : LABELS.Vendor, Visible : true }  
+		define column NaturalPerson with arguments {  DataField: NaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
+		define column name1 with arguments {  DataField: name1, Header : LABELS.Name, Visible : true }  
+		define column name3 with arguments {  DataField: name3, Header : LABELS.Comment, Visible : true }  
+		define column Street with arguments {  DataField: Street, Header : LABELS.Street, Visible : true }  
+		define column City with arguments {  DataField: City, Header : LABELS.City, Visible : true }  
+		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.Local_Tax_Code, Visible : true }  
+		; define column VAT with arguments {  DataField: VAT, Header : LABELS.EU_Registration_Nr, Visible : true }  
+		define column Risk with arguments {  DataField: Risk, Header : LABELS.Risk Class, Visible : true }
+		define column LFA1_SPERR with arguments {  DataField: LFA1_SPERR, Header : LABELS.lblCentralPostingBlock , Visible : true }
+		define column LFA1_SPERM with arguments {  DataField: LFA1_SPERM, Header : LABELS.lblCentralPurchBlock , Visible : true }
 
 		; TODO: CHECK WITH SEB IF NEED FINISH THIS
 
-		define column LFB1_LOEVM with arguments { ControlType: Label, DataField: LFB1_LOEVM, Header : LABELS.lblDeletionFlag   , Visible : true }
-		define column LFM1_LOEVM with arguments { ControlType: Label, DataField: LFM1_LOEVM, Header : LABELS.lblDeletionBlock, Visible : true }  
-		define column Company with arguments { ControlType: Label, DataField: Company, Header : LABELS.Company   , Visible : true }
+		define column LFB1_LOEVM with arguments {  DataField: LFB1_LOEVM, Header : LABELS.lblDeletionFlag   , Visible : true }
+		define column LFM1_LOEVM with arguments {  DataField: LFM1_LOEVM, Header : LABELS.lblDeletionBlock, Visible : true }  
+		define column Company with arguments {  DataField: Company, Header : LABELS.Company   , Visible : true }
 
-		define column KNA1_FAKSD with arguments { ControlType: Label, DataField: KNA1_FAKSD, Header : LABELS.Central_Billing_Block , Visible : true } 
+		define column KNA1_FAKSD with arguments {  DataField: KNA1_FAKSD, Header : LABELS.Central_Billing_Block , Visible : true } 
 		
-		define column Company with arguments { ControlType: Label, DataField: Company, Header : LABELS.Company   , Visible : true }
-		define column KNB1_FRGRP with arguments { ControlType: Label, DataField: KNB1_FRGRP, Header : LABELS.Business_Partner_Class  , Visible : true }
-		define column KNB1_ZTERM with arguments { ControlType: Label, DataField: KNB1_ZTERM, Header : LABELS.Payment_Terms  , Visible : true }
-		define column KNB1_SPERR with arguments { ControlType: Label, DataField: KNB1_SPERR, Header : LABELS.Posting_Block  	, Visible : true }
-		define column SO with arguments { ControlType: Label, DataField: SO, Header : LABELS.Sales_Organiz., Visible : true }
+		define column Company with arguments {  DataField: Company, Header : LABELS.Company   , Visible : true }
+		define column KNB1_FRGRP with arguments {  DataField: KNB1_FRGRP, Header : LABELS.Business_Partner_Class  , Visible : true }
+		define column KNB1_ZTERM with arguments {  DataField: KNB1_ZTERM, Header : LABELS.Payment_Terms  , Visible : true }
+		define column KNB1_SPERR with arguments {  DataField: KNB1_SPERR, Header : LABELS.Posting_Block  	, Visible : true }
+		define column SO with arguments {  DataField: SO, Header : LABELS.Sales_Organiz., Visible : true }
 		
-		define column DistChannel with arguments { ControlType: Label, DataField: DistChannel, Header : LABELS.Channel , Visible : true }
-		define column KNVV_ZTERM with arguments { ControlType: Label, DataField: KNVV_ZTERM, Header : LABELS.Payment_Terms(SO)  , Visible : true }
-		define column KNVV_AUFSD with arguments { ControlType: Label, DataField: KNVV_AUFSD, Header : LABELS.Sales_Org._Order_Block  , Visible : true }
-		define column KNVV_LIFSD with arguments { ControlType: Label, DataField: KNVV_LIFSD, Header : LABELS.Sales_Org._Delivery_Block , Visible : true } 
-		define column KNVV_FAKSD with arguments { ControlType: Label, DataField: KNVV_FAKSD, Header : LABELS.Sales_Org._Billing_Block  , Visible : true }
+		define column DistChannel with arguments {  DataField: DistChannel, Header : LABELS.Channel , Visible : true }
+		define column KNVV_ZTERM with arguments {  DataField: KNVV_ZTERM, Header : LABELS.Payment_Terms(SO)  , Visible : true }
+		define column KNVV_AUFSD with arguments {  DataField: KNVV_AUFSD, Header : LABELS.Sales_Org._Order_Block  , Visible : true }
+		define column KNVV_LIFSD with arguments {  DataField: KNVV_LIFSD, Header : LABELS.Sales_Org._Delivery_Block , Visible : true } 
+		define column KNVV_FAKSD with arguments {  DataField: KNVV_FAKSD, Header : LABELS.Sales_Org._Billing_Block  , Visible : true }
 
 	with rules
+		; TODO: ASSUME THIS CONVENTION AND REVIEW ALL GRIDS ARE USING THIS CONVENTION WHEN NEEDED
 		CustomerSearchResultGrid.Items.Count is 0 then
 			btnCreateVendor visible true
 		else
@@ -1627,8 +1645,8 @@ Entity GD_Com_DataLine is TextBox in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=7, RULES=1, ACTIONS=1, TRIGGERS=1
-Entity P_GD_VT_Country is DropDownList in frmMain
+; TESTGEN : DEFAULTS=7, RULES=0, ACTIONS=1, TRIGGERS=1
+Entity P_GD_VT_Country is DropDownList in P_GD_VT_Grid
 	with defaults
 		data field DisplayName
 		value field Code
@@ -1638,88 +1656,65 @@ Entity P_GD_VT_Country is DropDownList in frmMain
 	
 	with actions
 		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Code : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
 	with triggers
 		this changes
 
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_CountryCode is TextBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity P_GD_VT_CountryCode is TextBox in P_GD_VT_Grid
 	with defaults
 		enabled false
 		label LABELS.labGD_VT_CountryCode
 		mandatory true
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Number is TextBox in frmMain
+; TESTGEN : DEFAULTS=6, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity P_GD_VT_Number is TextBox in P_GD_VT_Grid
 	with defaults
 		max length 30
 		label LABELS.labGD_VT_Number
 		validation ^[0-9\-\.()\+\s]+
 		mandatory true
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Extension is TextBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity P_GD_VT_Extension is TextBox in P_GD_VT_Grid
 	with defaults
 		max length 10
 		label LABELS.lablabGD_VT_Extension
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Notes is TextBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity P_GD_VT_Notes is TextBox in P_GD_VT_Grid
 	with defaults
 		max length 50
 		label LABELS.labGD_VT_Notes
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Default is CheckBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity P_GD_VT_Default is CheckBox in P_GD_VT_Grid
 	with defaults
 		; by defaults appears checked and disabled
 		value true
 		label LABELS.labP_GD_VT_Default
 		enabled false
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_ConsNumber is TextBox in frmMain
+; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity P_GD_VT_ConsNumber is TextBox in P_GD_VT_Grid
 
 	with defaults
 		visible false
 		label LABELS.labGD_VT_ConsNumber
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-; TODO: CHECK WITH SEB - ANYTHING SPECIAL TO DO HERE TO SIGNAL INSERTION?
-Entity P_GD_VT_btnInsert is Button in frmMain
+; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
+; TODO: PUT EVERY CONTROL THAT BELONGS TO GRID AS IN GRID; NOT AS IN frmMAIN
+Entity P_GD_VT_btnInsert is Button in P_GD_VT_Grid
 	with defaults
 		label LABELS.labInsert
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
+
 ; ----------------------------------------------------------------------------	
 
 
@@ -1729,13 +1724,13 @@ Entity P_GD_VT_btnInsert is Button in frmMain
 Entity P_GD_VT_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_P_GD_VT_Country		with arguments {ControlType : DropDownList, DataField : GD_VT_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
-		define column GRID_P_GD_VT_CountryCode	with arguments {ControlType : TextBox,		DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
-		define column GRID_P_GD_VT_Number		with arguments {ControlType : TextBox,		DataField : GD_VT_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_Extension	with arguments {ControlType : TextBox,		DataField : GD_VT_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_Notes		with arguments {ControlType : TextBox,		DataField : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_P_GD_VT_Default		with arguments {ControlType : CheckBox,		DataField : GD_VT_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VT_ConsNumber, Visible : false}
+		define column GRID_P_GD_VT_Country		with arguments { DataField : GD_VT_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+		define column GRID_P_GD_VT_CountryCode	with arguments {		DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_P_GD_VT_Number		with arguments {		DataField : GD_VT_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_Extension	with arguments {		DataField : GD_VT_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_Notes		with arguments {		DataField : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_P_GD_VT_Default		with arguments {		DataField : GD_VT_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_P_GD_VT_ConsNumber	with arguments {		DataField : GD_VT_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -1846,13 +1841,13 @@ Entity F_GD_VF_btnInsert is Button in frmMain
 Entity F_GD_VF_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_F_GD_VF_Country		with arguments {ControlType : DropDownList, DataField : GD_VF_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
-		define column GRID_F_GD_VF_CountryCode	with arguments {ControlType : TextBox,		DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
-		define column GRID_F_GD_VF_Number		with arguments {ControlType : TextBox,		DataField : GD_VF_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_Extension	with arguments {ControlType : TextBox,		DataField : GD_VF_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_Notes		with arguments {ControlType : TextBox,		DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_F_GD_VF_Default		with arguments {ControlType : CheckBox,		DataField : GD_VF_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VF_ConsNumber, Visible : false}
+		define column GRID_F_GD_VF_Country		with arguments { DataField : GD_VF_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+		define column GRID_F_GD_VF_CountryCode	with arguments {		DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_F_GD_VF_Number		with arguments {		DataField : GD_VF_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_Extension	with arguments {		DataField : GD_VF_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_Notes		with arguments {		DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_F_GD_VF_Default		with arguments {		DataField : GD_VF_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_F_GD_VF_ConsNumber	with arguments {		DataField : GD_VF_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -1930,10 +1925,10 @@ Entity E_GD_VE_btnInsert is Button in frmMain
 Entity E_GD_VE_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_E_GD_VE_SmtpAddr		with arguments {ControlType : TextBox,		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_E_GD_VE_Notes		with arguments {ControlType : TextBox,		DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_E_GD_VE_Default		with arguments {ControlType : CheckBox,		DataField : GD_VE_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_E_GD_VE_ConsNumber	with arguments {ControlType : TextBox,		DataField : GD_VE_ConsNumber, Visible : false}
+		define column GRID_E_GD_VE_SmtpAddr		with arguments {		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
+		define column GRID_E_GD_VE_Notes		with arguments {		DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_E_GD_VE_Default		with arguments {		DataField : GD_VE_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
+		define column GRID_E_GD_VE_ConsNumber	with arguments {		DataField : GD_VE_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -2533,8 +2528,8 @@ Entity V_btnInsert is Button in frmMain
 ; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=3
 Entity V_Grid is Grid in frmMain
 	with defaults
-		define column GRID_V_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
-		define column GRID_V_VATNumber		with arguments {ControlType : TextBox,		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
+		define column GRID_V_Country		with arguments { DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+		define column GRID_V_VATNumber		with arguments {		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -2768,20 +2763,20 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 Entity B_GD_VB_Grid is Grid in frmMain
 	with defaults
 		; TODO: do we need this column also to keep track of the ID in the grid?
-		; TODO: define column GRID_V_RequestID		with arguments {ControlType : TextBox,		DataField : RequestID, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : false}
+		; TODO: define column GRID_V_RequestID		with arguments {		DataField : RequestID, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : false}
 	
-		define column GRID_B_GD_VB_Country		with arguments {ControlType : DropDownList, DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
-		define column GRID_B_GD_VB_BankKey		with arguments {ControlType : TextBox,		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
-		define column GRID_B_GD_VB_BankAccount	with arguments {ControlType : TextBox,	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
-		define column GRID_B_GD_VB_BankControlKey	with arguments {ControlType : TextBox,	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
-		define column GRID_B_GD_VB_IBAN			with arguments {ControlType : TextBox,	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
-		define column GRID_B_GD_VB_SWIFT		with arguments {ControlType : TextBox,	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : true}
-		define column GRID_B_GD_VB_NameOfBank	with arguments {ControlType : TextBox,	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
-		define column GRID_B_GD_VB_AccountHolder	with arguments {ControlType : TextBox,	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
-		define column GRID_B_GD_VB_BankCity	with arguments {ControlType : TextBox,	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
-		define column GRID_B_GD_VB_PartBankType	with arguments {ControlType : TextBox,	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
-		define column GRID_B_GD_VB_BankReferDetails	with arguments {ControlType : TextBox,	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
-		define column GRID_RelevantFlag	with arguments {ControlType : CheckBox,	DataField : RelevantFlag, Visible : false}
+		define column GRID_B_GD_VB_Country		with arguments { DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
+		define column GRID_B_GD_VB_BankKey		with arguments {		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
+		define column GRID_B_GD_VB_BankAccount	with arguments {	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
+		define column GRID_B_GD_VB_BankControlKey	with arguments {	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
+		define column GRID_B_GD_VB_IBAN			with arguments {	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
+		define column GRID_B_GD_VB_SWIFT		with arguments {	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : true}
+		define column GRID_B_GD_VB_NameOfBank	with arguments {	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
+		define column GRID_B_GD_VB_AccountHolder	with arguments {	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
+		define column GRID_B_GD_VB_BankCity	with arguments {	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
+		define column GRID_B_GD_VB_PartBankType	with arguments {	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
+		define column GRID_B_GD_VB_BankReferDetails	with arguments {	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
+		define column GRID_RelevantFlag	with arguments {	DataField : RelevantFlag, Visible : false}
 
 		
 	with rules
@@ -2824,13 +2819,12 @@ Entity CC_CO_ReconAccount is TextBox in frmMain
 			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=3, RULES=0
+; TESTGEN : DEFAULTS=2, RULES=0
 Entity LFB1_LNRZE is TextBox in frmMain
 	with defaults
 		visible false
 		enable false
-		; TODO: CHECK WITH SEB ABOUT THIS
-		value REQUEST.LFB1_LNRZE_SAP
+
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=2, RULES=3
@@ -3009,7 +3003,7 @@ Entity CC_PT_ValidityDate is Calendar in frmMain
 	with defaults
 		label LABELS.labValidityDate
 	with rules
-		; TODO: CALENDAR SHOULD BE DISABLED IN ALL DATES PRIOR TO TODAY - CHECK WITH SEB
+		; TODO: CALENDAR SHOULD BE DISABLED IN ALL DATES PRIOR TO TODAY - CHECK WITH SEB - PENDING FEEDBACK FROM SEB
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 ; ----------------------------------------------------------------------------	
@@ -3552,7 +3546,7 @@ Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 
 	with rules
 
-		; TODO: CHECK WITH SEB - RESOLVE REFERENCES TO SAP MODEL ?
+		; TODO: REMOVE THE VALUE FROM SP CHECK AS THIS IS A VC
 		REQUEST.REQUEST_TYPE is VC and REQUEST.COUNTRY is ES and REQUEST_SAP.PO_TermsOfPaymentKey is empty then
 			set value 3M60 in PO_TermsOfPaymentKey
 			set value 3M60 in PO_TermsOfPaymentKey.OldDisplayValue
@@ -3600,7 +3594,7 @@ Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		this changes
-		; TODO: DO WE NEED TO INDICATE ALL LOADING EVENTS? CHECK WITH SEB
+		; TODO: INDICATE ALL DATA LOAD EVENTS / TRIGGERS
 
 ; ----------------------------------------------------------------------------	
 
@@ -3744,7 +3738,7 @@ Entity GD_SAPNumber is TextBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=3, RULES=1
-; TODO: CHECK WITH SEB IF THEY KNOW WHAT THIS IS FOR...
+; TODO: CHECK WITH SEB IF THEY KNOW WHAT THIS IS FOR... SEND EMAIL EXPLAINING
 Entity SAP_Message is TextBox in frmMain
 	with defaults
 		label LABELS.labSAP_Message
@@ -4348,6 +4342,9 @@ Entity btnSubmit is Button in frmMain
 		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			this visible false
+
+		; TODO: CONTROL_FLAG_IS_OK is true then
+		; TODO: SPECIFY ALL ARGUMENTS --- load data from WEBSERVICE.C with arguments { ALL FIELDS }
 		
 	with triggers
 
@@ -4361,6 +4358,13 @@ Entity btnClose	is Button in frmMain
 	with defaults
 		label LABELS.btnClose
 
+	; TODO: ADD CLOSE SUPPORT IN PARSER - NEED TO CHANGE PARSER
+	with actions
+		frmMain close
+
+	with triggers
+		this on click
+		
 
 ; ----------------------------------------------------------------------------	
 
@@ -4509,41 +4513,10 @@ Entity labNextAction is DropDownList in frmMain
 			this visible false
 ; ----------------------------------------------------------------------------	
 
-; --- LIST OF PURCHASE ORGANIZATION SELECTION IN THE PURCHASE ORG TAB --------
-
-Entity PO_lbxPODPursacheOrganization1 is ListBox in frmMain
-	with defaults
-		; this means load all purchase organizations for the company code except the current purchase organization
-		; which is already loaded
-		load data from DATASOURCE.MDM_GetRestOfPurchaseOrganizations with arguments {CompanyCode : REQUEST.COMPANY_CODE, ExcludedPurchaseOrganization : REQUEST.PURCHASE_ORGANIZATION}
-
-; ----------------------------------------------------------------------------	
-
-Entity PO_lbxPODPursacheOrganization2 is ListBox in frmMain
-
-; ----------------------------------------------------------------------------	
-
-; TODO: FINALLY CHECK THIS ONE TOO WITH SEB
-Entity btnPODAll is Button in frmMain
-	with defaults
-		label LABELS.lab_____		; this label is actually this -->    >>
-
-; ----------------------------------------------------------------------------	
-
-Entity PO_btnPODSelect is Button in frmMain
-	with defaults
-		label LABELS.lab_____		; this label is actually this -->    >
-
-; ----------------------------------------------------------------------------	
-
-Entity PO_btnPODRemove is Button in frmMain
-	with defaults
-		label LABELS.lab_____		; this label is actually this -->    <
-
-; ----------------------------------------------------------------------------	
-
-Entity btnPOClear is Button in frmMain
-	with defaults
-		label LABELS.lab_____		; this label is actually this -->    <<
-
-; ----------------------------------------------------------------------------	
+; TODO: PENDING SEB GIVE THE NAME OF THIS CONTROL
+; Entity XXXXXX is Object in frmMain
+;	with rules
+;		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE is ROLES.SUS or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+;			this enable false	
+;
+; 
