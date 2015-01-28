@@ -258,6 +258,11 @@ namespace BREadfruit
 					return Regex.IsMatch ( line.Representation.Trim (), Grammar.HideElementLineRegex, RegexOptions.IgnoreCase );
 				}
 
+				if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.CloseUnaryActionSymbol.Token.ToUpperInvariant () ) )
+				{
+					return Regex.IsMatch ( line.Representation.Trim (), Grammar.CloseElementLineRegex, RegexOptions.IgnoreCase );
+				}
+
 				if ( line.Tokens.First ().Token.ToUpperInvariant ().Equals ( Grammar.LoadDataSymbol.Token.ToUpperInvariant () ) )
 				{
 					return Regex.IsMatch ( line.Representation.Trim (), Grammar.LoadDataFromLineRegex, RegexOptions.IgnoreCase );

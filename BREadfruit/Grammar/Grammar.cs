@@ -365,7 +365,8 @@ namespace BREadfruit
 		/// See tests in ShouldDiscriminateHideElementsLineCorrectly
 		/// </summary>
 		public const string HideElementLineRegex = @"^hide[\t\s]+(this|([A-Za-z0-9_\.])+){1}[\t\s]*$";
-
+		public const string CloseElementLineRegex = @"^close[\t\s]+(this|([A-Za-z0-9_\.])+){1}[\t\s]*$";
+		
 
 
 
@@ -425,7 +426,7 @@ namespace BREadfruit
 		public static Symbol CalendarSymbol = new Symbol ( "Calendar", 0, true );
 		public static Symbol AttachmentManagerSymbol = new Symbol ( "AttachmentManager", 0, true );
 		public static Symbol FormSymbol = new Symbol ( "Form", 0, true );
-		//public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
+		public static Symbol ObjectSymbol = new Symbol ( "Object", 0, true );
 		//public static Symbol DynamicSymbol = new Symbol ( "Dynamic", 0, true );
 
 		#endregion
@@ -464,6 +465,7 @@ namespace BREadfruit
 		public static UnaryAction VisibleUnaryActionSymbol = new UnaryAction ( "visible", 2, true, new [] { "set visible", "make visible" } );
 		public static UnaryAction NotVisibleUnaryActionSymbol = new UnaryAction ( "not_visible", 2, true, new [] { "set not visible", "make not visible", "not visible" } );
 		public static UnaryAction HideUnaryActionSymbol = new UnaryAction ( "hide", 2, true, new [] { "set hidden", "make hidden", "hidden" } );
+		public static UnaryAction CloseUnaryActionSymbol = new UnaryAction ( "close", 2, true, null );
 		//public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory", "mandatory true" } );
 		public static UnaryAction MakeMandatoryUnaryActionSymbol = new UnaryAction ( "mandatory", 2, true, new [] { "make mandatory", "set mandatory" } );
 		public static UnaryAction MakeNonMandatoryUnaryActionSymbol = new UnaryAction ( "not_mandatory", 2, true, new [] { "make not mandatory", "set not mandatory", "not mandatory" } );
@@ -494,7 +496,7 @@ namespace BREadfruit
 		public static Symbol ChangedEventSymbol = new Symbol ( "changed", 2, true, new List<string> { "on changed", "on change", "changes" } );
 		public static Symbol FocusEventSymbol = new Symbol ( "entered", 2, true, new List<string> { "on entered", "on enter", "enters", "on focus", "focus" } );
 		public static Symbol BlurredEventSymbol = new Symbol ( "exited", 2, true, new List<string> { "exit", "exits", "on exit", "on blur", "blur" } );
-		public static Symbol ClickedEventSymbol = new Symbol ( "clicked", 2, true, new List<string> { "on click", "onclick", "on_click", "on clicked", "on_clicked", "onclicked", "click" } );
+		public static Symbol ClickedEventSymbol = new Symbol ( "clicked", 2, true, new List<string> { "on click", "onclick", "on_click", "on clicked", "on_clicked", "onclicked", "clicks", "click" } );
 		public static Symbol LoadedEventSymbol = new Symbol ( "loaded", 2, true, new List<string> { "on loads", "on load", "loads" } );
 
 		public static Symbol RowInsertedEventSymbol = new Symbol ( "row_inserted", 2, true, new List<string> { "on row inserted", "row inserted" } );
@@ -889,6 +891,8 @@ namespace BREadfruit
 			Grammar._entityTypes.Add ( CalendarSymbol );
 			Grammar._entityTypes.Add ( AttachmentManagerSymbol );
 			Grammar._entityTypes.Add ( FormSymbol );
+			Grammar._entityTypes.Add ( ObjectSymbol );
+		
 		}
 
 
@@ -1020,7 +1024,8 @@ namespace BREadfruit
 			Grammar._symbols.Add ( CalendarSymbol );
 			Grammar._symbols.Add ( AttachmentManagerSymbol );
 			Grammar._symbols.Add ( FormSymbol );
-
+			Grammar._symbols.Add ( ObjectSymbol );
+			
 			Grammar._symbols.Add ( ElseSymbol );
 			Grammar._symbols.Add ( ThenSymbol );
 			Grammar._symbols.Add ( ThisSymbol );
@@ -1077,6 +1082,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( DisableUnaryActionSymbol );
 			Grammar._symbols.Add ( VisibleUnaryActionSymbol );
 			Grammar._symbols.Add ( HideUnaryActionSymbol );
+			Grammar._symbols.Add ( CloseUnaryActionSymbol );
 			Grammar._symbols.Add ( MakeMandatoryUnaryActionSymbol );
 			Grammar._symbols.Add ( MakeNonMandatoryUnaryActionSymbol );
 			Grammar._symbols.Add ( ShowElementUnaryActionSymbol );
