@@ -1,0 +1,18 @@
+﻿Entity GD_VB_BankKey is TextBox in GD_VB_Grid
+
+	with defaults
+		label LABELS.labGD_VD_BankKey
+		max length 10
+	with rules
+		REQUEST.ACCOUNT_GROUP in {YCT6,YCT9,YVT6,YVT9} then
+			max length 10
+		else
+			max length 15
+	with actions
+		ATTACHMENT mandatory  true  
+		; _COMMENT_ mandatory  false 
+	with triggers 
+		this changes
+		GD_VB_Country changes
+		this loads
+		on load

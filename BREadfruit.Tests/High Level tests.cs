@@ -2681,11 +2681,11 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Name == "btnSearch", "Entity name should be 'btnSearch' but is " + e.Name );
 			var i = 0;
 
-			Assert.That ( e.Rules.Count() == 1, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Count () == 1, String.Format ( "Assert {0}", ++i ) );
 
 			Assert.That ( e.Rules.First ().Conditions.First ().Operand == "DATASOURCE.IsUserInROLE with_args {UserAccount:USER.USER_ACCOUNT,RoleCode:USER.CURRENT_ROLE,ClusterCountryCode:DDLCDCountry.Value,ClusterCompanyCode:DDLCDCompany.Value,ClusterPOCode:DDLCDSalesOrg.Value}", String.Format ( "Assert {0}", ++i ) );
 			Assert.That ( e.Rules.First ().Conditions.First ().Operator == Grammar.IsOperator, String.Format ( "Assert {0}", ++i ) );
-			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString() == "false", String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.First ().Conditions.First ().Value.ToString () == "false", String.Format ( "Assert {0}", ++i ) );
 
 
 		}
@@ -2693,6 +2693,110 @@ namespace BREadfruit.Tests
 
 		// ---------------------------------------------------------------------------------
 
+
+		[Test]
+		public void ParseSampleFile094 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File094.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "GD_VB_Grid", "Entity form should be 'GD_VB_Grid' but is " + e.Form );
+			Assert.That ( e.Name == "GD_VB_BankKey", "Entity name should be 'GD_VB_BankKey' but is " + e.Name );
+			var i = 0;
+
+			Assert.That ( e.Defaults.Count () == 4, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Count () == 1, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.ConditionlessActions.Count () == 1, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Triggers.Count () == 4, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Triggers.Take ( 2 ).All ( x => x.Event == Grammar.ChangedEventSymbol.Token ), String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Triggers.Skip ( 2 ).All ( x => x.Event == Grammar.LoadedEventSymbol.Token ), String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Triggers.Skip ( 2 ).All ( x => x.Target == "GD_VB_BankKey" ), String.Format ( "Assert {0}", ++i ) );
+
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile095 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File095.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "GD_VB_Grid", "Entity name should be 'GD_VB_Grid' but is " + e.Name );
+			var i = 0;
+
+			Assert.That ( e.Defaults.Count () == 14, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Count () == 1, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.ConditionlessActions.Count () == 0, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Triggers.Count () == 4, String.Format ( "Assert {0}", ++i ) );
+
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile096 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File096.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "CP_Grid", "Entity form should be 'CP_Grid' but is " + e.Form );
+			Assert.That ( e.Name == "CP_btnClearAll", "Entity name should be 'CP_btnClearAll' but is " + e.Name );
+			var i = 0;
+
+			Assert.That ( e.Defaults.Count () == 3, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Count () == 0, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.ConditionlessActions.Count () == 1, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Triggers.Count () == 1, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Triggers.First ().Event == Grammar.ClickedEventSymbol.Token, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.ConditionlessActions.First ().Action == Grammar.ClearValueUnaryActionSymbol, String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void ParseSampleFile097 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File097.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "btnClose", "Entity name should be 'btnClose' but is " + e.Name );
+			var i = 0;
+
+			Assert.That ( e.Defaults.Count () == 3, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Rules.Count () == 0, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.ConditionlessActions.Count () == 1, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.Triggers.Count () == 1, String.Format ( "Assert {0}", ++i ) );
+
+			Assert.That ( e.Triggers.First ().Event == Grammar.ClickedEventSymbol.Token, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.ConditionlessActions.First ().Action == Grammar.CloseUnaryActionSymbol, String.Format ( "Assert {0}", ++i ) );
+			Assert.That ( e.ConditionlessActions.First ().Reference == "frmMain", String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
 
 
 		[Test]

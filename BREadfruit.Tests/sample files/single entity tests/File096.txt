@@ -1,0 +1,10 @@
+﻿Entity CP_btnClearAll is Button in CP_Grid
+
+	with defaults
+		label LABELS.btnClearAll
+
+	with actions
+		clear CP_Grid
+		
+	with triggers
+		this clicks

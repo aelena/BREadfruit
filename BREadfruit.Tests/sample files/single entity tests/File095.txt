@@ -1,0 +1,25 @@
+﻿Entity GD_VB_Grid is Grid in frmMain
+	with defaults
+		define column GRID_GD_VB_Country		with arguments { DataField : Country, Header : LABELS.labCountry, Visible : true}
+		define column GRID_GD_VB_BankKey		with arguments {		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
+		define column GRID_GD_VB_BankAccount	with arguments {	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
+		define column GRID_GD_VB_BankControlKey	with arguments {	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
+		define column GRID_GD_VB_IBAN			with arguments {	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
+		define column GRID_GD_VB_SWIFT		with arguments {	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : true}
+		define column GRID_GD_VB_NameOfBank	with arguments {	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
+		define column GRID_GD_VB_AccountHolder	with arguments {	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
+		define column GRID_GD_VB_BankCity	with arguments {	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
+		define column GRID_GD_VB_PartBankType	with arguments {	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
+		define column GRID_GD_VB_BankReferDetails	with arguments {	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
+		define column GRID_RelevantFlag	with arguments {	DataField : RelevantFlag, Visible : false}
+
+		
+	with rules
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
+
+	with triggers
+		on row inserted
+		on row deleted
+		on row updated
+		this loads

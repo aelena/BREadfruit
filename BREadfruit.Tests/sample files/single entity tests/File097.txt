@@ -1,0 +1,10 @@
+﻿Entity btnClose	is Button in frmMain
+	with defaults
+		label LABELS.btnClose
+
+	; TODO: ADD CLOSE SUPPORT IN PARSER - NEED TO CHANGE PARSER
+	with actions
+		close frmMain
+
+	with triggers
+		this on click

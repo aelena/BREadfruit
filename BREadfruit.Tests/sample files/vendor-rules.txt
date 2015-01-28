@@ -1646,23 +1646,23 @@ Entity GD_Com_DataLine is TextBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=7, RULES=0, ACTIONS=1, TRIGGERS=1
-Entity P_GD_VT_Country is DropDownList in P_GD_VT_Grid
+Entity GD_VT_Country is DropDownList in GD_VT_Grid
 	with defaults
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_Countries
 		value REQUEST.VENDOR_COUNTRY
 		mandatory true
-	
 	with actions
-		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Code : P_GD_VT_Country.Value } in P_GD_VT_CountryCode
+		; select the specific country code and put it on the next field
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Code : GD_VT_Country.Value } in GD_VT_CountryCode
 	with triggers
 		this changes
 
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_CountryCode is TextBox in P_GD_VT_Grid
+Entity GD_VT_CountryCode is TextBox in GD_VT_Grid
 	with defaults
 		enabled false
 		label LABELS.labGD_VT_CountryCode
@@ -1670,7 +1670,7 @@ Entity P_GD_VT_CountryCode is TextBox in P_GD_VT_Grid
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=6, RULES=0, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Number is TextBox in P_GD_VT_Grid
+Entity GD_VT_Number is TextBox in GD_VT_Grid
 	with defaults
 		max length 30
 		label LABELS.labGD_VT_Number
@@ -1679,21 +1679,21 @@ Entity P_GD_VT_Number is TextBox in P_GD_VT_Grid
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Extension is TextBox in P_GD_VT_Grid
+Entity GD_VT_Extension is TextBox in GD_VT_Grid
 	with defaults
 		max length 10
 		label LABELS.lablabGD_VT_Extension
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Notes is TextBox in P_GD_VT_Grid
+Entity GD_VT_Notes is TextBox in GD_VT_Grid
 	with defaults
 		max length 50
 		label LABELS.labGD_VT_Notes
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_Default is CheckBox in P_GD_VT_Grid
+Entity GD_VT_Default is CheckBox in GD_VT_Grid
 	with defaults
 		; by defaults appears checked and disabled
 		value true
@@ -1702,43 +1702,34 @@ Entity P_GD_VT_Default is CheckBox in P_GD_VT_Grid
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
-Entity P_GD_VT_ConsNumber is TextBox in P_GD_VT_Grid
-
+Entity GD_VT_ConsNumber is TextBox in GD_VT_Grid
 	with defaults
 		visible false
 		label LABELS.labGD_VT_ConsNumber
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
-; TODO: PUT EVERY CONTROL THAT BELONGS TO GRID AS IN GRID; NOT AS IN frmMAIN
-Entity P_GD_VT_btnInsert is Button in P_GD_VT_Grid
+Entity GD_VT_btnInsert is Button in GD_VT_Grid
 	with defaults
 		label LABELS.labInsert
 
 ; ----------------------------------------------------------------------------	
 
-
-; --- TODO: TENTATIVE GRID DEFINITION AND CONVENTIONS
-
 ; TESTGEN : DEFAULTS=9, RULES=1, ACTIONS=0, TRIGGERS=3
-Entity P_GD_VT_Grid is Grid in frmMain
+Entity GD_VT_Grid is Grid in frmMain
 	with defaults
-		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_P_GD_VT_Country		with arguments { DataField : GD_VT_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
-		define column GRID_P_GD_VT_CountryCode	with arguments {		DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
-		define column GRID_P_GD_VT_Number		with arguments {		DataField : GD_VT_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_Extension	with arguments {		DataField : GD_VT_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_Notes		with arguments {		DataField : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_P_GD_VT_Default		with arguments {		DataField : GD_VT_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_P_GD_VT_ConsNumber	with arguments {		DataField : GD_VT_ConsNumber, Visible : false}
+		define column GRID_GD_VT_Country with arguments { DataField : GD_VT_Country, Header : LABELS.labCountry, Visible : true}
+		; this column is always disabled, as its content is taken from the selection in the previous field
+		define column GRID_GD_VT_CountryCode with arguments { DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_GD_VT_Number	 with arguments { DataField : GD_VT_Number, Header : LABELS.labNumber,  Visible : true}
+		define column GRID_GD_VT_Extension with arguments { DataField : GD_VT_Extension, Header : LABELS.labExtension,  Visible : true}
+		define column GRID_GD_VT_Notes	with arguments { DataField : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_GD_VT_Default with arguments { DataField : GD_VT_Default, Header : LABELS.labDefault,  Visible : true}
+		define column GRID_GD_VT_ConsNumber	with arguments { DataField : GD_VT_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-		; REQUEST.CURRENT_ROLE in {ROLES.UPM, ROLES.CPM, ROLES.RCO, ROLES.CLERK} then
-		; 	load data from DATASOURCE.MDM_Request_VendorPhoneDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		; REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
-		; 	load data from DATASOURCE.MDM_Request_VendorPhoneDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
 		on row inserted
@@ -1747,116 +1738,84 @@ Entity P_GD_VT_Grid is Grid in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
-Entity F_GD_VF_Country is DropDownList in frmMain
+; TESTGEN : DEFAULTS=6, RULES=0, ACTIONS=1, TRIGGERS=1
+Entity GD_VF_Country is DropDownList in GD_VF_Grid
 	with defaults
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_Countries
 		value REQUEST.VENDOR_COUNTRY
-
 	with actions
-		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Code : F_GD_VF_Country.Value } in F_GD_VF_CountryCode
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
+		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Code : GD_VF_Country.Value } in GD_VF_CountryCode
 	with triggers
 		this changes
 
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity F_GD_VF_CountryCode is TextBox in frmMain
+; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity GD_VF_CountryCode is TextBox in GD_VF_Grid
 	with defaults
 		enabled false
 		mandatory true
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=5, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity F_GD_VF_Number is TextBox in frmMain
+; TESTGEN : DEFAULTS=5, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity GD_VF_Number is TextBox in GD_VF_Grid
 	with defaults
 		max length 30
 		validation ^[0-9\-\.()\+\s]+
 		label LABELS.labGD_VF_Number
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false		
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity F_GD_VF_Extension is TextBox in frmMain
+; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity GD_VF_Extension is TextBox in GD_VF_Grid
 	with defaults
 		max length 10
 		label LABELS.labGD_VF_CountryCode
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity F_GD_VF_Notes is TextBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity GD_VF_Notes is TextBox in GD_VF_Grid
 	with defaults
 		max length 50
 		label LABELS.labGD_VF_Notes
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false		
 ; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity F_GD_VF_ConsNumber is TextBox in frmMain
+; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity GD_VF_ConsNumber is TextBox in GD_VF_Grid
 
 	with defaults
 		visible false
 		label LABELS.labGD_VF_ConsNumber
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
 
 ; ----------------------------------------------------------------------------
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity F_GD_VF_Default is CheckBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity GD_VF_Default is CheckBox in GD_VF_Grid
 	with defaults
 		value false
 		label LABELS.labGD_VF_Default
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity F_GD_VF_btnInsert is Button in frmMain
+; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
+Entity GD_VF_btnInsert is Button in GD_VF_Grid
 	with defaults
 		label LABELS.labInsert
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
-; --- TODO: TENTATIVE GRID DEFINITION AND CONVENTIONS
-
 ; TESTGEN : DEFAULTS=9, RULES=1, ACTIONS=0, TRIGGERS=3
-Entity F_GD_VF_Grid is Grid in frmMain
+Entity GD_VF_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_F_GD_VF_Country		with arguments { DataField : GD_VF_Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
-		define column GRID_F_GD_VF_CountryCode	with arguments {		DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
-		define column GRID_F_GD_VF_Number		with arguments {		DataField : GD_VF_Number, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_Extension	with arguments {		DataField : GD_VF_Extension, Header : LABELS.labExtension, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_Notes		with arguments {		DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_F_GD_VF_Default		with arguments {		DataField : GD_VF_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_F_GD_VF_ConsNumber	with arguments {		DataField : GD_VF_ConsNumber, Visible : false}
+		define column GRID_GD_VF_Country		with arguments { DataField : GD_VF_Country, Header : LABELS.labCountry, Visible : true}
+		define column GRID_GD_VF_CountryCode	with arguments {		DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_GD_VF_Number		with arguments {		DataField : GD_VF_Number, Header : LABELS.labNumber,  Visible : true}
+		define column GRID_GD_VF_Extension	with arguments {		DataField : GD_VF_Extension, Header : LABELS.labExtension,  Visible : true}
+		define column GRID_GD_VF_Notes		with arguments {		DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_GD_VF_Default		with arguments {		DataField : GD_VF_Default, Header : LABELS.labDefault,  Visible : true}
+		define column GRID_GD_VF_ConsNumber	with arguments {		DataField : GD_VF_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-		; REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
-		; 	load data from DATASOURCE.MDM_Request_VendorFaxDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		; REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
-		; 	load data from DATASOURCE.MDM_Request_VendorFaxDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
-
 	with triggers
 		on row inserted
 		on row deleted
@@ -1864,9 +1823,8 @@ Entity F_GD_VF_Grid is Grid in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-
-; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=0
-Entity E_GD_VE_SmtpAddr is TextBox in frmMain
+; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=0, TRIGGERS=0
+Entity GD_VE_SmtpAddr is TextBox in GD_VE_Grid
 	with defaults
 		tooltip MESSAGES.MSGEmailSupplier
 		label LABELS.labGD_VE_SmtpAddr
@@ -1874,70 +1832,48 @@ Entity E_GD_VE_SmtpAddr is TextBox in frmMain
 		mandatory true
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.REQUEST_TYPE is VC then 
 			this mandatory true
 		
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity E_GD_VE_Notes is TextBox in frmMain
+Entity GD_VE_Notes is TextBox in GD_VE_Grid
 	with defaults
 		max length 50
 		label LABELS.labGD_VE_Notes
-		
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity E_GD_VE_Default is CheckBox in frmMain
+Entity GD_VE_Default is CheckBox in GD_VE_Grid
 	with defaults
 		value false
 		label LABELS.labGD_VE_Default
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false		
 ; ----------------------------------------------------------------------------	
 ; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-
-Entity E_GD_VE_ConsNumber is TextBox in frmMain
- 
+Entity GD_VE_ConsNumber is TextBox in GD_VE_Grid
  	with defaults
  		visible false
  		label LABELS.labGD_VE_ConsNumber
- 	with rules
- 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
- 			this enable false	
 ; ---------------------------------------------------------------------------- 
 ; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity E_GD_VE_btnInsert is Button in frmMain
+Entity GD_VE_btnInsert is Button in GD_VE_Grid
 	with defaults
 		label LABELS.labInsert
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity E_GD_VE_Grid is Grid in frmMain
+Entity GD_VE_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_E_GD_VE_SmtpAddr		with arguments {		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : true}
-		define column GRID_E_GD_VE_Notes		with arguments {		DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_E_GD_VE_Default		with arguments {		DataField : GD_VE_Default, Header : LABELS.labDefault, Constraints : Only_Numbers, Visible : true}
-		define column GRID_E_GD_VE_ConsNumber	with arguments {		DataField : GD_VE_ConsNumber, Visible : false}
+		define column GRID_GD_VE_SmtpAddr		with arguments {		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber,  Visible : true}
+		define column GRID_GD_VE_Notes		with arguments {		DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_GD_VE_Default		with arguments {		DataField : GD_VE_Default, Header : LABELS.labDefault,  Visible : true}
+		define column GRID_GD_VE_ConsNumber	with arguments {		DataField : GD_VE_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-		; REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
-		; 	load data from DATASOURCE.MDM_Request_VendorEmailDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		; REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
-		; 	load data from DATASOURCE.MDM_Request_VendorEmailDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
-
 	with triggers
 		on row inserted
 		on row deleted
@@ -2485,16 +2421,13 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
-Entity V_Country is DropDownList in frmMain
+; TESTGEN : DEFAULTS=6, ACTIONS=1, TRIGGERS=1
+Entity V_Country is DropDownList in V_Grid
 	with defaults
 		data field DisplayName
 		value field Code
 		label LABELS.labCountry
 		load data from DATASOURCE.MDM_Countries
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
@@ -2502,13 +2435,10 @@ Entity V_Country is DropDownList in frmMain
 		this changes
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
-Entity V_VATNumber is TextBox in frmMain
+; TESTGEN : DEFAULTS=3, ACTIONS=1, TRIGGERS=1
+Entity V_VATNumber is TextBox in V_Grid
 	with defaults
 		label LABELS.labNumber
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
@@ -2516,40 +2446,32 @@ Entity V_VATNumber is TextBox in frmMain
 		on change
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=0, TRIGGERS=0
-Entity V_btnInsert is Button in frmMain
+; TESTGEN : DEFAULTS=3,  ACTIONS=0, TRIGGERS=0
+Entity V_btnInsert is Button in V_Grid
 	with defaults
 		label LABELS.labInsert
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=3
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=4
 Entity V_Grid is Grid in frmMain
 	with defaults
-		define column GRID_V_Country		with arguments { DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
-		define column GRID_V_VATNumber		with arguments {		DataField : VATNumber, Header : LABELS.labVATNumber, Visible : true}
+		define column GRID_V_Country		with arguments { DataField : V_Country, Header : LABELS.labCountry, Visible : true}
+		define column GRID_V_VATNumber		with arguments { DataField : V_VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-		; REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
-		; 	load data from DATASOURCE.MDM_Request_VendorVAT with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		; REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
-		; 	load data from DATASOURCE.MDM_Request_VendorVATSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
-
 	with triggers
 		on row inserted
 		on row deleted
 		on row updated
-
+		this loads
 ; ----------------------------------------------------------------------------	
 
 ; THIS IS THE BANK DETAILS
 
-; TESTGEN : DEFAULTS=7, RULES=2, ACTIONS=1, TRIGGERS=1
-Entity B_GD_VB_Country is DropDownList in frmMain
+; TESTGEN : DEFAULTS=7, RULES=0, ACTIONS=1, TRIGGERS=1
+Entity GD_VB_Country is DropDownList in GD_VB_Grid
 
 	with defaults
 		label LABELS.labCountry
@@ -2557,9 +2479,6 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDM_Countries
 		mandatory true
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
@@ -2568,15 +2487,12 @@ Entity B_GD_VB_Country is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=2, ACTIONS=1, TRIGGERS=2
-Entity B_GD_VB_BankKey is TextBox in frmMain
-
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=1, TRIGGERS=3
+Entity GD_VB_BankKey is TextBox in GD_VB_Grid
 	with defaults
 		label LABELS.labGD_VD_BankKey
 		max length 10
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.ACCOUNT_GROUP in {YCT6,YCT9,YVT6,YVT9} then
 			max length 10
 		else
@@ -2585,12 +2501,13 @@ Entity B_GD_VB_BankKey is TextBox in frmMain
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with triggers 
-		on change
-		B_GD_VB_Country changes
+		this changes
+		GD_VB_Country changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=3, ACTIONS=1, TRIGGERS=2
-Entity B_GD_VB_BankAccount is TextBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=2, ACTIONS=1, TRIGGERS=3
+Entity GD_VB_BankAccount is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VD_BankAccount
@@ -2602,36 +2519,32 @@ Entity B_GD_VB_BankAccount is TextBox in frmMain
 			max length 18
 		B_GD_VB_Country.Value is BE and GD_VB_BankAccount.Value.Length >= 3 then
 			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with triggers 
-		this on change
+		this changes
+		this loads
 		B_GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=1, TRIGGERS=1
-Entity B_GD_VB_BankControlKey is TextBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=1, TRIGGERS=1
+Entity GD_VB_BankControlKey is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VD_BankControlKey
 		max length 2
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with triggers 
-		on change
+		this changes
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: CHECK VENDOR SPECIFIC BANK RULES IN VENDOR FIELDMAPPING FILE
 
-; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=2
-Entity B_GD_VB_IBAN is TextBox in frmMain
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
+Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VD_IBAN
@@ -2640,8 +2553,6 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 		load data from DATASOURCE.MDMC_GetIBANConfigurationForCountry with arguments {CountryCode:B_GD_VB_Country.Value, IBAN:B_GD_VB_IBAN.Value} with output {B_GD_VB_BankKey:BankKey,B_GD_VB_BankAccount:BankAccount,B_GD_VB_BankControlKey:BankControlKey}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.ACCOUNT_GROUP in {YCT6,YCT9,YVT6,YVT9} then
 			max length 27
 		else
@@ -2650,83 +2561,74 @@ Entity B_GD_VB_IBAN is TextBox in frmMain
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with triggers 
-		on change
-		B_GD_VB_Country changes
+		this changes
+		GD_VB_Country changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: TO BE CONNECTED IN THE WEB SERVICES TO AND FROM SAP
-; TESTGEN : DEFAULTS=3, RULES=1
-Entity B_GD_VB_SWIFT is TextBox in frmMain
-
+; TESTGEN : DEFAULTS=3, RULES=1, Triggers=1
+Entity GD_VB_SWIFT is TextBox in GD_VB_Grid
 	with defaults
 		label LABELS.labGD_VD_SWIFT
 		visible false
-
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.REQUEST_TYPE is VC then
 			this visible true
-			
+	with triggers 
+		this loads
 			
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=1, TRIGGERS=1
-Entity B_GD_VB_AccountHolder is TextBox in frmMain
+; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=1, TRIGGERS=1
+Entity GD_VB_AccountHolder is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VD_AccountHolder
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with triggers 
-		on change
+		this changes
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=1
-Entity B_GD_VB_BankCity is TextBox in frmMain
+; TESTGEN : DEFAULTS=4
+Entity GD_VB_BankCity is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VD_BankCity
 		max length 20
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 ; ---------------------------------------------------------------------------- 
 
-Entity B_GD_VB_PartBankType is TextBox in frmMain
+; TESTGEN : DEFAULTS=3, RULES=1, TRIGGERS=1
+Entity GD_VB_PartBankType is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VB_PartBankType
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.ACCOUNT_GROUP not in {YCT6,YCT9,YVT6,YVT9} then
 			max length 4
 	with triggers
-		B_GD_VB_Country changes
+		this loads
 		
 ; ---------------------------------------------------------------------------- 
 
-Entity B_GD_VB_BankReferDetails is TextBox in frmMain
+; TESTGEN : DEFAULTS=3, RULES=1, TRIGGERS=1
+Entity GD_VB_BankReferDetails is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VB_BankReferDetails
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.ACCOUNT_GROUP not in {YCT6,YCT9,YVT6,YVT9} then
 			max length 20
 	with triggers
-		B_GD_VB_Country changes
+		this loads
 		
 ; ---------------------------------------------------------------------------- 
 
-Entity B_GD_VB_btnInsert is Button in frmMain
+; TODO: FINISH ALL RULES
+Entity GD_VB_btnInsert is Button in GD_VB_Grid
 
 	with defaults
 		label LABELS.btnInsert
@@ -2758,39 +2660,39 @@ Entity B_GD_VB_btnInsert is Button in frmMain
 			this enable false
 			this visible false
 
+
+	with triggers
+		this loads
+		this changes
+
 ; ---------------------------------------------------------------------------- 
 
-Entity B_GD_VB_Grid is Grid in frmMain
+; TESTGEN : DEFAULTS=14, RULES=1, TRIGGERS=4, ACTIONS=0
+Entity GD_VB_Grid is Grid in frmMain
 	with defaults
-		; TODO: do we need this column also to keep track of the ID in the grid?
-		; TODO: define column GRID_V_RequestID		with arguments {		DataField : RequestID, Header : LABELS.labNumber, Constraints : Only_Numbers, Visible : false}
-	
-		define column GRID_B_GD_VB_Country		with arguments { DataField : Country, Header : LABELS.labCountry, DataSource: DATASOURCE.MDM_Countries, Visible : true}
-		define column GRID_B_GD_VB_BankKey		with arguments {		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
-		define column GRID_B_GD_VB_BankAccount	with arguments {	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
-		define column GRID_B_GD_VB_BankControlKey	with arguments {	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
-		define column GRID_B_GD_VB_IBAN			with arguments {	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
-		define column GRID_B_GD_VB_SWIFT		with arguments {	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : true}
-		define column GRID_B_GD_VB_NameOfBank	with arguments {	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
-		define column GRID_B_GD_VB_AccountHolder	with arguments {	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
-		define column GRID_B_GD_VB_BankCity	with arguments {	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
-		define column GRID_B_GD_VB_PartBankType	with arguments {	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
-		define column GRID_B_GD_VB_BankReferDetails	with arguments {	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
+		define column GRID_GD_VB_Country		with arguments { DataField : Country, Header : LABELS.labCountry, Visible : true}
+		define column GRID_GD_VB_BankKey		with arguments {		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
+		define column GRID_GD_VB_BankAccount	with arguments {	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
+		define column GRID_GD_VB_BankControlKey	with arguments {	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
+		define column GRID_GD_VB_IBAN			with arguments {	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
+		define column GRID_GD_VB_SWIFT		with arguments {	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : true}
+		define column GRID_GD_VB_NameOfBank	with arguments {	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
+		define column GRID_GD_VB_AccountHolder	with arguments {	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
+		define column GRID_GD_VB_BankCity	with arguments {	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
+		define column GRID_GD_VB_PartBankType	with arguments {	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
+		define column GRID_GD_VB_BankReferDetails	with arguments {	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
 		define column GRID_RelevantFlag	with arguments {	DataField : RelevantFlag, Visible : false}
 
 		
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-		; REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO, ROLES.CLERK} then
-		; 	load data from DATASOURCE.MDM_Request_VendorBankDetails with arguments {"RequestID" : REQUEST.REQUEST_ID}
-		; REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not VC then
-		; 	load data from DATASOURCE.MDM_Request_VendorBankDetailsSAP with arguments {"RequestID" : REQUEST.REQUEST_ID}
 
 	with triggers
 		on row inserted
 		on row deleted
 		on row updated
+		this loads
 
 ; ----------------------------------------------------------------------------	
 
@@ -4352,15 +4254,14 @@ Entity btnSubmit is Button in frmMain
 			
 ; ----------------------------------------------------------------------------	
 
-; TODO: SEB probably we do not need this?		
-; TESTGEN : DEFAULTS=3
+; TESTGEN : DEFAULTS=3, ACTIONS=1, TRIGGERS=1
 Entity btnClose	is Button in frmMain
 	with defaults
 		label LABELS.btnClose
 
 	; TODO: ADD CLOSE SUPPORT IN PARSER - NEED TO CHANGE PARSER
 	with actions
-		frmMain close
+		close frmMain
 
 	with triggers
 		this on click
