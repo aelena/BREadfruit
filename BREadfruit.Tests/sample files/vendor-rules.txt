@@ -1866,14 +1866,13 @@ Entity GD_VT_btnInsert is Button in GD_VT_Grid
 ; TESTGEN : DEFAULTS=9, RULES=1, ACTIONS=0, TRIGGERS=3
 Entity GD_VT_Grid is Grid in frmMain
 	with defaults
-		define column GRID_GD_VT_Country with arguments { DataField : GD_VT_Country, Header : LABELS.labCountry, Visible : true}
-		; this column is always disabled, as its content is taken from the selection in the previous field
-		define column GRID_GD_VT_CountryCode with arguments { DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
-		define column GRID_GD_VT_Number	 with arguments { DataField : GD_VT_Number, Header : LABELS.labNumber,  Visible : true}
-		define column GRID_GD_VT_Extension with arguments { DataField : GD_VT_Extension, Header : LABELS.labExtension,  Visible : true}
-		define column GRID_GD_VT_Notes	with arguments { DataField : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_GD_VT_Default with arguments { DataField : GD_VT_Default, Header : LABELS.labDefault,  Visible : true}
-		define column GRID_GD_VT_ConsNumber	with arguments { DataField : GD_VT_ConsNumber, Visible : false}
+		define column GRID_GD_VT_Country with arguments     { DataField : GD_VT_Country, ControlID : GD_VT_Country, Header : LABELS.labCountry, Visible : true}
+		define column GRID_GD_VT_CountryCode with arguments { DataField : GD_VT_CountryCode, ControlID : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_GD_VT_Number	 with arguments     { DataField : GD_VT_Number, ControlID : GD_VT_Number, Header : LABELS.labNumber,  Visible : true}
+		define column GRID_GD_VT_Extension with arguments   { DataField : GD_VT_Extension, ControlID : GD_VT_Extension, Header : LABELS.labExtension,  Visible : true}
+		define column GRID_GD_VT_Notes	with arguments      { DataField : GD_VT_Notes, ControlID : GD_VT_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_GD_VT_Default with arguments     { DataField : GD_VT_Default, ControlID : GD_VT_Default, Header : LABELS.labDefault,  Visible : true}
+		define column GRID_GD_VT_ConsNumber	with arguments  { DataField : GD_VT_ConsNumber, ControlID : GD_VT_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -1953,13 +1952,13 @@ Entity GD_VF_btnInsert is Button in GD_VF_Grid
 Entity GD_VF_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_GD_VF_Country		with arguments { DataField : GD_VF_Country, Header : LABELS.labCountry, Visible : true}
-		define column GRID_GD_VF_CountryCode	with arguments {		DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
-		define column GRID_GD_VF_Number		with arguments {		DataField : GD_VF_Number, Header : LABELS.labNumber,  Visible : true}
-		define column GRID_GD_VF_Extension	with arguments {		DataField : GD_VF_Extension, Header : LABELS.labExtension,  Visible : true}
-		define column GRID_GD_VF_Notes		with arguments {		DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_GD_VF_Default		with arguments {		DataField : GD_VF_Default, Header : LABELS.labDefault,  Visible : true}
-		define column GRID_GD_VF_ConsNumber	with arguments {		DataField : GD_VF_ConsNumber, Visible : false}
+		define column GRID_GD_VF_Country		with arguments {ControlID : GD_VF_Country,   DataField : GD_VF_Country, Header : LABELS.labCountry, Visible : true}
+		define column GRID_GD_VF_CountryCode	with arguments {ControlID : GD_VF_CountryCode,	DataField : GD_VF_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
+		define column GRID_GD_VF_Number		with arguments {	ControlID : GD_VF_Number,	DataField : GD_VF_Number, Header : LABELS.labNumber,  Visible : true}
+		define column GRID_GD_VF_Extension	with arguments {	ControlID : GD_VF_Extension,	DataField : GD_VF_Extension, Header : LABELS.labExtension,  Visible : true}
+		define column GRID_GD_VF_Notes		with arguments {	ControlID : GD_VF_Notes,	DataField : GD_VF_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_GD_VF_Default		with arguments {ControlID : GD_VF_Default,	DataField : GD_VF_Default, Header : LABELS.labDefault,  Visible : true}
+		define column GRID_GD_VF_ConsNumber	with arguments {	ControlID : GD_VF_ConsNumber,	DataField : GD_VF_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -2014,10 +2013,10 @@ Entity GD_VE_btnInsert is Button in GD_VE_Grid
 Entity GD_VE_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
-		define column GRID_GD_VE_SmtpAddr		with arguments {		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber,  Visible : true}
-		define column GRID_GD_VE_Notes		with arguments {		DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
-		define column GRID_GD_VE_Default		with arguments {		DataField : GD_VE_Default, Header : LABELS.labDefault,  Visible : true}
-		define column GRID_GD_VE_ConsNumber	with arguments {		DataField : GD_VE_ConsNumber, Visible : false}
+		define column GRID_GD_VE_SmtpAddr		with arguments {ControlID : GD_VE_SmtpAddr,		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber,  Visible : true}
+		define column GRID_GD_VE_Notes		with arguments {	ControlID : GD_VE_Notes,	DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
+		define column GRID_GD_VE_Default		with arguments {ControlID : GD_VE_Default,		DataField : GD_VE_Default, Header : LABELS.labDefault,  Visible : true}
+		define column GRID_GD_VE_ConsNumber	with arguments {	ControlID : GD_VE_ConsNumber ,	DataField : GD_VE_ConsNumber, Visible : false}
 
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -2236,30 +2235,30 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 		; YVT1 is BELGIUM
 		REQUEST.ACCOUNT_GROUP is YVT1 then
 			this mandatory true
-			validation regex ^[0-9]{10}$			; always 10 digits
+			validation ^[0-9]{10}$			; always 10 digits
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 			set value BE in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 			
 		REQUEST.ACCOUNT_GROUP is YVT2 then
-			validation regex ^[0-9]{8}$			; always 10 digits
+			validation ^[0-9]{8}$			; always 10 digits
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			GD_Ctr_TaxCode2 enabled false
 			set value LU in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
 		REQUEST.ACCOUNT_GROUP is YVT3 then
-			validation regex ^[A-Za-z0-9]{9}$
+			validation ^[A-Za-z0-9]{9}$
 			set value [ES + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 		
 		REQUEST.ACCOUNT_GROUP is YVT3 and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then
-			validation regex ^[A-Za-z0-9]{9}$
+			validation ^[A-Za-z0-9]{9}$
 			set value [ES + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 			set value G in GD_Ctr_VendorClassification
 	
 		REQUEST.ACCOUNT_GROUP is YVT3 and GD_Ctr_TaxCode1.Text starts with "X" then
-			validation regex ^[A-Za-z0-9]{9}$
+			validation ^[A-Za-z0-9]{9}$
 			set value [ES + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
 			set value NG in GD_Ctr_VendorClassification
 		
@@ -2268,7 +2267,7 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			visible true
 			label LABEL.labSIRET
 			max length 14
-			validation regex ^[0-9]{1,	14}$
+			validation regex ^[0-9]{1,14}$
 			GD_Ctr_TaxCode2 enabled false
 			; TODO: WHAT TO DO WITH THIS - THIS WONT WORK RIGHT NOW
 			; complete piva wiht 0 on left until 14
@@ -2280,7 +2279,7 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
 		REQUEST.VENDOR_COUNTRY is FR and REQUEST.ACCOUNT_GROUP is YVT6 then
-			pad left 0,14
+			; pad left 0,14
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value SUBSTRING(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
@@ -2732,8 +2731,8 @@ Entity V_btnInsert is Button in V_Grid
 ; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=4
 Entity V_Grid is Grid in frmMain
 	with defaults
-		define column GRID_V_Country		with arguments { DataField : V_Country, Header : LABELS.labCountry, Visible : true}
-		define column GRID_V_VATNumber		with arguments { DataField : V_VATNumber, Header : LABELS.labVATNumber, Visible : true}
+		define column GRID_V_Country		with arguments { ControlID : V_Country, DataField : V_Country, Header : LABELS.labCountry, Visible : true}
+		define column GRID_V_VATNumber		with arguments { ControlID : V_VATNumber, DataField : V_VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -2948,18 +2947,18 @@ Entity GD_VB_btnInsert is Button in GD_VB_Grid
 ; TESTGEN : DEFAULTS=14, RULES=1, TRIGGERS=4, ACTIONS=0
 Entity GD_VB_Grid is Grid in frmMain
 	with defaults
-		define column GRID_GD_VB_Country		with arguments { DataField : Country, Header : LABELS.labCountry, Visible : true}
-		define column GRID_GD_VB_BankKey		with arguments {		DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
-		define column GRID_GD_VB_BankAccount	with arguments {	DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
-		define column GRID_GD_VB_BankControlKey	with arguments {	DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
-		define column GRID_GD_VB_IBAN			with arguments {	DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
-		define column GRID_GD_VB_SWIFT		with arguments {	DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : true}
-		define column GRID_GD_VB_NameOfBank	with arguments {	DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
-		define column GRID_GD_VB_AccountHolder	with arguments {	DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
-		define column GRID_GD_VB_BankCity	with arguments {	DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
-		define column GRID_GD_VB_PartBankType	with arguments {	DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
-		define column GRID_GD_VB_BankReferDetails	with arguments {	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
-		define column GRID_RelevantFlag	with arguments {	DataField : RelevantFlag, Visible : false}
+		define column GRID_GD_VB_Country		with arguments { ControlID :GD_VB_Country ,  DataField : GD_VB_Country, Header : LABELS.labCountry, Visible : true}
+		define column GRID_GD_VB_BankKey		with arguments { ControlID : GD_VB_BankKey,	DataField : GD_VB_BankKey, Header : LABELS.labBankKey, Visible : true}
+		define column GRID_GD_VB_BankAccount	with arguments { ControlID : GD_VB_BankAccount,DataField : GD_VB_BankAccount, Header : LABELS.labBankAccount, Visible : true}
+		define column GRID_GD_VB_BankControlKey	with arguments { ControlID : GD_VB_BankControlKey,DataField : GD_VB_BankControlKey, Header : LABELS.labBankControlKey, Visible : true}
+		define column GRID_GD_VB_IBAN			with arguments { ControlID : GD_VB_IBAN,DataField : GD_VB_IBAN, Header : LABELS.labIBAN, Visible : true}
+		define column GRID_GD_VB_SWIFT		with arguments {	 ControlID : GD_VB_SWIFT,  DataField : GD_VB_SWIFT, Header : LABELS.labSWIFT, Visible : true}
+		define column GRID_GD_VB_NameOfBank	with arguments {	 ControlID : GD_VB_NameOfBank,  DataField : GD_VB_NameOfBank, Header : LABELS.labNameOfBank, Visible: false}
+		define column GRID_GD_VB_AccountHolder	with arguments { ControlID : GD_VB_AccountHolder,DataField : GD_VB_AccountHolder, Header : LABELS.labAccountHolder, Visible : true}
+		define column GRID_GD_VB_BankCity	with arguments {	 ControlID : GD_VB_BankCity,  DataField : GD_VB_BankCity, Header : LABELS.labBankCity, Visible : false}
+		define column GRID_GD_VB_PartBankType	with arguments { ControlID : GD_VB_PartBankType,   DataField : GD_VB_PartBankType, Header : LABELS.labPartBankType, Visible : false}
+		define column GRID_GD_VB_BankReferDetails	with arguments { ControlID : GD_VB_BankReferDetails,	DataField : GD_VB_BankReferDetails, Header : LABELS.labBankReferDetails, Visible: false}
+		define column GRID_RelevantFlag	with arguments { DataField : RelevantFlag, Visible : false}
 
 		
 	with rules
