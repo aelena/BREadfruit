@@ -282,6 +282,12 @@ Entity btnSearch is Button in frmSearch
 		HF_SearchKOFlag is false then
 			load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
 		
+		vendorSearchResultGrid.Items.Count = 0 then
+			set value MESSAGES.MSGNoValuesFound in MESSAGE_POPUP
+			btnCreateVendor visible true
+		else
+			btnCreateVendor visible false
+
 
 	with triggers
 
@@ -444,6 +450,12 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 		label LABELS.labGD_Ctr_VendorClassification
 
 	with rules
+		
+		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {1,2,3,4,5,6,7,8,9,X} then
+			set value true in GD_Ctr_IsNaturalPerson			
+			set value ES in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_TaxCode1.Value in GD_Ctr_VATRegistrationNumber
+			set value NG in GD_Ctr_VendorClassification
 
 		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {"P","Q","S"} then set value G in GD_Ctr_VendorClassification
 
@@ -496,7 +508,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=8, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=8, RULES=3, ACTIONS=1, TRIGGERS=2
 Entity GD_Damex is DropDownList in frmMain
 	with defaults
 		data field DisplayName
@@ -512,9 +524,14 @@ Entity GD_Damex is DropDownList in frmMain
 	with rules
 
 		REQUEST.REQUEST_TYPE not in {VC, VC_CC} then 
-			GD_Damex not mandatory
-			GD_Damex not visible
+			this not mandatory
+			this not visible
 
+		; not any more, apparently
+		; REQUEST.COUNTRY in {GR,BE} then
+		; 	this not mandatory
+		; 	this not visible
+		
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
@@ -523,7 +540,7 @@ Entity GD_Damex is DropDownList in frmMain
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=3, RULES=2, TRIGGERS=2
+; TESTGEN : DEFAULTS=3, RULES=3, TRIGGERS=2
 Entity GD_DamexNote is CheckBox in frmMain
 	with defaults
 		visible true
@@ -533,6 +550,12 @@ Entity GD_DamexNote is CheckBox in frmMain
 	with rules
 		GD_DamexNote.Value is true then
 			ATTACHMENT mandatory true
+
+		; not any more, apparently
+		; REQUEST.COUNTRY in {GR,BE} then
+		; 	this not mandatory
+		; 	this not visible
+		
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
@@ -542,7 +565,7 @@ Entity GD_DamexNote is CheckBox in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=4, RULES=12, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=4, RULES=17, ACTIONS=1, TRIGGERS=2
 Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 	with defaults
 		value false		; unchecked
@@ -550,19 +573,69 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 
 	with rules
 
-		REQUEST.ACCOUNT_GROUP in {YVT4, YVT5} then
-			this visible true
-			DIV_ADDITIONAL_INFO_NATURAL_PERSON visible true	
-			; TODO: ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
+		REQUEST.ACCOUNT_GROUP in {YVT4, YVT5} and GD_Ctr_IsNaturalPerson.Value is true then
+			GD_NatP_DateOfBirth visible true
+			GD_NatP_DateOfBirth mandatory true
+			GD_NatP_PlaceOfBirth visible true
+			GD_NatP_PlaceOfBirth mandatory true
+			GD_NatP_Profession visible true
+			GD_NatP_Sex visible true
+			GD_NatP_Sex mandatory true
+			GD_NatP_Exemption visible true
+			GD_NatP_Exemption mandatory true
+
+		REQUEST.ACCOUNT_GROUP in {YVT4, YVT5} and GD_Ctr_IsNaturalPerson.Value is false then
+			GD_NatP_DateOfBirth visible false
+			GD_NatP_DateOfBirth mandatory false
+			GD_NatP_PlaceOfBirth visible false
+			GD_NatP_PlaceOfBirth mandatory false
+			GD_NatP_Profession visible false
+			GD_NatP_Sex visible false
+			GD_NatP_Sex mandatory false
+			GD_NatP_Exemption visible false	
+			GD_NatP_Exemption mandatory false
+
+		REQUEST.COUNTRY in {GR,BE,LU} and GD_Ctr_IsNaturalPerson.Value is true then
+			GD_NatP_DateOfBirth visible true
+			GD_NatP_PlaceOfBirth visible true
+			GD_NatP_Profession visible true
+			GD_NatP_Sex visible true
+			GD_NatP_Exemption visible true
+
+		REQUEST.COUNTRY in {GR,BE,LU} and GD_Ctr_IsNaturalPerson.Value is false then
+			GD_NatP_DateOfBirth visible false
+			GD_NatP_PlaceOfBirth visible false
+			GD_NatP_Profession visible false
+			GD_NatP_Sex visible false
+			GD_NatP_Exemption visible false
+
+		REQUEST.COUNTRY is PT and GD_Ctr_IsNaturalPerson.Value is true then
+			GD_NatP_DateOfBirth visible true
+			GD_NatP_PlaceOfBirth visible true
+			GD_NatP_Profession visible true
+			GD_NatP_Sex visible true
+			GD_NatP_Exemption visible true
+			GD_NatP_Exemption mandatory true
+
+		REQUEST.COUNTRY is PT and GD_Ctr_IsNaturalPerson.Value is false then
+			GD_NatP_DateOfBirth visible false
+			GD_NatP_PlaceOfBirth visible false
+			GD_NatP_Profession visible false
+			GD_NatP_Sex visible false
+			GD_NatP_Exemption visible false
+			GD_NatP_Exemption mandatory false
+
+		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
+			this enabled true
 
 		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {P, Q, S} then
 			set value false in GD_Ctr_IsNaturalPerson
 
-		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {IT, GR} then
-			this enabled 
-
-		REQUEST.COUNTRY is ES and GD_Ctr_TaxCode1.Value starts with {X,1,2,3,4,5,6,7,8,9} then 
-			set value true in GD_Ctr_IsNaturalPerson 
+		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {1,2,3,4,5,6,7,8,9,X} then
+			set value true in GD_Ctr_IsNaturalPerson			
+			set value ES in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_TaxCode1.Value in GD_Ctr_VATRegistrationNumber
+			set value NG in GD_Ctr_VendorClassification
 
 		GD_Adr_Country.Value is ES then
 			set value GD_Ctr_IsNaturalPerson.Value in CC_AM_SubjectedToWHTax.Value
@@ -862,7 +935,7 @@ Entity GD_Procur_Supplier_ExpectedPVO is DropDownList in frmMain
 
 		; 3 and 4 are the values for the last two values in the combo
 		; if the value is one of those, a series of other controls have to be shown (GD_PVO_Question 1 to 5)
-		GD_Procur_Supplier_ExpectedPVO.Value in {"3", "4"} then
+		GD_Procur_Supplier_ExpectedPVO.Value in {3, 4} then
 			GD_PVO_Question1 visible
 			GD_PVO_Question1 mandatory
 			GD_PVO_Question2 visible
@@ -874,7 +947,7 @@ Entity GD_Procur_Supplier_ExpectedPVO is DropDownList in frmMain
 			GD_PVO_Question5 visible
 			GD_PVO_Question5 mandatory
 
-		GD_Procur_Supplier_ExpectedPVO.Value bot in {"3", "4"} then
+		GD_Procur_Supplier_ExpectedPVO.Value not in {3, 4} then
 			GD_PVO_Question1 visible false
 			GD_PVO_Question1 mandatory false
 			GD_PVO_Question2 visible false
@@ -1425,6 +1498,9 @@ Entity GD_Adr_Region is DropDownList in frmMain
 
 		REQUEST.ACCOUNT_GROUP is YVT1 and GD_Adr_Region.Value in {02,03} then
 			set value FR in GD_Com_Language
+
+		REQUEST.COUNTRY is FR then
+			set value GD_Adr_Region.SelectedValue in GD_Adr_PostalCode
 
 		REQUEST.ACCOUNT_GROUP in {YVT6,YVT9} and REQUEST.Region_IsMandatory is true and REQUEST.REQUEST_TYPE is not VM_BLK then
 			this mandatory true
@@ -2140,13 +2216,14 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 ;		mandatory false
 ;		enabled for ROLES.CLERK and ROLES.ENQuirer
 
+; TESTGEN : DEFAULTS=3, ACTIONS=0
+
+; TODO: CHECK VISIBILITY
 Entity GD_Ctr_PIVA is TextBox in frmMain
 	with defaults
-		; I doubt this
 		visible false
-		label LABELS.labPIVA ; ocal Tax Code
-		mandatory false
-
+		label LABELS.labPIVA
+		
 	with rules
 
 		; this means companycode country
@@ -2158,17 +2235,19 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 
 		; YVT1 is BELGIUM
 		REQUEST.ACCOUNT_GROUP is YVT1 then
+			this mandatory true
 			validation regex ^[0-9]{10}$			; always 10 digits
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
-			set value [BE + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			set value BE in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 			
 		REQUEST.ACCOUNT_GROUP is YVT2 then
-			validation regex ^[0-9]{10}$			; always 10 digits
+			validation regex ^[0-9]{8}$			; always 10 digits
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			GD_Ctr_TaxCode2 enabled false
-			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
-			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			set value LU in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
 		REQUEST.ACCOUNT_GROUP is YVT3 then
 			validation regex ^[A-Za-z0-9]{9}$
@@ -2187,17 +2266,16 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 		; if vendor country France->maxlength 14, label = SIRET, visible true, only numbers
 		REQUEST.VENDOR_COUNTRY is FR then
 			visible true
-			label LABEL.labSIRET	; see this
+			label LABEL.labSIRET
 			max length 14
-			; validate with this regex
-			validation regex ^[0-9]{1,14}$
-
-		REQUEST.ACCOUNT_GROUP is YVT6 then
-			; new rule to be tested and parsed
+			validation regex ^[0-9]{1,	14}$
+			GD_Ctr_TaxCode2 enabled false
+			; TODO: WHAT TO DO WITH THIS - THIS WONT WORK RIGHT NOW
 			; complete piva wiht 0 on left until 14
-			pad left 0,14
+			; pad left 0,14
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
-			; new rule to be tested and parsed
+			set value BE in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 			set value SUBSTRING(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode2
 			set value GD_Ctr_TaxCode2.Value in GD_Ctr_IFANumber
 
@@ -2234,8 +2312,15 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			max length 16
 			validation regex ^[A-Za-z0-9]{16}$
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode2
-			set value [IT + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			set value IT in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
+			this visible true
+			this mandatory true
 
+		REQUEST.ACCOUNT_GROUP is YVT5 and GD_Ctr_IsNaturalPerson.Value is false then
+			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
+			set value '' in GD_Ctr_CF
+		
 		REQUEST.ACCOUNT_GROUP is YVT5 and GD_Ctr_PIVA.Value is 00000000000 then
 			set value '' in GD_Ctr_VATRegistrationNumber
 			
@@ -2243,7 +2328,8 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			max length 9
 			validation regex ^[0-9]{9}$			; always 9 digits
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode2
-			set value [GR + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			set value GR in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
@@ -2251,23 +2337,50 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TODO: THIS IS A VERY SENSITIVE FIELD
-; DEDICATE SPECIFIC TIME TO THIS - ALSO THE PropagateNif METHOD
+; TODO: CHECK LABEL CHANGES
 Entity GD_Ctr_NIF is TextBox in frmMain
 	with defaults
 		label LABELS.labNIF
 		max length 9
+		visible false
 
 	with rules
+		REQUEST.COUNTRY is PT then
+			set value PT in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_NIF.Value in GD_Ctr_VATRegistrationNumber
+
+		REQUEST.COUNTRY is PT and GD_Ctr_NIF.Value starts with {1,2} then
+			set value true in GD_Ctr_IsNaturalPerson
+			GD_NatP_DateOfBirth visible true
+			GD_NatP_PlaceOfBirth visible true
+			GD_NatP_Profession visible true
+			GD_NatP_Sex visible true
+			GD_NatP_Exemption visible true
+			GD_NatP_Exemption mandatory true
+
+		REQUEST.COUNTRY is PT and GD_Ctr_NIF.Value not starts with {1,2} then
+			set value false in GD_Ctr_IsNaturalPerson
+			GD_NatP_DateOfBirth visible false
+			GD_NatP_PlaceOfBirth visible false
+			GD_NatP_Profession visible false
+			GD_NatP_Sex visible false
+			GD_NatP_Exemption visible false
+			GD_NatP_Exemption mandatory false
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+
 		REQUEST.COUNTRY is PT and REQUEST.REQUEST_TYPE not in {VM_BLK, VM_UBLK} then
 			this mandatory true
+			this visible true
+
 	with triggers
 		this loads
+		this changes
 ; ----------------------------------------------------------------------------	
 
 
+; TESTGEN : DEFAULTS=4, RULES=3, TRIGGERS=2, ACTIONS=0
 Entity GD_Ctr_CF is TextBox in frmMain
 	with defaults
 		label LABELS.labCF
@@ -2276,33 +2389,65 @@ Entity GD_Ctr_CF is TextBox in frmMain
 
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false
 		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is VC then
 			visible true
+			enabled false
+
+		REQUEST.COUNTRY is IT and REQUEST.REQUEST_TYPE is VC and GD_Ctr_IsNaturalPerson.Value is true then
+			enabled true
+			set value GD_Ctr_CF.Value in GD_Ctr_TaxCode1
+
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false
 	with triggers
 		this loads
+		this changes
 ; ----------------------------------------------------------------------------	
 
 
+; TESTGEN : DEFAULTS=2
 Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 	with defaults
 		label LABELS.labTaxCode2
+		max length 9
 
 	with rules
+		
+		REQUEST.COUNTRY in {BE,LU} then
+			max length 10
+			this mandatory true
+		
+		REQUEST.COUNTRY is {PT,IT} then
+			this enabled false
+			this mandatory false
+
+		REQUEST.COUNTRY in {BE,LU} and REQUEST.CURRENT_ROLE is ROLES.CLERK then
+			this mandatory false
+
+		REQUEST.COUNTRY in {BE,LU} and REQUEST.CURRENT_ROLE is not ROLES.CLERK then
+			this mandatory true
+
+		REQUEST.COUNTRY is GR then
+			this mandatory false
+			this visible false
 
 		REQUEST.VENDOR_COUNTRY is ES and GD_Ctr_TaxCode1.Text starts with {1,2,3,4,5,6,7,8,9,X} then
-			set value true in GD_Ctr_IsNaturalPerson			; check the checkbox
+			set value true in GD_Ctr_IsNaturalPerson			
+			set value ES in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_TaxCode1.Value in GD_Ctr_VATRegistrationNumber
+			set value NG in GD_Ctr_VendorClassification
 
 		REQUEST.ACCOUNT_GROUP is YVT1 then
 			validation regex ^[0-9]{10}$			; always 10 digits
-			set value [BE + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			set value BE in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 			mandatory true
+			max length 10
 
 		REQUEST.ACCOUNT_GROUP is YVT2 then
-			mandatory true
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value [LU + GD_Ctr_PIVA.Value] in GD_Ctr_VATRegistrationNumber
+			max length 10
 
 		REQUEST.ACCOUNT_GROUP is YVT7 then
 			mandatory false
@@ -2311,8 +2456,27 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 		REQUEST.ACCOUNT_GROUP is YVT5 then
 			max length 16
 
+		REQUEST.ACCOUNT_GROUP is YVT6 then
+			max length 14
+			validation ^[0-9]+$
+
+		REQUEST.ACCOUNT_GROUP is YVT6 and GD_Ctr_TaxCode1 is not empty then
+			padleft
+
+		REQUEST.ACCOUNT_GROUP is YVT9 then
+			max length 14
+			validation ^[0-9]+$
+
+		REQUEST.ACCOUNT_GROUP is YVT9 and REQUEST.REQUEST_TYPE is VC then
+			this enabled true
+			this mandatory false
+
+		REQUEST.ACCOUNT_GROUP is YVT6 and REQUEST.REQUEST_TYPE is VC and GD_Ctr_IsNaturalPerson.Value is false then
+			this mandatory true
+		
 		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is VC and REQUEST.TaxCode1_IsMandatory then
 			this mandatory true
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
@@ -2325,21 +2489,27 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 		label LABELS.labTaxCode2
 
 	with rules
-
+		REQUEST.COUNTRY is ES then
+			max length 14
 		REQUEST.ACCOUNT_GROUP is YVT7 then
 			max length 9
+			set value EL in GD_Ctr_VATRegistrationNumber
+			add value GD_Ctr_TaxCode2.Value in GD_Ctr_VATRegistrationNumber
+
 		REQUEST.ACCOUNT_GROUP is YVT5 then
 			max length 11
-		REQUEST.ACCOUNT_GROUP in {YVT1,YVT2} then
+		REQUEST.COUNTRY in {BE,LU} then
 			enabled false
 
 		REQUEST.ACCOUNT_GROUP in {YVT6, YCT6, YVT9, YCT9} and REQUEST.REQUEST_TYPE is VC and REQUEST.TaxCode2_IsMandatory then
 			this mandatory true
+
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
 	with triggers
 		this loads
+		this changes
 ; ----------------------------------------------------------------------------	
 
 
@@ -3251,7 +3421,7 @@ Entity CC_PT_IndividualPayment	is CheckBox in frmMain
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : RULES=2, DEFAULTS=6, TRIGGERS=1
+; TESTGEN : RULES=3, DEFAULTS=6, TRIGGERS=1
 Entity CC_PT_HouseBank is DropDownList in frmMain
 	with defaults
 		label LABELS.labPTHouseBank
@@ -3259,9 +3429,12 @@ Entity CC_PT_HouseBank is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDM_HouseBanks with arguments {FlagActive : true}
 	with rules
-		REQUEST.COUNTRY is ES and CC_PT_PaymentMethods.Value is 2 then
+		; need to apply this one?
+		GD_Adr_Country.Value is not ES then
+			this enabled false 
+		GD_Adr_Country.Value is ES and CC_PT_PaymentMethods.Value is 2 then
 			this mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REeQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -3279,15 +3452,13 @@ Entity CC_PT_ForCreditMemos	is TextBox in frmMain
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=6, RULES=4, TRIGGERS=1
+; TESTGEN : DEFAULTS=6, RULES=4, TRIGGERS=2
 Entity CC_DD_DunningProcedure is DropDownList in frmMain
 	with defaults
 		label LABELS.labDDDunningprocedure
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDM_DunningProcedure with arguments {FlagActive : true, ClusterCountryCode: REQUEST.COUNTRY}
-		; TODO: REALLY?
-		; visible false
 
 	with rules
 		REQUEST.COUNTRY is BE then
@@ -3310,6 +3481,7 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 			this enable false
 	with triggers
 		this loads
+		this changes
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=3, RULES=6, TRIGGERS=1
@@ -3328,7 +3500,7 @@ Entity CC_DD_LegalProceedings is Calendar in frmMain
 		REQUEST.COUNTRY is ES and CC_DD_LegalProceedings is empty then
 			set value '' in CC_DD_DunningProcedure
 
-		REQUEST.COUNTRY is not ES and CC_DD_LegalProceedings is empty then
+		REQUEST.COUNTRY is not ES and CC_DD_LegalProceedings is not empty then
 			set value Y3PR in CC_DD_DunningProcedure
 
 		REQUEST.COUNTRY is ES and CC_DD_LegalProceedings.Value is empty then
@@ -3392,7 +3564,7 @@ Entity CC_DD_Level is TextBox in frmMain
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=6, RULES=3, TRIGGERS=1
+; TESTGEN : DEFAULTS=6, RULES=4, TRIGGERS=1
 Entity CC_DD_DunningClerk is DropDownList in frmMain
 	with defaults
 		visible false
@@ -3402,14 +3574,15 @@ Entity CC_DD_DunningClerk is DropDownList in frmMain
 		load data from DATASOURCE.MDM_AccountingClerks with arguments {FlagActive : true, CompanyCode : REQUEST.COMPANY_CODE}
 
 	with rules
-
-		REQUEST.COMPANY_CODE in {5101, 563M, 5109} then
-			set value 10 in CC_DD_DunningClerk.Value
-			this disabled
-			; show this
-
+	
 		REQUEST.COUNTRY not in {PT, BE, LU, GR} then
 			this visible true
+
+		REQUEST.COMPANY_CODE in {5101, 563M, 5109} and REQUEST.REQUEST_TYPE is VC then
+			set value 10 in CC_DD_DunningClerk.Value
+
+		REQUEST.COMPANY_CODE in {5101, 563M, 5109} and CC_DD_DunningClerk is empty then
+			set value 10 in CC_DD_DunningClerk.Value
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is VM_BLK or REQUEST.CURRENT_ROLE in {ROLES.CPM, ROLES.UPM, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4600,10 +4773,10 @@ Entity labNextAction is DropDownList in frmMain
 			this visible false
 ; ----------------------------------------------------------------------------	
 
-; TODO: PENDING SEB GIVE THE NAME OF THIS CONTROL
-; Entity XXXXXX is Object in frmMain
-;	with rules
-;		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE is ROLES.SUS or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-;			this enable false	
-;
-; 
+; TESTGEN : DEFAULTS=2, RULES=1, TRIGGERS=1, ACTIONS=0
+Entity PO_lbxPODPursacheOrganization1 is Object in frmMain
+	with rules
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE is ROLES.SUS or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+			this enable false	
+	with triggers
+		this loads

@@ -2800,6 +2800,23 @@ namespace BREadfruit.Tests
 
 
 		[Test]
+		public void ParseSampleFile098 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File098.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "SO_lbxSODSalesOrganization1", "Entity name should be 'btnClose' but is " + e.Name );
+			Assert.That ( e.TypeDescription == "Object", "Entity name should be 'Object' but is " + e.Name );
+
+			}
+
+
+		// ---------------------------------------------------------------------------------
+
+		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{
 			var parser = new Parser ();

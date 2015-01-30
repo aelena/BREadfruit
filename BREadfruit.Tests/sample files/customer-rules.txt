@@ -237,7 +237,7 @@ Entity DDLCDSalesOrg is DropDownList in frmSearch
 		hide btnCreateVendor
 
 	with rules
-		DDLCDDistribChannel.HasItems is true then
+		DDLCDDistribChannel.Items.Count is true then
 			DDLCDDistribChannel visible true
 
 	with triggers
@@ -260,7 +260,7 @@ Entity DDLCDDistribChannel is DropDownList in frmSearch
 		hide btnCreateVendor
 
 	with rules
-		DDLCDDistribChannel.Count > 0 then
+		DDLCDDistribChannel.Items.Count > 0 then
 			DDLCDDistribChannel visible true
 		else
 			DDLCDDistribChannel visible false
@@ -353,6 +353,8 @@ Entity btnCreateCustomer is Button in frmSearch
 		label LABELS.btnCreateCustomer
 
 	with actions
+		frmMain visible true
+		frmSearch visible false
 
 	with rules
 		; how to specify all that happens server side here?
@@ -367,35 +369,35 @@ Entity btnCreateCustomer is Button in frmSearch
 Entity CustomerSearchResultGrid is Grid in frmSearch
 	with defaults
 		visible false
-		define column Customer with arguments {  DataField: Customer, Header : LABELS.Customer, Visible : true }
-		define column Vendor with arguments {  DataField: Vendor, Header : LABELS.Vendor, Visible : true }  
-		define column name1 with arguments {  DataField: name1, Header : LABELS.Name, Visible : true }  
-		define column name3 with arguments {  DataField: name3, Header : LABELS.Comment, Visible : true }  
-		define column Street with arguments {  DataField: Street, Header : LABELS.Street, Visible : true }  
-		define column City with arguments {  DataField: City, Header : LABELS.City, Visible : true }  
-		define column Country with arguments {  DataField: Country, Header : LABELS.Country, Visible : true }
-		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.Local_Tax_Code, Visible : true }  
-		define column VAT with arguments {  DataField: VAT, Header : LABELS.EU_Registration_Nr, Visible : true }  
-		define column NaturalPerson with arguments {  DataField: NaturalPerson, Header : LABELS.Natural_Person, Visible : true }
-		define column Risk with arguments {  DataField: Risk, Header : LABELS.Risk Class, Visible : true }
-		define column KNA1_SPERR with arguments {  DataField: KNA1_SPERR, Header : LABELS.Central_Posting_Block , Visible : true }
-		define column KNA1_AUFSD with arguments {  DataField: KNA1_AUFSD, Header : LABELS.Central_Order_Block   , Visible : true }
-		define column KNA1_LIFSD with arguments {  DataField: KNA1_LIFSD, Header : LABELS.Central_Delivery_Block, Visible : true }  
-		define column KNA1_FAKSD with arguments {  DataField: KNA1_FAKSD, Header : LABELS.Central_Billing_Block , Visible : true } 
+		define column Customer with arguments {  DataField: Customer, Header : LABELS.lblCustomer, Visible : true }
+		define column Vendor with arguments {  DataField: Vendor, Header : LABELS.lblVendor, Visible : true }  
+		define column name1 with arguments {  DataField: name1, Header : LABELS.lblName, Visible : true }  
+		define column name3 with arguments {  DataField: name3, Header : LABELS.lblComment, Visible : true }  
+		define column Street with arguments {  DataField: Street, Header : LABELS.lblStreet, Visible : true }  
+		define column City with arguments {  DataField: City, Header : LABELS.lblCity, Visible : true }  
+		define column Country with arguments {  DataField: Country, Header : LABELS.lblCountry, Visible : true }
+		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.lblLocal_Tax_Code, Visible : true }  
+		define column VAT with arguments {  DataField: VAT, Header : LABELS.lblEU_Registration_Nr, Visible : true }  
+		define column NaturalPerson with arguments {  DataField: NaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
+		define column Risk with arguments {  DataField: Risk, Header : LABELS.lblRiskClass, Visible : true }
+		define column KNA1_SPERR with arguments {  DataField: KNA1_SPERR, Header : LABELS.lblCentralPostingBlock , Visible : true }
+		define column KNA1_AUFSD with arguments {  DataField: KNA1_AUFSD, Header : LABELS.lblCentralOrderBlock   , Visible : true }
+		define column KNA1_LIFSD with arguments {  DataField: KNA1_LIFSD, Header : LABELS.lblCentralDelBlock, Visible : true }  
+		define column KNA1_FAKSD with arguments {  DataField: KNA1_FAKSD, Header : LABELS.lblCentralBillingBlock, Visible : true } 
 		define column Company with arguments {  DataField: Company, Header : LABELS.Company   , Visible : true }
-		define column KNB1_FRGRP with arguments {  DataField: KNB1_FRGRP, Header : LABELS.Business_Partner_Class  , Visible : true }
-		define column KNB1_ZTERM with arguments {  DataField: KNB1_ZTERM, Header : LABELS.Payment_Terms  , Visible : true }
-		define column KNB1_SPERR with arguments {  DataField: KNB1_SPERR, Header : LABELS.Posting_Block  	, Visible : true }
-		define column SO with arguments {  DataField: SO, Header : LABELS.Sales_Organiz., Visible : true }
-		define column DistChannel with arguments {  DataField: DistChannel, Header : LABELS.Channel , Visible : true }
-		define column KNVV_ZTERM with arguments {  DataField: KNVV_ZTERM, Header : LABELS.Payment_Terms(SO)  , Visible : true }
-		define column KNVV_AUFSD with arguments {  DataField: KNVV_AUFSD, Header : LABELS.Sales_Org._Order_Block  , Visible : true }
-		define column KNVV_LIFSD with arguments {  DataField: KNVV_LIFSD, Header : LABELS.Sales_Org._Delivery_Block , Visible : true } 
-		define column KNVV_FAKSD with arguments {  DataField: KNVV_FAKSD, Header : LABELS.Sales_Org._Billing_Block  , Visible : true }
-
-		; TODO: PENDING BUTTON DEFINITION
-
-	; TODO: MISSING ACTIOSN ON GRID BUTTONS
+		define column KNB1_FRGRP with arguments {  DataField: KNB1_FRGRP, Header : LABELS.lblBusinessPartnerClass  , Visible : true }
+		define column KNB1_ZTERM with arguments {  DataField: KNB1_ZTERM, Header : LABELS.lblPaymentTerms  , Visible : true }
+		define column KNB1_SPERR with arguments {  DataField: KNB1_SPERR, Header : LABELS.lblPosting_Block  	, Visible : true }
+		define column SO with arguments {  DataField: SO, Header : LABELS.lblSalesOrganiz, Visible : true }
+		define column DistChannel with arguments {  DataField: DistChannel, Header : LABELS.lblChannel , Visible : true }
+		define column KNVV_ZTERM with arguments {  DataField: KNVV_ZTERM, Header : LABELS.lblPaymentTermsSO  , Visible : true }
+		define column KNVV_AUFSD with arguments {  DataField: KNVV_AUFSD, Header : LABELS.Sales_Org_Order_Block  , Visible : true }
+		define column KNVV_LIFSD with arguments {  DataField: KNVV_LIFSD, Header : LABELS.lblSales_Org_Delivery_Block , Visible : true } 
+		define column KNVV_FAKSD with arguments {  DataField: KNVV_FAKSD, Header : LABELS.lblSales_Org_Billing_Block  , Visible : true }
+		; button columns
+		define column CreateButton with arguments { Header : LABELS.lblAction, Text: LABELS.lblCreate, Visible: false}
+		define column ModifyButton with arguments { Header : LABELS.lblAction, Text: LABELS.lblModify, Visible: false}
+		define column BlockButton with arguments { Header : LABELS.lblAction, Text: LABELS.lblBlock, Visible: false}
 
 	with rules
 		CustomerSearchResultGrid.Items.Count is 0 then
@@ -403,6 +405,18 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 		else
 			btnCreateCustomer visible false
 
+		; these rules have to be applied row by row of course
+		Company.Value is empty then
+			CreateButton visible true
+			set value LABELS.lblToBeCreated in Company
+
+		PO.Value is empty then
+			CreateButton visible true
+			set value LABELS.lblToBeCreated in PO
+			
+		Company.Value is not empty and PO.Value is not empty then
+			ModifyButton visible true
+			BlockButton visible true
 	with triggers
 		this loads
 
@@ -595,7 +609,7 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ; ----------------------------------------------------------------------------
 
 
-; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=0, TRIGGERS=2
 Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 	with defaults
@@ -625,7 +639,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 	with triggers
 		this changes
-
+		this loads
 
 ; ---------------------------------------------------------------------------- 
 
@@ -651,7 +665,7 @@ Entity GD_Adr_Country is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=1, TRIGGERS=2
 Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 
 	with defaults
@@ -683,10 +697,10 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
-
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=8, RULES=5, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=8, RULES=5, ACTIONS=1, TRIGGERS=2
 Entity CC_AM_BPClassification is DropDownList in frmMain
 
 	with defaults
@@ -726,10 +740,10 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 	
 	with triggers 
 		this changes
-
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=4, ACTIONS=3, TRIGGERS=1
+; TESTGEN : DEFAULTS=5, RULES=4, ACTIONS=3, TRIGGERS=2
 Entity GD_Adr_Name is TextBox in frmMain
 
 	with defaults
@@ -752,9 +766,10 @@ Entity GD_Adr_Name is TextBox in frmMain
 		set value GD_Adr_Name.Value in B_GD_VB_AccountHolder
 	with triggers 
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=3, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, RULES=3, ACTIONS=1, TRIGGERS=2
 Entity GD_Adr_Name2 is TextBox in frmMain
 
 	with defaults
@@ -772,10 +787,10 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
-
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=0, TRIGGERS=1
 Entity GD_Adr_Name3 is TextBox in frmMain
 
 	with defaults
@@ -791,10 +806,11 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 			this mandatory true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-		
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=4
+; TESTGEN : DEFAULTS=3, RULES=4, TRIGGERS=1
 Entity GD_Adr_Name4 is TextBox in frmMain
 
 	with defaults
@@ -809,9 +825,11 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 			this mandatory true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=2
+; TESTGEN : DEFAULTS=5, RULES=2, TRIGGERS=1
 Entity GD_Adr_Search is TextBox in frmMain
 
 	with defaults
@@ -825,9 +843,11 @@ Entity GD_Adr_Search is TextBox in frmMain
 			max length 5			
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=1
+; TESTGEN : DEFAULTS=4, RULES=1, TRIGGERS=1
 Entity GD_Com_Comment is TextBox in frmMain
 
 	with defaults
@@ -836,9 +856,11 @@ Entity GD_Com_Comment is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=3, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=5, RULES=3, ACTIONS=1, TRIGGERS=2
 Entity GD_Adr_Street is TextBox in frmMain
 
 	with defaults
@@ -860,9 +882,10 @@ Entity GD_Adr_Street is TextBox in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=2
 Entity GD_Adr_Street2 is TextBox in frmMain
 
 	with defaults
@@ -882,9 +905,10 @@ Entity GD_Adr_Street2 is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=2
 Entity GD_Adr_Street3 is TextBox in frmMain
 
 	with defaults
@@ -904,9 +928,10 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=2
 Entity GD_Adr_Street4 is TextBox in frmMain
 
 	with defaults
@@ -926,9 +951,10 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=2
 Entity GD_Adr_Street5 is TextBox in frmMain
 
 	with defaults
@@ -944,6 +970,7 @@ Entity GD_Adr_Street5 is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=8
@@ -961,7 +988,7 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=10, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=6, RULES=10, ACTIONS=1, TRIGGERS=2
 Entity GD_Adr_Region is DropDownList in frmMain
 
 	with defaults
@@ -1007,10 +1034,10 @@ Entity GD_Adr_Region is DropDownList in frmMain
 			
 	with triggers
 		this changes
-			
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=5, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity GD_Adr_City is TextBox in frmMain
 
 	with defaults
@@ -1030,9 +1057,10 @@ Entity GD_Adr_City is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=3, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=4, RULES=3, ACTIONS=0, TRIGGERS=1
 Entity GD_Adr_City2 is TextBox in frmMain
 
 	with defaults
@@ -1049,9 +1077,11 @@ Entity GD_Adr_City2 is TextBox in frmMain
 			GD_Adr_City2 mandatory true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=15, ACTIONS=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=5, RULES=15, ACTIONS=0, TRIGGERS=2
 Entity GD_Adr_PostalCode is TextBox in frmMain
 
 	with defaults
@@ -1126,11 +1156,11 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 		
 	with triggers
 		this changes
-
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 
-; TESTGEN : DEFAULTS=4, RULES=8, ACTIONS=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, RULES=8, ACTIONS=0, TRIGGERS=2
 Entity GD_Adr_POBox is TextBox in frmMain
 
 	with defaults
@@ -1171,7 +1201,7 @@ Entity GD_Adr_POBox is TextBox in frmMain
 
 	with triggers
 		this changes
-
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 
@@ -1213,10 +1243,11 @@ Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=5
+; TESTGEN : DEFAULTS=4, RULES=5, TRIGGERS=1
 Entity GD_Adr_POBoxLoc is TextBox in frmMain
 
 
@@ -1249,6 +1280,8 @@ Entity GD_Adr_POBoxLoc is TextBox in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=8, RULES=5, ACTIONS=0, TRIGGERS=1
@@ -1279,10 +1312,11 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=8, RULES=2, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=8, RULES=2, ACTIONS=0, TRIGGERS=1
 Entity GD_Com_Telebox is DropDownList in frmMain
 	with defaults
 		label LABELS.labTelebox
@@ -1297,9 +1331,11 @@ Entity GD_Com_Telebox is DropDownList in frmMain
 			this enable false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=1
 Entity GD_Com_DataLine is TextBox in frmMain
 	with defaults
 		label LABELS.labDataLine
@@ -1307,6 +1343,8 @@ Entity GD_Com_DataLine is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=7, RULES=0, ACTIONS=1, TRIGGERS=1
@@ -1474,7 +1512,7 @@ Entity GD_VF_btnInsert is Button in GD_VF_Grid
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=9, RULES=1, ACTIONS=0, TRIGGERS=3
+; TESTGEN : DEFAULTS=9, RULES=1, ACTIONS=0, TRIGGERS=4
 Entity GD_VF_Grid is Grid in frmMain
 	with defaults
 		define column GRID_GD_VF_Country		with arguments { DataField : GD_VF_Country, Header : LABELS.labCountry,  Visible : true}
@@ -1531,7 +1569,7 @@ Entity GD_VE_btnInsert is Button in GD_VE_Grid
 		label LABELS.labInsert
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=0, TRIGGERS=4
 Entity GD_VE_Grid is Grid in frmMain
 	with defaults
 		; TODO: how to define or set the controls inside? the row definition?
@@ -1558,7 +1596,7 @@ Entity GD_VE_Grid is Grid in frmMain
 ;	select the first one and send a warning message to GSS Master Data stating that "there are multiple partners" 
 ;	if there are more than one code 
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=0, TRIGGERS=1
 Entity GD_Ctr_VendorNumber is TextBox in frmMain
 	with defaults
 		label LABELS.labCustomerNumber
@@ -1568,7 +1606,8 @@ Entity GD_Ctr_VendorNumber is TextBox in frmMain
 			this visible false
 		else
 			this visible true
-
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 
@@ -1578,7 +1617,7 @@ Entity GD_Ctr_VendorNumber is TextBox in frmMain
 ;	3) for account group YCT5, use DDL the excel file attached called ""ISIC italian convertion"". 
 ;		the DDL shown to the ROLES.ENQ is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
 
-; TESTGEN : DEFAULTS=7, RULES=2, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=7, RULES=2, ACTIONS=1, TRIGGERS=2
 Entity GD_Ctr_Industry is DropDownList in frmMain
 	with defaults
 		mandatory true
@@ -1622,10 +1661,10 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 
 	with triggers
 		this changes
-
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=0, TRIGGERS=1
 Entity GD_Ctr_IndustryCode is DropDownList in frmMain
 	; always like this except for Italy
 	with defaults
@@ -1639,10 +1678,11 @@ Entity GD_Ctr_IndustryCode is DropDownList in frmMain
 	with rules
 		REQUEST.COUNTRY is IT then
 			this visible true
-
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=1, TRIGGERS=2
 Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 	with defaults
@@ -1660,6 +1700,7 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 			this enable false	
 	with triggers
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=6, RULES=0, ACTIONS=0, TRIGGERS=0
@@ -1936,7 +1977,7 @@ Entity GD_VB_XEZER is CheckBox in frmMain
 ;	6) this field is used to set values in creations from scratch, regional country France, in XKNKK.GRUPP, XKNKK.CTLPC and XKNKK.DBRTG with table MDMC_CreditLimitTemplate
 ;	7) see attachment.
 
-; TESTGEN : DEFAULTS=6, RULES=5, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=6, RULES=5, ACTIONS=1, TRIGGERS=2
 Entity GD_Ctr_GFORM is DropDownList in frmMain
 	with defaults
 		label LABELS.labLegalForm
@@ -1972,9 +2013,10 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 
 	with triggers
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=16, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, RULES=16, TRIGGERS=2
 Entity GD_Ctr_PIVA is TextBox in frmMain
 
 	with defaults
@@ -2070,9 +2112,10 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 
 	with triggers
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=2
+; TESTGEN : DEFAULTS=3, RULES=2, TRIGGERS=1
 Entity GD_Ctr_CF is TextBox in frmMain
 
 	with defaults
@@ -2084,7 +2127,9 @@ Entity GD_Ctr_CF is TextBox in frmMain
 			this visible true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-	
+			
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_IFANumber is TextBox in frmMain
@@ -2103,7 +2148,9 @@ Entity GD_Ctr_IFANumber is TextBox in frmMain
 			this visible true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		
+				
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: THE RULES ARE A MESS, SPECIALLY FOR CUSTOMER COUNTRY
@@ -2145,7 +2192,10 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 			this mandatory false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		
+			
+	with triggers
+		this loads	
+		this changes
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_TaxCode2 is TextBox in frmMain
@@ -2179,6 +2229,8 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
+	with triggers
+		this loads		
 ; ---------------------------------------------------------------------------- 
 
 Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
@@ -2214,6 +2266,8 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
+	with triggers
+		this loads		
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: CHECK WITH MI / RG what to do with this field...
@@ -2222,7 +2276,7 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 ; ---------------------------------------------------------------------------- 
 
 
-; TESTGEN : DEFAULTS=2, RULES=2
+; TESTGEN : DEFAULTS=2, RULES=2, TRIGGERS=1
 Entity GD_Com_TransportZone is TextBox in frmMain
 	with defaults
 		visible false
@@ -2233,10 +2287,11 @@ Entity GD_Com_TransportZone is TextBox in frmMain
 		REQUEST.CUSTOMER_COUNTRY is ES and GD_Com_TransportZone.Value is empty then
 			set value substring(GD_Adr_PostalCode,2) in GD_Com_TransportZone.Value 
 		
-
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESGTEN : DEFAULTS=3, RULES=2
+; TESGTEN : DEFAULTS=3, RULES=2, TRIGGERS=1
 ; TODO: CHECK FOR VISIBLE IN DIFFERENT FLOWTYPES
 Entity GD_MainlyMilitary is RadioButton in frmMain
 
@@ -2248,10 +2303,11 @@ Entity GD_MainlyMilitary is RadioButton in frmMain
 			mandatory true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		
+	with triggers
+		this loads	
 ; ---------------------------------------------------------------------------- 
 
-; TESGTEN : DEFAULTS=3, RULES=2
+; TESGTEN : DEFAULTS=3, RULES=2, TRIGGERS=1
 ; TODO: CHECK FOR VISIBLE IN DIFFERENT FLOWTYPES
 Entity GD_MainlyCivilian is RadioButton in frmMain
 
@@ -2263,10 +2319,11 @@ Entity GD_MainlyCivilian is RadioButton in frmMain
 			this enable false	
 		REQUEST.REQUEST_TYPE is CC then
 			mandatory true
-
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESGTEN : DEFAULTS=3, RULES=1
+; TESGTEN : DEFAULTS=3, RULES=1, TRIGGERS=1
 ; TODO: CHECK FOR VISIBLE IN DIFFERENT FLOWTYPES
 Entity GD_Nuclear is CheckBox in frmMain
 
@@ -2274,7 +2331,9 @@ Entity GD_Nuclear is CheckBox in frmMain
 		label LABELS.labGD_Nuclear
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
+			this enable false		
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TESGTEN : DEFAULTS=3
@@ -2293,7 +2352,7 @@ Entity labGD_Embassy is Label in frmMain
 		label LABELS.labGD_Embassy
 ; ---------------------------------------------------------------------------- 
 
-;TESGTEN : DEFAULTS=6, RULES=4, TRIGGERS=1
+;TESGTEN : DEFAULTS=6, RULES=4, TRIGGERS=2
 Entity CC_CO_ReconAccount is DropDownList in frmMain
 
 	with defaults
@@ -2323,7 +2382,7 @@ Entity CC_CO_ReconAccount is DropDownList in frmMain
 
 	with triggers
 		this changes
-		
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 "2.6.14(MI) GSS, please, check and provide the business rule. For RC Greece... I don't undertand the meaning of ""if customer is na ICC""
@@ -2336,7 +2395,7 @@ Entity CC_CO_ReconAccount is DropDownList in frmMain
 1,9) if company code greece (5150) and Italy (5180, 596G) value default blank
 "
 
-; TESTGEN : DEFAULTS=7, RULES=9
+; TESTGEN : DEFAULTS=7, RULES=9, TRIGGERS=1
 Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 	with defaults
@@ -2388,10 +2447,13 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: "2.6.14(MI) GSS, please, check and provide the business rule. Additionally, CR ""IA_SEPA_payment methods"" ispending on clarification in your side yet
-; TESTGEN : DEFAULTS=6, RULES=10, TRIGGERS=1
+; TESTGEN : DEFAULTS=6, RULES=10, TRIGGERS=2
 Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
 	with defaults
@@ -2434,9 +2496,10 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 
 	with triggers
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=2
+; TESTGEN : DEFAULTS=3, RULES=2, TRIGGERS=1
 Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
 
 	with defaults
@@ -2447,9 +2510,12 @@ Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
 			set value true in CC_PT_ClearingWithCustomer
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=2
+; TESTGEN : DEFAULTS=3, RULES=2, TRIGGERS=1
 Entity CC_PT_IndividualPayment is CheckBox in frmMain
 
 	with defaults
@@ -2461,10 +2527,12 @@ Entity CC_PT_IndividualPayment is CheckBox in frmMain
 		; TODO: WWHAT ABOUT THIS?
 		REQUEST.COMPANY_CODE in {5101, 5109} then
 			set value true in CC_PT_IndividualPayment
-
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=7, RULES=12
+; TESTGEN : DEFAULTS=7, RULES=12, TRIGGERS=1
 Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 	with defaults
@@ -2522,13 +2590,15 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-
+				
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: ;5)specific rules for company 5140 see attachemnt RulesDunningArea5140 and sheet ""Dunning Procedure"" in sheet “Other documents”
 ; TODO: THIS HAS TO BE MOVED TO THE WEB SERVICE
 		
-; TESTGEN : DEFAULTS=6, RULES=11
+; TESTGEN : DEFAULTS=6, RULES=11, TRIGGERS=1
 Entity CC_DD_DunningProcedure is DropDownList in frmMain
 	with defaults
 		label LABELS.labDDDunningprocedure
@@ -2572,10 +2642,12 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
-
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=1
+; TESTGEN : DEFAULTS=3, RULES=1, TRIGGERS=1
 ; SEEM USELESS, never made visible
 Entity CC_DD_DunningArea is DropDownList in frmMain
 
@@ -2585,6 +2657,9 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+		
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: INJECT ABOUT KNB1_XAUSZ in WEB SERVICE?  -- CHECK WITH SEB ABOUT HIDDEN FIELDS, CAN WE INCLUDE HERE?
@@ -2592,7 +2667,7 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=5, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=6, RULES=5, ACTIONS=1, TRIGGERS=2
 Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 
 	with defaults
@@ -2627,11 +2702,11 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 
 	with triggers 
 		on change
-
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; --- BEGIN SALES ORDER PART ---
-; TESTGEN : DEFAULTS=6, RULES=4
+; TESTGEN : DEFAULTS=6, RULES=4, TRIGGERS=1
 Entity KNVV_BZIRK is DropDownList in frmMain
 
 	with defaults
@@ -2653,10 +2728,12 @@ Entity KNVV_BZIRK is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=8, RULES=3
+; TESTGEN : DEFAULTS=8, RULES=3, TRIGGERS=1
 Entity SO_CustomerGroup is DropDownList in frmMain
 
 	with defaults
@@ -2677,11 +2754,14 @@ Entity SO_CustomerGroup is DropDownList in frmMain
 			set value 12 in SO_CustomerGroup
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false		
+			this enable false
+	
+	with triggers
+		this loads		
 ; ---------------------------------------------------------------------------- 
 
 
-; TESTGEN : DEFAULTS=7, RULES=2
+; TESTGEN : DEFAULTS=7, RULES=2, TRIGGERS=1
 Entity SO_SalesOffice is DropDownList in frmMain
 
 	with defaults
@@ -2702,10 +2782,12 @@ Entity SO_SalesOffice is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
-
+		
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=2
+; TESTGEN : DEFAULTS=4, RULES=2, TRIGGERS=1
 Entity KNVV_EIKTO is TextBox in frmMain
 
 	with defaults
@@ -2718,11 +2800,13 @@ Entity KNVV_EIKTO is TextBox in frmMain
 			KNVV_EIKTO visible true
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		
+			
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 
-; TESTGEN : DEFAULTS=5, RULES=2
+; TESTGEN : DEFAULTS=5, RULES=2, TRIGGERS=1
 Entity KNVV_VKGRP is DropDownList in frmMain
 
 
@@ -2741,10 +2825,12 @@ Entity KNVV_VKGRP is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		
+			
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=7, RULES=2
+; TESTGEN : DEFAULTS=7, RULES=2, TRIGGERS=1
 Entity SO_SalesOrderCurrency is DropDownList in frmMain
 	with defaults
 		label LABELS.labSaleOrderCurrency
@@ -2758,9 +2844,12 @@ Entity SO_SalesOrderCurrency is DropDownList in frmMain
 			set value EUR in SO_SalesOrderCurrency
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=7, RULES=1
+; TESTGEN : DEFAULTS=7, RULES=1, TRIGGERS=1
 Entity KNVV_KONDA is DropDownList in frmMain
 
 	with defaults
@@ -2779,10 +2868,12 @@ Entity KNVV_KONDA is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=7, RULES=2
+; TESTGEN : DEFAULTS=7, RULES=2, TRIGGERS=1
 Entity KNVV_PLTYP is DropDownList in frmMain
 
 	with defaults
@@ -2802,11 +2893,13 @@ Entity KNVV_PLTYP is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
-
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 
-; TESTGEN : DEFAULTS=8, RULES=4
+; TESTGEN : DEFAULTS=8, RULES=4, TRIGGERS=1
 Entity SO_CustPricingProc is DropDownList in frmMain
 
 	with defaults
@@ -2829,6 +2922,8 @@ Entity SO_CustPricingProc is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
+	with triggers
+		this loads	
 
 ; ---------------------------------------------------------------------------- 
 
@@ -2841,7 +2936,7 @@ If regional country Luxemburg -> selected value 1 not enabled
 If regional country France and Spain -> selected value 1 enabled
 If regional country Greece -> selected value 1 enabled
 
-; TESTGEN : DEFAULTS=8, RULES=5
+; TESTGEN : DEFAULTS=8, RULES=5, TRIGGERS=1
 Entity SO_CustomerStatsGroup is DropDownList in frmMain
 
 	with defaults
@@ -2870,9 +2965,12 @@ Entity SO_CustomerStatsGroup is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=10
+; TESTGEN : DEFAULTS=6, RULES=10, TRIGGERS=1
 Entity SO_CustomerShippingConditions is DropDownList in frmMain
 	with defaults
 		label LABELS.labShippingCond
@@ -2913,13 +3011,17 @@ Entity SO_CustomerShippingConditions is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; 1) If requestype creation from scratch/company/sales org and company 5140 :
 ;  if distribution channel 11 -> default value 6010, if its distribution channel 12 -> default value 6020
 ; 2) data are loaded by distribution channel from master table
 
-; TESTGEN : DEFAULTS=6, RULES=4
+; TESTGEN : DEFAULTS=6, RULES=4, TRIGGERS=1
 Entity KNVV_VWERK is DropDownList in frmMain
 
 	with defaults
@@ -2946,10 +3048,12 @@ Entity KNVV_VWERK is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=4, TRIGGERS=1
+; TESTGEN : DEFAULTS=5, RULES=4, TRIGGERS=2
 Entity KNVV_AUTLF is CheckBox in frmMain
 
 	with defaults
@@ -2973,9 +3077,10 @@ Entity KNVV_AUTLF is CheckBox in frmMain
 
 	with triggers
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=5, TRIGGERS=1
+; TESTGEN : DEFAULTS=5, RULES=5, TRIGGERS=2
 Entity KNVV_ANTLF is DropDownList in frmMain
 
 	with defaults
@@ -3007,9 +3112,10 @@ Entity KNVV_ANTLF is DropDownList in frmMain
 
 	with triggers
 		this changes	
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=2
+; TESTGEN : DEFAULTS=6, RULES=2, TRIGGERS=1
 Entity KNVV_LPRIO is DropDownList in frmMain
 
 	with defaults
@@ -3024,10 +3130,12 @@ Entity KNVV_LPRIO is DropDownList in frmMain
 			this enable false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		
+	
+	with triggers
+		this loads		
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=7, RULES=4, TRIGGERS=1
+; TESTGEN : DEFAULTS=7, RULES=4, TRIGGERS=2
 Entity KNVV_KZTLF is DropDownList in frmMain
 
 	with defaults
@@ -3053,9 +3161,10 @@ Entity KNVV_KZTLF is DropDownList in frmMain
 
 	with triggers
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=2
+; TESTGEN : DEFAULTS=4, RULES=2, TRIGGERS=1
 Entity KNVV_PRFRE is CheckBox in frmMain
 
 	with defaults
@@ -3069,10 +3178,14 @@ Entity KNVV_PRFRE is CheckBox in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 
-; TESTGEN : DEFAULTS=6, RULES=8
+; TESTGEN : DEFAULTS=6, RULES=8, TRIGGERS=1
 Entity SO_Incoterms is DropDownList in frmMain
 
 	with defaults
@@ -3109,9 +3222,12 @@ Entity SO_Incoterms is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=7
+; TESTGEN : DEFAULTS=4, RULES=7, TRIGGERS=1
 Entity SO_IncotermsPart2 is TextBox in frmMain
 	with defaults
 		label LABELS.labIncotermsPart2
@@ -3140,12 +3256,11 @@ Entity SO_IncotermsPart2 is TextBox in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 			
-; TODO: REVISAR CONSTANTS.CS
-			
-; ---------------------------------------------------------------------------- 
-
 ; By default mandatory
 ; 1) Default values for all type of requests (all types of creation, changes), independently if value from SAP is empty but enquirer can change:
 ; 1.1) If company code 5140 and customer country ISO  (FR, GF, GP, RE, MQ, YT, NC, PF, PM, WF, MC) -> 6115
@@ -3161,7 +3276,7 @@ Entity SO_IncotermsPart2 is TextBox in frmMain
 ; 1,10) if company code GR -> default value 7090
 
 
-; TESTGEN : DEFAULTS=7, RULES=10
+; TESTGEN : DEFAULTS=7, RULES=10, TRIGGERS=1
 Entity SO_TermsOfPaymentKey is DropDownList in frmMain
 
 	with defaults
@@ -3196,6 +3311,9 @@ Entity SO_TermsOfPaymentKey is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=7, RULES=5, ACTIONS=1, TRIGGERS=1
@@ -3226,9 +3344,12 @@ Entity KNVV_KTGRD is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=7, RULES=3
+; TESTGEN : DEFAULTS=7, RULES=3, TRIGGERS=1
 Entity SO_TaxClassification is DropDownList in frmMain
 
 	with defaults
@@ -3264,7 +3385,9 @@ Entity SO_TaxClassification is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-
+				
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO:
@@ -3281,7 +3404,7 @@ Entity SO_TaxClassification is DropDownList in frmMain
 
 
 ; TODO: FINISH THIS
-; TESTGEN : DEFAULTS=6
+; TESTGEN : DEFAULTS=6, TRIGGERS=1
 Entity KNKK_SBGRP is DropDownList in frmMain
 
 	with defaults
@@ -3319,10 +3442,12 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
-		
+			
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=1
 Entity KNVV_KVGR1 is DropDownList in frmMain
 
 	with defaults
@@ -3338,10 +3463,12 @@ Entity KNVV_KVGR1 is DropDownList in frmMain
 			this mandatory false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		
+			
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=1
 Entity KNVV_KVGR2 is DropDownList in frmMain
 
 	with defaults
@@ -3357,10 +3484,12 @@ Entity KNVV_KVGR2 is DropDownList in frmMain
 			this mandatory false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-	
+		
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=1
 Entity KNVV_KVGR3 is DropDownList in frmMain
 
 	with defaults
@@ -3375,10 +3504,12 @@ Entity KNVV_KVGR3 is DropDownList in frmMain
 			this mandatory false
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-	
+		
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=6, RULES=2, ACTIONS=0, TRIGGERS=1
 Entity KNVV_KVGR4 is DropDownList in frmMain
 
 	with defaults
@@ -3395,9 +3526,11 @@ Entity KNVV_KVGR4 is DropDownList in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
+	with triggers
+		this loads	
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=4, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=6, RULES=4, ACTIONS=0, TRIGGERS=1
 ; TODO: CHECK PARAMETER NAME IN DATASOURCES
 Entity KNVV_KVGR5 is DropDownList in frmMain
 
@@ -3422,13 +3555,10 @@ Entity KNVV_KVGR5 is DropDownList in frmMain
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		
+			
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
-
-; TODO:  MISSING ALL THE PARTNER FUNCTION STUFF
-
-; ---------------------------------------------------------------------------- 
-
 
 ;   TODO: REVIEW THIS WITH THE EXCEL FILES
 ;	1) Read only field
@@ -3448,7 +3578,9 @@ Entity KNKK_KNKLI is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ;	1) TODO:
@@ -3471,6 +3603,8 @@ Entity KNKK_KLIMK is TextBox in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
+	with triggers
+		this loads	
 ; ---------------------------------------------------------------------------- 
 
 ;	"17-07-2014(RG): 1)Read only field
@@ -3502,6 +3636,7 @@ Entity KNKK_CTLPC is TextBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: in case of french company codes See default values in excel attached CamposCreditLimit.xls"
@@ -3514,6 +3649,9 @@ Entity KNKK_DTREV is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+			
+	with triggers
+		this loads	
 
 ; ---------------------------------------------------------------------------- 
 
@@ -3527,6 +3665,8 @@ Entity KNKK_NXTRV is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: in case of french company codes See default values in excel attached CamposCreditLimit.xls"
@@ -3539,10 +3679,13 @@ Entity KNKK_KRAUS is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: in case of french company codes See default values in excel attached CamposCreditLimit.xls"
-; TESTGEN : DEFAULTS=4, RULES=1
+; TESTGEN : DEFAULTS=4, RULES=1, TRIGGERS=1
 Entity KNKK_DBRTG is TextBox in frmMain
 	with defaults
 		label LABELS.labRating
@@ -3551,10 +3694,13 @@ Entity KNKK_DBRTG is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: in case of french company codes See default values in excel attached CamposCreditLimit.xls"
-; TESTGEN : DEFAULTS=5, RULES=1
+; TESTGEN : DEFAULTS=5, RULES=1, TRIGGERS=1
 Entity KNKK_REVDB is TextBox in frmMain
 
 	with defaults
@@ -3564,6 +3710,10 @@ Entity KNKK_REVDB is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+
+	with triggers
+		this loads
+
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=3
@@ -3577,7 +3727,7 @@ Entity KNKK_GRUPP is TextBox in frmMain
 
 ; TODO: in case of french company codes See default values in excel attached CamposCreditLimit.xls"
 
-; TESTGEN : DEFAULTS=5, RULES=1
+; TESTGEN : DEFAULTS=5, RULES=1, TRIGGERS=1
 Entity KNKK_DBEKR is NumericBox in frmMain
 
 	with defaults
@@ -3587,9 +3737,12 @@ Entity KNKK_DBEKR is NumericBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	with triggers
+		this loads
+		
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, ACTIONS=10, RULES=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, ACTIONS=10, RULES=1, TRIGGERS=2
 Entity btnBlockAll is Button in frmMain
 
 	with defaults
@@ -3614,9 +3767,10 @@ Entity btnBlockAll is Button in frmMain
 
 	with triggers
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, ACTIONS=10, RULES=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, ACTIONS=10, RULES=1, TRIGGERS=2
 Entity btnUnblockAll is Button in frmMain
 
 	with defaults
@@ -3641,9 +3795,10 @@ Entity btnUnblockAll is Button in frmMain
 
 	with triggers
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 	with defaults
@@ -3661,9 +3816,10 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		this changes
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_CentralPostingBlock is CheckBox in frmMain
 
 	with defaults
@@ -3676,15 +3832,14 @@ Entity BLK_CentralPostingBlock is CheckBox in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		this changes
-
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_PostingBlockForCC is CheckBox in frmMain
 
 	with defaults
 		label LABELS.labPostBlockingForCompanyCode
-		
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3693,9 +3848,11 @@ Entity BLK_PostingBlockForCC is CheckBox in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
+
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
 
 	with defaults
@@ -3711,9 +3868,10 @@ Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
@@ -3729,9 +3887,10 @@ Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
 
 	with defaults
@@ -3747,9 +3906,10 @@ Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
@@ -3765,9 +3925,10 @@ Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1
+; TESTGEN ; DEFAULTS=6, RULES=1, TRIGGERS=1
 Entity BLK_CentralBillingBlock is DropDownList in frmMain
 
 	with defaults
@@ -3778,9 +3939,12 @@ Entity BLK_CentralBillingBlock is DropDownList in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
+
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_BillingBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
@@ -3796,9 +3960,10 @@ Entity BLK_BillingBlockAtSalesArea is DropDownList in frmMain
 			this enable false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1
+; TESTGEN ; DEFAULTS=3, RULES=1, TRIGGERS=1
 Entity BLK_CentralSalesSupportBlock is CheckBox in frmMain
 
 	with defaults
@@ -3806,10 +3971,12 @@ Entity BLK_CentralSalesSupportBlock is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1
+; TESTGEN ; DEFAULTS=3, RULES=1, TRIGGERS=1
 Entity BLK_CentralSalesSupportBlockAtSalesArea is CheckBox in frmMain
 
 	with defaults
@@ -3817,9 +3984,12 @@ Entity BLK_CentralSalesSupportBlockAtSalesArea is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
+
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_CentralDeletionFlagMasterRecord is CheckBox in frmMain
 
 	with defaults
@@ -3832,9 +4002,10 @@ Entity BLK_CentralDeletionFlagMasterRecord is CheckBox in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_DeletionFlagMasterRecordCC is CheckBox in frmMain
 
 	with defaults
@@ -3847,9 +4018,10 @@ Entity BLK_DeletionFlagMasterRecordCC is CheckBox in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1
+; TESTGEN ; DEFAULTS=3, RULES=1, TRIGGERS=1
 Entity BLK_DeletionFlagMasterRecordSA is CheckBox in frmMain
 
 	with defaults
@@ -3857,9 +4029,12 @@ Entity BLK_DeletionFlagMasterRecordSA is CheckBox in frmMain
 	with rules
 		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
+	with triggers
+		this loads
+
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_CentralDeletionBlockMasterRecord is CheckBox in frmMain
 
 	with defaults
@@ -3872,9 +4047,10 @@ Entity BLK_CentralDeletionBlockMasterRecord is CheckBox in frmMain
 			this enable false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
 Entity BLK_DeletionBlockMasterRecordCC is CheckBox in frmMain
 
 	with defaults
@@ -3887,9 +4063,10 @@ Entity BLK_DeletionBlockMasterRecordCC is CheckBox in frmMain
 		_COMMENT_ mandatory  true  
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=1
+; TESTGEN ; DEFAULTS=3, RULES=2, ACTIONS=0, TRIGGERS=1
 Entity TS_IsUrgentRequest is CheckBox in frmMain
 
 	with defaults
@@ -3900,6 +4077,8 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			this visible false
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; Entity CostCenter is TextBox in frmMain
@@ -3932,7 +4111,9 @@ Entity DDLDCReqAction is DropDownList in frmMain
 		
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} then
 			this enable false
-
+	
+	with triggers
+		this loads
 		
 ; ---------------------------------------------------------------------------- 
 
@@ -4050,7 +4231,7 @@ Entity btnSubmit is Button in frmMain
 	with triggers
 
 		this on click
-	
+		this loads
 
 ; ---------------------------------------------------------------------------- 
 
@@ -4064,8 +4245,7 @@ Entity btnClose is Button in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=5, ACTIONS=1, TRIGGERS=1
-
+; TESTGEN : DEFAULTS=4, RULES=5, ACTIONS=1, TRIGGERS=2
 Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 
 	with defaults
@@ -4099,9 +4279,10 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 		; _COMMENT_ mandatory  false
 	with triggers 
 		on change
+		this loads
 ; ---------------------------------------------------------------------------- 
 
-
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=0, TRIGGERS=1
 Entity ATTACHMENT is AttachmentManager in frmMain
 
 	with defaults
@@ -4109,20 +4290,23 @@ Entity ATTACHMENT is AttachmentManager in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} then
 			this enable false	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: CHECK
+; TESTGEN : RULES=0, DEFAULTS=3, ACTIONS=0, TRIGGERS=1
 Entity SAP_Message is TextBox in frmMain
 
 	with defaults
 		label LABELS.labSAP_Message
 		enable false
-; 	with rules
-; 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-; 			this enable false	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=0, TRIGGERS=1
 Entity GD_SAPNumber is TextBox in frmMain
 
 	with defaults
@@ -4131,8 +4315,11 @@ Entity GD_SAPNumber is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=0, TRIGGERS=1
 Entity DDLDCComment is TextBox in frmMain
 
 	with defaults
@@ -4144,8 +4331,12 @@ Entity DDLDCComment is TextBox in frmMain
 		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			this visible false
+	with triggers
+		this loads
+
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : RULES=2, DEFAULTS=3, ACTIONS=0, TRIGGERS=1
 Entity btnSCClose is Button in frmMain
 
 	with defaults
@@ -4160,8 +4351,11 @@ Entity btnSCClose is Button in frmMain
 		else
 			this visible true
 
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=0, TRIGGERS=1
 Entity SR_Comments is TextBox in frmMain
 
 	with defaults
@@ -4169,12 +4363,12 @@ Entity SR_Comments is TextBox in frmMain
 	with rules
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		REQUEST.STATE not in {STATE.LOCKED, STATE.CLOSED} and REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.CLERK} then
-			this enable true	
 
-
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=0, TRIGGERS=1
 Entity btnBack2 is Button in frmMain
 
 	with defaults
@@ -4183,9 +4377,11 @@ Entity btnBack2 is Button in frmMain
 	with rules
 		REQUEST.REQUEST_STATE is CLOSED then
 			this visible false
-
+	with triggers
+		this loads
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : RULES=1, DEFAULTS=3, ACTIONS=1, TRIGGERS=2
 Entity btnSave is Button in frmMain
 
 	with defaults
@@ -4202,6 +4398,7 @@ Entity btnSave is Button in frmMain
 
 	with triggers
 		this on click
+		this loads
 ; ---------------------------------------------------------------------------- 
 
 Entity btnCloseFinal is Button in frmMain
@@ -4392,50 +4589,13 @@ Entity CP_Grid is Grid in frmMain
 
 ; ----------------------------------------------------------------------------	
 
-; --- LIST OF PURCHASE ORGANIZATION SELECTION IN THE PURCHASE ORG TAB --------
-
-Entity SO_lbxSODSalesOrganization1 is ListBox in frmMain
-	with defaults
-		; this means load all purchase organizations for the company code except the current purchase organization
-		; which is already loaded
-		load data from DATASOURCE.MDMC_GetRestOfSalesOrganizations with arguments {CompanyCode : REQUEST.COMPANY_CODE, ExcludedSalesOrganization : REQUEST.SALES_ORGANIZATION}
-
-; ----------------------------------------------------------------------------	
-
-Entity SO_lbxSODSalesOrganization2 is ListBox in frmMain
+; TESTGEN : DEFAULTS=2, RULES=1, TRIGGERS=1, ACTIONS=0
+Entity SO_lbxSODSalesOrganization1 is Object in frmMain
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE is ROLES.SUS or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-; ----------------------------------------------------------------------------	
+	with triggers
+		this loads
 
-Entity SO_btnSODAll is Button in frmMain
-	with defaults
-		label LABELS.lab_____		; this label is actually this -->    >>
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
-; ----------------------------------------------------------------------------	
 
-Entity SO_btnSODSelect is Button in frmMain
-	with defaults
-		label LABELS.lab_____		; this label is actually this -->    >
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
-; ----------------------------------------------------------------------------	
-
-Entity SO_btnSODRemove is Button in frmMain
-	with defaults
-		label LABELS.lab_____		; this label is actually this -->    <
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
-; ----------------------------------------------------------------------------	
-
-Entity btnSOClear is Button in frmMain
-	with defaults
-		label LABELS.lab_____		; this label is actually this -->    <<
-	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
-			this enable false	
 ; ----------------------------------------------------------------------------	

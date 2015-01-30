@@ -184,6 +184,8 @@
     <Content Include="sample files\single entity tests\File095.txt" />
     <Content Include="sample files\single entity tests\File096.txt" />
     <Content Include="sample files\single entity tests\File097.txt" />
+    <Content Include="sample files\single entity tests\File098.txt" />
+    <Content Include="sample files\single entity tests\File099.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
     <Content Include="__sketchpad.txt" />
