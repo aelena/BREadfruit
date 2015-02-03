@@ -131,15 +131,14 @@ Entity DDLDCountry is DropDownList in frmSearch
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Countries
-		label LABELS.labCountry
 		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
+		load data from DATASOURCE.MDMC_Countries with arguments {FlagActive : true}
+		label LABELS.labCountry
 
 	with actions
 		set value '' in MESSAGE_POPUP
 		hide CustomerSearchResultGrid
 		hide btnCreateCustomer
-		load data from DATASOURCE.MDMC_Countries 
 		clear CustomerSearchResultGrid
 
 	with rules
@@ -340,6 +339,14 @@ Entity btnSearch is Button in frmSearch
 			MESSAGE_POPUP is empty then
 				load data from WEBSERVICE.CUSTOMER_SEARCH_SERVICE with arguments {CustomerName:TBCustomerName.Value, CustomerCity:TBCustomerCity, CustomerNumber:TBCustomerNumber.Value, CustomerCountry:DDLVDCountry.Value,TaxCode1:TBCustomerVAT.Value,TaxCode4:TBCustomerIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in CustomerSearchResultGrid
 
+		customerSearchResultGrid.Items.Count = 0 then
+			set value MESSAGES.MSGNoValuesFound in MESSAGE_POPUP
+			btnCreateVendor visible true
+			customerSearchResultGrid_ visible true
+
+		else
+			btnCreateVendor visible false
+			customerSearchResultGrid_ visible false
 
 	with triggers
 		this on click	
@@ -364,61 +371,65 @@ Entity btnCreateCustomer is Button in frmSearch
 		this click
 ; ---------------------------------------------------------------------------- 
 
+; TESTGEN : DEFAULTS=3
+Entity customerSearchResultGrid_ is Div in frmSearch
+	with defaults
+		visible false
+		label LABELS.lblResult
 
-; TESTGEN : DEFAULTS=27, RULES=1, TRIGGERS=1
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=27, RULES=0, TRIGGERS=0
 Entity CustomerSearchResultGrid is Grid in frmSearch
 	with defaults
 		visible false
 		define column Customer with arguments {  DataField: Customer, Header : LABELS.lblCustomer, Visible : true }
 		define column Vendor with arguments {  DataField: Vendor, Header : LABELS.lblVendor, Visible : true }  
-		define column name1 with arguments {  DataField: name1, Header : LABELS.lblName, Visible : true }  
-		define column name3 with arguments {  DataField: name3, Header : LABELS.lblComment, Visible : true }  
+		define column name1 with arguments {  DataField: Name1, Header : LABELS.lblName, Visible : true }  
+		define column name3 with arguments {  DataField: Name3, Header : LABELS.lblComment, Visible : true }  
 		define column Street with arguments {  DataField: Street, Header : LABELS.lblStreet, Visible : true }  
 		define column City with arguments {  DataField: City, Header : LABELS.lblCity, Visible : true }  
 		define column Country with arguments {  DataField: Country, Header : LABELS.lblCountry, Visible : true }
 		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.lblLocal_Tax_Code, Visible : true }  
 		define column VAT with arguments {  DataField: VAT, Header : LABELS.lblEU_Registration_Nr, Visible : true }  
-		define column NaturalPerson with arguments {  DataField: NaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
+		define column NaturalPerson with arguments {  DataField: IsNaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
 		define column Risk with arguments {  DataField: Risk, Header : LABELS.lblRiskClass, Visible : true }
-		define column KNA1_SPERR with arguments {  DataField: KNA1_SPERR, Header : LABELS.lblCentralPostingBlock , Visible : true }
-		define column KNA1_AUFSD with arguments {  DataField: KNA1_AUFSD, Header : LABELS.lblCentralOrderBlock   , Visible : true }
-		define column KNA1_LIFSD with arguments {  DataField: KNA1_LIFSD, Header : LABELS.lblCentralDelBlock, Visible : true }  
-		define column KNA1_FAKSD with arguments {  DataField: KNA1_FAKSD, Header : LABELS.lblCentralBillingBlock, Visible : true } 
+		define column KNA1_SPERR with arguments {  DataField: HasCentralPostingBlock, Header : LABELS.lblCentralPostingBlock , Visible : true }
+		define column KNA1_AUFSD with arguments {  DataField: HasCentralOrderBlock, Header : LABELS.lblCentralOrderBlock   , Visible : true }
+		define column KNA1_LIFSD with arguments {  DataField: HasCentralDeliveryBlock, Header : LABELS.lblCentralDelBlock, Visible : true }  
+		define column KNA1_FAKSD with arguments {  DataField: HasCentralBillingBlock, Header : LABELS.lblCentralBillingBlock, Visible : true } 
 		define column Company with arguments {  DataField: Company, Header : LABELS.Company   , Visible : true }
-		define column KNB1_FRGRP with arguments {  DataField: KNB1_FRGRP, Header : LABELS.lblBusinessPartnerClass  , Visible : true }
-		define column KNB1_ZTERM with arguments {  DataField: KNB1_ZTERM, Header : LABELS.lblPaymentTerms  , Visible : true }
-		define column KNB1_SPERR with arguments {  DataField: KNB1_SPERR, Header : LABELS.lblPosting_Block  	, Visible : true }
-		define column SO with arguments {  DataField: SO, Header : LABELS.lblSalesOrganiz, Visible : true }
+		define column KNB1_FRGRP with arguments {  DataField: ReleaseGroup, Header : LABELS.lblBusinessPartnerClass  , Visible : true }
+		define column KNB1_ZTERM with arguments {  DataField: TermsOfPaymentKeyAtCompanyCodeLevel, Header : LABELS.lblPaymentTerms  , Visible : true }
+		define column KNB1_SPERR with arguments {  DataField: HasPostingBlockForCompanyCode, Header : LABELS.lblPosting_Block  	, Visible : true }
+		define column SO with arguments {  DataField: SalesOrganization, Header : LABELS.lblSalesOrganiz, Visible : true }
 		define column DistChannel with arguments {  DataField: DistChannel, Header : LABELS.lblChannel , Visible : true }
-		define column KNVV_ZTERM with arguments {  DataField: KNVV_ZTERM, Header : LABELS.lblPaymentTermsSO  , Visible : true }
-		define column KNVV_AUFSD with arguments {  DataField: KNVV_AUFSD, Header : LABELS.Sales_Org_Order_Block  , Visible : true }
-		define column KNVV_LIFSD with arguments {  DataField: KNVV_LIFSD, Header : LABELS.lblSales_Org_Delivery_Block , Visible : true } 
-		define column KNVV_FAKSD with arguments {  DataField: KNVV_FAKSD, Header : LABELS.lblSales_Org_Billing_Block  , Visible : true }
+		define column KNVV_ZTERM with arguments {  DataField: TermsOfPaymentKeyAtSOLevel, Header : LABELS.lblPaymentTermsSO  , Visible : true }
+		define column KNVV_AUFSD with arguments {  DataField: HasOrderBlockForSalesArea, Header : LABELS.Sales_Org_Order_Block  , Visible : true }
+		define column KNVV_LIFSD with arguments {  DataField: SalesOrganizationDeliveryBlock, Header : LABELS.lblSales_Org_Delivery_Block , Visible : true } 
+		define column KNVV_FAKSD with arguments {  DataField: HasBillingBlockForSalesArea, Header : LABELS.lblSales_Org_Billing_Block  , Visible : true }
 		; button columns
-		define column CreateButton with arguments { Header : LABELS.lblAction, Text: LABELS.lblCreate, Visible: false}
-		define column ModifyButton with arguments { Header : LABELS.lblAction, Text: LABELS.lblModify, Visible: false}
-		define column BlockButton with arguments { Header : LABELS.lblAction, Text: LABELS.lblBlock, Visible: false}
+		define column CreateButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblCreate, Visible: false}
+		define column ModifyButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblModify, Visible: false}
+		define column BlockButton with arguments {  DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblBlock, Visible: false}
 
 	with rules
-		CustomerSearchResultGrid.Items.Count is 0 then
-			btnCreateCustomer visible true
-		else
-			btnCreateCustomer visible false
 
 		; these rules have to be applied row by row of course
-		Company.Value is empty then
-			CreateButton visible true
-			set value LABELS.lblToBeCreated in Company
+		; to be hardcoded in the rule
+		; Company.Value is empty then
+		; 	CreateButton visible true
+		; 	set value LABELS.lblToBeCreated in Company
 
-		PO.Value is empty then
-			CreateButton visible true
-			set value LABELS.lblToBeCreated in PO
+		; PO.Value is empty then
+		; 	CreateButton visible true
+		; 	set value LABELS.lblToBeCreated in PO
 			
-		Company.Value is not empty and PO.Value is not empty then
-			ModifyButton visible true
-			BlockButton visible true
-	with triggers
-		this loads
+		; Company.Value is not empty and PO.Value is not empty then
+		; 	ModifyButton visible true
+		; 	BlockButton visible true
+;	with triggers
+;		this loads
 
 ; ----------------------------------------------------------------------------	
 ;     END OF SEARCH FORM DEFINITION
@@ -431,11 +442,6 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ; ----------------------------------------------------------------------------
 ;  -- LIST OF ALL ENTITIES FOUND in MDMC main FORM
 ; ----------------------------------------------------------------------------
-
-
-; TODO: PENDING STUFF LIKE THE COMPOSITE CONTROLS-... FOR EXAMPLE CONTACT PERSONS ETC.....
-;		AND TELEPHONES, EMAIL, ETC
-
 
 ;	labOpInfoCustomer
 ;	labOpInfoCountry
@@ -602,8 +608,8 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 
 
 
-; TODO: SOME HIDDEN FIELDS - CC_AM_SortKey, CC_AM_InterestIndic, CC_AM_CashManagementGroup, KNB1.XZVER, CC_CO_AuthorizationGroup
-; TODO: THINK IF NEEDED IN REQUEST MODEL OR MAPPINGS....1277
+; TODO: SOME HIDDEN FIELDS - CC_AM_CashManagementGroup <-- HAS TO BE INCLUDED IN WEB SERVICES PROBABLY - REVIEW RULES THERE
+; CC_CO_AuthorizationGroup same for this one
 
 
 ; ----------------------------------------------------------------------------
@@ -643,7 +649,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=8, RULES=0, ACTIONS=0, TRIGGERS=0
+; TESTGEN : DEFAULTS=8, RULES=2, ACTIONS=0, TRIGGERS=3
 Entity GD_Adr_Country is DropDownList in frmMain
 	with defaults
 		data field DisplayName
@@ -656,13 +662,16 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		label LABELS.labGD_Adr_Country
 
 	with rules
-		; TODO: THESE RULES HAVE TO GO SOMEWHERE ELSE
-		; GD_Adr_Country.Value is ES and GD_Ctr_VendorClassification is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S,U} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is CC then
-		; 	set value G in GD_Ctr_VendorClassification
-		; 
-		; GD_Adr_Country.Value is ES and GD_Ctr_VendorClassification is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S,U} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is not CC and GD_Ctr_CustomerClassification.OldDisplayValue is not empty then
-		; 	set value G in GD_Ctr_VendorClassification
+		GD_Adr_Country.Value is ES and GD_Ctr_CustomerClassification is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is CC then
+			set value G in GD_Ctr_VendorClassification
+		
+		GD_Adr_Country.Value is ES and GD_Ctr_CustomerClassification is not G and GD_Ctr_TaxCode1.Value starts with {P,Q,S} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is not CC and GD_Ctr_CustomerClassification.OldDisplayValue is not empty then
+			set value G in GD_Ctr_VendorClassification
 
+	with triggers
+		this loads
+		GD_Ctr_CustomerClassification changes
+		GD_Ctr_TaxCode1 changes
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=1, TRIGGERS=2
@@ -1247,11 +1256,8 @@ Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=5, TRIGGERS=1
+; TESTGEN : DEFAULTS=5, RULES=6, TRIGGERS=3
 Entity GD_Adr_POBoxLoc is TextBox in frmMain
-
-
-	; TODO: SEE THIS IN ACTION BETTER THAN THIS MESS OF RULES
 
 	with defaults
 		label LABELS.labPoBoxLoc
@@ -1259,29 +1265,32 @@ Entity GD_Adr_POBoxLoc is TextBox in frmMain
 
 	with rules
 		
-		REQUEST.CUSTOMER_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is not empty then
-			; GD_Adr_POBoxPostalCode mandatory true
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is not empty and GD_Adr_POBox.Value is not . then
+			GD_Adr_POBoxPostalCode mandatory true
 			GD_Adr_POBoxLoc mandatory true
-			; GD_Adr_POBox mandatory true
+			GD_Adr_POBox mandatory true
 
-		REQUEST.CUSTOMER_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox.Value in {'',.} and GD_Adr_POBoxPostalCode is not empty then
-			; GD_Adr_POBoxPostalCode mandatory false
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is . and GD_Adr_POBoxPostalCode is not empty then
+			GD_Adr_POBoxLoc mandatory true
+
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is . and GD_Adr_POBoxLoc is not empty then
+			GD_Adr_POBoxPostalCode mandatory true
+			GD_Adr_POBoxLoc mandatory true
+
+		REQUEST.VENDOR_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is . then
+			GD_Adr_POBoxPostalCode mandatory false
 			GD_Adr_POBoxLoc mandatory false
-			; GD_Adr_POBox mandatory false
+			GD_Adr_POBox mandatory false
 
-		; TODO: MAKES NOT MUCH SENSE DOES IT?
-		REQUEST.CUSTOMER_COUNTRY in {FR,GF,GP,MC,MQ,NC,PF,PM,RE,WF,YT} and GD_Adr_POBox.Value in {'',.} and GD_Adr_POBoxLoc is not empty then
-			; GD_Adr_POBoxPostalCode mandatory false
-			GD_Adr_POBoxLoc mandatory false
-			; GD_Adr_POBox mandatory false
-
-		REQUEST.COUNTRY is FR then	
+		REQUEST.COUNTRY is FR then
 			max length 40
 
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads
+		GD_Adr_POBox changes
+		GD_Adr_POBoxPostalCode changes
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=8, RULES=5, ACTIONS=0, TRIGGERS=1
@@ -1421,11 +1430,9 @@ Entity GD_VT_btnInsert is Button in GD_VT_Grid
 
 ; ---------------------------------------------------------------------------- 
 
-; TODO: CHECK WITH SEB, do we need to indicate some data loading somehow?
-; TESTGEN : DEFAULTS=9, RULES=1, ACTIONS=0, TRIGGERS=4
+; TESTGEN : DEFAULTS=9, RULES=1, ACTIONS=0, TRIGGERS=1
 Entity GD_VT_Grid is Grid in frmMain
 	with defaults
-		; TODO: how to define or set the controls inside? the row definition?
 		define column GRID_GD_VT_Country		with arguments {ControlID : GD_VT_Country, DataField : GD_VT_Country, Header : LABELS.labCountry,  Visible : true}
 		define column GRID_GD_VT_CountryCode	with arguments {ControlID : GD_VT_CountryCode,		DataField : GD_VT_CountryCode, Header : LABELS.labPrefix, Enabled : false, Visible : true}
 		define column GRID_GD_VT_Number		with arguments {	ControlID : GD_VT_Number,	DataField : GD_VT_Number, Header : LABELS.labNumber, Visible : true}
@@ -1438,9 +1445,9 @@ Entity GD_VT_Grid is Grid in frmMain
 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is CM_BLK or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
-		on row inserted
-		on row deleted
-		on row updated
+		; on row inserted
+		; on row deleted
+		; on row updated
 		this loads
 
 ; ----------------------------------------------------------------------------	
@@ -2703,7 +2710,77 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 	with triggers 
 		on change
 		this loads
+
 ; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=7, RULES=8, TRIGGERS=2
+Entity CC_AM_SortKey is DropDownList in frmMain
+	with defaults
+		label LABELS.labAMSortKeys
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDM_SortKeys with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
+		mandatory
+		visible false
+
+	with rules
+
+		; TODO: ACCESS TO MODEL EXPOSING OBTAINED SAP DATA
+		REQUEST.CC_AM_SortKey is not empty then
+			set value REQUEST.CC_AM_SortKey in CC_AM_SortKey
+		
+		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is ES then
+			set value 000 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is IT then
+			set value 002 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is PT then
+			set value 003 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY in {BE,LU} then
+			set value 009 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is FR then
+			set value 007 in CC_AM_SortKey
+
+		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is GR then
+			set value 001 in CC_AM_SortKey
+
+		REQUEST.REQUEST_TYPE in {VC, VC_CC, VC_PO} then
+			this visible false
+		else
+			this visible true
+			
+	with triggers
+		this loads
+		this changes
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : RULES=3, DEFAULTS=3, TRIGGERS=2, ACTIONS=0
+Entity CC_AM_InterestIndic is TextBox in frmMain
+	with defaults
+		visible false
+		max length 2
+
+	with rules
+
+		REQUEST.COUNTRY in {BE,LU} and REQUEST.REQUEST_TYPE is not VM_BLK  and GD_Ctr_CustomerClassification.Value is NG then
+			set value ZV in CC_AM_InterestIndic
+		REQUEST.COUNTRY in {BE,LU} and REQUEST.REQUEST_TYPE is not VM_BLK  and GD_Ctr_CustomerClassification.Value is G then
+			set value ZW in CC_AM_InterestIndic
+		REQUEST.COUNTRY is GR and REQUEST.REQUEST_TYPE in {CC, CC_CC} then
+			set value 7G in CC_AM_InterestIndic
+
+	with triggers
+		this loads
+		GD_Ctr_CustomerClassification changes
+
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------	
+
 
 ; --- BEGIN SALES ORDER PART ---
 ; TESTGEN : DEFAULTS=6, RULES=4, TRIGGERS=1

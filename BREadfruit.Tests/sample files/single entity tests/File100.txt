@@ -1,0 +1,9 @@
+﻿Entity CP_Grid is Grid in frmMain
+	with defaults
+		define column GRID_CP_Name				with arguments { ControlID : CP_Name ,DataField : Name, Header : LABELS.labName, MaxLength : 100, Visible : true}
+		define column GRID_CP_Surname			with arguments { ControlID  : CP_Surname ,DataField : Surname, Header : LABELS.labSurname, MaxLength : 100, Visible : true}
+		define column GRID_CP_Department		with arguments { ControlID CP_Department: ,DataField : Deparment, Header : LABELS.labDepartment, Visible : true}
+		define column GRID_CP_Telephone			with arguments { ControlID : CP_Telephone ,DataField : Telephone, Header : LABELS.labBankControlKey, Visible : true}
+		define column GRID_CP_Fax				with arguments { ControlID : CP_Fax,DataField : Fax, Header : LABELS.labFax, Visible : true}
+		define column GRID_CP_Email				with arguments { ControlID : CP_Email,DataField : Email, Header : LABELS.labEmail, Visible : true}
+		define column GRID_CP_Default			with arguments { ControlID : CP_Default,	DataField : Default, Visible : true}

@@ -2811,10 +2811,57 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Name == "SO_lbxSODSalesOrganization1", "Entity name should be 'btnClose' but is " + e.Name );
 			Assert.That ( e.TypeDescription == "Object", "Entity name should be 'Object' but is " + e.Name );
 
-			}
+		
+
+		}
 
 
 		// ---------------------------------------------------------------------------------
+
+
+
+
+		[Test]
+		public void ParseSampleFile100 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File100.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "CP_Grid", "Entity name should be 'CP_Grid' but is " + e.Name );
+			Assert.That ( e.TypeDescription == "Grid", "Entity name should be 'Grid' but is " + e.Name );
+
+			var i = 0;
+
+			Assert.That ( e.Defaults.Count () == 9, String.Format ( "Assert {0}", ++i ) );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		
+		[Test]
+		public void ParseSampleFile101 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File101 - Div.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "customerSearchResultGrid_", "Entity name should be 'customerSearchResultGrid_' but is " + e.Name );
+			Assert.That ( e.TypeDescription == "Div", "Entity name should be 'Div' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 3 );
+		}
+
+	
+		// ---------------------------------------------------------------------------------
+
 
 		[Test]
 		public void ShouldFindEntities_Vendor ()

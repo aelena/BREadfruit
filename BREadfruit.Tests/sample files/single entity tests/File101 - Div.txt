@@ -1,0 +1,4 @@
+﻿Entity customerSearchResultGrid_ is Div in frmSearch
+	with defaults
+		visible false
+		label LABELS.lblResult
