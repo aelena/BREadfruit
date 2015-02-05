@@ -1,0 +1,5 @@
+﻿Entity HF_UserCountry is TextBox in frmMain
+	with defaults
+		visible false
+		hiddenfield
+		enabled false

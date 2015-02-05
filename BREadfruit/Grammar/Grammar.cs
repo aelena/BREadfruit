@@ -278,6 +278,8 @@ namespace BREadfruit
 
 		public const string DataOrValueFieldLineRegex = "^(DATAFIELD|VALUEFIELD){1}[\\s]+(\"|')?[A-Za-z_\\-0-9\\.]+(\"|')?[\\s]*$";
 		public const string DataOrValueFieldValueRegex = "^((\"|'){1}[A-Za-z_\\-0-9\\.\\s]+(\"|'){1}[\\s]*|[A-Za-z_\\-0-9\\.]+)$";
+		public const string HiddenFieldLineRegex = "^(HIDDEN[\\s]*FIELD)([\\s]+(TRUE|true|yes))?[\\s]*";
+		public const string HiddenFieldValueRegex = "^(TRUE|true|yes)*";
 		/// <summary>
 		/// Validates a line that instructs to change the current form shown
 		/// This is when there are no arguments to pass to the second form
@@ -611,8 +613,9 @@ namespace BREadfruit
 
 		public static DefaultClause DataFieldDefaultClause = new DefaultClause ( "DATAFIELD", Grammar.DataOrValueFieldValueRegex, new List<string> () { "data field" } );
 		public static DefaultClause ValueFieldDefaultClause = new DefaultClause ( "VALUEFIELD", Grammar.DataOrValueFieldValueRegex, new List<string> () { "value field" } );
+		public static DefaultClause HiddenFieldDefaultClause = new DefaultClause ( "HIDDENFIELD", Grammar.HiddenFieldValueRegex, new List<string> () { "hidden field" } );
 
-
+		
 
 		// ---------------------------------------------------------------------------------
 
@@ -1152,6 +1155,7 @@ namespace BREadfruit
 			_defaultsTokens.Add ( DefineColumnDefaultClause );
 			_defaultsTokens.Add ( DataFieldDefaultClause );
 			_defaultsTokens.Add ( ValueFieldDefaultClause );
+			_defaultsTokens.Add ( HiddenFieldDefaultClause );
 
 			Grammar._symbols.Add ( MaxlengthDefaultClause );
 			Grammar._symbols.Add ( MinLengthDefaultClause );
@@ -1166,6 +1170,7 @@ namespace BREadfruit
 			Grammar._symbols.Add ( DefineColumnDefaultClause );
 			Grammar._symbols.Add ( DataFieldDefaultClause );
 			Grammar._symbols.Add ( ValueFieldDefaultClause );
+			Grammar._symbols.Add ( HiddenFieldDefaultClause );
 
 		}
 

@@ -132,7 +132,7 @@ Entity DDLDCountry is DropDownList in frmSearch
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDMC_Countries with arguments {FlagActive : true}
-		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
+		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
 		label LABELS.labCountry
 
 	with actions
@@ -142,10 +142,10 @@ Entity DDLDCountry is DropDownList in frmSearch
 		clear CustomerSearchResultGrid
 
 	with rules
-		DDLCDCountry.Value in {'FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC','TF'} then label LABELS.labSIRET in TBVendorVAT
-		DDLCDCountry.Value in {'PT','ES'} then label LABELS.labNIF in TBVendorVAT
-		DDLCDCountry.Value is 'IT' then label LABELS.labPartitaIVA in TBVendorVAT
-		DDLCDCountry.Value not in {'PT','ES','IT','FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC'} then label LABELS.labVAT in TBVendorVAT
+		DDLCDCountry.Value in {'FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC','TF'} then label LABELS.labSIRET in TBCustomerVAT
+		DDLCDCountry.Value in {'PT','ES'} then label LABELS.labNIF in TBCustomerVAT
+		DDLCDCountry.Value is 'IT' then label LABELS.labPartitaIVA in TBCustomerVAT
+		DDLCDCountry.Value not in {'PT','ES','IT','FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC'} then label LABELS.labVAT in TBCustomerVAT
 	
 	with triggers
 		this.Value changes 
@@ -177,7 +177,7 @@ Entity DDLCDCountry is DropDownList in frmSearch
 		value field Code
 		label LABELS.labCountry
 		load data from DATASOURCE.MDMC_ClusterCountries
-		value USER.COUNTRY		; preselect user country if there is data in SCD for this user
+		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
 		mandatory true
 
 	with actions
@@ -187,7 +187,7 @@ Entity DDLCDCountry is DropDownList in frmSearch
 		clear DDLCDSalesOrg
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
-		hide btnCreateVendor
+		hide btnCreateCustomer
 
 
 	with triggers
@@ -207,10 +207,10 @@ Entity DDLCDCompany is DropDownList in frmSearch
 	with actions
 		; load active companies for this country
 		load data from DATASOURCE.MDMC_ClusterSalesOrganizations with arguments {CompanyCode: DDLCDCompany.Value} in DDLCDSalesOrg 
-		set value USER.COST_LOCATION_UNIT in DDLCDCompany			; another data constant
+		set value HF_UserCostLocationUnit.Value in DDLCDCompany			; another data constant
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
-		hide btnCreateVendor
+		hide btnCreateCustomer
 
 	with triggers
 		this.Value changes
@@ -233,7 +233,7 @@ Entity DDLCDSalesOrg is DropDownList in frmSearch
 		load data from DATASOURCE.SelectDistributionChannels with arguments {countrycode : DDLCDCountry.Value, companycode :DDLCDCompany.Value, salesorgcode :DDLCDSalesOrg.Value} in DDLCDDistribChannel
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
-		hide btnCreateVendor
+		hide btnCreateCustomer
 
 	with rules
 		DDLCDDistribChannel.Items.Count is true then
@@ -256,7 +256,7 @@ Entity DDLCDDistribChannel is DropDownList in frmSearch
 	with actions
 		hide CustomerSearchResultGrid
 		clear CustomerSearchResultGrid
-		hide btnCreateVendor
+		hide btnCreateCustomer
 
 	with rules
 		DDLCDDistribChannel.Items.Count > 0 then
@@ -301,7 +301,7 @@ Entity btnSearch is Button in frmSearch
 	with rules
 
 		; yes, teh function defines the last parameter as ClusterPOCode, not ClusterSOCode, so this is right
-		DATASOURCE.IsUserInROLE with arguments { UserAccount : USER.USER_ACCOUNT, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value } is false then
+		DATASOURCE.IsUserInROLE with arguments { UserAccount : HF_UserAccount.Value, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value } is false then
 			set value MESSAGES.ERRauthCCPO in MESSAGE_POPUP
 		else
 			TBCustomerNumber.text starts with '0' then
@@ -341,11 +341,11 @@ Entity btnSearch is Button in frmSearch
 
 		customerSearchResultGrid.Items.Count = 0 then
 			set value MESSAGES.MSGNoValuesFound in MESSAGE_POPUP
-			btnCreateVendor visible true
+			btnCreateCustomer visible true
 			customerSearchResultGrid_ visible true
 
 		else
-			btnCreateVendor visible false
+			btnCreateCustomer visible false
 			customerSearchResultGrid_ visible false
 
 	with triggers
@@ -353,7 +353,7 @@ Entity btnSearch is Button in frmSearch
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, ACTIONS=0, RULES=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, ACTIONS=9, RULES=0, TRIGGERS=1
 Entity btnCreateCustomer is Button in frmSearch
 
 	with defaults
@@ -363,10 +363,14 @@ Entity btnCreateCustomer is Button in frmSearch
 		frmMain visible true
 		frmSearch visible false
 
-	with rules
-		; how to specify all that happens server side here?
-		; shall be express something like change form?
-
+		set value DDLCDCountry.Value in HF_RegionalCountry
+		set value DDLCDCompany.Value in HF_CompanyCode
+		set value DDLCDSalesOrg.Value in HF_SalesOrg
+		set value DDLCDDistribChannel.Value in HF_DistributionChannel
+		set value DDLCDivision.Value in HF_Division
+		set value DDLDCountry.Value in HF_CustomerCountry
+		set value TBCustomerName.Value in GD_Adr_Name
+		
 	with triggers
 		this click
 ; ---------------------------------------------------------------------------- 
@@ -434,6 +438,168 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ; ----------------------------------------------------------------------------	
 ;     END OF SEARCH FORM DEFINITION
 ; ----------------------------------------------------------------------------	
+
+; ----------------------------------------------------------------------------	
+; BEGIN HIDDEN FIELDS DEFINITION
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_UserCountry is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_UserCostLocationUnit is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_UserAccount is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_CurrentRole is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_RequestState is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_RequestType is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_RegionalCountry is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_CompanyCode is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_SalesOrg is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_DistributionChannel is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_Division is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_VendorCountry is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_CustomerCountry is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_AccountGroup is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_RegionIsMandatory is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_Language is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_IsEU is CheckBox in frmMain 
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_MandatoryIBAN is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_IsTaxHeaven is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_TaxCode1Mandatory is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_TaxCode2Mandatory is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_VATMandatory is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; ----------------------------------------------------------------------------	
+;     END OF SEARCH FORM DEFINITION
+; ----------------------------------------------------------------------------	
+
 
 ; ----------------------------------------------------------------------------	
 ; BEGIN MAIN FORM CONTROL DEFINITION
@@ -635,12 +801,12 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		CC_AM_BPClassification is enabled then
 			GD_Ctr_RiskClassification enabled true
 
-		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_RCO', 'MDMC3_CLERK'} then 
 			this enabled true
 		else
 			this enabled false
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE is ROLES.SUS or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value is 'MDMC3_SUS' or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -657,16 +823,16 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		visible true
 		enabled false					; this control is always disabled
 		load data from DATASOURCE.MDMC_Countries
-		value REQUEST.VENDOR_COUNTRY
+		value HF_CustomerCountry.Value
 		mandatory true
 		label LABELS.labGD_Adr_Country
 
 	with rules
-		GD_Adr_Country.Value is 'ES' and GD_Ctr_CustomerClassification is not 'G' and GD_Ctr_TaxCode1.Value starts with {'P','Q','S'} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is 'CC' then
-			set value 'G' in GD_Ctr_VendorClassification
+		GD_Adr_Country.Value is 'ES' and GD_Ctr_CustomerClassification is not 'G' and GD_Ctr_TaxCode1.Value starts with {'P','Q','S'} and HF_CurrentRole.Value is 'MDMC3_ENQ'  and HF_RequestType.Value is 'CC' then
+			set value 'G' in GD_Ctr_CustomerClassification
 		
-		GD_Adr_Country.Value is 'ES' and GD_Ctr_CustomerClassification is not 'G' and GD_Ctr_TaxCode1.Value starts with {'P','Q','S'} and REQUEST.CURRENT_ROLE is ROLES.ENQ  and REQUEST.REQUEST_TYPE is not 'CC' and GD_Ctr_CustomerClassification.OldDisplayValue is not empty then
-			set value 'G' in GD_Ctr_VendorClassification
+		GD_Adr_Country.Value is 'ES' and GD_Ctr_CustomerClassification is not 'G' and GD_Ctr_TaxCode1.Value starts with {'P','Q','S'} and HF_CurrentRole.Value is 'MDMC3_ENQ'  and HF_RequestType.Value is not 'CC' and GD_Ctr_CustomerClassification.OldDisplayValue is not empty then
+			set value 'G' in GD_Ctr_CustomerClassification
 
 	with triggers
 		this loads
@@ -680,27 +846,27 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 	with defaults
 		data field DisplayName
 		value field Code
-		label LABELS.labGD_Ctr_VendorClassification
+		label LABELS.labGD_Ctr_CustomerClassification
 		mandatory true
 		visible true
 		enabled true
-		load data from DATASOURCE.VENDOR_CLASSIFICATIONS
+		load data from DATASOURCE.MDMC_PartnerClassification
 		value 'NG'
 
 	with rules
 
-		REQUEST.CUSTOMER_COUNTRY is 'ES' and GD_Ctr_TaxCode1.Text starts with {'P','Q','S'} then 
+		HF_CustomerCountry.Value is 'ES' and GD_Ctr_TaxCode1.Text starts with {'P','Q','S'} then 
 			set value 'G' in GD_Ctr_CustomerClassification
-		REQUEST.CUSTOMER_COUNTRY is 'ES' and GD_Ctr_TaxCode1.Text starts with 'G' then 
+		HF_CustomerCountry.Value is 'ES' and GD_Ctr_TaxCode1.Text starts with 'G' then 
 			set value 'NG' in GD_Ctr_CustomerClassification
 
 		; TODO: RULE FOR 'FR' - LEGAL FORM - REVIEW THIS
 		; For customer country France the value is set due to legal form selection, see sheet 'Legal form(France)'  meaning what??????
 		
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS,ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS','MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
-		REQUEST.CURRENT_ROLE is ROLES.RCO and REQUEST.COUNTRY in {'IT', 'GR'} then this enabled 
+		HF_CurrentRole.Value is 'MDMC3_RCO' and HF_RegionalCountry.Value in {'IT', 'GR'} then this enabled 
 
 	with actions
 		ATTACHMENT mandatory  true  
@@ -725,13 +891,13 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 	
 	with rules
 
-		REQUEST.COUNTRY in {'BE','IT','PT'} then			; NOTE: not in fieldmapping
+		HF_RegionalCountry.Value in {'BE','IT','PT'} then			; NOTE: not in fieldmapping
 			this mandatory false
 				
-		REQUEST.REQUEST_TYPE is 'CM_BLK' then			; NOTE: not in fieldmapping
+		HF_RequestType.Value is 'CM_BLK' then			; NOTE: not in fieldmapping
 			this mandatory false	
 		
-		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_RCO', 'MDMC3_CLERK'} then 
 			this enabled true
 		else
 			this enable false
@@ -742,7 +908,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		REQUEST.CC_AM_BPClassification is not empty then
 			set value REQUEST.CC_AM_BPClassification in CC_AM_BPClassification
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with actions
 		; ATTACHMENT mandatory  false
@@ -761,13 +927,13 @@ Entity GD_Adr_Name is TextBox in frmMain
 		mandatory true
 		max length 35
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT1','YCT2'} then
+		HF_AccountGroup.Value in {'YCT1','YCT2'} then
 			max length 32
-		REQUEST.ACCOUNT_GROUP is 'YCT3' then				; NOTE: not in fieldmapping
+		HF_AccountGroup.Value is 'YCT3' then				; NOTE: not in fieldmapping
 			max length 28
-		REQUEST.COUNTRY is 'GR' and REQUEST.REQUEST_TYPE not in {'CC','CC_CC'} then		; NOTE: not in fieldmapping
+		HF_RegionalCountry.Value is 'GR' and HF_RequestType.Value not in {'CC','CC_CC'} then		; NOTE: not in fieldmapping
 			this mandatory false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
@@ -786,11 +952,11 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 		max length 32
 
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT1','YCT2'} then
+		HF_AccountGroup.Value in {'YCT1','YCT2'} then
 			max length 32
-		REQUEST.ACCOUNT_GROUP is 'YCT3' then
+		HF_AccountGroup.Value is 'YCT3' then
 			max length 28
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
@@ -807,14 +973,14 @@ Entity GD_Adr_Name3 is TextBox in frmMain
 		max length 32
 
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT7',''YVT7''} then
+		HF_AccountGroup.Value in {'YCT7',''YVT7''} then
 			this mandatory true
-		REQUEST.CURRENT_ROLE is ROLES.CLERK then
+		HF_CurrentRole.Value is 'MDMC3_CLERK' then
 			this mandatory true
 		; NOTE: not in fieldmapping
-		REQUEST.COUNTRY is 'GR' and REQUEST.REQUEST_TYPE in {'CC','CC_CC'} then
+		HF_RegionalCountry.Value is 'GR' and HF_RequestType.Value in {'CC','CC_CC'} then
 			this mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -826,14 +992,14 @@ Entity GD_Adr_Name4 is TextBox in frmMain
 	with defaults
 		max length 32
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT7','YVT7'} then
+		HF_AccountGroup.Value in {'YCT7','YVT7'} then
 			this mandatory true
-		REQUEST.CURRENT_ROLE is ROLES.CLERK then
+		HF_CurrentRole.Value is 'MDMC3_CLERK' then
 			this mandatory true
 			; NOTE: not in fieldmapping
-		REQUEST.COUNTRY is 'GR' and REQUEST.REQUEST_TYPE in {'CC','CC_CC'} then
+		HF_RegionalCountry.Value is 'GR' and HF_RequestType.Value in {'CC','CC_CC'} then
 			this mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -849,9 +1015,9 @@ Entity GD_Adr_Search is TextBox in frmMain
 		value GD_Adr_Name.Value
 	with rules
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			max length 5			
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads
@@ -864,7 +1030,7 @@ Entity GD_Com_Comment is TextBox in frmMain
 		label LABELS.labComment
 		max length 35
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -879,12 +1045,12 @@ Entity GD_Adr_Street is TextBox in frmMain
 		max length 32
 	with rules
 		; NOTE: not in fieldmapping
-		REQUEST.ACCOUNT_GROUP in {'YCT1','YCT2'} then
+		HF_AccountGroup.Value in {'YCT1','YCT2'} then
 			max length 32
 		; NOTE: not in fieldmapping
-		REQUEST.ACCOUNT_GROUP is 'YCT3' then
+		HF_AccountGroup.Value is 'YCT3' then
 			max length 28
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with actions
@@ -902,13 +1068,13 @@ Entity GD_Adr_Street2 is TextBox in frmMain
 		max length 32
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then 
+		HF_RegionalCountry.Value is 'FR' then 
 			this not visible
-		REQUEST.ACCOUNT_GROUP in {'YCT1','YCT2'} then
+		HF_AccountGroup.Value in {'YCT1','YCT2'} then
 			max length 32
-		REQUEST.ACCOUNT_GROUP is 'YCT3' then
+		HF_AccountGroup.Value is 'YCT3' then
 			max length 28
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
@@ -925,13 +1091,13 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 		max length 32
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then 
+		HF_RegionalCountry.Value is 'FR' then 
 			this not visible
-		REQUEST.ACCOUNT_GROUP in {'YCT1','YCT2'} then
+		HF_AccountGroup.Value in {'YCT1','YCT2'} then
 			max length 32
-		REQUEST.ACCOUNT_GROUP is 'YCT3' then
+		HF_AccountGroup.Value is 'YCT3' then
 			max length 28
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
@@ -948,13 +1114,13 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 		max length 32
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then 
+		HF_RegionalCountry.Value is 'FR' then 
 			this not visible
-		REQUEST.ACCOUNT_GROUP in {'YCT1','YCT2'} then
+		HF_AccountGroup.Value in {'YCT1','YCT2'} then
 			max length 32
-		REQUEST.ACCOUNT_GROUP is 'YCT3' then
+		HF_AccountGroup.Value is 'YCT3' then
 			max length 28
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
@@ -971,9 +1137,9 @@ Entity GD_Adr_Street5 is TextBox in frmMain
 		max length 32
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then 
+		HF_RegionalCountry.Value is 'FR' then 
 			this not visible
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
@@ -993,7 +1159,7 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDMC_Countries
-		value REQUEST.CUSTOMER_COUNTRY
+		value HF_CustomerCountry
 		
 
 ; ---------------------------------------------------------------------------- 
@@ -1005,41 +1171,41 @@ Entity GD_Adr_Region is DropDownList in frmMain
 		label LABELS.labRegion
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Regions with arguments {FlagActive : true, CountryCode : REQUEST.CUSTOMER_COUNTRY }
+		load data from DATASOURCE.MDMC_Regions with arguments {FlagActive : true, CountryCode : HF_CustomerCountry.Value }
 
 	with actions
-		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
+		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
 		
 	with rules
-		REQUEST.Region_IsMandatory is true and REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RegionIsMandatory.Value is true and HF_RequestType.Value is 'CC' then
 			GD_Adr_Region mandatory true
 		
 		; NOTE: yct1 and yct2 in code, not in fieldmapping
-		REQUEST.ACCOUNT_GROUP in {'YCT1', 'YCT2', 'YCT6', 'YCT9'} and REQUEST.REQUEST_TYPE is 'CC' then
+		HF_AccountGroup.Value in {'YCT1', 'YCT2', 'YCT6', 'YCT9'} and HF_RequestType.Value is 'CC' then
 			GD_Adr_Region mandatory true
 
-		REQUEST.ACCOUNT_GROUP is 'YCT1' and GD_Adr_Region.Value is '01' then
+		HF_AccountGroup.Value is 'YCT1' and GD_Adr_Region.Value is '01' then
 			set value NL in GD_Com_Language
 
-		REQUEST.ACCOUNT_GROUP is 'YCT1' and GD_Adr_Region.Value in {'02', '03'} then
+		HF_AccountGroup.Value is 'YCT1' and GD_Adr_Region.Value in {'02', '03'} then
 			set value 'FR' in GD_Com_Language
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} and GD_Adr_Region.Value is 2A then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} and GD_Adr_Region.Value is 2A then
 			set value '20' in GD_Adr_PostalCode
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} and REQUEST.Region_IsMandatory and REQUEST.TYPE is 'CC' then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} and HF_RegionIsMandatory.Value and REQUEST.TYPE is 'CC' then
 			this mandatory true
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			this mandatory true
 
-		REQUEST.COUNTRY is 'BE' and GD_Adr_Region.Value is 01 then
+		HF_RegionalCountry.Value is 'BE' and GD_Adr_Region.Value is 01 then
 			set value 'NL' in GD_Com_LanguageCode
 
-		REQUEST.COUNTRY is 'BE' and GD_Adr_Region.Value is not 01 then
+		HF_RegionalCountry.Value is 'BE' and GD_Adr_Region.Value is not 01 then
 			set value 'FR' in GD_Com_LanguageCode
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			
 	with triggers
@@ -1056,11 +1222,11 @@ Entity GD_Adr_City is TextBox in frmMain
 		max length 35
 
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT7','YVT7'} then
+		HF_AccountGroup.Value in {'YCT7','YVT7'} then
 			this mandatory true
-		REQUEST.CURRENT_ROLE is ROLES.CLERK then
+		HF_CurrentRole.Value is 'MDMC3_CLERK' then
 			this mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
@@ -1079,13 +1245,13 @@ Entity GD_Adr_City2 is TextBox in frmMain
 		max length 35
 
 	with rules
-		REQUEST.CUSTOMER_COUNTRY is 'GR' or REQUEST.COUNTRY is 'GR' then
+		HF_CustomerCountry.Value is 'GR' or HF_RegionalCountry.Value is 'GR' then
 			GD_Adr_City2 visible true
 		; NOTE: not in fieldmapping
-		REQUEST.COUNTRY is 'GR' and REQUEST.CUSTOMER_COUNTRY is not 'GR' and REQUEST.REQUEST_TYPE is not 'CM_BLK' then
+		HF_RegionalCountry.Value is 'GR' and HF_CustomerCountry.Value is not 'GR' and HF_RequestType.Value is not 'CM_BLK' then
 			GD_Adr_City2 visible true
 			GD_Adr_City2 mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -1101,47 +1267,47 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 
 	with rules
 
-		REQUEST.ACCOUNT_GROUP in {'YCT1', 'YCT2'} then
+		HF_AccountGroup.Value in {'YCT1', 'YCT2'} then
 			max length 4
 			validation ^[0-9]{4}$
 
-		REQUEST.ACCOUNT_GROUP in {'YCT3', 'YCT5', 'YCT7'} then
+		HF_AccountGroup.Value in {'YCT3', 'YCT5', 'YCT7'} then
 			max length 5
 			validation ^[0-9]{5}$
 
-		REQUEST.ACCOUNT_GROUP is 'YCT4' then
+		HF_AccountGroup.Value is 'YCT4' then
 			max length 8
 			validation ^[0-9]{4}-[0-9]{3}$
 
-		REQUEST.CUSTOMER_COUNTRY in {'IT', 'GR'} then
+		HF_CustomerCountry.Value in {'IT', 'GR'} then
 			max length 5
 
-		REQUEST.CUSTOMER_COUNTRY is 'ES' then
+		HF_CustomerCountry.Value is 'ES' then
 			max length 5
 			validation ^[0-5]{1}[1-2]{1}[0-9]{3}$
 
 		; post code must be >=1500 and <=3999 OR >=8000 and <=9999
 		; the regular expression covers the ranges
-		REQUEST.CUSTOMER_COUNTRY is 'BE' and GD_Adr_Region is '01' then
+		HF_CustomerCountry.Value is 'BE' and GD_Adr_Region is '01' then
 			max length 4
 			validation ^(1[5-9][0-9]{2}){1}|((2|3)[0-9]{3}){1}|((8|9)[0-9]{3})$
 		
 		; post code must be >=1300 and <=1499 OR >=4000 and <=7999
-		REQUEST.CUSTOMER_COUNTRY is 'BE' and GD_Adr_Region is 02 then
+		HF_CustomerCountry.Value is 'BE' and GD_Adr_Region is 02 then
 			max length 4
 			validation ^(1[3-4][0-9]{2}){1}|([4-7][0-9]{3})$
 
 		; post code must be >=1000 and <=1299
-		REQUEST.CUSTOMER_COUNTRY is 'BE' and GD_Adr_Region is '03' then
+		HF_CustomerCountry.Value is 'BE' and GD_Adr_Region is '03' then
 			max length 4
 			validation ^(1[0-2][0-9]{2})$
 
-		REQUEST.CUSTOMER_COUNTRY in {'FR', 'GF', 'GP', 'MC', 'MQ', 'NC', 'PF', 'PM', 'RE', 'WF', 'YT'} then
+		HF_CustomerCountry.Value in {'FR', 'GF', 'GP', 'MC', 'MQ', 'NC', 'PF', 'PM', 'RE', 'WF', 'YT'} then
 			max length 5
 			validation ^[0-9]{5}$
 			set value substring(GD_Adr_PostalCode,2) in GD_Adr_Region
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} then
 			max length 5
 			mandatory true 
 
@@ -1154,14 +1320,14 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 		GD_Adr_CountryGD.Value is 'IT' then
 			tooltip MESSAGES.ERRItalianPC5
 
-		REQUEST.CUSTOMER_COUNTRY in {'ES','AD'} and REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and GD_Adr_PostalCode.Value.Length >= 2 then
+		HF_CustomerCountry.Value in {'ES','AD'} and HF_RequestType.Value in {'CC','CC_CC'} and GD_Adr_PostalCode.Value.Length >= 2 then
 			load data from DATASOURCES.SelectAccountingClerkByPostCodeAndSalesArea in CC_CO_AccountingClerk
 
 		; TODO: PUT THIS VALIDATION IN BTNSAVE 
-		; REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		; HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 		; make sure then that first two digits are same as value in Region combo	
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 		
 	with triggers
@@ -1179,34 +1345,34 @@ Entity GD_Adr_POBox is TextBox in frmMain
 
 	with rules
 			
-		REQUEST.CUSTOMER_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is not empty then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is not empty then
 			GD_Adr_POBoxPostalCode mandatory true
 			GD_Adr_POBoxLoc mandatory true
 			GD_Adr_POBox mandatory true
 
-		REQUEST.CUSTOMER_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' then
 			GD_Adr_POBoxPostalCode mandatory false
 			GD_Adr_POBoxLoc mandatory false
 			GD_Adr_POBox mandatory false
 
-		REQUEST.ACCOUNT_GROUP in {'YVT7','YCT7'} then
+		HF_AccountGroup.Value in {'YVT7','YCT7'} then
 			max length 5
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} and GD_Adr_POBoxLoc.Value is not empty then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} and GD_Adr_POBoxLoc.Value is not empty then
 			this mandatory true
 
-		REQUEST.COUNTRY is 'FR' then 
+		HF_RegionalCountry.Value is 'FR' then 
 			max length 10
 
 		; NOTE: not in FM
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} and GD_Adr_POBoxLoc is not empty and GD_Adr_POBox is empty then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} and GD_Adr_POBoxLoc is not empty and GD_Adr_POBox is empty then
 			set value '.' in GD_Adr_POBox
 
 		; NOTE: not in FM
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_POBox is empty then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_POBox is empty then
 			set value '.' in GD_Adr_POBox
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -1223,35 +1389,35 @@ Entity GD_Adr_POBoxPostalCode is TextBox in frmMain
 		max length 10
 
 	with rules
-		REQUEST.CUSTOMER_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is not empty then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is not empty then
 			GD_Adr_POBoxPostalCode mandatory true
 			GD_Adr_POBoxLoc mandatory true
 			GD_Adr_POBox mandatory true
 
-		REQUEST.CUSTOMER_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' then
 			GD_Adr_POBoxPostalCode mandatory false
 			GD_Adr_POBoxLoc mandatory false
 			GD_Adr_POBox mandatory false
 
-		REQUEST.ACCOUNT_GROUP in {'YVT7','YCT7'} then
+		HF_AccountGroup.Value in {'YVT7','YCT7'} then
 			max length 5
 
 		; NOTE: not in FM
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} and GD_Adr_POBoxLoc is not empty and GD_Adr_POBox is empty then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} and GD_Adr_POBoxLoc is not empty and GD_Adr_POBox is empty then
 			set value '.' in GD_Adr_POBox
 
 		; NOTE: not in FM
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_POBox is empty then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_POBox is empty then
 			set value '.' in GD_Adr_POBox
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} and GD_Adr_POBoxLoc.Value is not empty then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} and GD_Adr_POBoxLoc.Value is not empty then
 			this mandatory true
 			max length 5
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9'} and GD_Adr_POBoxLoc.Value is not empty then
+		HF_AccountGroup.Value in {'YCT6','YCT9'} and GD_Adr_POBoxLoc.Value is not empty then
 			this mandatory true
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -1266,27 +1432,27 @@ Entity GD_Adr_POBoxLoc is TextBox in frmMain
 
 	with rules
 		
-		REQUEST.VENDOR_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is not empty and GD_Adr_POBox.Value is not '.' then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is not empty and GD_Adr_POBox.Value is not '.' then
 			GD_Adr_POBoxPostalCode mandatory true
 			GD_Adr_POBoxLoc mandatory true
 			GD_Adr_POBox mandatory true
 
-		REQUEST.VENDOR_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' and GD_Adr_POBoxPostalCode is not empty then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' and GD_Adr_POBoxPostalCode is not empty then
 			GD_Adr_POBoxLoc mandatory true
 
-		REQUEST.VENDOR_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' and GD_Adr_POBoxLoc is not empty then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' and GD_Adr_POBoxLoc is not empty then
 			GD_Adr_POBoxPostalCode mandatory true
 			GD_Adr_POBoxLoc mandatory true
 
-		REQUEST.VENDOR_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} and GD_Adr_POBox is empty or GD_Adr_POBox.Value is '.' then
 			GD_Adr_POBoxPostalCode mandatory false
 			GD_Adr_POBoxLoc mandatory false
 			GD_Adr_POBox mandatory false
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			max length 40
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads
@@ -1307,20 +1473,20 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 
 	with rules
 		
-		REQUEST.CUSTOMER_COUNTRY in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} then
+		HF_CustomerCountry.Value in {'FR','GF','GP','MC','MQ','NC','PF','PM','RE','WF','YT'} then
 			set value 'FR' in GD_Com_LanguageCode
 
-		REQUEST.ACCOUNT_GROUP is 'YCT1' and GD_Adr_Region is '01' then
+		HF_AccountGroup.Value is 'YCT1' and GD_Adr_Region is '01' then
 			set value NL in GD_Com_LanguageCode
 	
-		REQUEST.ACCOUNT_GROUP is 'YCT1' and GD_Adr_Region in {'02', '03'} then
+		HF_AccountGroup.Value is 'YCT1' and GD_Adr_Region in {'02', '03'} then
 			set value 'FR' in GD_Com_LanguageCode
 
 		; this should come from the MODEL (from the MDMC_Countries table) where 'country configuration' is set
-		REQUEST.DefaultLanguage is not empty then
-			set value REQUEST.DefaultLanguage in GD_Com_LanguageCode
+		HF_Language.Value is not empty then
+			set value HF_Language.Value in GD_Com_LanguageCode
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -1332,14 +1498,14 @@ Entity GD_Com_Telebox is DropDownList in frmMain
 		label LABELS.labTelebox
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Telebox with arguments {FlagActive : true, AccountGroup : REQUEST.ACCOUNT_GROUP}
+		load data from DATASOURCE.MDMC_Telebox with arguments {FlagActive : true, AccountGroup : HF_AccountGroup.Value}
 		mandatory true
 		value 'PRT'
 	with rules
-		REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RequestType.Value is 'CC' then
 			set value 'PRT' in GD_Com_Telebox
 			this enable false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -1351,7 +1517,7 @@ Entity GD_Com_DataLine is TextBox in frmMain
 		label LABELS.labDataLine
 		max length 14
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -1363,7 +1529,7 @@ Entity GD_VT_Country is DropDownList in GD_VT_Grid
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDMC_Countries
-		value REQUEST.CUSTOMER_COUNTRY
+		value HF_CustomerCountry
 		mandatory true
 		
 	with actions
@@ -1443,7 +1609,7 @@ Entity GD_VT_Grid is Grid in frmMain
 		define column GRID_GD_VT_ConsNumber	with arguments {	ControlID : GD_VT_ConsNumber,	DataField : GD_VT_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		; on row inserted
@@ -1459,7 +1625,7 @@ Entity GD_VF_Country is DropDownList in GD_VF_Grid
 		data field DisplayName
 		value field Code
 		load data from DATASOURCE.MDMC_Countries
-		value REQUEST.CUSTOMER_COUNTRY
+		value HF_CustomerCountry
 
 	with actions
 		load data from DATASOURCE.MDMC_CountryTelephonePrefixes with arguments {Code : GD_VF_Country.Value } in GD_VF_CountryCode
@@ -1532,7 +1698,7 @@ Entity GD_VF_Grid is Grid in frmMain
 		define column GRID_GD_VF_ConsNumber	with arguments {	ControlID : GD_VF_ConsNumber,	DataField : GD_VF_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		; on row inserted
@@ -1587,7 +1753,7 @@ Entity GD_VE_Grid is Grid in frmMain
 		define column GRID_GD_VE_ConsNumber	with arguments {	ControlID : GD_VE_ConsNumber,	DataField : GD_VE_ConsNumber, Visible : false}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		; on row inserted
@@ -1610,7 +1776,7 @@ Entity GD_Ctr_VendorNumber is TextBox in frmMain
 		label LABELS.labCustomerNumber
 		max length 10
 	with rules
-		REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RequestType.Value is 'CC' then
 			this visible false
 		else
 			this visible true
@@ -1623,7 +1789,7 @@ Entity GD_Ctr_VendorNumber is TextBox in frmMain
 ;	2) field mandatory for  MD clerk in case account group 'YCT6'. 
 ;		(See APE list in sheet ''Other documents'' to display DDL to select the legal activity and translate from ISIC code in SAP). 
 ;	3) for account group 'YCT5', use DDL the excel file attached called ''ISIC italian convertion''. 
-;		the DDL shown to the ROLES.ENQ is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
+;		the DDL shown to the 'MDMC3_ENQ' is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
 
 ; TESTGEN : DEFAULTS=7, RULES=2, ACTIONS=1, TRIGGERS=2
 Entity GD_Ctr_Industry is DropDownList in frmMain
@@ -1633,7 +1799,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		label LABELS.labIndustries
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : REQUEST.COUNTRY}
+		load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : HF_RegionalCountry.Value}
 
 	with actions
 		; put the return of this search operation which should return only one value in control GD_Ctr_IindustryCode
@@ -1642,29 +1808,29 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 
 	with rules
 		
-		; REQUEST.ACCOUNT_GROUP in {'YCT6', 'YVT6'} then
+		; HF_AccountGroup.Value in {'YCT6', 'YVT6'} then
 		; 	load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : 'FR'}
 		; 	; this equals to this line in original code
 		; 	; TODO: WHY? this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 		; 	; most likely unneeded?
 		; 	; set value 'FR' in REQUEST.INDUSTRY_COUNTRY
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YVT6'} and REQUEST.CURRENT_ROLE is ROLES.RCO then
+		HF_AccountGroup.Value in {'YCT6', 'YVT6'} and HF_CurrentRole.Value is 'MDMC3_RCO' then
 			this mandatory true
 
-		; REQUEST.ACCOUNT_GROUP in {'YCT9', 'YVT9'} then
+		; HF_AccountGroup.Value in {'YCT9', 'YVT9'} then
 		; 	load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : 'EN'}
 		; 	; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 		; 	; set value 'EN' in REQUEST.INDUSTRY_COUNTRY
 		; 	mandatory false
 		
 		; DONE with a updating of the table MDMC_INdustries - NO NEED TO DO THIS FOR BRSCH, ONLY FOR BRAN1
-		; REQUEST.COUNTRY is 'IT' and GD_Ctr_Industry is not empty then
+		; HF_RegionalCountry.Value is 'IT' and GD_Ctr_Industry is not empty then
 		; 	;	3) for account group 'YCT5', use DDL the excel file attached called ''ISIC italian convertion''. 
-		; 	;		the DDL shown to the ROLES.ENQ is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
+		; 	;		the DDL shown to the 'MDMC3_ENQ' is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
 		; 	load data from DATASOURCE.MDMC_ItalyIndustries with arguments {FlagActive: true, Code:GD_Ctr_Industry.Value} with output {GD_Ctr_IndustryCode.Value : KNA1_BRAN1} 
 		
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE is ROLES.SUS or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value is 'MDMC3_SUS' or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -1684,7 +1850,7 @@ Entity GD_Ctr_IndustryCode is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_ItalyIndustries
 
 	with rules
-		REQUEST.COUNTRY is 'IT' then
+		HF_RegionalCountry.Value is 'IT' then
 			this visible true
 	with triggers
 		this loads
@@ -1701,10 +1867,10 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with actions
 		set value GD_Ctr_UnsubscribeCMD.Value in BLK_GD_Ctr_UnsubscribeCMD
 	with rules
-		REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RequestType.Value is 'CC' then
 			this enable false
 			this visile false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this changes
@@ -1740,7 +1906,7 @@ Entity V_Grid is Grid in frmMain
 		define column GRID_V_VATNumber		with arguments {ControlID : V_VATNumber, 		DataField : V_VATNumber, Header : LABELS.labVATNumber, Visible : true}
 		
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		; on row inserted
@@ -1778,7 +1944,7 @@ Entity GD_VB_BankKey is TextBox in GD_VB_Grid
 	with defaults
 		label LABELS.labGD_VD_BankKey
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9','YVT6','YVT9'} then
+		HF_AccountGroup.Value in {'YCT6','YCT9','YVT6','YVT9'} then
 			max length 10
 		else
 			max length 15
@@ -1798,7 +1964,7 @@ Entity GD_VB_BankAccount is TextBox in GD_VB_Grid
 	with defaults
 		label LABELS.labGD_VD_BankAccount
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9','YVT6','YVT9'} then
+		HF_AccountGroup.Value in {'YCT6','YCT9','YVT6','YVT9'} then
 			max length 11
 		else
 			max length 18
@@ -1834,7 +2000,7 @@ Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 		; TODO: POPULATION FOR THE UNDERLYING TABLE HAS TO 'BE' FINISHED
 		load data from DATASOURCE.MDMC_GetIBANConfigurationForCountry with arguments {CountryCode:B_GD_VB_Country.Value, IBAN:B_GD_VB_IBAN.Value} with output {B_GD_VB_BankKey:BankKey,B_GD_VB_BankAccount:BankAccount,B_GD_VB_BankControlKey:BankControlKey}
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YCT9','YVT6','YVT9'} then
+		HF_AccountGroup.Value in {'YCT6','YCT9','YVT6','YVT9'} then
 			max length 27
 		else
 			max length 35
@@ -1853,7 +2019,7 @@ Entity GD_VB_PartBankType is TextBox in GD_VB_Grid
 		label LABELS.labGD_VB_PartBankType
 		max length 4
 	with rules
-		REQUEST.ACCOUNT_GROUP not in {'YCT6','YCT9','YVT6','YVT9'} then
+		HF_AccountGroup.Value not in {'YCT6','YCT9','YVT6','YVT9'} then
 			max length 4
 	with triggers 
 		this loads
@@ -1894,7 +2060,7 @@ Entity KNA1_XZEMP is CheckBox in GD_VB_Grid
 		value true
 		visible false
 	with rules
-		REQUEST.COMPANY_CODE in {'5101', '5109'} or REQUEST.ACCOUNT_GROUP in {'YCT1','YCT2','YCT9'} then
+		HF_CompanyCode.Value in {'5101', '5109'} or HF_AccountGroup.Value in {'YCT1','YCT2','YCT9'} then
 			visible true
 	with triggers 
 		this loads
@@ -1917,22 +2083,22 @@ Entity GD_VB_btnInsert is Button in GD_VB_Grid
 		; TODO: -bank country Belgium: validate format 111-1111111-11 and position of bank key in bank account
 	
 		; TODO: CHECK WITH SEB, how to distinguish between warnings (continue processing) and errors (Stop processing) in messaging
-		REQUEST.COUNTRY is 'ES' then
+		HF_RegionalCountry.Value is 'ES' then
 			set value MESSAGES.MSGCustomerBankSpain in MESSAGE_POPUP
 		
-		REQUEST.COUNTRY is 'IT' or GD_VB_Country.Value is 'IT' then and GD_VB_BankKey is empty then
+		HF_RegionalCountry.Value is 'IT' or GD_VB_Country.Value is 'IT' then and GD_VB_BankKey is empty then
 			set value MESSAGES.ERRBankItaly in MESSAGE_POPUP
 		
-		REQUEST.COUNTRY is 'IT' or GD_VB_Country.Value is 'IT' then and GD_VB_BankKey.Value.Length != 10 then
+		HF_RegionalCountry.Value is 'IT' or GD_VB_Country.Value is 'IT' then and GD_VB_BankKey.Value.Length != 10 then
 			set value MESSAGES.ERRBankItaly in MESSAGE_POPUP
 		
-		REQUEST.COUNTRY is 'IT' and B_GD_VB_Country.Value is 'IT' and B_GD_VB_SWIFT.Value.Length is not 11 then
+		HF_RegionalCountry.Value is 'IT' and B_GD_VB_Country.Value is 'IT' and B_GD_VB_SWIFT.Value.Length is not 11 then
 			set value MESSAGES.ERRfieldSWIFT in MESSAGE_POPUP
 		
 		B_GD_VB_IBAN is empty and B_GD_VB_BankAccount is empty then
 			set value MESSAGES.ERRfieldIban in MESSAGE_POPUP
 		
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			this visible false
 	with triggers 
@@ -1956,7 +2122,7 @@ Entity GD_VB_Grid is Grid in frmMain
 		define column GRID_RelevantFlag	with arguments {ControlID : RelevantFlag, DataField : RelevantFlag, Visible : false}
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with actions
@@ -2000,22 +2166,22 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 
 	with rules
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YVT6', 'YCT7', 'YCT9'} and REQUEST.ROLE is ROLES.CLERK then
+		HF_AccountGroup.Value in {'YCT6', 'YVT6', 'YCT7', 'YCT9'} and HF_CurrentRole is 'MDMC3_CLERK' then
 			this visible true
 			this mandatory true
 
-		REQUEST.ACCOUNT_GROUP in {'YCT7', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT7', 'YCT9'} then
 			; TODO: check if this name is correct - it's the tab for CREDIT LIMIT
 			tab_CL visible true
 
-		REQUEST.ACCOUNT_GROUP not in {'YCT7', 'YCT9'} then
+		HF_AccountGroup.Value not in {'YCT7', 'YCT9'} then
 			; TODO: check if this name is correct - it's the tab for CREDIT LIMIT
 			tab_CL visible true
 
-		REQUEST.CUSTOMER_COUNTRY in {'FR', 'GF', 'GP', 'RE', 'MQ', 'YT'} then
+		HF_CustomerCountry.Value in {'FR', 'GF', 'GP', 'RE', 'MQ', 'YT'} then
 			this visible true
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 
@@ -2033,60 +2199,60 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 
 	with rules
 
-		REQUEST.ACCOUNT_GROUP is 'YCT1' then
+		HF_AccountGroup.Value is 'YCT1' then
 			max length 10
 			; TODO: CHECK WITH SEB THIS SORT OF CONCATENATION.... OR MOVE TO A SPECIFIC DATASOURCE FOR THIS?
 			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
-		REQUEST.ACCOUNT_GROUP is 'YCT2' then
+		HF_AccountGroup.Value is 'YCT2' then
 			max length 8
 			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
-		REQUEST.ACCOUNT_GROUP is 'YCT3' then
+		HF_AccountGroup.Value is 'YCT3' then
 			max length 9
 
-		REQUEST.ACCOUNT_GROUP is 'YCT3' and REQUEST.REQUEST_TYPE is 'CC' and REQUEST.COUNTRY is not 'ES' then
+		HF_AccountGroup.Value is 'YCT3' and HF_RequestType.Value is 'CC' and HF_RegionalCountry.Value is not 'ES' then
 			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
-		REQUEST.ACCOUNT_GROUP is 'YCT3' and GD_Ctr_PIVA.Value starts with {'P','Q','S'} then
+		HF_AccountGroup.Value is 'YCT3' and GD_Ctr_PIVA.Value starts with {'P','Q','S'} then
 			set value 'G' in GD_Ctr_CustomerClassification
 
-		REQUEST.ACCOUNT_GROUP is 'YCT3' and GD_Ctr_PIVA.Value starts with {'X','0','1','2','3','4','5','6','7','8','9'} then
+		HF_AccountGroup.Value is 'YCT3' and GD_Ctr_PIVA.Value starts with {'X','0','1','2','3','4','5','6','7','8','9'} then
 			set value true in GD_Ctr_IsNaturalPerson
 
-		REQUEST.ACCOUNT_GROUP is 'YCT3' and GD_Ctr_PIVA.Value not starts with {'X','0','1','2','3','4','5','6','7','8','9'} then
+		HF_AccountGroup.Value is 'YCT3' and GD_Ctr_PIVA.Value not starts with {'X','0','1','2','3','4','5','6','7','8','9'} then
 			set value false in GD_Ctr_IsNaturalPerson
 
-		REQUEST.ACCOUNT_GROUP is 'YCT4' then
+		HF_AccountGroup.Value is 'YCT4' then
 			max length 9
 			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
-		REQUEST.ACCOUNT_GROUP is 'YCT4' and GD_Ctr_VATRegistrationNumber starts with {'1','2','3'} then
+		HF_AccountGroup.Value is 'YCT4' and GD_Ctr_VATRegistrationNumber starts with {'1','2','3'} then
 			set value true in GD_Ctr_IsNaturalPerson
 			GD_Ctr_TaxCode2 mandatory true
 			GD_Ctr_TaxCode2 max length 11
 			; TODO: DOES NOT WORK WELL
 			; GD_Ctr_TaxCode2 validation '^[0-9]{11}$'		
-		REQUEST.ACCOUNT_GROUP is 'YCT4' and GD_Ctr_VATRegistrationNumber not starts with {'1','2','3'} then
+		HF_AccountGroup.Value is 'YCT4' and GD_Ctr_VATRegistrationNumber not starts with {'1','2','3'} then
 			set value false in GD_Ctr_IsNaturalPerson
 			
-		REQUEST.ACCOUNT_GROUP is 'YCT5' then
+		HF_AccountGroup.Value is 'YCT5' then
 			max length 16
 						
-		REQUEST.ACCOUNT_GROUP is 'YCT6' then
+		HF_AccountGroup.Value is 'YCT6' then
 			max length 14
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value SUBSTRING(GD_Adr_Country.Code,0,9) in GD_Ctr_TaxCode2
 
-		REQUEST.ACCOUNT_GROUP is 'YCT6' and GD_Adr_Country.Value in {'FR','GF','RP','MQ','RE'} then
+		HF_AccountGroup.Value is 'YCT6' and GD_Adr_Country.Value in {'FR','GF','RP','MQ','RE'} then
 			this mandatory true
 			validation ^[0-9]{14}$
 
-		REQUEST.ACCOUNT_GROUP is 'YCT6' and GD_Adr_Country.Value in {'MC','NC','PF','PM','WE','YT'} then
+		HF_AccountGroup.Value is 'YCT6' and GD_Adr_Country.Value in {'MC','NC','PF','PM','WE','YT'} then
 			this visible false
 			GD_Ctr_TaxCode1 mandatory false
 			GD_Ctr_TaxCode1 enabled true
@@ -2097,31 +2263,31 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value SUBSTRING(GD_Ctr_PIVA.Value,9) in GD_Ctr_TaxCode1
 
-		REQUEST.ACCOUNT_GROUP is 'YCT7' then
+		HF_AccountGroup.Value is 'YCT7' then
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value GD_Adr_Country.Code in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 
-		; REQUEST.REQUEST_TYPE is 'CC' or REQUEST.COUNTRY is 'FR' then
+		; HF_RequestType.Value is 'CC' or HF_RegionalCountry.Value is 'FR' then
 		; 	this enable true
-		; REQUEST.COUNTRY is 'IT' and REQUEST.REQUEST_TYPE is 'CC' then
+		; HF_RegionalCountry.Value is 'IT' and HF_RequestType.Value is 'CC' then
 		; 	this visible true
-		; REQUEST.COUNTRY is 'IT' and REQUEST.REQUEST_TYPE is not 'CC' then
+		; HF_RegionalCountry.Value is 'IT' and HF_RequestType.Value is not 'CC' then
 		; 	this visible false
 		; 
 		; 
-		; REQUEST.ACCOUNT_GROUP in 'YCT5' is 'YCT3' then
+		; HF_AccountGroup.Value in 'YCT5' is 'YCT3' then
 		; 	max length 11
-		; REQUEST.ACCOUNT_GROUP is 'YCT6' and REQUEST.REQUEST_TYPE is 'CC' and GD_Ctr_IsNaturalPerson.Value is false then
+		; HF_AccountGroup.Value is 'YCT6' and HF_RequestType.Value is 'CC' and GD_Ctr_IsNaturalPerson.Value is false then
 		; 	this mandatory true
-		; REQUEST.ACCOUNT_GROUP is 'YCT6' and REQUEST.CURRENT_ROLE in {ROLES.CLERK, ROLES.ENQ} then
+		; HF_AccountGroup.Value is 'YCT6' and HF_CurrentRole.Value in {'MDMC3_CLERK', 'MDMC3_ENQ'} then
 		; 	this enable true
-		; REQUEST.ACCOUNT_GROUP is 'YCT9' then 
+		; HF_AccountGroup.Value is 'YCT9' then 
 		; 	max length 5
 		; 	this mandatory false
-		; GD_Adr_Country.Value is 'GR' and REQUEST.REQUEST_TYPE is 'CC' then
+		; GD_Adr_Country.Value is 'GR' and HF_RequestType.Value is 'CC' then
 		; 	this mandatory false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -2136,11 +2302,11 @@ Entity GD_Ctr_CF is TextBox in frmMain
 		label LABELS.labCF
 		visible false
 	with rules
-		REQUEST.COMPANY_CODE in {'5180','5116','596G'} and REQUEST.REQUEST_TYPE is 'CC' then
+		HF_CompanyCode.Value in {'5180','5116','596G'} and HF_RequestType.Value is 'CC' then
 			this enable true
 			this visible true
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			
 	with triggers
@@ -2156,12 +2322,12 @@ Entity GD_Ctr_IFANumber is TextBox in frmMain
 		enabled false
 
 	with rules
-		REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RequestType.Value is 'CC' then
 			GD_Ctr_IFANumber enabled false
 
-		REQUEST.REQUEST_TYPE is 'CM' then
+		HF_RequestType.Value is 'CM' then
 			this visible true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 				
 	with triggers
@@ -2175,37 +2341,37 @@ Entity GD_Ctr_TaxCode1 is TextBox in frmMain
 		label LABELS.labTaxCode1
 		max length 16
 	with rules
-		GD_Adr_Country.Value is 'GR' and REQUEST.REQUEST_TYPE is 'CC' then
+		GD_Adr_Country.Value is 'GR' and HF_RequestType.Value is 'CC' then
 			this mandatory false
-		GD_Adr_Country.Value is 'GR' and REQUEST.REQUEST_TYPE is not 'CC' then
+		GD_Adr_Country.Value is 'GR' and HF_RequestType.Value is not 'CC' then
 			this visible false
 		GD_Adr_Country.Value is 'IT' then
 			this enable false
 			max length 16
 		GD_Adr_Country.Value is 'IT' and GD_Ctr_IsNaturalPerson.Value is true then
 			this mandatory true
-		REQUEST.COUNTRY in {'BE','LU'} and REQUEST.CURRENT_ROLE is ROLES.CLERK then
+		HF_RegionalCountry.Value in {'BE','LU'} and HF_CurrentRole.Value is 'MDMC3_CLERK' then
 			this mandatory false
 			GD_Ctr_VATRegistrationNumber mandatory false
 
 
 		; 'YCT6' countries
-		GD_Adr_Country.Value in {'FR','GF','GP','MQ','RE'} and REQUEST.REQUEST_TYPE is not 'CC' then
+		GD_Adr_Country.Value in {'FR','GF','GP','MQ','RE'} and HF_RequestType.Value is not 'CC' then
 			this enable false
 			set value SUBSTRING(GD_Ctr_TaxCode1.Value,0,9) in GD_Ctr_TaxCode2
 
-		REQUEST.ACCOUNT_GROUP is 'YCT9' and REQUEST.REQUEST_TYPE is not 'CC' then
+		HF_AccountGroup.Value is 'YCT9' and HF_RequestType.Value is not 'CC' then
 			this enable false
-		REQUEST.ACCOUNT_GROUP is 'YCT6' and REQUEST.REQUEST_TYPE is 'CC' and GD_Ctr_IsNaturalPerson.Value is false then
+		HF_AccountGroup.Value is 'YCT6' and HF_RequestType.Value is 'CC' and GD_Ctr_IsNaturalPerson.Value is false then
 			this mandatory true
-		REQUEST.ACCOUNT_GROUP is 'YCT9' then
+		HF_AccountGroup.Value is 'YCT9' then
 			mandatory false
-		REQUEST.ACCOUNT_GROUP in {'YVT6', 'YCT6', 'YVT9', 'YCT9'} and REQUEST.REQUEST_TYPE is 'CC' and REQUEST.TaxCode1_IsMandatory then
+		HF_AccountGroup.Value in {'YVT6', 'YCT6', 'YVT9', 'YCT9'} and HF_RequestType.Value is 'CC' and REQUEST.TaxCode1_IsMandatory then
 			this mandatory true
 
-		GD_Adr_Country.Value is 'GR' and REQUEST.REQUEST_TYPE is 'CC' then
+		GD_Adr_Country.Value is 'GR' and HF_RequestType.Value is 'CC' then
 			this mandatory false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			
 	with triggers
@@ -2218,30 +2384,30 @@ Entity GD_Ctr_TaxCode2 is TextBox in frmMain
 	with defaults
 		label LABELS.labTaxCode2
 	with rules
-		REQUEST.COUNTRY is 'IT' then
+		HF_RegionalCountry.Value is 'IT' then
 			this enable false
-		REQUEST.ACCOUNT_GROUP is 'YCT5' then
+		HF_AccountGroup.Value is 'YCT5' then
 			max length 11
 			validation ^[0-9]{11}$
-		REQUEST.ACCOUNT_GROUP is 'YCT6' and REQUEST.REQUEST_TYPE is not 'CC' then
+		HF_AccountGroup.Value is 'YCT6' and HF_RequestType.Value is not 'CC' then
 			this enable false
-		REQUEST.ACCOUNT_GROUP is 'YCT6' and REQUEST.REQUEST_TYPE is 'CC' and GD_Ctr_IsNaturalPerson.Value is false then
+		HF_AccountGroup.Value is 'YCT6' and HF_RequestType.Value is 'CC' and GD_Ctr_IsNaturalPerson.Value is false then
 			this mandatory true
-		REQUEST.ACCOUNT_GROUP is 'YCT6' then
+		HF_AccountGroup.Value is 'YCT6' then
 			max length 9
-		REQUEST.ACCOUNT_GROUP is 'YCT6' and REQUEST.CURRENT_ROLE then
+		HF_AccountGroup.Value is 'YCT6' and HF_CurrentRole.Value then
 			this enable true
-		REQUEST.ACCOUNT_GROUP is 'YCT9' then
+		HF_AccountGroup.Value is 'YCT9' then
 			max length 9
-		REQUEST.ACCOUNT_GROUP is 'YCT9' then
+		HF_AccountGroup.Value is 'YCT9' then
 			mandatory false
-		REQUEST.ACCOUNT_GROUP is 'YCT9' and REQUEST.REQUEST_TYPE is not 'CC' then
+		HF_AccountGroup.Value is 'YCT9' and HF_RequestType.Value is not 'CC' then
 			this enable false
-		REQUEST.ACCOUNT_GROUP in {'YVT6', 'YCT6', 'YVT9', 'YCT9'} and REQUEST.REQUEST_TYPE is 'CC' and REQUEST.TaxCode2_IsMandatory then
+		HF_AccountGroup.Value in {'YVT6', 'YCT6', 'YVT9', 'YCT9'} and HF_RequestType.Value is 'CC' and REQUEST.TaxCode2_IsMandatory then
 			this mandatory true
-		GD_Adr_Country.Value is 'GR' and REQUEST.REQUEST_TYPE is 'CC' then
+		GD_Adr_Country.Value is 'GR' and HF_RequestType.Value is 'CC' then
 			this mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with triggers
@@ -2255,30 +2421,30 @@ Entity GD_Ctr_VATRegistrationNumber is TextBox in frmMain
 		
 	with rules
 		
-		REQUEST.VAT_IsMandatory is true and REQUEST.REQUEST_TYPE is 'CC' then
+		REQUEST.VAT_IsMandatory is true and HF_RequestType.Value is 'CC' then
 			this mandatory true
-		REQUEST.COUNTRY is 'IT' then
+		HF_RegionalCountry.Value is 'IT' then
 			this enable false
-		REQUEST.COUNTRY is 'ES' then
+		HF_RegionalCountry.Value is 'ES' then
 			this enable false
-		REQUEST.COUNTRY is 'IT' and REQUEST.CURRENT_ROLE is ROLES.CLERK and REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RegionalCountry.Value is 'IT' and HF_CurrentRole.Value is 'MDMC3_CLERK' and HF_RequestType.Value is 'CC' then
 			this enable true
-		REQUEST.ACCOUNT_GROUP is 'YCT6' and REQUEST.REQUEST_TYPE is 'CC' and GD_Ctr_IsNaturalPerson.Value is false then
+		HF_AccountGroup.Value is 'YCT6' and HF_RequestType.Value is 'CC' and GD_Ctr_IsNaturalPerson.Value is false then
 			this mandatory true
-		REQUEST.ACCOUNT_GROUP in {'YVT6', 'YCT6', 'YVT9', 'YCT9'} and REQUEST.REQUEST_TYPE is 'CC' and REQUEST.VAT_IsMandatory then
+		HF_AccountGroup.Value in {'YVT6', 'YCT6', 'YVT9', 'YCT9'} and HF_RequestType.Value is 'CC' and REQUEST.VAT_IsMandatory then
 			this mandatory true
-		GD_Adr_Country.Value is 'GR' and REQUEST.REQUEST_TYPE is 'CC' then
+		GD_Adr_Country.Value is 'GR' and HF_RequestType.Value is 'CC' then
 			this mandatory true
-		REQUEST.VAT_IsMandatory and REQUEST.REQUEST_TYPE is 'CC' then
+		REQUEST.VAT_IsMandatory and HF_RequestType.Value is 'CC' then
 			this mandatory true
-		REQUEST.ACCOUNT_GROUP is 'YCT1' then
+		HF_AccountGroup.Value is 'YCT1' then
 			; by default take this value
 			set value GD_Adr_Country.Value in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
 			; set value true in GD_Ctr_SalesPurTax ; TODO: DEPENDING ON WHAT WE DO WITH THIS FIELD
 
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with triggers
@@ -2297,9 +2463,9 @@ Entity GD_Com_TransportZone is TextBox in frmMain
 		visible false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		REQUEST.CUSTOMER_COUNTRY is 'ES' and GD_Com_TransportZone.Value is empty then
+		HF_CustomerCountry.Value is 'ES' and GD_Com_TransportZone.Value is empty then
 			set value substring(GD_Adr_PostalCode,2) in GD_Com_TransportZone.Value 
 		
 	with triggers
@@ -2314,9 +2480,9 @@ Entity GD_MainlyMilitary is RadioButton in frmMain
 		label LABELS.labGD_MainlyMilitary
 
 	with rules
-		REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RequestType.Value is 'CC' then
 			mandatory true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads	
@@ -2330,9 +2496,9 @@ Entity GD_MainlyCivilian is RadioButton in frmMain
 		label LABELS.labGD_MainlyCivilian
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
-		REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RequestType.Value is 'CC' then
 			mandatory true
 	with triggers
 		this loads
@@ -2345,7 +2511,7 @@ Entity GD_Nuclear is CheckBox in frmMain
 	with defaults
 		label LABELS.labGD_Nuclear
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false		
 	with triggers
 		this loads
@@ -2389,10 +2555,10 @@ Entity CC_CO_ReconAccount is DropDownList in frmMain
 			set value 0024110050 in CC_CO_ReconAccount
 
 		; TODO: CHECK THIS ONE IN CODE
-		; REQUEST.REQUEST_TYPE in {'CC', 'CC_CC', 'CC_SO'} then
+		; HF_RequestType.Value in {'CC', 'CC_CC', 'CC_SO'} then
 		; 	set value 0024110090 in CC_CO_ReconAccount
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
 	with triggers
@@ -2418,49 +2584,49 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
+		load data from DATASOURCE.MDMC_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 	with rules
 
-		REQUEST.COMPANY_CODE is '5140' and GD_Adr_Country.Value in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
+		HF_CompanyCode.Value is '5140' and GD_Adr_Country.Value in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
 			set value '6115' in CC_PT_PaymentTerms
 			set value '6115' in SO_TermsOfPaymentKey
 
-		REQUEST.COMPANY_CODE is '5140' and GD_Adr_Country.Value not in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
+		HF_CompanyCode.Value is '5140' and GD_Adr_Country.Value not in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
 			set value '6000' in CC_PT_PaymentTerms
 			set value '6000' in SO_TermsOfPaymentKey
 			
-		REQUEST.COUNTRY is 'PT' and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC'} then
+		HF_RegionalCountry.Value is 'PT' and HF_RequestType.Value in {'CC', 'CC_CC'} then
 			this visible false
 			CC_PT_PaymentTerms mandatory false
 	
-		REQUEST.COUNTRY in {'BE','LU'} and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC'} then
+		HF_RegionalCountry.Value in {'BE','LU'} and HF_RequestType.Value in {'CC', 'CC_CC'} then
 			set value '1109' in CC_PT_PaymentTerms
 
-		REQUEST.COUNTRY is 'ES' and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC'} then
+		HF_RegionalCountry.Value is 'ES' and HF_RequestType.Value in {'CC', 'CC_CC'} then
 			; set value '3M60' in CC_PT_PaymentTerms
 			set value '3E60' in CC_PT_PaymentTerms
 
-		REQUEST.COUNTRY is 'LU' and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC'} then
+		HF_RegionalCountry.Value is 'LU' and HF_RequestType.Value in {'CC', 'CC_CC'} then
 			set value '1113' in CC_PT_PaymentTerms
 			set value '1113' in SO_TermsOfPaymentKey
 
-		; REQUEST.COMPANY_CODE is '5140' and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC'} and REQUEST.CUSTOMER_COUNTRY in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
+		; HF_CompanyCode.Value is '5140' and HF_RequestType.Value in {'CC', 'CC_CC'} and HF_CustomerCountry.Value in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
 		; 	set value '6115' in CC_PT_PaymentTerms
 		; 	set value '6115' in SO_TermsOfPaymentKey
 		; 
-		; REQUEST.COMPANY_CODE is '5140' and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC'} and REQUEST.CUSTOMER_COUNTRY not in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
+		; HF_CompanyCode.Value is '5140' and HF_RequestType.Value in {'CC', 'CC_CC'} and HF_CustomerCountry.Value not in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
 		; 	set value '6000' in CC_PT_PaymentTerms
 		; 	set value '6000' in SO_TermsOfPaymentKey
 
-		; REQUEST.COMPANY_CODE in {'5150','5180','596G'} and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC'} then
-		REQUEST.COMPANY_CODE in {'5150','5180','596G'} then
+		; HF_CompanyCode.Value in {'5150','5180','596G'} and HF_RequestType.Value in {'CC', 'CC_CC'} then
+		HF_CompanyCode.Value in {'5150','5180','596G'} then
 			set value '' in CC_PT_PaymentTerms
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			this mandatory true
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -2475,38 +2641,38 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 		label LABELS.labPTPaymentMethods
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_PaymentMethods with arguments {FlagActive : true, ClusterCountryCode: REQUEST.COUNTRY}
+		load data from DATASOURCE.MDMC_PaymentMethods with arguments {FlagActive : true, ClusterCountryCode: HF_RegionalCountry.Value}
 
 	with rules
 
-		REQUEST.COUNTRY in {'ES', 'FR'} then
+		HF_RegionalCountry.Value in {'ES', 'FR'} then
 			this mandatory true
 
-		REQUEST.COUNTRY is 'PT' then
+		HF_RegionalCountry.Value is 'PT' then
 			this mandatory false
 
-		REQUEST.COUNTRY is 'IT' and CC_PT_PaymentMethods.Value is 'L' then
+		HF_RegionalCountry.Value is 'IT' and CC_PT_PaymentMethods.Value is 'L' then
 			B_GD_VB_BankKey mandatory true
 
-		REQUEST.COUNTRY is 'PT' and CC_PT_PaymentMethods.Value in {'P', 'M'} then
+		HF_RegionalCountry.Value is 'PT' and CC_PT_PaymentMethods.Value in {'P', 'M'} then
 			B_GD_VB_BankKey mandatory true
 			
-		REQUEST.COUNTRY is 'FR' and CC_PT_PaymentMethods.Value in {'M', 'A'} then
+		HF_RegionalCountry.Value is 'FR' and CC_PT_PaymentMethods.Value in {'M', 'A'} then
 			B_GD_VB_BankKey mandatory true
 
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {'CM', 'CM_BLK'} and REQUEST.COUNTRY is 'ES' and REQUEST.CUSTOMER_COUNTRY is 'ES' then
+		HF_CurrentRole.Value is ENQ and HF_RequestType.Value not in {'CM', 'CM_BLK'} and HF_RegionalCountry.Value is 'ES' and HF_CustomerCountry.Value is 'ES' then
 			set value 'G' in CC_PT_PaymentMethods
 
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {'CM', 'CM_BLK'} and REQUEST.COUNTRY is 'ES' and REQUEST.CUSTOMER_COUNTRY is not 'ES' then
+		HF_CurrentRole.Value is ENQ and HF_RequestType.Value not in {'CM', 'CM_BLK'} and HF_RegionalCountry.Value is 'ES' and HF_CustomerCountry.Value is not 'ES' then
 			set value 'Y' in CC_PT_PaymentMethods
 
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {'CM', 'CM_BLK'} and REQUEST.COUNTRY is 'FR' and REQUEST.CUSTOMER_COUNTRY is 'FR' then
+		HF_CurrentRole.Value is ENQ and HF_RequestType.Value not in {'CM', 'CM_BLK'} and HF_RegionalCountry.Value is 'FR' and HF_CustomerCountry.Value is 'FR' then
 			set value 'G' in CC_PT_PaymentMethods
 
-		REQUEST.CURRENT_ROLE is ENQ and REQUEST.REQUEST_TYPE not in {'CM', 'CM_BLK'} and REQUEST.COUNTRY is 'FR' and REQUEST.CUSTOMER_COUNTRY is not 'FR' then
+		HF_CurrentRole.Value is ENQ and HF_RequestType.Value not in {'CM', 'CM_BLK'} and HF_RegionalCountry.Value is 'FR' and HF_CustomerCountry.Value is not 'FR' then
 			set value 'Y' in CC_PT_PaymentMethods
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -2521,9 +2687,9 @@ Entity CC_PT_ClearingWithCustomer is CheckBox in frmMain
 		label LABELS.labCC_PT_ClearingWithCustomer
 	with rules
 		; TODO: CHECK WITH SEB MODEL
-		REQUEST.COMPANY_CODE in {'5101', '5109'} and REQUEST.CC_PT_ClearingWithCustomer then
+		HF_CompanyCode.Value in {'5101', '5109'} and REQUEST.CC_PT_ClearingWithCustomer then
 			set value true in CC_PT_ClearingWithCustomer
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -2537,10 +2703,10 @@ Entity CC_PT_IndividualPayment is CheckBox in frmMain
 		label LABELS.labSinglePayment
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		; TODO: WWHAT ABOUT THIS?
-		REQUEST.COMPANY_CODE in {'5101', '5109'} then
+		HF_CompanyCode.Value in {'5101', '5109'} then
 			set value true in CC_PT_IndividualPayment
 	
 	with triggers
@@ -2552,57 +2718,57 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCC_CO_AccountingClerk
-		load data from DATASOURCE.MDMC_AccountingClerks with arguments {FlagActive : true, CompanyCode : REQUEST.COMPANY_CODE}
+		load data from DATASOURCE.MDMC_AccountingClerks with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
 		data field DisplayName
 		value field Code
 
 	with rules
 		
-		REQUEST.COUNTRY is 'FR' and REQUEST.CURRENT_ROLE is ROLES.CLERK then
+		HF_RegionalCountry.Value is 'FR' and HF_CurrentRole.Value is 'MDMC3_CLERK' then
 			this mandatory true
 
-		REQUEST.COUNTRY in {'IT', 'GR'} then
+		HF_RegionalCountry.Value in {'IT', 'GR'} then
 			this mandatory false
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			this mandatory true
 
 		; Seems deprecated
-		; REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY is 'ES' then
+		; HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value is 'ES' then
 		; 	set value 81 in CC_CO_AccountingClerk
 		; 	set value 81 in CC_CO_AccountingClerk.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COMPANY_CODE is '5109' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_CompanyCode.Value is '5109' then
 			set value 'MM' in CC_CO_AccountingClerk
 			set value 'MM' in CC_CO_AccountingClerk.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.SALES_ORGANIZATION is '1E0E' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_SalesOrg.Value is '1E0E' then
 			set value '95' in CC_CO_AccountingClerk
 			set value '95' in CC_CO_AccountingClerk.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.SALES_ORGANIZATION in {'10L0','10Q1'} then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_SalesOrg.Value in {'10L0','10Q1'} then
 			set value '87' in CC_CO_AccountingClerk
 			set value '87' in CC_CO_AccountingClerk.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.SALES_ORGANIZATION in {'10A0', '10A1', '10B0'} then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_SalesOrg.Value in {'10A0', '10A1', '10B0'} then
 			set value '93' in CC_CO_AccountingClerk
 			set value '93' in CC_CO_AccountingClerk.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.SALES_ORGANIZATION in {'10F0', '10F1', '10F2', '10F3', '10G0', '10G1', '10H0', '10I0', '10P0', '10Z0'} then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_SalesOrg.Value in {'10F0', '10F1', '10F2', '10F3', '10G0', '10G1', '10H0', '10I0', '10P0', '10Z0'} then
 			set value '92' in CC_CO_AccountingClerk
 			set value '92' in CC_CO_AccountingClerk.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COMPANY_CODE is '563M' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_CompanyCode.Value is '563M' then
 			set value '20' in CC_CO_AccountingClerk
 			set value '20' in CC_CO_AccountingClerk.OldDisplayValue
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY in {'ES','AD'} then
-			load data from DATASOURCE.MDMC_AccountingClerkByPostCodeAndSalesArea with arguments {PostCode : SUBSTRING(GD_Adr_PostalCode,2), SalesArea: REQUEST.SALES_ORGANIZATION} in CC_CO_AccountingClerk
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value in {'ES','AD'} then
+			load data from DATASOURCE.MDMC_AccountingClerkByPostCodeAndSalesArea with arguments {PostCode : SUBSTRING(GD_Adr_PostalCode,2), SalesArea: HF_SalesOrg.Value} in CC_CO_AccountingClerk
 		
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COMPANY_CODE in {'5240','5101','5109'} then
-			load data from DATASOURCE.MDMC_AccountingClerksFORPTBELU with arguments { SalesOrganization: REQUEST.SALES_ORGANIZATION, FlagActive: true} with output {CC_CO_AccountingClerk: AccountingClerk}
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_CompanyCode.Value in {'5240','5101','5109'} then
+			load data from DATASOURCE.MDMC_AccountingClerksFORPTBELU with arguments { SalesOrganization: HF_SalesOrg.Value, FlagActive: true} with output {CC_CO_AccountingClerk: AccountingClerk}
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 				
 	with triggers
@@ -2618,42 +2784,42 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 		label LABELS.labDDDunningprocedure
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_DunningProcedure with arguments {FlagActive : true, ClusterCountryCode: REQUEST.COUNTRY}
+		load data from DATASOURCE.MDM_DunningProcedure with arguments {FlagActive : true, ClusterCountryCode: HF_RegionalCountry.Value}
 		visible false
 
 	with rules
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			this mandatory true
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY is 'FR' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value is 'FR' then
 			this visible true
 
-		REQUEST.REQUEST_TYPE not in {'CC','CC_CC'} then
+		HF_RequestType.Value not in {'CC','CC_CC'} then
 			this visible true
 			
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY is 'ES' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value is 'ES' then
 			set value 'Y302' in CC_DD_DunningProcedure
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY is 'IT' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value is 'IT' then
 			set value 'Y502' in CC_DD_DunningProcedure
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY is 'PT' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value is 'PT' then
 			set value 'Y400' in CC_DD_DunningProcedure
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY is 'BE' and GD_Ctr_CustomerClassification.Value is 'NG' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value is 'BE' and GD_Ctr_CustomerClassification.Value is 'NG' then
 			set value 'Y104' in CC_DD_DunningProcedure
 		
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY is 'BE' and GD_Ctr_CustomerClassification.Value is 'G' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value is 'BE' and GD_Ctr_CustomerClassification.Value is 'G' then
 			set value 'Y102' in CC_DD_DunningProcedure
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.COUNTRY is 'LU' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value is 'LU' then
 			set value 'Y203' in CC_DD_DunningProcedure
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and REQUEST.CUSTOMER_COUNTRY is 'GR' then
+		HF_RequestType.Value in {'CC','CC_CC'} and HF_CustomerCountry.Value is 'GR' then
 			set value 'Y704' in CC_DD_DunningProcedure
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	
@@ -2669,7 +2835,7 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 		visible false
 		label LABELS.labDunningArea
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with triggers
@@ -2688,26 +2854,26 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 		label LABELS.labARPledgeIndicator
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_GetARPledgeIndicators with arguments {CompanyCode : REQUEST.COMPANY_CODE}
+		load data from DATASOURCE.MDMC_GetARPledgeIndicators with arguments {CompanyCode : HF_CompanyCode.Value}
 
 	with rules
 		
-		REQUEST.COMPANY_CODE in { '5109', '4297', '461D', '596G' } then
+		HF_CompanyCode.Value in { '5109', '4297', '461D', '596G' } then
 			this visible false
 
-		REQUEST.REQUEST_TYPE in {'CC','CC_CC'} and CC_AR_PledgeIndicator.OldDisplayValue is empty then
+		HF_RequestType.Value in {'CC','CC_CC'} and CC_AR_PledgeIndicator.OldDisplayValue is empty then
 			set value WE in CC_AR_PledgeIndicator
 			set value WE in CC_AR_PledgeIndicator.OldDisplayValue
 
-		REQUEST.COUNTRY in {'ES','FR','GR'} and CC_AR_PledgeIndicator.OldDisplayValue is empty then
+		HF_RegionalCountry.Value in {'ES','FR','GR'} and CC_AR_PledgeIndicator.OldDisplayValue is empty then
 			set value '' in CC_AR_PledgeIndicator
 			set value '' in CC_AR_PledgeIndicator.OldDisplayValue
 
-		REQUEST.COMPANY_CODE is '5101' and CC_AR_PledgeIndicator.OldDisplayValue is empty then
+		HF_CompanyCode.Value is '5101' and CC_AR_PledgeIndicator.OldDisplayValue is empty then
 			set value '' in CC_AR_PledgeIndicator
 			set value '' in CC_AR_PledgeIndicator.OldDisplayValue
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 				
 	with actions
@@ -2726,7 +2892,7 @@ Entity CC_AM_SortKey is DropDownList in frmMain
 		label LABELS.labAMSortKeys
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_SortKeys with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
+		load data from DATASOURCE.MDM_SortKeys with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 		mandatory
 		visible false
 
@@ -2736,25 +2902,25 @@ Entity CC_AM_SortKey is DropDownList in frmMain
 		REQUEST.CC_AM_SortKey is not empty then
 			set value REQUEST.CC_AM_SortKey in CC_AM_SortKey
 		
-		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is 'ES' then
+		REQUEST.CC_AM_SortKey is empty and HF_RegionalCountry.Value is 'ES' then
 			set value '000' in CC_AM_SortKey
 
-		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is 'IT' then
+		REQUEST.CC_AM_SortKey is empty and HF_RegionalCountry.Value is 'IT' then
 			set value '002' in CC_AM_SortKey
 
-		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is 'PT' then
+		REQUEST.CC_AM_SortKey is empty and HF_RegionalCountry.Value is 'PT' then
 			set value '003' in CC_AM_SortKey
 
-		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY in {'BE','LU'} then
+		REQUEST.CC_AM_SortKey is empty and HF_RegionalCountry.Value in {'BE','LU'} then
 			set value '009' in CC_AM_SortKey
 
-		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is 'FR' then
+		REQUEST.CC_AM_SortKey is empty and HF_RegionalCountry.Value is 'FR' then
 			set value '007' in CC_AM_SortKey
 
-		REQUEST.CC_AM_SortKey is empty and REQUEST.COUNTRY is 'GR' then
+		REQUEST.CC_AM_SortKey is empty and HF_RegionalCountry.Value is 'GR' then
 			set value '001' in CC_AM_SortKey
 
-		REQUEST.REQUEST_TYPE in {'CC', 'CC_CC', 'CC_PO'} then
+		HF_RequestType.Value in {'CC', 'CC_CC', 'CC_PO'} then
 			this visible false
 		else
 			this visible true
@@ -2772,13 +2938,13 @@ Entity CC_AM_InterestIndic is TextBox in frmMain
 
 	with rules
 
-		REQUEST.COUNTRY in {'BE','LU'} and REQUEST.REQUEST_TYPE is not CM_BLK  and GD_Ctr_CustomerClassification.Value is 'NG' then
+		HF_RegionalCountry.Value in {'BE','LU'} and HF_RequestType.Value is not CM_BLK  and GD_Ctr_CustomerClassification.Value is 'NG' then
 			set value 'ZV' in CC_AM_InterestIndic
 
-		REQUEST.COUNTRY in {'BE','LU'} and REQUEST.REQUEST_TYPE is not CM_BLK  and GD_Ctr_CustomerClassification.Value is 'G' then
+		HF_RegionalCountry.Value in {'BE','LU'} and HF_RequestType.Value is not CM_BLK  and GD_Ctr_CustomerClassification.Value is 'G' then
 			set value 'ZW' in CC_AM_InterestIndic
 
-		REQUEST.COUNTRY is 'GR' and REQUEST.REQUEST_TYPE in {'CC','CC_CC'} then
+		HF_RegionalCountry.Value is 'GR' and HF_RequestType.Value in {'CC','CC_CC'} then
 			set value '7G' in CC_AM_InterestIndic
 
 	with triggers
@@ -2803,16 +2969,16 @@ Entity KNVV_BZIRK is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_SalesDistrict
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			this visible true
 
-		REQUEST.COUNTRY is 'FR' AND REQUEST.KNVV_BZIRK is empty then
+		HF_RegionalCountry.Value is 'FR' AND REQUEST.KNVV_BZIRK is empty then
 			set value '' in KNVV_BZIRK
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this mandatory true
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -2829,17 +2995,17 @@ Entity SO_CustomerGroup is DropDownList in frmMain
 		value ''
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CustomerGroups with arguments {FlagActive : true, CompanyCode : REQUEST.COMPANY_CODE}
+		load data from DATASOURCE.MDMC_CustomerGroups with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
 
 	with rules
 		
-		REQUEST.COUNTRY is 'FR' and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC', 'CC_SO'} then
+		HF_RegionalCountry.Value is 'FR' and HF_RequestType.Value in {'CC', 'CC_CC', 'CC_SO'} then
 			set value '01' in SO_CustomerGroup
 	
-		REQUEST.COUNTRY in {'IT', 'LU'} and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC', 'CC_SO'} then
+		HF_RegionalCountry.Value in {'IT', 'LU'} and HF_RequestType.Value in {'CC', 'CC_CC', 'CC_SO'} then
 			set value '12' in SO_CustomerGroup
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	
 	with triggers
@@ -2858,14 +3024,14 @@ Entity SO_SalesOffice is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field SalesOffice
-		load data from DATASOURCE.MDMC_SalesOffice with arguments { ClusterPOCode : REQUEST.SALES_ORGANIZATION, ClusterCompanyCode : REQUEST.COMPANY_CODE, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL, FlagActive : true}
+		load data from DATASOURCE.MDMC_SalesOffice with arguments { ClusterPOCode : HF_SalesOrg.Value, ClusterCompanyCode : HF_CompanyCode.Value, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL, FlagActive : true}
 
 	with rules
 		; only show the control if there are data loaded from the 'load data from' instruction
 		; TODO: CHECK WITH SEB about this
 		this.Items.Count > '0' then
 			SO_SalesOffice visible true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 		
@@ -2882,9 +3048,9 @@ Entity KNVV_EIKTO is TextBox in frmMain
 		mandatory true
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			KNVV_EIKTO visible true
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			
 	with triggers
@@ -2902,14 +3068,14 @@ Entity KNVV_VKGRP is DropDownList in frmMain
 		value field Code
 
 	with rules
-		; REQUEST.COUNTRY is 'FR' then
+		; HF_RegionalCountry.Value is 'FR' then
 		; 	this visible true
 		; 	this mandatory false
 
-		REQUEST.REQUEST_TYPE not in {'CC','CC_CC'} and SO_SalesOffice.Value is not empty then
-			load data from DATASOURCE.MDMC_GetSalesGroups with arguments {SalesOffice : REQUEST.SALES_ORGANIZATION}
+		HF_RequestType.Value not in {'CC','CC_CC'} and SO_SalesOffice.Value is not empty then
+			load data from DATASOURCE.MDMC_GetSalesGroups with arguments {SalesOffice : HF_SalesOrg.Value}
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			
 	with triggers
@@ -2926,9 +3092,9 @@ Entity SO_SalesOrderCurrency is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_Currencies with arguments {FlagActive : true}
 		value 'EUR'
 	with rules
-		REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RequestType.Value is 'CC' then
 			set value 'EUR' in SO_SalesOrderCurrency
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	
 	with triggers
@@ -2948,11 +3114,11 @@ Entity KNVV_KONDA is DropDownList in frmMain
 		value ''
 
 	with rules
-		; REQUEST.COUNTRY is 'FR' then
+		; HF_RegionalCountry.Value is 'FR' then
 		; 	this visible true
 		; 	this mandatory false
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -2972,11 +3138,11 @@ Entity KNVV_PLTYP is DropDownList in frmMain
 		value ''
 
 	with rules
-		; REQUEST.COUNTRY in {'BE', 'FR'} then
+		; HF_RegionalCountry.Value in {'BE', 'FR'} then
 		; 	KNVV_PLTYP visible true
-		REQUEST.COUNTRY is 'BE' then
+		HF_RegionalCountry.Value is 'BE' then
 			set value '2G' in KNVV_PLTYP
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	
@@ -2997,15 +3163,15 @@ Entity SO_CustPricingProc is DropDownList in frmMain
 		value ''
 	
 	with rules
-		REQUEST.COUNTRY in {'FR','GR'} then
+		HF_RegionalCountry.Value in {'FR','GR'} then
 			this enabled true
 			set value '1' in SO_CustPricingProc
 
-		REQUEST.COUNTRY in {'PT', 'BE', 'LU', 'GR'} or REQUEST.COMPANY_CODE in {'5180', '5116'} or REQUEST.SALES_ORGANIZATION in {'10A0','10A1','10A9','10L0'} then
+		HF_RegionalCountry.Value in {'PT', 'BE', 'LU', 'GR'} or HF_CompanyCode.Value in {'5180', '5116'} or HF_SalesOrg.Value in {'10A0','10A1','10A9','10L0'} then
 			this enabled false
 			set value '1' in SO_CustPricingProc
 		
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with triggers
@@ -3035,21 +3201,21 @@ Entity SO_CustomerStatsGroup is DropDownList in frmMain
 
 	with rules
 			
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			set value '1' in SO_CustPricingProc
 
-		REQUEST.COUNTRY in {'PT', 'BE', 'LU'} or REQUEST.COMPANY_CODE in {'5180', '5116'} then
+		HF_RegionalCountry.Value in {'PT', 'BE', 'LU'} or HF_CompanyCode.Value in {'5180', '5116'} then
 			this enabled false
 			set value '1' in SO_CustPricingProc
 
-		REQUEST.COUNTRY in {'ES','FR','GR'} then
+		HF_RegionalCountry.Value in {'ES','FR','GR'} then
 			set value '1' in SO_CustPricingProc
 			this enabled true
 
-		REQUEST.ACCOUNT_GROUP is 'YCT7' then
+		HF_AccountGroup.Value is 'YCT7' then
 			this mandatory true
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	
 	with triggers
@@ -3063,39 +3229,39 @@ Entity SO_CustomerShippingConditions is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CustomerShippingCondition with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
+		load data from DATASOURCE.MDMC_CustomerShippingCondition with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 	with rules
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			set value '01' in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is 'GR' then
+		HF_RegionalCountry.Value is 'GR' then
 			set value '01' in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is 'PT' then
+		HF_RegionalCountry.Value is 'PT' then
 			set value '31' in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is 'BE' then
+		HF_RegionalCountry.Value is 'BE' then
 			this enabled false
 			set value '11' in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is 'GR' then
+		HF_RegionalCountry.Value is 'GR' then
 			set value '01' in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is 'IT' then
+		HF_RegionalCountry.Value is 'IT' then
 			set value '31' in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is 'GR' then
+		HF_RegionalCountry.Value is 'GR' then
 			set value '21' in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is 'ES' and REQUEST.CUSTOMER_COUNTRY is 'ES' then
+		HF_RegionalCountry.Value is 'ES' and HF_CustomerCountry.Value is 'ES' then
 			set value '31' in SO_CustomerShippingConditions
 
-		REQUEST.COUNTRY is 'ES' and REQUEST.CUSTOMER_COUNTRY is not 'ES' then
+		HF_RegionalCountry.Value is 'ES' and HF_CustomerCountry.Value is not 'ES' then
 			set value '33' in SO_CustomerShippingConditions
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	
@@ -3116,23 +3282,23 @@ Entity KNVV_VWERK is DropDownList in frmMain
 		label LABELS.labVWERK
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_DeliveryPlant with arguments {CodeSalesOrg : REQUEST.SALES_ORGANIZATION, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL}
+		load data from DATASOURCE.MDMC_DeliveryPlant with arguments {CodeSalesOrg : HF_SalesOrg.Value, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL}
 
 	with rules
 		
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			this visible true
 			this mandatory false
 
-		REQUEST.REQUEST_TYPE in {'CC', 'CC_CC', 'CC_SO'} and REQUEST.COMPANY_CODE is '5140' and REQUEST.DISTRIBUTION_CHANNEL is '11' then
+		HF_RequestType.Value in {'CC', 'CC_CC', 'CC_SO'} and HF_CompanyCode.Value is '5140' and REQUEST.DISTRIBUTION_CHANNEL is '11' then
 			; KNVV_VWERK visible true
 			set value '6010' in KNVV_VWERK
 
-		REQUEST.REQUEST_TYPE in {'CC', 'CC_CC', 'CC_SO'} and REQUEST.COMPANY_CODE is '5140' and REQUEST.DISTRIBUTION_CHANNEL is '12' then
+		HF_RequestType.Value in {'CC', 'CC_CC', 'CC_SO'} and HF_CompanyCode.Value is '5140' and REQUEST.DISTRIBUTION_CHANNEL is '12' then
 			; KNVV_VWERK visible true
 			set value '6020' in KNVV_VWERK
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	
 	with triggers
@@ -3148,7 +3314,7 @@ Entity KNVV_AUTLF is CheckBox in frmMain
 
 	with rules
 	
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			visible true
 			set value true in KNVV_AUTLF
 
@@ -3158,7 +3324,7 @@ Entity KNVV_AUTLF is CheckBox in frmMain
 		KNVV_AUTLF.Value is false then
 			set value '' in KNVV_ANTLF.Value
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
 	with triggers
@@ -3178,22 +3344,22 @@ Entity KNVV_ANTLF is DropDownList in frmMain
 
 	with rules
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			visible true
 			set value '9' in KNVV_ANTLF
 
 		; TODO: Check with SEB about how to reference the model like this
-		REQUEST.COUNTRY is 'FR' and KNVV_AUTLF.Value and REQUEST.KNVV_ANTLFSAP.Value is true then
+		HF_RegionalCountry.Value is 'FR' and KNVV_AUTLF.Value and REQUEST.KNVV_ANTLFSAP.Value is true then
 			set value '0' in KNVV_ANTLF
 
 		KNVV_AUTLF is visible and KNVV_KZTLF.Value in {'A','B','C'} and KNVV_ANTLF.Value > 1 then
 			set value MESSAGES.ERRPartiaDelivs1 in MESSAGE_POPUP
 
-		REQUEST.COUNTRY is {'IT', BE, 'GR'} and REQUEST.REQUEST_TYPE in {'CC', 'CC_CC', 'CC_SO'} then
+		HF_RegionalCountry.Value is {'IT', BE, 'GR'} and HF_RequestType.Value in {'CC', 'CC_CC', 'CC_SO'} then
 			visible true
 			set value '0' in KNVV_ANTLF
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 
 	with triggers
@@ -3211,10 +3377,10 @@ Entity KNVV_LPRIO is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_DeliverPriority
 
 	with rules
-		REQUEST.COUNTRY in {'ES', 'IT', 'BE', 'LU', 'FR', 'GR', 'PT'} then
+		HF_RegionalCountry.Value in {'ES', 'IT', 'BE', 'LU', 'FR', 'GR', 'PT'} then
 			set value '02' in KNVV_LPRIO
 			this enable false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -3242,7 +3408,7 @@ Entity KNVV_KZTLF is DropDownList in frmMain
 		KNVV_AUTLF is visible and KNVV_AUTLF.Value is false and KNVV_KZTLF.Value in {A,B} and KNVV_ANTLF.Value > 1 then
 			set value 'In Sales Area Data view the field Number of partial deliveries, may not be larger than 1' in MESSAGE_POPUP
 			
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -3259,10 +3425,10 @@ Entity KNVV_PRFRE is CheckBox in frmMain
 
 	with rules
 		; NOTE: not in FM
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			KNVV_PRFRE mandatory false
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	
@@ -3280,33 +3446,33 @@ Entity SO_Incoterms is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		; TODO: Crate SP
-		load data from DATASOURCE.MDMC_GetIncotermsByCountry with arguments {CountryCode : REQUEST.REQUEST_COUNTRY}
+		load data from DATASOURCE.MDMC_GetIncotermsByCountry with arguments {CountryCode : HF_RegionalCountry.Value }
 
 	with rules
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			set value 'DAP' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'PT' then
+		HF_RegionalCountry.Value is 'PT' then
 			set value '' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'ES' then
+		HF_RegionalCountry.Value is 'ES' then
 			set value 'Y30' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'IT' then
+		HF_RegionalCountry.Value is 'IT' then
 			set value 'FH' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'BE' then
+		HF_RegionalCountry.Value is 'BE' then
 			this enabled false
 			set value 'DDP' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'LU' then
+		HF_RegionalCountry.Value is 'LU' then
 			set value 'DDP' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'GR' then
+		HF_RegionalCountry.Value is 'GR' then
 			set value '' in SO_Incoterms
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -3321,26 +3487,26 @@ Entity SO_IncotermsPart2 is TextBox in frmMain
 	
 	with rules
 
-		REQUEST.COUNTRY is 'FR' and REQUEST.SO_IncotermsPart2.Value is empty then
+		HF_RegionalCountry.Value is 'FR' and REQUEST.SO_IncotermsPart2.Value is empty then
 			set value 'France Metropolitaine' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'PT' and REQUEST.SO_IncotermsPart2.Value is empty then
+		HF_RegionalCountry.Value is 'PT' and REQUEST.SO_IncotermsPart2.Value is empty then
 			set value '' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'ES'  and REQUEST.SO_IncotermsPart2.Value is empty then
+		HF_RegionalCountry.Value is 'ES'  and REQUEST.SO_IncotermsPart2.Value is empty then
 			set value 'Y30  - carriage  paid' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'IT'  and REQUEST.SO_IncotermsPart2.Value is empty then
+		HF_RegionalCountry.Value is 'IT'  and REQUEST.SO_IncotermsPart2.Value is empty then
 			set value 'Franco domicilio' in SO_Incoterms
 
-		REQUEST.COUNTRY is 'GR'  and REQUEST.SO_IncotermsPart2.Value is empty then
+		HF_RegionalCountry.Value is 'GR'  and REQUEST.SO_IncotermsPart2.Value is empty then
 			set value '' in SO_Incoterms
 
-		REQUEST.COUNTRY in {'BE','LU'}  and REQUEST.SO_IncotermsPart2.Value is empty then
+		HF_RegionalCountry.Value in {'BE','LU'}  and REQUEST.SO_IncotermsPart2.Value is empty then
 			this enabled false
 			set value 'DESTINATION' in SO_Incoterms
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -3370,32 +3536,32 @@ Entity SO_TermsOfPaymentKey is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
+		load data from DATASOURCE.MDMC_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 	with rules
-		REQUEST.COMPANY_CODE is '5140' and GD_Adr_Country.Value in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
+		HF_CompanyCode.Value is '5140' and GD_Adr_Country.Value in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
 			set value '6115' in SO_TermsOfPaymentKey
-		REQUEST.COMPANY_CODE is '5140' and GD_Adr_Country.Value not in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
+		HF_CompanyCode.Value is '5140' and GD_Adr_Country.Value not in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
 			set value '6000' in SO_TermsOfPaymentKey
-		REQUEST.COUNTRY is 'LU' then
+		HF_RegionalCountry.Value is 'LU' then
 			set value '1113' in SO_TermsOfPaymentKey
-		REQUEST.COUNTRY is 'ES' then
+		HF_RegionalCountry.Value is 'ES' then
 			set value '3E60' in SO_TermsOfPaymentKey
-		REQUEST.COUNTRY in {'BE', 'LU'} then
+		HF_RegionalCountry.Value in {'BE', 'LU'} then
 			set value '1109' in SO_TermsOfPaymentKey
-		REQUEST.COUNTRY is 'PT' then
+		HF_RegionalCountry.Value is 'PT' then
 			SO_TermsOfPaymentKey visible false
-		REQUEST.COUNTRY is 'PT' and GD_Adr_Country.Value is 'PT' then
+		HF_RegionalCountry.Value is 'PT' and GD_Adr_Country.Value is 'PT' then
 			set value '4216' in SO_TermsOfPaymentKey
-		REQUEST.COUNTRY is 'PT' and GD_Adr_Country.Value is 'PT' then
+		HF_RegionalCountry.Value is 'PT' and GD_Adr_Country.Value is 'PT' then
 			set value '4116' in SO_TermsOfPaymentKey
 		; NOTE: not in FM, but in code
-		REQUEST.COUNTRY is 'IT' then
+		HF_RegionalCountry.Value is 'IT' then
 			set value '5001' in SO_TermsOfPaymentKey
-;		REQUEST.COUNTRY in {'IT', 'GR'} then
+;		HF_RegionalCountry.Value in {'IT', 'GR'} then
 ;			set value '' in SO_TermsOfPaymentKey
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -3415,20 +3581,20 @@ Entity KNVV_KTGRD is DropDownList in frmMain
 
 	with rules
 		
-		REQUEST.COUNTRY is 'GR' then
+		HF_RegionalCountry.Value is 'GR' then
 			this visible true
 			this enabled true
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			this mandatory true
 
-		REQUEST.COUNTRY is REQUEST.CUSTOMER_COUNTRY then
+		HF_RegionalCountry.Value is HF_CustomerCountry.Value then
 			set value '01' in KNVV_KTGRD
 
-		REQUEST.COUNTRY is not REQUEST.CUSTOMER_COUNTRY then
+		HF_RegionalCountry.Value is not HF_CustomerCountry.Value then
 			set value '02' in KNVV_KTGRD
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -3451,25 +3617,25 @@ Entity SO_TaxClassification is DropDownList in frmMain
 		SO_TaxClassification.Value is empty then
 			set value '1' in SO_TaxClassification
 
-		REQUEST.REQUEST_TYPE is not 'CM_BLK' and REQUEST.COUNTRY is 'PT' and REQUEST.CUSTOMER_COUNTRY is 'PT' then
+		HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'PT' and HF_CustomerCountry.Value is 'PT' then
 			set value '1' in SO_TaxClassification
 
-		REQUEST.REQUEST_TYPE is not 'CM_BLK' and REQUEST.COUNTRY is 'PT' and REQUEST.CUSTOMER_COUNTRY is not 'PT' REQUEST.IsEU is true then
+		HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'PT' and HF_CustomerCountry.Value is not 'PT' and HF_IsEU.Value is true then
 			set value 'B' in SO_TaxClassification
 
-		REQUEST.REQUEST_TYPE is not 'CM_BLK' and REQUEST.COUNTRY is 'PT' and REQUEST.CUSTOMER_COUNTRY is not 'PT' and REQUEST.IsEU is false then
+		HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'PT' and HF_CustomerCountry.Value is not 'PT' and HF_IsEU.Value is false then
 			set value 'A' in SO_TaxClassification
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			; THIS CANNOT BE
 			; this mandatory true
 			set value '1' in SO_TaxClassification
 			this enable false
 
-		REQUEST.COUNTRY is 'ES' then
+		HF_RegionalCountry.Value is 'ES' then
 			set value '1' in SO_TaxClassification
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 				
 	with triggers
@@ -3498,35 +3664,35 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 		label LABELS.labCreditControlGroups
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CompanyCode : REQUEST.COMPANY_CODE}
+		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CompanyCode : HF_CompanyCode.Value}
 
 	with rules
 
-		REQUEST.COMPANY_CODE is '5140' and REQUEST.REQUEST_TYPE is {'CC','CC_CC'} then
-			load data from DATASOURCE.MDMC_AccountingClerksFORPTBELU with arguments {CountryCode : REQUEST.CUSTOMER_COUNTRY, CodeRegion : GD_Adr_Region.Value} in KNKK_SBGRP
+		HF_CompanyCode.Value is '5140' and HF_RequestType.Value is {'CC','CC_CC'} then
+			load data from DATASOURCE.MDMC_AccountingClerksFORPTBELU with arguments {CountryCode : HF_CustomerCountry, CodeRegion : GD_Adr_Region.Value} in KNKK_SBGRP
 		
-		REQUEST.COUNTRY is 'BE' then
-			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments {CountryCode : REQUEST.CUSTOMER_COUNTRY, CodeRegion : GD_Adr_Region.Value} in KNKK_SBGRP
+		HF_RegionalCountry.Value is 'BE' then
+			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments {CountryCode : HF_CustomerCountry, CodeRegion : GD_Adr_Region.Value} in KNKK_SBGRP
 
 
-		REQUEST.COMPANY_CODE in {'5180','596G','5140','491E'} then
+		HF_CompanyCode.Value in {'5180','596G','5140','491E'} then
 			this visible true
 
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			this mandatory false	
 			this visible true
 
-		REQUEST.COMPANY_CODE in {'5140','491E'} then
+		HF_CompanyCode.Value in {'5140','491E'} then
 			this mandatory false	
 		
 		; TODO: WHAT IS THIS DISCREPANCY	
-		REQUEST.REQUEST_TYPE in {'CC', 'CC_SO'} then
-			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
+		HF_RequestType.Value in {'CC', 'CC_SO'} then
+			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
 
-		REQUEST.ACCOUNT_GROUP in {'YCT6','YVT6','YCT9','YVT9'} and GD_Adr_PostalCode.Value.Length >= 2 then
-			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments { CountryCode : REQUEST.COUNTRY, CompanyCode : REQUEST.COMPANY_CODE, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
+		HF_AccountGroup.Value in {'YCT6','YVT6','YCT9','YVT9'} and GD_Adr_PostalCode.Value.Length >= 2 then
+			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			
 	with triggers
@@ -3544,10 +3710,10 @@ Entity KNVV_KVGR1 is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR1'}
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			KNVV_KVGR1 visible true
 			this mandatory false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			
 	with triggers
@@ -3565,10 +3731,10 @@ Entity KNVV_KVGR2 is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR2'}
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			KNVV_KVGR2 visible true
 			this mandatory false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with triggers
@@ -3585,10 +3751,10 @@ Entity KNVV_KVGR3 is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR3'}
 	with rules
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			KNVV_KVGR3 visible true
 			this mandatory false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with triggers
@@ -3606,10 +3772,10 @@ Entity KNVV_KVGR4 is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR4'}
 
 	with rules
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			KNVV_KVGR4 visible true
 			this mandatory false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with triggers
@@ -3627,19 +3793,19 @@ Entity KNVV_KVGR5 is DropDownList in frmMain
 		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR5'}
 
 	with rules
-		REQUEST.SALES_ORGANIZATION in {'40E0', '31E0', '60E0', '50E0', '70E0', '10E0', '22E0'} then
+		HF_SalesOrg.Value in {'40E0', '31E0', '60E0', '50E0', '70E0', '10E0', '22E0'} then
 			KNVV_KVGR5 mandatory true
 			load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Group : 'GR4', Filter : true}
 			
-		REQUEST.SALES_ORGANIZATION not in {'40E0', '31E0', '60E0', '50E0', '70E0', '10E0', '22E0'} then
+		HF_SalesOrg.Value not in {'40E0', '31E0', '60E0', '50E0', '70E0', '10E0', '22E0'} then
 			KNVV_KVGR5 mandatory false
 			load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Group : 'GR4'}
 			
-		REQUEST.COUNTRY is 'FR' then
+		HF_RegionalCountry.Value is 'FR' then
 			KNVV_KVGR4 visible true
 			this mandatory false
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			
 	with triggers
@@ -3662,7 +3828,7 @@ Entity KNKK_KNKLI is TextBox in frmMain
 		enabled false
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -3680,13 +3846,13 @@ Entity KNKK_KLIMK is TextBox in frmMain
 		enabled false
 
 	with rules
-		REQUEST.COUNTRY in {'ES', 'PT'} and REQUEST.COMPANY_CODE in {'CC','CC_CC'} then
+		HF_RegionalCountry.Value in {'ES', 'PT'} and HF_CompanyCode.Value in {'CC','CC_CC'} then
 			set value '0' in KNKK_KLIMK
 
-		REQUEST.COUNTRY in {'BE', 'LU'} and REQUEST.COMPANY_CODE in {'CC','CC_CC'} then
+		HF_RegionalCountry.Value in {'BE', 'LU'} and HF_CompanyCode.Value in {'CC','CC_CC'} then
 			set value '5000' in KNKK_KLIMK
 	
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		
 	with triggers
@@ -3709,12 +3875,12 @@ Entity KNKK_CTLPC is TextBox in frmMain
 
 	with rules
 		
-		REQUEST.COUNTRY is 'ES' and REQUEST.COMPANY_CODE in {'CC','CC_CC'} then
+		HF_RegionalCountry.Value is 'ES' and HF_CompanyCode.Value in {'CC','CC_CC'} then
 			set value '' in KNKK_CTLPC
-		REQUEST.COUNTRY is 'PT' and REQUEST.COMPANY_CODE in {'CC','CC_CC'} then
+		HF_RegionalCountry.Value is 'PT' and HF_CompanyCode.Value in {'CC','CC_CC'} then
 			set value '44X' in KNKK_CTLPC
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE is ROLES.SUS then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value is 'MDMC3_SUS' then
 			this enable false	
 
 	with actions
@@ -3733,7 +3899,7 @@ Entity KNKK_DTREV is TextBox in frmMain
 		enabled false
 
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			
 	with triggers
@@ -3749,7 +3915,7 @@ Entity KNKK_NXTRV is TextBox in frmMain
 		enabled false
 		label LABELS.labNextInternalReview
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads
@@ -3763,7 +3929,7 @@ Entity KNKK_KRAUS is TextBox in frmMain
 		enabled false
 		max length 11
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	
 	with triggers
@@ -3778,7 +3944,7 @@ Entity KNKK_DBRTG is TextBox in frmMain
 		enabled false
 		max length 5
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -3794,7 +3960,7 @@ Entity KNKK_REVDB is TextBox in frmMain
 		enabled false
 		max length 8
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -3821,7 +3987,7 @@ Entity KNKK_DBEKR is NumericBox in frmMain
 		enabled false
 		max length 15
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads
@@ -3847,7 +4013,7 @@ Entity btnBlockAll is Button in frmMain
 		set value '1F' in BLK_BillingBlockAtSalesArea
 
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			this visible false
 
@@ -3875,7 +4041,7 @@ Entity btnUnblockAll is Button in frmMain
 		set value '' in BLK_BillingBlockAtSalesArea
 
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			this visible false
 
@@ -3895,7 +4061,7 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 	with actions
 		set value BLK_GD_Ctr_UnsubscribeCMD.Value in GD_Ctr_UnsubscribeCMD
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -3911,7 +4077,7 @@ Entity BLK_CentralPostingBlock is CheckBox in frmMain
 	with defaults
 		label LABELS.labCentralPostingBlock
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -3927,7 +4093,7 @@ Entity BLK_PostingBlockForCC is CheckBox in frmMain
 	with defaults
 		label LABELS.labPostBlockingForCompanyCode
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -3947,7 +4113,7 @@ Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDMC_OrderBlock
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -3966,7 +4132,7 @@ Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDMC_BLK_BillingBlockAtSalesArea
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -3985,7 +4151,7 @@ Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDMC_DeliveryBlock
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -4004,7 +4170,7 @@ Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDMC_DeliveryBlock
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -4023,7 +4189,7 @@ Entity BLK_CentralBillingBlock is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDMC_BillingBlock
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -4042,7 +4208,7 @@ Entity BLK_BillingBlockAtSalesArea is DropDownList in frmMain
 		; ATTACHMENT mandatory  false
 		_COMMENT_ mandatory  true  
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers 
 		on change
@@ -4055,7 +4221,7 @@ Entity BLK_CentralSalesSupportBlock is CheckBox in frmMain
 	with defaults
 		label LABELS.labCentralSalesSupportBlock
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -4068,7 +4234,7 @@ Entity BLK_CentralSalesSupportBlockAtSalesArea is CheckBox in frmMain
 	with defaults
 		label LABELS.labCentralSalesSupportBlockAtThisSalesArea
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -4081,7 +4247,7 @@ Entity BLK_CentralDeletionFlagMasterRecord is CheckBox in frmMain
 	with defaults
 		label LABELS.labCentralDelMasterRecord
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -4097,7 +4263,7 @@ Entity BLK_DeletionFlagMasterRecordCC is CheckBox in frmMain
 	with defaults
 		label LABELS.labDelFlagMasterCompanyCode
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -4113,7 +4279,7 @@ Entity BLK_DeletionFlagMasterRecordSA is CheckBox in frmMain
 	with defaults
 		label LABELS.labDelFlagAtThisSalesArea
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers
 		this loads
@@ -4129,7 +4295,7 @@ Entity BLK_CentralDeletionBlockMasterRecord is CheckBox in frmMain
 		; ATTACHMENT mandatory  false
 		_COMMENT_ mandatory  true
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with triggers 
 		on change
@@ -4142,7 +4308,7 @@ Entity BLK_DeletionBlockMasterRecordCC is CheckBox in frmMain
 	with defaults
 		label LABELS.labDelBlockMasterCompany
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} or REQUEST.REQUEST_TYPE is not 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
@@ -4158,7 +4324,7 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 	with defaults
 		label LABELS.labUrgentRequest
 	with rules
-		REQUEST.STATE in {STATES.CLOSED, STATES.LOCKED} then
+		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} then
 			this enable false
 		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4173,7 +4339,7 @@ Entity TS_IsUrgentRequest is CheckBox in frmMain
 ; 		label LABELS.labCostCenter
 ; 
 ; 	with rules
-; 		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+; 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 ; 			this enable false	
 ; ---------------------------------------------------------------------------- 
 
@@ -4187,7 +4353,7 @@ Entity DDLDCReqAction is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 
-        load data from DATASOURCE.W4E_StateMap with arguments {BPCode : REQUEST.BP_CODE, FlowType : REQUEST.REQUEST_TYPE, CurrentRole : REQUEST.CURRENT_ROLE, Status : REQUEST.REQUEST_STATUS }
+        load data from DATASOURCE.W4E_StateMap with arguments {BPCode : 'MDMC3', FlowType : HF_RequestType.Value, CurrentRole : HF_CurrentRole.Value, Status : HF_RequestState }
 		; TODO: DEFAULT VALUE and the rest
 	with rules
 
@@ -4195,7 +4361,7 @@ Entity DDLDCReqAction is DropDownList in frmMain
 			this enable false
 			this visible false
 		
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} then
+		HF_RequestState.Value in {'Locked', 'Closed'} then
 			this enable false
 	
 	with triggers
@@ -4248,24 +4414,24 @@ Entity btnSubmit is Button in frmMain
 		; TODO: 
 		; bank validation in case of enq or clekr only
 		
-		REQUEST.REQUEST_TYPE is not 'CM_BLK' and GD_Adr_Country.Value is 'IT' and GD_Ctr_CF is not empty and GD_Ctr_CF.Value.Length < 9 then
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Country.Value is 'IT' and GD_Ctr_CF is not empty and GD_Ctr_CF.Value.Length < 9 then
 			set value MESSAGES.ERRsubmitRequestGDFieldCFShort in MESSAGE_POPUP
 			
-		REQUEST.REQUEST_TYPE is not 'CM_BLK' and GD_Adr_Country.Value is 'IT' and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_CF is empty and REQUEST.REQUEST_TYPE is 'CC' then
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Country.Value is 'IT' and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_CF is empty and HF_RequestType.Value is 'CC' then
 			set value MESSAGES.ERRsubmitRequestGDFieldCFEmpty in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE is not 'CM_BLK' and GD_Ctr_CustomerClassification.Value is empty then
+		HF_RequestType.Value is not 'CM_BLK' and GD_Ctr_CustomerClassification.Value is empty then
 			set value MESSAGES.ERRCustomerClassEmpty in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE is not 'CM_BLK' and GD_VT_Grid.Items.Count is '0' and REQUEST.COUNTRY is not 'BE' then
+		HF_RequestType.Value is not 'CM_BLK' and GD_VT_Grid.Items.Count is '0' and HF_RegionalCountry.Value is not 'BE' then
 			set value MESSAGES.ERRsubmitRequestGDFieldTelephone in MESSAGE_POPUP
 
 		; TODO: DEFINE SOMEHOW THE CHECKIN OF DEFAULT ROW IN GRID...
-		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.CLERK} and REQUEST.REQUEST_TYPE is not 'CM_BLK' and GD_VT_Grid.Items.Count is not '0' and REQUEST.PHONE_DETAILS.NO_DEFAULT_ENTRY is true and REQUEST.COUNTRY not in {'BE','LU','PT','WF'} then
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_VT_Grid.Items.Count is not '0' and REQUEST.PHONE_DETAILS.NO_DEFAULT_ENTRY is true and HF_RegionalCountry.Value not in {'BE','LU','PT','WF'} then
 			set value MESSAGES.ERRsubmitRequestGDDefTel in MESSAGE_POPUP
 
 		; TODO: DEFINE SOMEHOW THE CHECKIN OF DEFAULT ROW IN GRID...
-		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.CLERK} and REQUEST.REQUEST_TYPE is not 'CM_BLK' and GD_VF_Grid.Items.Count is not '0' and REQUEST.FAX_DETAILS.NO_DEFAULT_ENTRY is true then
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_VF_Grid.Items.Count is not '0' and REQUEST.FAX_DETAILS.NO_DEFAULT_ENTRY is true then
 			set value MESSAGES.ERRsubmitRequestGDDefFax in MESSAGE_POPUP
 
 
@@ -4273,7 +4439,7 @@ Entity btnSubmit is Button in frmMain
 
 
 
-		REQUEST.CURRENT_ROLE is ROLES.ENQ and REQUEST.REQUEST_TYPE is not 'CC' and DDLDCComment.Value is empty then
+		HF_CurrentRole.Value is 'MDMC3_ENQ' and HF_RequestType.Value is not 'CC' and DDLDCComment.Value is empty then
 			set value MESSAGES.ERRsubmitRequestComment in MESSAGE_POPUP
 
 
@@ -4307,14 +4473,14 @@ Entity btnSubmit is Button in frmMain
 		GD_Com_Telebox.Value is empty then
 			set value MESSAGES.ERRFieldTelebox in MESSAGE_POPUP
 
-		REQUEST.REQUEST_TYPE is not 'CM_BLK' and GD_Adr_Country.Value is not 'IT' and REQUEST.ACCOUNT_GROUP not in {'YCT6', 'YVT6'} and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsFieldMandatory then
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Country.Value is not 'IT' and HF_AccountGroup.Value not in {'YCT6', 'YVT6'} and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsFieldMandatory then
 			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1 in MESSAGE_POPUP			   
 
 		GD_Adr_Country.Value is 'PT' and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Value.Length < 9 then
 			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1Inv in MESSAGE_POPUP
 
-		REQUEST.COMPANY_CODE is '5240' and GD_Ctr_NIF.Value starts with {'1','2'} or GD_Ctr_TaxCode1 starts with {'1','2'} then
-			set label MESSAGES.MSGNiss in TBVendorVAT
+		HF_CompanyCode.Value is '5240' and GD_Ctr_NIF.Value starts with {'1','2'} or GD_Ctr_TaxCode1 starts with {'1','2'} then
+			set label MESSAGES.MSGNiss in TBCustomerVAT
 
 
 		; TODO: ValidateBankDetails
@@ -4325,7 +4491,7 @@ Entity btnSubmit is Button in frmMain
 			this enable false
 			this visible false
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} then
+		HF_RequestState.Value in {'Locked', 'Closed'} then
 			this visible false
 		else
 			this visible true
@@ -4361,23 +4527,23 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 	
 		; TODO: MISSING FRANCE PARTNER AND REGIONAL DUE TO LEGAL FORM - CHECK LATER
 		; ALL FIELDS IN	DIV_ADDITIONAL_INFO_NATURAL_PERSON mandatory
-		REQUEST.COUNTRY is 'ES' and GD_Ctr_TaxCode1.Value starts with {'P', 'Q', 'S'} then 
+		HF_RegionalCountry.Value is 'ES' and GD_Ctr_TaxCode1.Value starts with {'P', 'Q', 'S'} then 
 			set value false in GD_Ctr_IsNaturalPerson
 			set value 'G' in GD_Ctr_CustomerClassification
 
-		REQUEST.COUNTRY is 'ES' and GD_Ctr_TaxCode1.Value starts with {'X','1','2','3','4','5','6','7','8','9'} then 
+		HF_RegionalCountry.Value is 'ES' and GD_Ctr_TaxCode1.Value starts with {'X','1','2','3','4','5','6','7','8','9'} then 
 			set value true in GD_Ctr_IsNaturalPerson 
 			set value 'NG' in GD_Ctr_CustomerClassification
 			
-		REQUEST.CURRENT_ROLE is ROLES.RCO then
+		HF_CurrentRole.Value is 'MDMC3_RCO' then
 			GD_Ctr_IsNaturalPerson enabled true
 
-		REQUEST.CURRENT_ROLE in {ROLES.ENQ, ROLES.RCO, ROLES.CLERK} then 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_RCO', 'MDMC3_CLERK'} then 
 			this enabled true
 		else
 			this enabled false
 
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
@@ -4393,7 +4559,7 @@ Entity ATTACHMENT is AttachmentManager in frmMain
 	with defaults
 		mandatory true
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} then
+		HF_RequestState.Value in {'Locked', 'Closed'} then
 			this enable false	
 	with triggers
 		this loads
@@ -4418,7 +4584,7 @@ Entity GD_SAPNumber is TextBox in frmMain
 		visible false
 		label LABELS.labSAPNumber
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads
@@ -4430,7 +4596,7 @@ Entity DDLDCComment is TextBox in frmMain
 	with defaults
 		label LABELS.labComments
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 		; TODO: CHECK
 		REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -4448,7 +4614,7 @@ Entity btnSCClose is Button in frmMain
 		label LABELS.btnClose
 
 	with rules
-		REQUEST.REQUEST_STATE is not CLOSED and btnSubmit.Visible is true then
+		HF_RequestState.Value is not CLOSED and btnSubmit.Visible is true then
 			this visible true
 
 		btnClose.Visible is true then
@@ -4466,7 +4632,7 @@ Entity SR_Comments is TextBox in frmMain
 	with defaults
 		label LABELS.labSR_Comments
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
 	with triggers
@@ -4480,7 +4646,7 @@ Entity btnBack2 is Button in frmMain
 		label LABELS.btnBack
 
 	with rules
-		REQUEST.REQUEST_STATE is CLOSED then
+		HF_RequestState.Value is CLOSED then
 			this visible false
 	with triggers
 		this loads
@@ -4496,7 +4662,7 @@ Entity btnSave is Button in frmMain
 		this enable false
 	
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} then
+		HF_RequestState.Value in {'Locked', 'Closed'} then
 			this enable false	
 		else
 			this enable true
@@ -4512,7 +4678,7 @@ Entity btnCloseFinal is Button in frmMain
 		label LABELS.btnClose
 
 	with rules
-		REQUEST.CURRENT_ROLE is ROLES.CLERK then
+		HF_CurrentRole.Value is 'MDMC3_CLERK' then
 			this visible true
 		else
 			this visible false
@@ -4523,7 +4689,7 @@ Entity btnCloseFinal is Button in frmMain
 Entity PF_PartnerFunction is DropDownList in PF_Grid
 	with defaults
 		label LABELS.labPartnerFunction
-		load data from DATASOURCE.MDMC_PartnerFunction with arguments { FlagActive : true, ClusterCountryCode : REQUEST.COUNTRY}
+		load data from DATASOURCE.MDMC_PartnerFunction with arguments { FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 ; ---------------------------------------------------------------------------- 
 
@@ -4547,7 +4713,7 @@ Entity PF_Grid is Grid in frmMain
 		; define column GRID_PF_Default			with arguments { ControlID : IsDefault, DataField : IsDefault, Visible : true}
 		
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads
@@ -4576,7 +4742,7 @@ Entity CP_Surname is TextBox in CP_Grid
 	with defaults
 		label LABELS.labCP_Surname
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
 
 	with triggers
@@ -4589,7 +4755,7 @@ Entity CP_Name is TextBox in CP_Grid
 	with defaults
 		label LABELS.labCP_Name
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
 	with triggers
 		this loads
@@ -4604,7 +4770,7 @@ Entity CP_Department is DropDownList in CP_Grid
 		value field Code
 		load data from DATASOURCE.MDMC_Department with arguments {FlagActive : true}
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
 	with triggers
 		this loads
@@ -4615,7 +4781,7 @@ Entity CP_Telephone is TextBox in CP_Grid
 	with defaults
 		label LABELS.labCP_Phone
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
 	with triggers
 		this loads
@@ -4627,7 +4793,7 @@ Entity CP_Fax is TextBox in CP_Grid
 	with defaults
 		label LABELS.labCP_Fax
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
 	with triggers
 		this loads
@@ -4639,7 +4805,7 @@ Entity CP_Email is TextBox in CP_Grid
 	with defaults
 		label LABELS.labCP_Email
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
 	with triggers
 		this loads
@@ -4651,7 +4817,7 @@ Entity CP_Default is CheckBox in CP_Grid
 	with defaults
 		label LABELS.labCP_Default
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
 	with triggers
 		this loads
@@ -4662,7 +4828,7 @@ Entity CP_btnInsert is Button in CP_Grid
 	with defaults
 		label LABELS.btnInsert
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
 	with triggers
 		this loads
@@ -4681,9 +4847,9 @@ Entity CP_Grid is Grid in frmMain
 		define column GRID_CP_Default			with arguments { ControlID : CP_Default,	DataField : Default, Visible : true}
 		
 	with rules
-		REQUEST.ACCOUNT_GROUP in {'YCT6', 'YCT9'} then
+		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE in {ROLES.SUS, ROLES.RCO} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false		
 				
 	with triggers
@@ -4697,7 +4863,7 @@ Entity CP_Grid is Grid in frmMain
 ; TESTGEN : DEFAULTS=2, RULES=1, TRIGGERS=1, ACTIONS=0
 Entity SO_lbxSODSalesOrganization1 is Object in frmMain
 	with rules
-		REQUEST.STATE in {STATE.LOCKED, STATE.CLOSED} or REQUEST.REQUEST_TYPE is 'CM_BLK' or REQUEST.CURRENT_ROLE is ROLES.SUS or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
+		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value is 'MDMC3_SUS' or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 	with triggers
 		this loads

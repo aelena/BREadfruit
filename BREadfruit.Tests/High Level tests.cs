@@ -2905,6 +2905,32 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+		[Test]
+		public void ParseSampleFile104 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File104 - hiddenfields.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "HF_UserCountry", "Entity name should be 'HF_UserCountry' but is " + e.Name );
+			Assert.That ( e.TypeDescription == "TextBox", "Entity name should be 'TextBox' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 3 );
+
+			Assert.That ( e.Defaults.First ().Token == Grammar.VisibleDefaultClause.Token );
+			Assert.That ( e.Defaults.First ().Value.ToString() == Grammar.FalseSymbol.Token );
+			Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.HiddenFieldDefaultClause.Token );
+			Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == Grammar.TrueSymbol.Token );
+			Assert.That ( e.Defaults.ElementAt ( 2 ).Token == Grammar.EnabledDefaultClause.Token );
+			Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == Grammar.FalseSymbol.Token );
+			
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 		[Test]
 		public void ShouldFindEntities_Vendor ()

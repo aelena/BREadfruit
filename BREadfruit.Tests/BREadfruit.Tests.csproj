@@ -190,6 +190,7 @@
     <Content Include="sample files\single entity tests\File101 - Div.txt" />
     <Content Include="sample files\single entity tests\File102.txt" />
     <Content Include="sample files\single entity tests\File103 - btnSearch 2.txt" />
+    <Content Include="sample files\single entity tests\File104 - hiddenfields.txt" />
     <Content Include="sample files\vendor-rules-simple.txt" />
     <Content Include="sample files\vendor-rules.txt" />
     <Content Include="__sketchpad.txt" />
