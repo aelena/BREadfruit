@@ -2863,6 +2863,49 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
+
+		[Test]
+		public void ParseSampleFile102 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File102.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "CC_AM_CashManagementGroup", "Entity name should be 'CC_AM_CashManagementGroup' but is " + e.Name );
+			Assert.That ( e.TypeDescription == "DropDownList", "Entity name should be 'DropDownList' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 6);
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
+		[Test]
+		public void ParseSampleFile103 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File103 - btnSearch 2.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmSearch", "Entity form should be 'frmSearch' but is " + e.Form );
+			Assert.That ( e.Name == "btnSearch", "Entity name should be 'btnSearch' but is " + e.Name );
+			Assert.That ( e.TypeDescription == "Button", "Entity name should be 'Button' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 3 );
+			Assert.That ( e.Rules.Count () == 10 );
+			Assert.That ( e.ConditionlessActions.Count () == 1 );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+
 		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{
