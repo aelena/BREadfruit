@@ -2811,7 +2811,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Name == "SO_lbxSODSalesOrganization1", "Entity name should be 'btnClose' but is " + e.Name );
 			Assert.That ( e.TypeDescription == "Object", "Entity name should be 'Object' but is " + e.Name );
 
-		
+
 
 		}
 
@@ -2843,7 +2843,7 @@ namespace BREadfruit.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		
+
 		[Test]
 		public void ParseSampleFile101 ()
 		{
@@ -2859,9 +2859,8 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.Count () == 3 );
 		}
 
-	
-		// ---------------------------------------------------------------------------------
 
+		// ---------------------------------------------------------------------------------
 
 
 		[Test]
@@ -2876,7 +2875,7 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Name == "CC_AM_CashManagementGroup", "Entity name should be 'CC_AM_CashManagementGroup' but is " + e.Name );
 			Assert.That ( e.TypeDescription == "DropDownList", "Entity name should be 'DropDownList' but is " + e.Name );
 
-			Assert.That ( e.Defaults.Count () == 6);
+			Assert.That ( e.Defaults.Count () == 6 );
 		}
 
 
@@ -2920,18 +2919,58 @@ namespace BREadfruit.Tests
 			Assert.That ( e.Defaults.Count () == 3 );
 
 			Assert.That ( e.Defaults.First ().Token == Grammar.VisibleDefaultClause.Token );
-			Assert.That ( e.Defaults.First ().Value.ToString() == Grammar.FalseSymbol.Token );
+			Assert.That ( e.Defaults.First ().Value.ToString () == Grammar.FalseSymbol.Token );
 			Assert.That ( e.Defaults.ElementAt ( 1 ).Token == Grammar.HiddenFieldDefaultClause.Token );
 			Assert.That ( e.Defaults.ElementAt ( 1 ).Value.ToString () == Grammar.TrueSymbol.Token );
 			Assert.That ( e.Defaults.ElementAt ( 2 ).Token == Grammar.EnabledDefaultClause.Token );
 			Assert.That ( e.Defaults.ElementAt ( 2 ).Value.ToString () == Grammar.FalseSymbol.Token );
-			
+
 		}
 
 
 		// ---------------------------------------------------------------------------------
 
 
+
+		[Test]
+		public void ParseSampleFile105 ()
+		{
+			var parser = new Parser ();
+			parser.ParseRuleSet ( @"..\..\sample files\single entity tests\File105.txt" );
+			Assert.That ( parser.Entities.Count () == 1 );
+			var e = parser.Entities.First ();
+
+			Assert.That ( e.Form == "frmMain", "Entity form should be 'frmMain' but is " + e.Form );
+			Assert.That ( e.Name == "AAA", "Entity name should be 'AAA' but is " + e.Name );
+			Assert.That ( e.TypeDescription == "TextBox", "Entity name should be 'TextBox' but is " + e.Name );
+
+			Assert.That ( e.Defaults.Count () == 2 );
+			Assert.That ( e.Rules.Count () == 3 );
+
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Operand == "GD_Adr_PostalCode.Value" );
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Value.ToString () == "GD_Adr_Region.Value" );
+			Assert.That ( e.Rules.ElementAt ( 0 ).Conditions.First ().Operator == Grammar.NotStartsWithOperator );
+
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operand == "GD_Adr_PostalCode.Value" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Value.ToString () == "'00'" );
+			Assert.That ( e.Rules.ElementAt ( 1 ).Conditions.First ().Operator == Grammar.NotStartsWithOperator );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operand == "GD_Adr_CountryGD.Value" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Value.ToString () == "'ES'" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.First ().Operator == Grammar.IsOperator );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).Operand == "GD_Adr_PostalCode.Value.Length" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).Value.ToString () == "5" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 1 ).Operator == Grammar.IsNotOperator );
+
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 2 ).Operand == "GD_Adr_PostalCode.Value" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 2 ).Value.ToString () == "53000" );
+			Assert.That ( e.Rules.ElementAt ( 2 ).Conditions.ElementAt ( 2 ).Operator == Grammar.GreaterEqualThanOperator );
+
+		}
+
+
+		// ---------------------------------------------------------------------------------
 		[Test]
 		public void ShouldFindEntities_Vendor ()
 		{

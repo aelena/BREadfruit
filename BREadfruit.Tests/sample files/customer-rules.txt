@@ -1,445 +1,4 @@
-﻿; ----------------------------------------------------------------------------
-  -- LIST OF ALL ENTITIES FOUND 
-; ----------------------------------------------------------------------------
-
-
-
-
-;	TBCustomerName
-;	TBCustomerCity
-;	TBCustomerNumber
-;	TBCustomerIFA
-;	DDLDCountry
-;	TBCustomerVAT
-;	DDLCDCountry
-;	DDLCDCompany
-;	DDLCDSalesOrg
-;	DDLCDDistribChannel
-;	DDLCDivision
-;	btnSearch
-;	btnCreateCustomer
-;	LBLSearchResultMessage
-
-
-; ----------------------------------------------------------------------------
-
-; TESTGEN : DEFAULTS=4
-Entity rbSpiridon is RadioButton in frmSearch
-	with defaults
-		enabled false
-		label 'Spiridon'
-		value true				; means checked
-
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=4
-Entity rbEPass is RadioButton in frmSearch
-	with defaults
-		enabled false
-		label 'Epass'
-		value false				; means unchecked
-
-; ----------------------------------------------------------------------------
-
-; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
-Entity TBCustomerName is TextBox in frmSearch
-	with defaults
-		label LABELS.labCustomerName
-		value   ''
-
-	with actions
-		hide btnCreateCustomer
-		clear CustomerSearchResultGrid
-		set hidden CustomerSearchResultGrid
-
-	with rules
-		
-	with triggers
-		TBCustomerName.Value changes
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
-Entity TBCustomerCity is TextBox in frmSearch
-
-	with defaults
-		label LABELS.labCustomerCity
-		value  ''
-
-	with actions
-		hide btnCreateCustomer
-		set hidden CustomerSearchResultGrid
-		clear CustomerSearchResultGrid
-
-	with rules
-		
-	with triggers
-		this changes
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, TRIGGERS=1
-Entity TBCustomerNumber is TextBox in frmSearch
-
-	with defaults
-		label LABELS.labCustomerNumber
-		value   ''
-		min length 10
-		max length 10
-		validation ^[0-9]{10}$
-
-	with actions
-		hide btnCreateCustomer
-		hide CustomerSearchResultGrid
-		clear CustomerSearchResultGrid
-
-	with rules
-		; show this message 'This partner is not managed by Madam. Please contact GSS master data team.' if starting with 0
-		TBCustomerNumber.text starts with '0' then
-			set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
-		TBCustomerNumber.text not starts with '0' then
-			set value '' in MESSAGE_POPUP
-
-	with triggers
-		this.Value changes
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=3, ACTIONS=3, RULES=2, TRIGGERS=1
-Entity TBCustomerIFA is TextBox in frmSearch
-
-	with defaults
-		label LABELS.labCustomerIFA
-
-	with actions
-		hide btnCreateCustomer
-		hide CustomerSearchResultGrid
-		clear CustomerSearchResultGrid
-	
-	with rules
-		TBCustomerIFA.Value is not empty then 
-			DDLDCountry mandatory false
-		else
-			DDLDCountry mandatory true
-
-	with triggers
-		this.Value changes
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=7, ACTIONS=5, RULES=4, TRIGGERS=1
-Entity DDLDCountry is DropDownList in frmSearch
-
-	with defaults
-		data field DisplayName
-		value field Code
-		load data from DATASOURCE.MDMC_Countries with arguments {FlagActive : true}
-		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
-		label LABELS.labCountry
-
-	with actions
-		set value '' in MESSAGE_POPUP
-		hide CustomerSearchResultGrid
-		hide btnCreateCustomer
-		clear CustomerSearchResultGrid
-
-	with rules
-		DDLCDCountry.Value in {'FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC','TF'} then label LABELS.labSIRET in TBCustomerVAT
-		DDLCDCountry.Value in {'PT','ES'} then label LABELS.labNIF in TBCustomerVAT
-		DDLCDCountry.Value is 'IT' then label LABELS.labPartitaIVA in TBCustomerVAT
-		DDLCDCountry.Value not in {'PT','ES','IT','FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC'} then label LABELS.labVAT in TBCustomerVAT
-	
-	with triggers
-		this.Value changes 
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
-Entity TBCustomerVAT is TextBox in frmSearch
-
-	with defaults
-		value ''
-		label LABELS.labCustomerVAT
-
-	with actions
-		hide btnCreateCustomer
-		hide CustomerSearchResultGrid
-		clear CustomerSearchResultGrid
-
-	with triggers
-		this.Value changes
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=8, ACTIONS=5, RULES=0, TRIGGERS=1
-Entity DDLCDCountry is DropDownList in frmSearch
-
-	with defaults
-		data field DisplayName
-		value field Code
-		label LABELS.labCountry
-		load data from DATASOURCE.MDMC_ClusterCountries
-		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
-		mandatory true
-
-	with actions
-		; load active companies for this country
-		load data from DATASOURCE.MDMC_ClusterCompanies with arguments {CountryCode : this.Value} in DDLCDCompany
-		; purge the data in this dropdownlist
-		clear DDLCDSalesOrg
-		hide CustomerSearchResultGrid
-		clear CustomerSearchResultGrid
-		hide btnCreateCustomer
-
-
-	with triggers
-		this.Value changes
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=6, ACTIONS=5, RULES=0, TRIGGERS=1
-Entity DDLCDCompany is DropDownList in frmSearch
-
-	with defaults
-		label LABELS.labCompany
-		mandatory true
-		data field DisplayName
-		value field Code
-
-	with actions
-		; load active companies for this country
-		load data from DATASOURCE.MDMC_ClusterSalesOrganizations with arguments {CompanyCode: DDLCDCompany.Value} in DDLCDSalesOrg 
-		set value HF_UserCostLocationUnit.Value in DDLCDCompany			; another data constant
-		hide CustomerSearchResultGrid
-		clear CustomerSearchResultGrid
-		hide btnCreateCustomer
-
-	with triggers
-		this.Value changes
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=7, ACTIONS=4, RULES=1, TRIGGERS=1
-Entity DDLCDSalesOrg is DropDownList in frmSearch
-
-	with defaults
-		label LABELS.labSalesOrg
-		value ''
-		mandatory true
-		data field DisplayName
-		value field Code
-
-	with actions
-		; load active companies for this country
-		; this means the current ìmplementation needs to change a bit...
-		load data from DATASOURCE.SelectDistributionChannels with arguments {countrycode : DDLCDCountry.Value, companycode :DDLCDCompany.Value, salesorgcode :DDLCDSalesOrg.Value} in DDLCDDistribChannel
-		hide CustomerSearchResultGrid
-		clear CustomerSearchResultGrid
-		hide btnCreateCustomer
-
-	with rules
-		DDLCDDistribChannel.Items.Count is true then
-			DDLCDDistribChannel visible true
-
-	with triggers
-		this.Value changes
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=5, ACTIONS=3, RULES=2, TRIGGERS=1
-Entity DDLCDDistribChannel is DropDownList in frmSearch
-
-	with defaults
-		label LABELS.labDistribChannel
-		data field DisplayName
-		value field Code
-		visible false
-		
-	with actions
-		hide CustomerSearchResultGrid
-		clear CustomerSearchResultGrid
-		hide btnCreateCustomer
-
-	with rules
-		DDLCDDistribChannel.Items.Count > 0 then
-			DDLCDDistribChannel visible true
-		else
-			DDLCDDistribChannel visible false
-
-		DDLCDDistribChannel is visible and DDLCDivision is empty then
-			DDLCDDistribChannel mandatory
-
-	with triggers
-		this.Value changes
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=6, ACTIONS=0, RULES=2, TRIGGERS=0
-Entity DDLCDivision is DropDownList in frmSearch
-
-	with defaults
-		visible false
-		label LABELS.labDivision
-		data field DisplayName
-		value field Code
-		load data from DATASOURCE.MDMC_Divisions with arguments {ClusterCountryCode: DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterSalesOrganization : DDLCDSalesOrg.Value, FlagActive : true }
-
-	with rules
-		DDLCDivision.Items.Count > 0 then
-			this visible true
-		else
-			this visible false
-
-		DDLCDivision is visible and DDLCDivision is empty then
-			DDLCDivision mandatory
-		
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=3, ACTIONS=0, RULES=1, TRIGGERS=1
-Entity btnSearch is Button in frmSearch
-
-	with defaults
-		label LABELS.btnSearch
-
-	with rules
-
-		; yes, teh function defines the last parameter as ClusterPOCode, not ClusterSOCode, so this is right
-		DATASOURCE.IsUserInROLE with arguments { UserAccount : HF_UserAccount.Value, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value } is false then
-			set value MESSAGES.ERRauthCCPO in MESSAGE_POPUP
-		else
-			TBCustomerNumber.text starts with '0' then
-				set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
-			
-			DDLCDCountry is empty then
-				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
-
-			DDLCDivision is visible and DDLCDivision is empty then
-				; show this message : Fill the field of Division Country
-				set value MESSAGES.ERRfieldDivisionCountry in MESSAGE_POPUP
-
-			TBCustomerNumber.Length is not 10 then
-				set value MESSAGES.ERRfieldCNumer_10 in MESSAGE_POPUP
-
-			DDLDCountry is empty and TBCustomerIFA is empty then
-				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
-
-			TBCustomerVAT is not empty and DDLDCountry is empty then
-				set value MESSAGES.ERRfieldCCountry in MESSAGE_POPUP
-		
-			TBCustomerVAT is empty and TBCustomerVAT is empty and TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty then
-				set value MESSAGES.ERRKeyTaxIFACountryCity in MESSAGE_POPUP
-
-			TBCustomerVAT is empty and TBCustomerVAT is empty and DDLDCountry is empty then
-				set value MESSAGES.ERRfieldCCountry in MESSAGE_POPUP
-				
-			; TBCustomerName is empty and TBCustomerCity is not empty and TBCustomerName is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
-			; 	set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
-	
-			DDLCDCountry is empty or DDLCDCompany is empty or DDLCDSalesOrg is empty then
-				set value MESSAGES.ERRSOfieldCCS in MESSAGE_POPUP
-		
-			; TODO: VERIFY THIS WITH SEB
-			MESSAGE_POPUP is empty then
-				load data from WEBSERVICE.CUSTOMER_SEARCH_SERVICE with arguments {CustomerName:TBCustomerName.Value, CustomerCity:TBCustomerCity, CustomerNumber:TBCustomerNumber.Value, CustomerCountry:DDLVDCountry.Value,TaxCode1:TBCustomerVAT.Value,TaxCode4:TBCustomerIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in CustomerSearchResultGrid
-
-		customerSearchResultGrid.Items.Count = 0 then
-			set value MESSAGES.MSGNoValuesFound in MESSAGE_POPUP
-			btnCreateCustomer visible true
-			customerSearchResultGrid_ visible true
-
-		else
-			btnCreateCustomer visible false
-			customerSearchResultGrid_ visible false
-
-	with triggers
-		this on click	
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=3, ACTIONS=9, RULES=0, TRIGGERS=1
-Entity btnCreateCustomer is Button in frmSearch
-
-	with defaults
-		label LABELS.btnCreateCustomer
-
-	with actions
-		frmMain visible true
-		frmSearch visible false
-
-		set value DDLCDCountry.Value in HF_RegionalCountry
-		set value DDLCDCompany.Value in HF_CompanyCode
-		set value DDLCDSalesOrg.Value in HF_SalesOrg
-		set value DDLCDDistribChannel.Value in HF_DistributionChannel
-		set value DDLCDivision.Value in HF_Division
-		set value DDLDCountry.Value in HF_CustomerCountry
-		set value TBCustomerName.Value in GD_Adr_Name
-		
-	with triggers
-		this click
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=3
-Entity customerSearchResultGrid_ is Div in frmSearch
-	with defaults
-		visible false
-		label LABELS.lblResult
-
-; ---------------------------------------------------------------------------- 
-
-; TESTGEN : DEFAULTS=27, RULES=0, TRIGGERS=0
-Entity CustomerSearchResultGrid is Grid in frmSearch
-	with defaults
-		visible false
-		define column Customer with arguments {  DataField: Customer, Header : LABELS.lblCustomer, Visible : true }
-		define column Vendor with arguments {  DataField: Vendor, Header : LABELS.lblVendor, Visible : true }  
-		define column name1 with arguments {  DataField: Name1, Header : LABELS.lblName, Visible : true }  
-		define column name3 with arguments {  DataField: Name3, Header : LABELS.lblComment, Visible : true }  
-		define column Street with arguments {  DataField: Street, Header : LABELS.lblStreet, Visible : true }  
-		define column City with arguments {  DataField: City, Header : LABELS.lblCity, Visible : true }  
-		define column Country with arguments {  DataField: Country, Header : LABELS.lblCountry, Visible : true }
-		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.lblLocal_Tax_Code, Visible : true }  
-		define column VAT with arguments {  DataField: VAT, Header : LABELS.lblEU_Registration_Nr, Visible : true }  
-		define column NaturalPerson with arguments {  DataField: IsNaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
-		define column Risk with arguments {  DataField: Risk, Header : LABELS.lblRiskClass, Visible : true }
-		define column KNA1_SPERR with arguments {  DataField: HasCentralPostingBlock, Header : LABELS.lblCentralPostingBlock , Visible : true }
-		define column KNA1_AUFSD with arguments {  DataField: HasCentralOrderBlock, Header : LABELS.lblCentralOrderBlock   , Visible : true }
-		define column KNA1_LIFSD with arguments {  DataField: HasCentralDeliveryBlock, Header : LABELS.lblCentralDelBlock, Visible : true }  
-		define column KNA1_FAKSD with arguments {  DataField: HasCentralBillingBlock, Header : LABELS.lblCentralBillingBlock, Visible : true } 
-		define column Company with arguments {  DataField: Company, Header : LABELS.Company   , Visible : true }
-		define column KNB1_FRGRP with arguments {  DataField: ReleaseGroup, Header : LABELS.lblBusinessPartnerClass  , Visible : true }
-		define column KNB1_ZTERM with arguments {  DataField: TermsOfPaymentKeyAtCompanyCodeLevel, Header : LABELS.lblPaymentTerms  , Visible : true }
-		define column KNB1_SPERR with arguments {  DataField: HasPostingBlockForCompanyCode, Header : LABELS.lblPosting_Block  	, Visible : true }
-		define column SO with arguments {  DataField: SalesOrganization, Header : LABELS.lblSalesOrganiz, Visible : true }
-		define column DistChannel with arguments {  DataField: DistChannel, Header : LABELS.lblChannel , Visible : true }
-		define column KNVV_ZTERM with arguments {  DataField: TermsOfPaymentKeyAtSOLevel, Header : LABELS.lblPaymentTermsSO  , Visible : true }
-		define column KNVV_AUFSD with arguments {  DataField: HasOrderBlockForSalesArea, Header : LABELS.Sales_Org_Order_Block  , Visible : true }
-		define column KNVV_LIFSD with arguments {  DataField: SalesOrganizationDeliveryBlock, Header : LABELS.lblSales_Org_Delivery_Block , Visible : true } 
-		define column KNVV_FAKSD with arguments {  DataField: HasBillingBlockForSalesArea, Header : LABELS.lblSales_Org_Billing_Block  , Visible : true }
-		; button columns
-		define column CreateButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblCreate, Visible: false}
-		define column ModifyButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblModify, Visible: false}
-		define column BlockButton with arguments {  DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblBlock, Visible: false}
-
-	with rules
-
-		; these rules have to be applied row by row of course
-		; to be hardcoded in the rule
-		; Company.Value is empty then
-		; 	CreateButton visible true
-		; 	set value LABELS.lblToBeCreated in Company
-
-		; PO.Value is empty then
-		; 	CreateButton visible true
-		; 	set value LABELS.lblToBeCreated in PO
-			
-		; Company.Value is not empty and PO.Value is not empty then
-		; 	ModifyButton visible true
-		; 	BlockButton visible true
-;	with triggers
-;		this loads
-
-; ----------------------------------------------------------------------------	
-;     END OF SEARCH FORM DEFINITION
-; ----------------------------------------------------------------------------	
-
-; ----------------------------------------------------------------------------	
+﻿; ----------------------------------------------------------------------------	
 ; BEGIN HIDDEN FIELDS DEFINITION
 ; ----------------------------------------------------------------------------	
 ; TESTGEN : DEFAULTS=3
@@ -596,9 +155,484 @@ Entity HF_VATMandatory is CheckBox in frmMain
 		visible false
 		hiddenfield
 ; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_FlagUserCanSearch is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_FlagSearchCriteriaIncomplete is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+;     END OF HIDDEN FIELDS DEFINITION
+; ----------------------------------------------------------------------------	
+
+
+; ----------------------------------------------------------------------------
+  -- LIST OF ALL ENTITIES FOUND 
+; ----------------------------------------------------------------------------
+
+
+
+
+;	TBCustomerName
+;	TBCustomerCity
+;	TBCustomerNumber
+;	TBCustomerIFA
+;	DDLDCountry
+;	TBCustomerVAT
+;	DDLCDCountry
+;	DDLCDCompany
+;	DDLCDSalesOrg
+;	DDLCDDistribChannel
+;	DDLCDivision
+;	btnSearch
+;	btnCreateCustomer
+;	LBLSearchResultMessage
+
+
+; ----------------------------------------------------------------------------
+
+; TESTGEN : DEFAULTS=4
+Entity rbSpiridon is RadioButton in frmSearch
+	with defaults
+		enabled false
+		label 'Spiridon'
+		value true				; means checked
+
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=4
+Entity rbEPass is RadioButton in frmSearch
+	with defaults
+		enabled false
+		label 'Epass'
+		value false				; means unchecked
+
+; ----------------------------------------------------------------------------
+
+; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
+Entity TBCustomerName is TextBox in frmSearch
+	with defaults
+		label LABELS.labCustomerName
+		value   ''
+
+	with actions
+		hide btnCreateCustomer
+		clear CustomerSearchResultGrid
+		set hidden CustomerSearchResultGrid
+
+	with rules
+		
+	with triggers
+		TBCustomerName.Value changes
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
+Entity TBCustomerCity is TextBox in frmSearch
+
+	with defaults
+		label LABELS.labCustomerCity
+		value  ''
+
+	with actions
+		hide btnCreateCustomer
+		set hidden CustomerSearchResultGrid
+		clear CustomerSearchResultGrid
+
+	with rules
+		
+	with triggers
+		this changes
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, TRIGGERS=1
+Entity TBCustomerNumber is TextBox in frmSearch
+
+	with defaults
+		label LABELS.labCustomerNumber
+		value   ''
+		min length 10
+		max length 10
+		validation ^[0-9]{10}$
+
+	with actions
+		hide btnCreateCustomer
+		hide CustomerSearchResultGrid
+		clear CustomerSearchResultGrid
+
+	with rules
+		; show this message 'This partner is not managed by Madam. Please contact GSS master data team.' if starting with 0
+		TBCustomerNumber.text starts with '0' then
+			set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
+		TBCustomerNumber.text not starts with '0' then
+			set value '' in MESSAGE_POPUP
+
+	with triggers
+		this.Value changes
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=3, ACTIONS=3, RULES=2, TRIGGERS=1
+Entity TBCustomerIFA is TextBox in frmSearch
+
+	with defaults
+		label LABELS.labCustomerIFA
+
+	with actions
+		hide btnCreateCustomer
+		hide CustomerSearchResultGrid
+		clear CustomerSearchResultGrid
+	
+	with rules
+		TBCustomerIFA.Value is not empty then 
+			DDLDCountry mandatory false
+		else
+			DDLDCountry mandatory true
+
+	with triggers
+		this.Value changes
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=7, ACTIONS=5, RULES=4, TRIGGERS=1
+Entity DDLDCountry is DropDownList in frmSearch
+
+	with defaults
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDMC3_Countries with arguments {FlagActive : true}
+		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
+		label LABELS.labCountry
+
+	with actions
+		set value '' in MESSAGE_POPUP
+		hide CustomerSearchResultGrid
+		hide btnCreateCustomer
+		clear CustomerSearchResultGrid
+
+	with rules
+		DDLCDCountry.Value in {'FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC','TF'} then label LABELS.labSIRET in TBCustomerVAT
+		DDLCDCountry.Value in {'PT','ES'} then label LABELS.labNIF in TBCustomerVAT
+		DDLCDCountry.Value is 'IT' then label LABELS.labPartitaIVA in TBCustomerVAT
+		DDLCDCountry.Value not in {'PT','ES','IT','FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC'} then label LABELS.labVAT in TBCustomerVAT
+	
+	with triggers
+		this.Value changes 
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
+Entity TBCustomerVAT is TextBox in frmSearch
+
+	with defaults
+		value ''
+		label LABELS.labCustomerVAT
+
+	with actions
+		hide btnCreateCustomer
+		hide CustomerSearchResultGrid
+		clear CustomerSearchResultGrid
+
+	with triggers
+		this.Value changes
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=8, ACTIONS=5, RULES=0, TRIGGERS=1
+Entity DDLCDCountry is DropDownList in frmSearch
+
+	with defaults
+		data field DisplayName
+		value field Code
+		label LABELS.labCountry
+		load data from DATASOURCE.MDMC3_ClusterCountries
+		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
+		mandatory true
+
+	with actions
+		; load active companies for this country
+		load data from DATASOURCE.MDMC3_ClusterCompanies with arguments {CountryCode : this.Value} in DDLCDCompany
+		; purge the data in this dropdownlist
+		clear DDLCDSalesOrg
+		hide CustomerSearchResultGrid
+		clear CustomerSearchResultGrid
+		hide btnCreateCustomer
+
+
+	with triggers
+		this.Value changes
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=6, ACTIONS=5, RULES=0, TRIGGERS=1
+Entity DDLCDCompany is DropDownList in frmSearch
+
+	with defaults
+		label LABELS.labCompany
+		mandatory true
+		data field DisplayName
+		value field Code
+
+	with actions
+		; load active companies for this country
+		load data from DATASOURCE.MDMC3_ClusterSalesOrganizations with arguments {ClusterCompanyCode: DDLCDCompany.Value} in DDLCDSalesOrg 
+		set value HF_UserCostLocationUnit.Value in DDLCDCompany			; another data constant
+		hide CustomerSearchResultGrid
+		clear CustomerSearchResultGrid
+		hide btnCreateCustomer
+
+	with triggers
+		this.Value changes
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=7, ACTIONS=4, RULES=1, TRIGGERS=1
+Entity DDLCDSalesOrg is DropDownList in frmSearch
+
+	with defaults
+		label LABELS.labSalesOrg
+		value ''
+		mandatory true
+		data field DisplayName
+		value field Code
+
+	with actions
+		; load active companies for this country
+		; this means the current ìmplementation needs to change a bit...
+		load data from DATASOURCE.SelectDistributionChannels with arguments {countrycode : DDLCDCountry.Value, companycode :DDLCDCompany.Value, salesorgcode :DDLCDSalesOrg.Value} in DDLCDDistribChannel
+		hide CustomerSearchResultGrid
+		clear CustomerSearchResultGrid
+		hide btnCreateCustomer
+
+	with rules
+		DDLCDDistribChannel.Items.Count is true then
+			DDLCDDistribChannel visible true
+
+	with triggers
+		this.Value changes
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=5, ACTIONS=3, RULES=2, TRIGGERS=1
+Entity DDLCDDistribChannel is DropDownList in frmSearch
+
+	with defaults
+		label LABELS.labDistribChannel
+		data field DisplayName
+		value field Code
+		visible false
+		
+	with actions
+		hide CustomerSearchResultGrid
+		clear CustomerSearchResultGrid
+		hide btnCreateCustomer
+
+	with rules
+		DDLCDDistribChannel.Items.Count > 0 then
+			DDLCDDistribChannel visible true
+		else
+			DDLCDDistribChannel visible false
+
+		DDLCDDistribChannel is visible and DDLCDivision is empty then
+			DDLCDDistribChannel mandatory
+
+	with triggers
+		this.Value changes
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=6, ACTIONS=0, RULES=2, TRIGGERS=0
+Entity DDLCDivision is DropDownList in frmSearch
+
+	with defaults
+		visible false
+		label LABELS.labDivision
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDMC3_Divisions with arguments {ClusterCountryCode: DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterSalesOrganization : DDLCDSalesOrg.Value, FlagActive : true }
+
+	with rules
+		DDLCDivision.Items.Count > 0 then
+			this visible true
+		else
+			this visible false
+
+		DDLCDivision is visible and DDLCDivision is empty then
+			DDLCDivision mandatory
+		
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=3, ACTIONS=1, RULES=1, TRIGGERS=1
+Entity btnSearch is Button in frmSearch
+
+	with defaults
+		label LABELS.btnSearch
+
+	with actions
+		; always perform this conditionless action when the button is clicked
+		; arguments might vary from search to search so it makes sense to run it everytime
+		load data from DATASOURCE.IsUserInROLE with arguments { UserAccount : HF_UserAccount.Value, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value } in HF_FlagUserCanSearch
+
+	with rules
+
+		; if hidden field’s value, which is a checkbox is false, then show no auth message
+		HF_FlagUserCanSearch.Value is false then 
+			set value MESSAGES.ERRauthCCPO in MESSAGE_POPUP
+
+        ; since we cannot exit rule block we need to involve the flag in every successive rule as a guard for all of them
+		HF_FlagUserCanSearch.Value is true and TBCustomerNumber.text starts with '0' then
+				set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
+				; missing mandatory parameters for search, so set to true this second flag
+				set value true in HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and DDLCDCountry is empty then
+				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
+				set value true in HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and DDLCDivision is visible and DDLCDivision is empty then
+				; show this message : Fill the field of Division Country
+				set value MESSAGES.ERRfieldDivisionCountry in MESSAGE_POPUP
+				set value true in HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and TBCustomerNumber.Length is not 10 then
+				set value MESSAGES.ERRfieldCNumer_10 in MESSAGE_POPUP
+				set value true in HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and DDLDCountry is empty and TBCustomerIFA is empty then
+				set value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
+				set value true in HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and TBCustomerVAT is not empty and DDLDCountry is empty then
+				set value MESSAGES.ERRfieldCCountry in MESSAGE_POPUP
+				set value true in HF_FlagSearchCriteriaIncomplete
+		
+		HF_FlagUserCanSearch.Value is true and TBCustomerVAT is empty and TBCustomerVAT is empty and TBCustomerName is empty and TBCustomerCity is empty and TBCustomerIFA is empty then
+				set value MESSAGES.ERRKeyTaxIFACountryCity in MESSAGE_POPUP
+				set value true in HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and TBCustomerVAT is empty and TBCustomerVAT is empty and DDLDCountry is empty then
+				set value MESSAGES.ERRfieldCCountry in MESSAGE_POPUP
+				set value true in HF_FlagSearchCriteriaIncomplete
+				
+		; HF_FlagUserCanSearch.Value is true and TBCustomerName is empty and TBCustomerCity is not empty and TBCustomerName is empty and TBCustomerIFA is empty and DDLDCountry is empty and TBCustomerVAT is empty then
+			; 	set value MESSAGES.VALIDATIONS.SEARCH.FILL01 in MESSAGE_POPUP
+			;	set value true in HF_FlagSearchCriteriaIncomplete
+	
+		HF_FlagUserCanSearch.Value is true and DDLCDCountry is empty or DDLCDCompany is empty or DDLCDSalesOrg is empty then
+				set value MESSAGES.ERRSOfieldCCS in MESSAGE_POPUP
+				set value true in HF_FlagSearchCriteriaIncomplete
+		
+		HF_FlagUserCanSearch.Value is true and HF_FlagSearchCriteriaIncomplete.Value is false then
+				load data from WEBSERVICE.CUSTOMER_SEARCH_SERVICE with arguments {CustomerName:TBCustomerName.Value, CustomerCity:TBCustomerCity, CustomerNumber:TBCustomerNumber.Value, CustomerCountry:DDLVDCountry.Value,TaxCode1:TBCustomerVAT.Value,TaxCode4:TBCustomerIFA.Value, Country:DDLDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in CustomerSearchResultGrid
+
+		HF_FlagUserCanSearch.Value is true and HF_FlagSearchCriteriaIncomplete.Value is false and customerSearchResultGrid.Items.Count = 0 then
+			set value MESSAGES.MSGNoValuesFound in MESSAGE_POPUP
+			btnCreateCustomer visible true
+			customerSearchResultGrid_ visible false
+
+		HF_FlagUserCanSearch.Value is true and HF_FlagSearchCriteriaIncomplete.Value is false and customerSearchResultGrid.Items.Count > 0 then
+			btnCreateCustomer visible false
+			customerSearchResultGrid_ visible true
+
+	with triggers
+		this on click	
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=3, ACTIONS=9, RULES=0, TRIGGERS=1
+Entity btnCreateCustomer is Button in frmSearch
+
+	with defaults
+		label LABELS.btnCreateCustomer
+
+	with actions
+		
+		; populate hidden fields with the data put in search controls
+		set value DDLCDCountry.Value in HF_RegionalCountry
+		set value DDLCDCompany.Value in HF_CompanyCode
+		set value DDLCDSalesOrg.Value in HF_SalesOrg
+		set value DDLCDDistribChannel.Value in HF_DistributionChannel
+		set value DDLCDivision.Value in HF_Division
+		set value DDLDCountry.Value in HF_CustomerCountry
+		set value TBCustomerName.Value in GD_Adr_Name
+		
+		frmMain visible true
+		frmSearch visible false
+
+
+	with triggers
+		this click
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=3
+Entity customerSearchResultGrid_ is Div in frmSearch
+	with defaults
+		visible false
+		label LABELS.lblResult
+
+; ---------------------------------------------------------------------------- 
+
+; TESTGEN : DEFAULTS=27, RULES=0, TRIGGERS=0
+Entity CustomerSearchResultGrid is Grid in frmSearch
+	with defaults
+		visible false
+		define column Customer with arguments {  DataField: Customer, Header : LABELS.lblCustomer, Visible : true }
+		define column Vendor with arguments {  DataField: Vendor, Header : LABELS.lblVendor, Visible : true }  
+		define column name1 with arguments {  DataField: Name1, Header : LABELS.lblName, Visible : true }  
+		define column name3 with arguments {  DataField: Name3, Header : LABELS.lblComment, Visible : true }  
+		define column Street with arguments {  DataField: Street, Header : LABELS.lblStreet, Visible : true }  
+		define column City with arguments {  DataField: City, Header : LABELS.lblCity, Visible : true }  
+		define column Country with arguments {  DataField: Country, Header : LABELS.lblCountry, Visible : true }
+		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.lblLocal_Tax_Code, Visible : true }  
+		define column VAT with arguments {  DataField: VAT, Header : LABELS.lblEU_Registration_Nr, Visible : true }  
+		define column NaturalPerson with arguments {  DataField: IsNaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
+		define column Risk with arguments {  DataField: Risk, Header : LABELS.lblRiskClass, Visible : true }
+		define column KNA1_SPERR with arguments {  DataField: HasCentralPostingBlock, Header : LABELS.lblCentralPostingBlock , Visible : true }
+		define column KNA1_AUFSD with arguments {  DataField: HasCentralOrderBlock, Header : LABELS.lblCentralOrderBlock   , Visible : true }
+		define column KNA1_LIFSD with arguments {  DataField: HasCentralDeliveryBlock, Header : LABELS.lblCentralDelBlock, Visible : true }  
+		define column KNA1_FAKSD with arguments {  DataField: HasCentralBillingBlock, Header : LABELS.lblCentralBillingBlock, Visible : true } 
+		define column Company with arguments {  DataField: Company, Header : LABELS.Company   , Visible : true }
+		define column KNB1_FRGRP with arguments {  DataField: ReleaseGroup, Header : LABELS.lblBusinessPartnerClass  , Visible : true }
+		define column KNB1_ZTERM with arguments {  DataField: TermsOfPaymentKeyAtCompanyCodeLevel, Header : LABELS.lblPaymentTerms  , Visible : true }
+		define column KNB1_SPERR with arguments {  DataField: HasPostingBlockForCompanyCode, Header : LABELS.lblPosting_Block  	, Visible : true }
+		define column SO with arguments {  DataField: SalesOrganization, Header : LABELS.lblSalesOrganiz, Visible : true }
+		define column DistChannel with arguments {  DataField: DistChannel, Header : LABELS.lblChannel , Visible : true }
+		define column KNVV_ZTERM with arguments {  DataField: TermsOfPaymentKeyAtSOLevel, Header : LABELS.lblPaymentTermsSO  , Visible : true }
+		define column KNVV_AUFSD with arguments {  DataField: HasOrderBlockForSalesArea, Header : LABELS.Sales_Org_Order_Block  , Visible : true }
+		define column KNVV_LIFSD with arguments {  DataField: SalesOrganizationDeliveryBlock, Header : LABELS.lblSales_Org_Delivery_Block , Visible : true } 
+		define column KNVV_FAKSD with arguments {  DataField: HasBillingBlockForSalesArea, Header : LABELS.lblSales_Org_Billing_Block  , Visible : true }
+		; button columns
+		define column CreateButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblCreate, Visible: false}
+		define column ModifyButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblModify, Visible: false}
+		define column BlockButton with arguments {  DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblBlock, Visible: false}
+
+	with rules
+
+		; these rules have to be applied row by row of course
+		; to be hardcoded in the rule
+		; Company.Value is empty then
+		; 	CreateButton visible true
+		; 	set value LABELS.lblToBeCreated in Company
+
+		; PO.Value is empty then
+		; 	CreateButton visible true
+		; 	set value LABELS.lblToBeCreated in PO
+			
+		; Company.Value is not empty and PO.Value is not empty then
+		; 	ModifyButton visible true
+		; 	BlockButton visible true
+;	with triggers
+;		this loads
+
 ; ----------------------------------------------------------------------------	
 ;     END OF SEARCH FORM DEFINITION
 ; ----------------------------------------------------------------------------	
+
 
 
 ; ----------------------------------------------------------------------------	
@@ -789,7 +823,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		visible true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_RiskClassifications
+		load data from DATASOURCE.MDMC3_RiskClassifications
 		label LABELS.labGD_Ctr_RiskClassification
 		value '00''
 		mandatory true
@@ -822,7 +856,7 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		value field Code
 		visible true
 		enabled false					; this control is always disabled
-		load data from DATASOURCE.MDMC_Countries
+		load data from DATASOURCE.MDMC3_Countries
 		value HF_CustomerCountry.Value
 		mandatory true
 		label LABELS.labGD_Adr_Country
@@ -850,7 +884,7 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 		mandatory true
 		visible true
 		enabled true
-		load data from DATASOURCE.MDMC_PartnerClassification
+		load data from DATASOURCE.MDMC3_PartnerClassification
 		value 'NG'
 
 	with rules
@@ -882,7 +916,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_ReleaseGroups
+		load data from DATASOURCE.MDMC3_ReleaseGroups
 		visible true
 		enabled true
 		value 'NORM'
@@ -1158,7 +1192,7 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 		enable false
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Countries
+		load data from DATASOURCE.MDMC3_Countries
 		value HF_CustomerCountry
 		
 
@@ -1171,10 +1205,10 @@ Entity GD_Adr_Region is DropDownList in frmMain
 		label LABELS.labRegion
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Regions with arguments {FlagActive : true, CountryCode : HF_CustomerCountry.Value }
+		load data from DATASOURCE.MDMC3_Regions with arguments {FlagActive : true, CountryCode : HF_CustomerCountry.Value }
 
 	with actions
-		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
+		load data from DATASOURCE.MDMC3_CreditControlGroups with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, RegionCode : GD_Adr_Region.Value} in KNKK_SBGRP
 		
 	with rules
 		HF_RegionIsMandatory.Value is true and HF_RequestType.Value is 'CC' then
@@ -1468,7 +1502,7 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Languages with arguments {FlagActive : true}	
+		load data from DATASOURCE.MDMC3_Languages with arguments {FlagActive : true}	
 		value EN		; default is English
 
 	with rules
@@ -1482,7 +1516,7 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 		HF_AccountGroup.Value is 'YCT1' and GD_Adr_Region in {'02', '03'} then
 			set value 'FR' in GD_Com_LanguageCode
 
-		; this should come from the MODEL (from the MDMC_Countries table) where 'country configuration' is set
+		; this should come from the MODEL (from the MDMC3_Countries table) where 'country configuration' is set
 		HF_Language.Value is not empty then
 			set value HF_Language.Value in GD_Com_LanguageCode
 
@@ -1498,7 +1532,7 @@ Entity GD_Com_Telebox is DropDownList in frmMain
 		label LABELS.labTelebox
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Telebox with arguments {FlagActive : true, AccountGroup : HF_AccountGroup.Value}
+		load data from DATASOURCE.MDMC3_Telebox with arguments {FlagActive : true, AccountGroup : HF_AccountGroup.Value}
 		mandatory true
 		value 'PRT'
 	with rules
@@ -1528,12 +1562,12 @@ Entity GD_VT_Country is DropDownList in GD_VT_Grid
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Countries
+		load data from DATASOURCE.MDMC3_Countries
 		value HF_CustomerCountry
 		mandatory true
 		
 	with actions
-		load data from DATASOURCE.MDMC_CountryTelephonePrefixes with arguments {Code : GD_VT_Country.Value } in GD_VT_CountryCode
+		load data from DATASOURCE.MDMC3_CountryTelephonePrefixes with arguments {Code : GD_VT_Country.Value } in GD_VT_CountryCode
 	with triggers
 		this changes
 
@@ -1624,11 +1658,11 @@ Entity GD_VF_Country is DropDownList in GD_VF_Grid
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Countries
+		load data from DATASOURCE.MDMC3_Countries
 		value HF_CustomerCountry
 
 	with actions
-		load data from DATASOURCE.MDMC_CountryTelephonePrefixes with arguments {Code : GD_VF_Country.Value } in GD_VF_CountryCode
+		load data from DATASOURCE.MDMC3_CountryTelephonePrefixes with arguments {Code : GD_VF_Country.Value } in GD_VF_CountryCode
 
 	with triggers
 		this changes
@@ -1799,17 +1833,17 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		label LABELS.labIndustries
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMC3_Industries with arguments {FlagActive: true, Country : HF_RegionalCountry.Value}
 
 	with actions
 		; put the return of this search operation which should return only one value in control GD_Ctr_IindustryCode
-		load data from DATASOURCE.MDMC_ItalyIndustries with output {GD_Ctr_IndustryCode.Value : KNA1_BRAN1}
+		load data from DATASOURCE.MDMC3_ItalyIndustries with output {GD_Ctr_IndustryCode.Value : KNA1_BRAN1}
 		
 
 	with rules
 		
 		; HF_AccountGroup.Value in {'YCT6', 'YVT6'} then
-		; 	load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : 'FR'}
+		; 	load data from DATASOURCE.MDMC3_Industries with arguments {FlagActive: true, Country : 'FR'}
 		; 	; this equals to this line in original code
 		; 	; TODO: WHY? this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 		; 	; most likely unneeded?
@@ -1819,16 +1853,16 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 			this mandatory true
 
 		; HF_AccountGroup.Value in {'YCT9', 'YVT9'} then
-		; 	load data from DATASOURCE.MDMC_Industries with arguments {FlagActive: true, Country : 'EN'}
+		; 	load data from DATASOURCE.MDMC3_Industries with arguments {FlagActive: true, Country : 'EN'}
 		; 	; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 		; 	; set value 'EN' in REQUEST.INDUSTRY_COUNTRY
 		; 	mandatory false
 		
-		; DONE with a updating of the table MDMC_INdustries - NO NEED TO DO THIS FOR BRSCH, ONLY FOR BRAN1
+		; DONE with a updating of the table MDMC3_INdustries - NO NEED TO DO THIS FOR BRSCH, ONLY FOR BRAN1
 		; HF_RegionalCountry.Value is 'IT' and GD_Ctr_Industry is not empty then
 		; 	;	3) for account group 'YCT5', use DDL the excel file attached called ''ISIC italian convertion''. 
 		; 	;		the DDL shown to the 'MDMC3_ENQ' is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
-		; 	load data from DATASOURCE.MDMC_ItalyIndustries with arguments {FlagActive: true, Code:GD_Ctr_Industry.Value} with output {GD_Ctr_IndustryCode.Value : KNA1_BRAN1} 
+		; 	load data from DATASOURCE.MDMC3_ItalyIndustries with arguments {FlagActive: true, Code:GD_Ctr_Industry.Value} with output {GD_Ctr_IndustryCode.Value : KNA1_BRAN1} 
 		
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value is 'MDMC3_SUS' or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
@@ -1847,7 +1881,7 @@ Entity GD_Ctr_IndustryCode is DropDownList in frmMain
 		label LABELS.lblIndustryCode
 		data field DisplayValue
 		value field KNA1_BRSCH
-		load data from DATASOURCE.MDMC_ItalyIndustries
+		load data from DATASOURCE.MDMC3_ItalyIndustries
 
 	with rules
 		HF_RegionalCountry.Value is 'IT' then
@@ -1863,7 +1897,7 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 		label LABELS.labUnsubscribeCMD
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.UnsubscribeOptions
+		load data from DATASOURCE.MDMC3_UnsubscribeOptions
 	with actions
 		set value GD_Ctr_UnsubscribeCMD.Value in BLK_GD_Ctr_UnsubscribeCMD
 	with rules
@@ -1884,7 +1918,7 @@ Entity V_Country is DropDownList in V_Grid
 		data field DisplayName
 		value field Code
 		label LABELS.labCountry
-		load data from DATASOURCE.MDMC_Countries
+		load data from DATASOURCE.MDMC3_Countries
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=3, RULES=0, ACTIONS=0, TRIGGERS=0
@@ -1924,11 +1958,11 @@ Entity GD_VB_Country is DropDownList in GD_VB_Grid
 		data field DisplayName
 		value field Code
 		label LABELS.labCountry
-		load data from DATASOURCE.MDMC_Countries
+		load data from DATASOURCE.MDMC3_Countries
 		mandatory true
 	with rules
 		; call SP to find out if selected value is Tax Haven
-		DATASOURCE.MDMC_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true then
+		DATASOURCE.MDMC3_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true then
 			set value '09' in GD_Ctr_RiskClassification
 
 	with actions
@@ -1998,7 +2032,7 @@ Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 		label LABELS.labGD_VD_IBAN
 	with actions
 		; TODO: POPULATION FOR THE UNDERLYING TABLE HAS TO 'BE' FINISHED
-		load data from DATASOURCE.MDMC_GetIBANConfigurationForCountry with arguments {CountryCode:B_GD_VB_Country.Value, IBAN:B_GD_VB_IBAN.Value} with output {B_GD_VB_BankKey:BankKey,B_GD_VB_BankAccount:BankAccount,B_GD_VB_BankControlKey:BankControlKey}
+		load data from DATASOURCE.MDMC3_GetIBANConfigurationForCountry with arguments {CountryCode:B_GD_VB_Country.Value, IBAN:B_GD_VB_IBAN.Value} with output {B_GD_VB_BankKey:BankKey,B_GD_VB_BankAccount:BankAccount,B_GD_VB_BankControlKey:BankControlKey}
 	with rules
 		HF_AccountGroup.Value in {'YCT6','YCT9','YVT6','YVT9'} then
 			max length 27
@@ -2145,10 +2179,10 @@ Entity GD_VB_XEZER is CheckBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 ;	TODO: PENDING REFINEMENT
-;	MDMC_LegalForms for informing fields isnaturalperson and customerclassification and set dunning procedure with this data
+;	MDMC3_LegalForms for informing fields isnaturalperson and customerclassification and set dunning procedure with this data
 ;	4) this field is not retrieved from SAP
 ;	5) this field is sent to SAP
-;	6) this field is used to set values in creations from scratch, regional country France, in XKNKK.GRUPP, XKNKK.CTLPC and XKNKK.DBRTG with table MDMC_CreditLimitTemplate
+;	6) this field is used to set values in creations from scratch, regional country France, in XKNKK.GRUPP, XKNKK.CTLPC and XKNKK.DBRTG with table MDMC3_CreditLimitTemplate
 ;	7) see attachment.
 
 ; TESTGEN : DEFAULTS=6, RULES=5, ACTIONS=1, TRIGGERS=2
@@ -2159,10 +2193,10 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		; data source is same for vendors and customers
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_LegalForms with arguments {FlagActive : true }
+		load data from DATASOURCE.MDMC3_LegalForms with arguments {FlagActive : true }
 
 	with actions
-		load data from DATASOURCE.MDMC_LegalForms with arguments {FlagActive : true, Code : GD_Ctr_GFORM.Value } with output {GD_Ctr_IsNaturalPerson.Value : KNA1_STKZN, GD_Ctr_CustomerClassification.Value : KNA1_KUKLA}
+		load data from DATASOURCE.MDMC3_LegalForms with arguments {FlagActive : true, Code : GD_Ctr_GFORM.Value } with output {GD_Ctr_IsNaturalPerson.Value : KNA1_STKZN, GD_Ctr_CustomerClassification.Value : KNA1_KUKLA}
 
 	with rules
 
@@ -2541,7 +2575,7 @@ Entity CC_CO_ReconAccount is DropDownList in frmMain
 		label LABELS.labCC_CO_ReconAccount
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.ReconciliationAccounts
+		load data from DATASOURCE.MDMC3_ReconciliationAccounts
 		value 0024110000
 	with rules
 		GD_Adr_Country is 'GR' and GD_Ctr_CustomerClassification.Value is 'G' and GD_Ctr_IsNaturalPerson.Value is false then
@@ -2584,7 +2618,7 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMC3_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 	with rules
 
@@ -2641,7 +2675,7 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 		label LABELS.labPTPaymentMethods
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_PaymentMethods with arguments {FlagActive : true, ClusterCountryCode: HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMC3_PaymentMethods with arguments {FlagActive : true, ClusterCountryCode: HF_RegionalCountry.Value}
 
 	with rules
 
@@ -2718,7 +2752,7 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labCC_CO_AccountingClerk
-		load data from DATASOURCE.MDMC_AccountingClerks with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
+		load data from DATASOURCE.MDMC3_AccountingClerks with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
 		data field DisplayName
 		value field Code
 
@@ -2763,10 +2797,10 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 			set value '20' in CC_CO_AccountingClerk.OldDisplayValue
 
 		HF_RequestType.Value in {'CC','CC_CC'} and HF_RegionalCountry.Value in {'ES','AD'} then
-			load data from DATASOURCE.MDMC_AccountingClerkByPostCodeAndSalesArea with arguments {PostCode : SUBSTRING(GD_Adr_PostalCode,2), SalesArea: HF_SalesOrg.Value} in CC_CO_AccountingClerk
+			load data from DATASOURCE.MDMC3_AccountingClerkByPostCodeAndSalesArea with arguments {PostCode : SUBSTRING(GD_Adr_PostalCode,2), SalesArea: HF_SalesOrg.Value} in CC_CO_AccountingClerk
 		
 		HF_RequestType.Value in {'CC','CC_CC'} and HF_CompanyCode.Value in {'5240','5101','5109'} then
-			load data from DATASOURCE.MDMC_AccountingClerksFORPTBELU with arguments { SalesOrganization: HF_SalesOrg.Value, FlagActive: true} with output {CC_CO_AccountingClerk: AccountingClerk}
+			load data from DATASOURCE.MDMC3_AccountingClerksFORPTBELU with arguments { SalesOrganization: HF_SalesOrg.Value, FlagActive: true} with output {CC_CO_AccountingClerk: AccountingClerk}
 
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
@@ -2854,7 +2888,7 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 		label LABELS.labARPledgeIndicator
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_GetARPledgeIndicators with arguments {CompanyCode : HF_CompanyCode.Value}
+		load data from DATASOURCE.MDMC3_GetARPledgeIndicators with arguments {CompanyCode : HF_CompanyCode.Value}
 
 	with rules
 		
@@ -2966,7 +3000,7 @@ Entity KNVV_BZIRK is DropDownList in frmMain
 		label LABELS.labBZIRK
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_SalesDistrict
+		load data from DATASOURCE.MDMC3_SalesDistrict
 
 	with rules
 		HF_RegionalCountry.Value is 'FR' then
@@ -2995,7 +3029,7 @@ Entity SO_CustomerGroup is DropDownList in frmMain
 		value ''
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CustomerGroups with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
+		load data from DATASOURCE.MDMC3_CustomerGroups with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
 
 	with rules
 		
@@ -3024,7 +3058,7 @@ Entity SO_SalesOffice is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field SalesOffice
-		load data from DATASOURCE.MDMC_SalesOffice with arguments { ClusterPOCode : HF_SalesOrg.Value, ClusterCompanyCode : HF_CompanyCode.Value, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL, FlagActive : true}
+		load data from DATASOURCE.MDMC3_SalesOffice with arguments { ClusterPOCode : HF_SalesOrg.Value, ClusterCompanyCode : HF_CompanyCode.Value, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL, FlagActive : true}
 
 	with rules
 		; only show the control if there are data loaded from the 'load data from' instruction
@@ -3073,7 +3107,7 @@ Entity KNVV_VKGRP is DropDownList in frmMain
 		; 	this mandatory false
 
 		HF_RequestType.Value not in {'CC','CC_CC'} and SO_SalesOffice.Value is not empty then
-			load data from DATASOURCE.MDMC_GetSalesGroups with arguments {SalesOffice : HF_SalesOrg.Value}
+			load data from DATASOURCE.MDMC3_GetSalesGroups with arguments {SalesOffice : HF_SalesOrg.Value}
 
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
@@ -3089,7 +3123,7 @@ Entity SO_SalesOrderCurrency is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Currencies with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMC3_Currencies with arguments {FlagActive : true}
 		value 'EUR'
 	with rules
 		HF_RequestType.Value is 'CC' then
@@ -3110,7 +3144,7 @@ Entity KNVV_KONDA is DropDownList in frmMain
 		label LABELS.labkONDA
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_PriceGroup
+		load data from DATASOURCE.MDMC3_PriceGroup
 		value ''
 
 	with rules
@@ -3134,7 +3168,7 @@ Entity KNVV_PLTYP is DropDownList in frmMain
 		label LABELS.labPLTYP
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_PriceListType
+		load data from DATASOURCE.MDMC3_PriceListType
 		value ''
 
 	with rules
@@ -3159,7 +3193,7 @@ Entity SO_CustPricingProc is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CustomerPricingProcedure with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMC3_CustomerPricingProcedure with arguments {FlagActive : true}
 		value ''
 	
 	with rules
@@ -3196,7 +3230,7 @@ Entity SO_CustomerStatsGroup is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CustomerStatsGroup with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMC3_CustomerStatsGroup with arguments {FlagActive : true}
 		value ''
 
 	with rules
@@ -3229,7 +3263,7 @@ Entity SO_CustomerShippingConditions is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CustomerShippingCondition with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMC3_CustomerShippingCondition with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 	with rules
 
@@ -3282,7 +3316,7 @@ Entity KNVV_VWERK is DropDownList in frmMain
 		label LABELS.labVWERK
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_DeliveryPlant with arguments {CodeSalesOrg : HF_SalesOrg.Value, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL}
+		load data from DATASOURCE.MDMC3_DeliveryPlant with arguments {CodeSalesOrg : HF_SalesOrg.Value, DistributionChannel : REQUEST.DISTRIBUTION_CHANNEL}
 
 	with rules
 		
@@ -3340,7 +3374,7 @@ Entity KNVV_ANTLF is DropDownList in frmMain
 		value field Code
 		label LABELS.labANTLF
 		visible false
-		load data from DATASOURCE.MDMC_MaxPartDelivery
+		load data from DATASOURCE.MDMC3_MaxPartDelivery
 
 	with rules
 
@@ -3374,7 +3408,7 @@ Entity KNVV_LPRIO is DropDownList in frmMain
 		label LABELS.labLPRIO
 		data field Displayname
 		value field Code
-		load data from DATASOURCE.MDMC_DeliverPriority
+		load data from DATASOURCE.MDMC3_DeliverPriority
 
 	with rules
 		HF_RegionalCountry.Value in {'ES', 'IT', 'BE', 'LU', 'FR', 'GR', 'PT'} then
@@ -3392,7 +3426,7 @@ Entity KNVV_KZTLF is DropDownList in frmMain
 
 	with defaults
 		label LABELS.labKZTLF
-		load data from DATASOURCE.MDMC_PartDeliveryItem
+		load data from DATASOURCE.MDMC3_PartDeliveryItem
 		; TODO: CLarify this value does not exist in DB
 		; value 9
 		data field DisplayName
@@ -3446,7 +3480,7 @@ Entity SO_Incoterms is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		; TODO: Crate SP
-		load data from DATASOURCE.MDMC_GetIncotermsByCountry with arguments {CountryCode : HF_RegionalCountry.Value }
+		load data from DATASOURCE.MDMC3_GetIncotermsByCountry with arguments {CountryCode : HF_RegionalCountry.Value }
 
 	with rules
 
@@ -3536,7 +3570,7 @@ Entity SO_TermsOfPaymentKey is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMC3_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 	with rules
 		HF_CompanyCode.Value is '5140' and GD_Adr_Country.Value in {'FR','GF', 'GP', 'RE', 'MQ', 'YT', 'NC', 'PF', 'PM', 'WF', 'MC'} then
@@ -3577,7 +3611,7 @@ Entity KNVV_KTGRD is DropDownList in frmMain
 		mandatory false
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_AccountAssgmtGroup with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMC3_AccountAssgmtGroup with arguments {FlagActive : true}
 
 	with rules
 		
@@ -3609,7 +3643,7 @@ Entity SO_TaxClassification is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_TaxClassification
+		load data from DATASOURCE.MDMC3_TaxClassification
 		value 1
 
 	with rules
@@ -3664,15 +3698,15 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 		label LABELS.labCreditControlGroups
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_CreditControlGroups with arguments { CompanyCode : HF_CompanyCode.Value}
+		load data from DATASOURCE.MDMC3_CreditControlGroups with arguments { CompanyCode : HF_CompanyCode.Value}
 
 	with rules
 
 		HF_CompanyCode.Value is '5140' and HF_RequestType.Value is {'CC','CC_CC'} then
-			load data from DATASOURCE.MDMC_AccountingClerksFORPTBELU with arguments {CountryCode : HF_CustomerCountry, CodeRegion : GD_Adr_Region.Value} in KNKK_SBGRP
+			load data from DATASOURCE.MDMC3_AccountingClerksFORPTBELU with arguments {CountryCode : HF_CustomerCountry, CodeRegion : GD_Adr_Region.Value} in KNKK_SBGRP
 		
 		HF_RegionalCountry.Value is 'BE' then
-			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments {CountryCode : HF_CustomerCountry, CodeRegion : GD_Adr_Region.Value} in KNKK_SBGRP
+			load data from DATASOURCE.MDMC3_CreditControlGroup_Region with arguments {CountryCode : HF_CustomerCountry, CodeRegion : GD_Adr_Region.Value} in KNKK_SBGRP
 
 
 		HF_CompanyCode.Value in {'5180','596G','5140','491E'} then
@@ -3687,10 +3721,10 @@ Entity KNKK_SBGRP is DropDownList in frmMain
 		
 		; TODO: WHAT IS THIS DISCREPANCY	
 		HF_RequestType.Value in {'CC', 'CC_SO'} then
-			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
+			load data from DATASOURCE.MDMC3_CreditControlGroup_Region with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
 
 		HF_AccountGroup.Value in {'YCT6','YVT6','YCT9','YVT9'} and GD_Adr_PostalCode.Value.Length >= 2 then
-			load data from DATASOURCE.MDMC_CreditControlGroup_Region with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
+			load data from DATASOURCE.MDMC3_CreditControlGroup_Region with arguments { CountryCode : HF_RegionalCountry.Value, CompanyCode : HF_CompanyCode.Value, CodeRegion : GD_Adr_Region.Value} with ouput {KNKK_SBGRP : CodeSBGRP}
 
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3707,7 +3741,7 @@ Entity KNVV_KVGR1 is DropDownList in frmMain
 		label LABELS.labKVGR1
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR1'}
+		load data from DATASOURCE.MDMC3_AdditionalCustomerData with arguments {Grp : 'GR1'}
 
 	with rules
 		HF_RegionalCountry.Value is 'FR' then
@@ -3728,7 +3762,7 @@ Entity KNVV_KVGR2 is DropDownList in frmMain
 		label LABELS.labKVGR2
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR2'}
+		load data from DATASOURCE.MDMC3_AdditionalCustomerData with arguments {Grp : 'GR2'}
 
 	with rules
 		HF_RegionalCountry.Value is 'FR' then
@@ -3749,7 +3783,7 @@ Entity KNVV_KVGR3 is DropDownList in frmMain
 		label LABELS.labKVGR3
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR3'}
+		load data from DATASOURCE.MDMC3_AdditionalCustomerData with arguments {Grp : 'GR3'}
 	with rules
 		HF_RegionalCountry.Value is 'FR' then
 			KNVV_KVGR3 visible true
@@ -3769,7 +3803,7 @@ Entity KNVV_KVGR4 is DropDownList in frmMain
 		label LABELS.labKVGR4
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR4'}
+		load data from DATASOURCE.MDMC3_AdditionalCustomerData with arguments {Grp : 'GR4'}
 
 	with rules
 		HF_RegionalCountry.Value is 'FR' then
@@ -3790,16 +3824,16 @@ Entity KNVV_KVGR5 is DropDownList in frmMain
 		label LABELS.labKVGR5
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Grp : 'GR5'}
+		load data from DATASOURCE.MDMC3_AdditionalCustomerData with arguments {Grp : 'GR5'}
 
 	with rules
 		HF_SalesOrg.Value in {'40E0', '31E0', '60E0', '50E0', '70E0', '10E0', '22E0'} then
 			KNVV_KVGR5 mandatory true
-			load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Group : 'GR4', Filter : true}
+			load data from DATASOURCE.MDMC3_AdditionalCustomerData with arguments {Group : 'GR4', Filter : true}
 			
 		HF_SalesOrg.Value not in {'40E0', '31E0', '60E0', '50E0', '70E0', '10E0', '22E0'} then
 			KNVV_KVGR5 mandatory false
-			load data from DATASOURCE.MDMC_AdditionalCustomerData with arguments {Group : 'GR4'}
+			load data from DATASOURCE.MDMC3_AdditionalCustomerData with arguments {Group : 'GR4'}
 			
 		HF_RegionalCountry.Value is 'FR' then
 			KNVV_KVGR4 visible true
@@ -4057,7 +4091,7 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 		label LABELS.labUnsubscribeCMD
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.UnsubscribeOptions
+		load data from DATASOURCE.MDMC3_UnsubscribeOptions
 	with actions
 		set value BLK_GD_Ctr_UnsubscribeCMD.Value in GD_Ctr_UnsubscribeCMD
 	with rules
@@ -4111,7 +4145,7 @@ Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
 		label LABELS.labCentralSalesOrdersBlock
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_OrderBlock
+		load data from DATASOURCE.MDMC3_OrderBlock
 	with rules
 		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4130,7 +4164,7 @@ Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
 		label LABELS.labOrdersBlockAtThisSalesArea
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_BLK_BillingBlockAtSalesArea
+		load data from DATASOURCE.MDMC3_BLK_BillingBlockAtSalesArea
 	with rules
 		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4149,7 +4183,7 @@ Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
 		label LABELS.labCentralDeliveriesBlock
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_DeliveryBlock
+		load data from DATASOURCE.MDMC3_DeliveryBlock
 	with rules
 		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4168,7 +4202,7 @@ Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
 		label LABELS.labDeliveriesBlockAtThisSalesArea
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_DeliveryBlock
+		load data from DATASOURCE.MDMC3_DeliveryBlock
 	with rules
 		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4187,7 +4221,7 @@ Entity BLK_CentralBillingBlock is DropDownList in frmMain
 		label LABELS.labCentralBillingBlock
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_BillingBlock
+		load data from DATASOURCE.MDMC3_BillingBlock
 	with rules
 		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4203,7 +4237,7 @@ Entity BLK_BillingBlockAtSalesArea is DropDownList in frmMain
 		label LABELS.labBillingBlockAtThisSalesArea
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_BLK_BillingBlockAtSalesArea with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMC3_BLK_BillingBlockAtSalesArea with arguments {FlagActive : true}
 	with actions
 		; ATTACHMENT mandatory  false
 		_COMMENT_ mandatory  true  
@@ -4393,17 +4427,17 @@ Entity btnSubmit is Button in frmMain
 		label LABELS.btnSubmit
 
 	with actions
-		set value toupper(GD_Adr_Name.Value) in GD_Adr_Name
-		set value toupper(GD_Adr_Name.Value) in    GD_Adr_Name
-		set value toupper(GD_Adr_Name2.Value) in   GD_Adr_Name2
-		set value toupper(GD_Adr_Name3.Value) in   GD_Adr_Name3
-		set value toupper(GD_Adr_Name4.Value) in   GD_Adr_Name4
-		set value toupper(GD_Adr_Street.Value) in  GD_Adr_Street
-		set value toupper(GD_Adr_Street2.Value) in GD_Adr_Street2
-		set value toupper(GD_Adr_Street3.Value) in GD_Adr_Street3
-		set value toupper(GD_Adr_Street4.Value) in GD_Adr_Street4
-		set value toupper(GD_Adr_Street5.Value) in GD_Adr_Street5
-		set value toupper(GD_Adr_City.Value) 	in   GD_Adr_City
+		; set value toupper(GD_Adr_Name.Value) in GD_Adr_Name
+		; set value toupper(GD_Adr_Name.Value) in    GD_Adr_Name
+		; set value toupper(GD_Adr_Name2.Value) in   GD_Adr_Name2
+		; set value toupper(GD_Adr_Name3.Value) in   GD_Adr_Name3
+		; set value toupper(GD_Adr_Name4.Value) in   GD_Adr_Name4
+		; set value toupper(GD_Adr_Street.Value) in  GD_Adr_Street
+		; set value toupper(GD_Adr_Street2.Value) in GD_Adr_Street2
+		; set value toupper(GD_Adr_Street3.Value) in GD_Adr_Street3
+		; set value toupper(GD_Adr_Street4.Value) in GD_Adr_Street4
+		; set value toupper(GD_Adr_Street5.Value) in GD_Adr_Street5
+		; set value toupper(GD_Adr_City.Value) 	in   GD_Adr_City
 
 	with rules
 
@@ -4689,7 +4723,7 @@ Entity btnCloseFinal is Button in frmMain
 Entity PF_PartnerFunction is DropDownList in PF_Grid
 	with defaults
 		label LABELS.labPartnerFunction
-		load data from DATASOURCE.MDMC_PartnerFunction with arguments { FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMC3_PartnerFunction with arguments { FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 ; ---------------------------------------------------------------------------- 
 
@@ -4768,7 +4802,7 @@ Entity CP_Department is DropDownList in CP_Grid
 		label LABELS.labCP_Department
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDMC_Department with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMC3_Department with arguments {FlagActive : true}
 	with rules
 		HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
 			this visible false

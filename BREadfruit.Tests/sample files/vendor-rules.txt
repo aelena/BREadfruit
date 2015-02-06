@@ -4,410 +4,11 @@
 ; 
 
 
-; -- AccountGroup	DisplayName
-;	 'YVT1'	Belgium/Belgique
-;	 'YVT2'	Luxembourg
-;	 'YVT3'	Spain/Espagne
-;	 'YVT4'	Portugal/Portugal
-;	 'YVT5'	Italy/Italie
-;	 'YVT6'	Reunion/Réunion
-;	 'YVT6'	Martinique/Martinique
-;	 'YVT6'	France Metropolitaine
-;	 'YVT6'	French Guayana/Guyane franç.
-;	 'YVT6'	Guadeloupe
-;	 'YVT7'	Greece/Grèce
-
-
-; ----------------------------------------------------------------------------	
-;     SEARCH FORM 
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=4
-Entity rbSpiridon is RadioButton in frmSearch
-	with defaults
-		enabled false
-		label "Spiridon"
-		value true				; means checked
-
-; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=4
-Entity rbEPass is RadioButton in frmSearch
-	with defaults
-		enabled false
-		label "Epass"
-		value false				; means unchecked
-
-; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
-Entity TBVendorName is TextBox in frmSearch
-	with defaults
-		enabled true
-		visible
-		value ''
-		label LABELS.NAME
-		
-	with actions
-		hide btnCreateVendor
-		set hidden vendorSearchResultGrid
-		clear vendorSearchResultGrid
-		; TODO: CHECK WITH SEB IF THIS IS NEEDED
-		; set value '' in MESSAGE_POPUP
-
-	with triggers
-		this changes
-
-; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
-
-Entity TBVendorCity is TextBox in frmSearch
-	with defaults
-		value ''
-		label LABELS.labVendorCity
-
-	with actions
-		hide btnCreateVendor
-		set hidden vendorSearchResultGrid
-		clear vendorSearchResultGrid
-
-	with triggers
-		this changes
-
-; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, CONSTRAINTS=0,TRIGGERS=1
-Entity TBVendorNumber is TextBox in frmSearch
-	with defaults
-		visible true
-		value ''
-		max length 10
-		min length 10
-		label LABELS.labVendorNumber
-		validation ^[0-9]{10}$
-
-
-	with actions
-		hide btnCreateVendor
-		set hidden vendorSearchResultGrid
-		clear vendorSearchResultGrid
-
-	with rules
-		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
-		TBVendorNumber.text starts with 0 then
-			set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
-	with triggers
-		this changes
-			
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=3, TRIGGERS=1
-Entity TBVendorIFA is TextBox in frmSearch
-	with defaults
-		visible true
-		value ''
-		label LABELS.labVendorIFA
-
-	with actions
-		hide btnCreateVendor
-		hide vendorSearchResultGrid
-		clear vendorSearchResultGrid
-	
-	with rules
-		TBVendorIFA.value is empty then 
-			DDLVDCountry mandatory
-		else 
-			DDLVDCountry not mandatory
-
-	with triggers
-		this changes
-				
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=7, RULES=4, ACTIONS=4, TRIGGERS=1
-Entity DDLVDCountry is DropDownList in frmSearch
-	with defaults
-		data field DisplayName
-		value field Code
-		load data from DATASOURCE.MDM_Countries with arguments {FlagActive : true}
-		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
-		label LABELS.labCountry
-
-	with actions
-		set value '' in MESSAGE_POPUP
-		hide vendorSearchResultGrid
-		hide btnCreateVendor
-		clear vendorSearchResultGrid
-
-	with rules
-		DDLVDCountry.value in {'FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC','TF'} then label LABELS.labSIRET in TBVendorVAT
-		DDLVDCountry.value in {'PT','ES'} then label LABELS.labNIF in TBVendorVAT
-		DDLVDCountry.value is 'IT' then label LABELS.labPartitaIVA in TBVendorVAT
-		DDLVDCountry.value not in {'PT','ES','IT','FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC'} then label LABELS.labVAT in TBVendorVAT
-	
-	with triggers
-		this changes 
-
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
-Entity TBVendorVAT is TextBox in frmSearch
-	with defaults
-		visible true
-		value ''
-		label LABELS.labVendorVAT
-
-	with actions
-		hide btnCreateVendor
-		set hidden vendorSearchResultGrid
-		clear vendorSearchResultGrid
-
-	with triggers
-		this changes
-		
-; ----------------------------------------------------------------------------	
-
-
-; TESTGEN : DEFAULTS=8, ACTIONS=5, RULES=0, TRIGGERS=1
-Entity DDLCDCountry is DropDownList in frmSearch
-	with defaults
-		data field DisplayName
-		value field Code
-		load data from DATASOURCE.MDM_ClusterCountries
-		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
-		label LABELS.labCountry
-		mandatory true
-	
-	with actions
-		; load active companies for this country
-		load data from DATASOURCE.MDM_ClusterCompanies with arguments {FlagActive : true, CountryCode : DDLCDCountry.Value} in DDLCDCompany
-		clear vendorSearchResultGrid
-		set hidden vendorSearchResultGrid
-		hide btnCreateVendor
-		clear DDLCDPurchOrg
-
-	with triggers
-		this changes
-
-; ----------------------------------------------------------------------------	
-
-
-; TESTGEN : DEFAULTS=6,ACTIONS=5, RULES=0, TRIGGERS=1
-Entity DDLCDCompany is DropDownList in frmSearch
-	with defaults
-		label LABELS.labCompany
-		mandatory true
-		data field DisplayName
-		value field Code
-
-	with actions
-		; load active companies for this country
-		load data from DATASOURCE.MDM_ClusterPurchaseOrganizations with arguments {FlagActive : true, ClusterCompanyCode: DDLCDCompany.Value} in DDLCDPurchOrg 
-		set value HF_UserCostLocationUnit.Value in DDLCDCompany			; another data constant
-		clear vendorSearchResultGrid
-		set hidden vendorSearchResultGrid
-		hide btnCreateVendor
-
-	with triggers
-		this changes
-
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=7, ACTIONS=4, RULES=0, TRIGGERS=1
-Entity DDLCDPurchOrg is DropDownList in frmSearch
-	with defaults
-		data field DisplayName
-		value field Code
-		value ''
-		label LABELS.labPURCHASEORG
-		mandatory true
-
-	with actions
-		clear vendorSearchResultGrid
-		hide vendorSearchResultGrid
-		hide btnCreateVendor
-
-	with triggers
-		this changes	
-
-; ----------------------------------------------------------------------------	
-
-; replacing HF_RequestState.Value 
-; TODO: Pending on SEB and FD input?
-; Entity HF_RequestState is TextBox in frmMain
-; 	with defaults
-; 		visible false
-; 
-; Entity HF_SearchOKFlag is CheckBox in frmMain
-; 	with defaults
-; 		visible false
-; Entity AAA is TextBox in frmMain
-;	with defaults
-;		visible false
-;		hiddenfield true
-;  TODO: also declare lilke this conceptual model replacements
-; ----------------------------------------------------------------------------	
-
-
-
-; TESTGEN : DEFAULTS=3, ACTIONS=1, RULES=10, TRIGGERS=1
-; hidden field 1 -> FlagUserCanSearch, to see if user is allowed to do that search
-; hidden field 2 -> FlagSearchCriteriaIncomplete -> means that a validation to make sure the search can be done has failed, not enough parameters
-
-Entity btnSearch is Button in frmSearch
-
-	with defaults
-		label LABELS.btnSearch
-
-	with actions
-		; always perform this conditionless action when the button is clicked
-		; arguments might vary from search to search so it makes sense to run it everytime
-		load data from DATASOURCE.IsUserInROLE with arguments { UserAccount : HF_UserAccount.Value, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value, IsIndirectMaterial : 0} in FlagUserCanSearch
-        
-	with rules
-
-		; if hidden field’s value, which is a checkbox is false, then show no auth message
-		FlagUserCanSearch.Value is false then 
-			set value MESSAGES.ERRauthCCPO in MESSAGE_POPUP
-
-        ; since we cannot exit rule block we need to involve the flag in every successive rule as a guard for all of them
-		FlagUserCanSearch.Value is true and TBVendorNumber is not empty and TBVendorNumber.Value.Length is not 10 then
-			set value MESSAGES.ERRVendorNumeber10 in MESSAGE_POPUP
-            ; missing mandatory parameters for search, so set to true this second flag
-			set value true in FlagSearchCriteriaIncomplete
-
-        
-		FlagUserCanSearch.Value is true and TBVendorNumber is not empty and TBVendorNumber.Value.Length is not 10 then
-			set value MESSAGES.ERRVendorNumeber10 in MESSAGE_POPUP
-			set value true in  FlagSearchCriteriaIncomplete
-
-		FlagUserCanSearch.Value is true and DDLVDCountry is empty then
-			add value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
-			set value true in  FlagSearchCriteriaIncomplete
-
-        
-		FlagUserCanSearch.Value is true and TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
-			add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
-			set value true in  FlagSearchCriteriaIncomplete
-
-		FlagUserCanSearch.Value is true and TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-			add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
-			set value true in  FlagSearchCriteriaIncomplete
-
-		FlagUserCanSearch.Value is true and TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
-			add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
-			set value true in  FlagSearchCriteriaIncomplete
-
-		FlagUserCanSearch.Value is true and DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
-			add value MESSAGES.ERRfieldCCPO in MESSAGE_POPUP
-			set value true in  FlagSearchCriteriaIncomplete
-                                       
-		FlagUserCanSearch.Value is true and FlagSearchCriteriaIncomplete.Value is false then
-			load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLVDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
-                
-		FlagUserCanSearch.Value is true and FlagSearchCriteriaIncomplete.Value is false and vendorSearchResultGrid.Items.Count = 0 then
-			set value MESSAGES.MSGNoValuesFound in MESSAGE_POPUP
-			btnCreateVendor visible true
-			VendorSearchResultGrid_sec visible true
-		else
-			btnCreateVendor visible false
-			VendorSearchResultGrid_sec visible false
-
-
-	with triggers
-		this on click
-
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=3, ACTIONS=7, RULES=0, TRIGGERS=1
-Entity btnCreateVendor is Button in frmSearch
-	with defaults
-		visible false
-		label LABELS.btnCreateVendor
-
-	with actions
-		frmMain visible true
-		frmSearch visible false
-
-		set value DDLCDCountry.Value in HF_RegionalCountry
-		set value DDLCDCompany.Value in HF_CompanyCode
-		set value DDLCDSalesOrg.Value in HF_SalesOrg
-		set value DDLVDCountry.Value in HF_VendorCountry
-		set value TBCustomerName.Value in GD_Adr_Name
-
-	with triggers
-		this on click
-
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=3
-Entity VendorSearchResultGrid_sec is Div in frmSearch
-	with defaults
-		visible false
-		label LABELS.lblResult
-
-; ----------------------------------------------------------------------------	
-
-; TESTGEN : DEFAULTS=27, RULES=0, TRIGGERS=0
-Entity vendorSearchResultGrid is Grid in frmSearch
-	with defaults
-		visible false
-		define column Country with arguments {  DataField: Country, Header : LABELS.lblCountry, Visible : true }
-		define column Vat with arguments {  DataField: VAT, Header : LABELS.lblVatRegNo, Visible : true }
-		define column Customer with arguments {  DataField: CustomerNumber, Header : LABELS.lblCustomer, Visible : true }
-		define column Vendor with arguments {  DataField: VendorNumber, Header : LABELS.lblVendor, Visible : true }  
-		define column NaturalPerson with arguments {  DataField: IsNaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
-		define column name1 with arguments {  DataField: Name1, Header : LABELS.lblName, Visible : true }  
-		define column name3 with arguments {  DataField: Name3, Header : LABELS.lblComment, Visible : true }  
-		define column Street with arguments {  DataField: Street, Header : LABELS.lblStreet, Visible : true }  
-		define column City with arguments {  DataField: City, Header : LABELS.lblCity, Visible : true }  
-		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.lblLocal_Tax_Code, Visible : true }  
-		define column Risk with arguments {  DataField: RiskClassification, Header : LABELS.lblRiskClass, Visible : true }
-		define column LFA1_SPERR with arguments {  DataField: HasCentralPostingBlock, Header : LABELS.lblCentralPostingBlock , Visible : true }
-		define column LFA1_SPERM with arguments {  DataField: HasCentralPurchasingBlock, Header : LABELS.lblCentralPurchBlock , Visible : true }
-		define column LFB1_LOEVM with arguments {  DataField: HasDeletionFlagForCompanyCode, Header : LABELS.lblCentralDelFlag   , Visible : true }
-		define column LFM1_LOEVM with arguments {  DataField: HasCentralDeletionBlock, Header : LABELS.lblCentralDelBlock, Visible : true }  
-		define column Company with arguments {  DataField: Company, Header : LABELS.lblCompany   , Visible : true }
-		define column KNB1_FRGRP with arguments {  DataField: ReleaseGroup, Header : LABELS.lblBusinessPartnerClass  , Visible : true }
-		define column KNB1_ZTERM with arguments {  DataField: TermsOfPaymentKeyAtCompanyCodeLevel, Header : LABELS.labPTPaymentTerms  , Visible : true }
-		define column KNB1_SPERR with arguments {  DataField: HasCompanyCodePostingBlock, Header : LABELS.lblPostingBlock1  	, Visible : true }
-		define column LFB1_LOEVM2 with arguments {  DataField: HasDeletionFlagForCompanyCode, Header : LABELS.lblDeletionFlag   , Visible : true }
-		define column PO with arguments {  DataField: PO, Header : LABELS.lblPurchOrganiz, Visible : true }
-		define column LFM1_LOEVM2 with arguments {  DataField: HasPurchOrgDeletionBlock, Header : LABELS.lblDelBlock, Visible : true }  
-		define column LFM1_SPERM with arguments {  DataField: HasPurchasingBlockAtPurchasingOrganizationLevel, Header : LABELS.lblPurcOBlock , Visible : true }
-		define column LFM1_NODEL with arguments {  DataField: HasPurchOrgDeletionBlock, Header : LABELS.lblPurchODelFlag, Visible : true }
-		; button columns
-		define column CreateButton with arguments { DisplayAs : Button,  Header : LABELS.lblAction, Text: LABELS.lblCreate, Visible: false}
-		define column ModifyButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblModify, Visible: false}
-		define column BlockButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblBlock, Visible: false}
-
-	with rules
-		
-	
-		; these rules have to be applied row by row of course
-		; Company.Value is empty then
-		; 	CreateButton visible true
-		; 	set value LABELS.lblToBeCreated in Company
-		; 
-		; PO.Value is empty then
-		; 	CreateButton visible true
-		; 	set value LABELS.lblToBeCreated in PO
-		; 	
-		; Company.Value is not empty and PO.Value is not empty then
-		; 	ModifyButton visible true
-		; 	BlockButton visible true
-
-	; with triggers
-	; 	; TODO: ASK SEB is this form.load but then what about grid load?
-	; 	this loads
-
-; ----------------------------------------------------------------------------	
-;     END OF SEARCH FORM DEFINITION
-; ----------------------------------------------------------------------------	
-
-
 ; ----------------------------------------------------------------------------	
 ; BEGIN HIDDEN FIELDS DEFINITION
 ; ----------------------------------------------------------------------------	
 ; TESTGEN : DEFAULTS=3
-Entity HF_UserCountry is TextBox in frmMain
+Entity HF_UserCountry is TextEnBox in frmMain
 	with defaults
 		enabled false
 		visible false
@@ -539,9 +140,427 @@ Entity HF_VATMandatory is CheckBox in frmMain
 		visible false
 		hiddenfield
 ; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_FlagUserCanSearch is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_FlagSearchCriteriaIncomplete is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; ----------------------------------------------------------------------------	
+;     END OF HIDDEN FIELDS DEFINITION
+; ----------------------------------------------------------------------------	
+
+
+
+; -- AccountGroup	DisplayName
+;	 'YVT1'	Belgium/Belgique
+;	 'YVT2'	Luxembourg
+;	 'YVT3'	Spain/Espagne
+;	 'YVT4'	Portugal/Portugal
+;	 'YVT5'	Italy/Italie
+;	 'YVT6'	Reunion/Réunion
+;	 'YVT6'	Martinique/Martinique
+;	 'YVT6'	France Metropolitaine
+;	 'YVT6'	French Guayana/Guyane franç.
+;	 'YVT6'	Guadeloupe
+;	 'YVT7'	Greece/Grèce
+
+
+; ----------------------------------------------------------------------------	
+;     SEARCH FORM 
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=4
+Entity rbSpiridon is RadioButton in frmSearch
+	with defaults
+		enabled false
+		label "Spiridon"
+		value true				; means checked
+
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=4
+Entity rbEPass is RadioButton in frmSearch
+	with defaults
+		enabled false
+		label "Epass"
+		value false				; means unchecked
+
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
+Entity TBVendorName is TextBox in frmSearch
+	with defaults
+		enabled true
+		visible
+		value ''
+		label LABELS.NAME
+		
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+		; TODO: CHECK WITH SEB IF THIS IS NEEDED
+		; set value '' in MESSAGE_POPUP
+
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
+
+Entity TBVendorCity is TextBox in frmSearch
+	with defaults
+		value ''
+		label LABELS.labVendorCity
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, CONSTRAINTS=0,TRIGGERS=1
+Entity TBVendorNumber is TextBox in frmSearch
+	with defaults
+		visible true
+		value ''
+		max length 10
+		min length 10
+		label LABELS.labVendorNumber
+		validation ^[0-9]{10}$
+
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+
+	with rules
+		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
+		TBVendorNumber.text starts with 0 then
+			set value MESSAGES.ERRPartnerNotManaged in MESSAGE_POPUP
+	with triggers
+		this changes
+			
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=3, TRIGGERS=1
+Entity TBVendorIFA is TextBox in frmSearch
+	with defaults
+		visible true
+		value ''
+		label LABELS.labVendorIFA
+
+	with actions
+		hide btnCreateVendor
+		hide vendorSearchResultGrid
+		clear vendorSearchResultGrid
+	
+	with rules
+		TBVendorIFA.value is empty then 
+			DDLVDCountry mandatory
+		else 
+			DDLVDCountry not mandatory
+
+	with triggers
+		this changes
+				
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=7, RULES=4, ACTIONS=4, TRIGGERS=1
+Entity DDLVDCountry is DropDownList in frmSearch
+	with defaults
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDMV3_Countries with arguments {FlagActive : true}
+		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
+		label LABELS.labCountry
+
+	with actions
+		set value '' in MESSAGE_POPUP
+		hide vendorSearchResultGrid
+		hide btnCreateVendor
+		clear vendorSearchResultGrid
+
+	with rules
+		DDLVDCountry.value in {'FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC','TF'} then label LABELS.labSIRET in TBVendorVAT
+		DDLVDCountry.value in {'PT','ES'} then label LABELS.labNIF in TBVendorVAT
+		DDLVDCountry.value is 'IT' then label LABELS.labPartitaIVA in TBVendorVAT
+		DDLVDCountry.value not in {'PT','ES','IT','FR','GF','GP','RE','MQ','YT','NC','PF','PM','WF','MC'} then label LABELS.labVAT in TBVendorVAT
+	
+	with triggers
+		this changes 
+
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
+Entity TBVendorVAT is TextBox in frmSearch
+	with defaults
+		visible true
+		value ''
+		label LABELS.labVendorVAT
+
+	with actions
+		hide btnCreateVendor
+		set hidden vendorSearchResultGrid
+		clear vendorSearchResultGrid
+
+	with triggers
+		this changes
+		
+; ----------------------------------------------------------------------------	
+
+
+; TESTGEN : DEFAULTS=8, ACTIONS=5, RULES=0, TRIGGERS=1
+Entity DDLCDCountry is DropDownList in frmSearch
+	with defaults
+		data field DisplayName
+		value field Code
+		load data from DATASOURCE.MDMV3_ClusterCountries
+		value HF_UserCountry.Value		; preselect user country if there is data in SCD for this user
+		label LABELS.labCountry
+		mandatory true
+	
+	with actions
+		; load active companies for this country
+		load data from DATASOURCE.MDMV3_ClusterCompanies with arguments {FlagActive : true, CountryCode : DDLCDCountry.Value} in DDLCDCompany
+		clear vendorSearchResultGrid
+		set hidden vendorSearchResultGrid
+		hide btnCreateVendor
+		clear DDLCDPurchOrg
+
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------	
+
+
+; TESTGEN : DEFAULTS=6,ACTIONS=5, RULES=0, TRIGGERS=1
+Entity DDLCDCompany is DropDownList in frmSearch
+	with defaults
+		label LABELS.labCompany
+		mandatory true
+		data field DisplayName
+		value field Code
+
+	with actions
+		; load active companies for this country
+		load data from DATASOURCE.MDMV3_ClusterPurchaseOrganizations with arguments {FlagActive : true, ClusterCompanyCode: DDLCDCompany.Value} in DDLCDPurchOrg 
+		set value HF_UserCostLocationUnit.Value in DDLCDCompany			; another data constant
+		clear vendorSearchResultGrid
+		set hidden vendorSearchResultGrid
+		hide btnCreateVendor
+
+	with triggers
+		this changes
+
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=7, ACTIONS=4, RULES=0, TRIGGERS=1
+Entity DDLCDPurchOrg is DropDownList in frmSearch
+	with defaults
+		data field DisplayName
+		value field Code
+		value ''
+		label LABELS.labPURCHASEORG
+		mandatory true
+
+	with actions
+		clear vendorSearchResultGrid
+		hide vendorSearchResultGrid
+		hide btnCreateVendor
+
+	with triggers
+		this changes	
+
+; ----------------------------------------------------------------------------	
+
+; replacing HF_RequestState.Value 
+; TODO: Pending on SEB and FD input?
+; Entity HF_RequestState is TextBox in frmMain
+; 	with defaults
+; 		visible false
+; 
+; Entity HF_SearchOKFlag is CheckBox in frmMain
+; 	with defaults
+; 		visible false
+; Entity AAA is TextBox in frmMain
+;	with defaults
+;		visible false
+;		hiddenfield true
+;  TODO: also declare lilke this conceptual model replacements
+; ----------------------------------------------------------------------------	
+
+
+
+; TESTGEN : DEFAULTS=3, ACTIONS=1, RULES=10, TRIGGERS=1
+; hidden field 1 -> HF_FlagUserCanSearch, to see if user is allowed to do that search
+; hidden field 2 -> HF_FlagSearchCriteriaIncomplete -> means that a validation to make sure the search can be done has failed, not enough parameters
+
+Entity btnSearch is Button in frmSearch
+
+	with defaults
+		label LABELS.btnSearch
+
+	with actions
+		; always perform this conditionless action when the button is clicked
+		; arguments might vary from search to search so it makes sense to run it everytime
+		load data from DATASOURCE.IsUserInROLE with arguments { UserAccount : HF_UserAccount.Value, RoleCode : USER.CURRENT_ROLE, ClusterCountryCode : DDLCDCountry.Value, ClusterCompanyCode : DDLCDCompany.Value, ClusterPOCode : DDLCDSalesOrg.Value, IsIndirectMaterial : 0} in HF_FlagUserCanSearch
+        
+	with rules
+
+		; if hidden field’s value, which is a checkbox is false, then show no auth message
+		HF_FlagUserCanSearch.Value is false then 
+			set value MESSAGES.ERRauthCCPO in MESSAGE_POPUP
+
+        ; since we cannot exit rule block we need to involve the flag in every successive rule as a guard for all of them
+		HF_FlagUserCanSearch.Value is true and TBVendorNumber is not empty and TBVendorNumber.Value.Length is not 10 then
+			set value MESSAGES.ERRVendorNumeber10 in MESSAGE_POPUP
+            ; missing mandatory parameters for search, so set to true this second flag
+			set value true in HF_FlagSearchCriteriaIncomplete
+
+        
+		HF_FlagUserCanSearch.Value is true and TBVendorNumber is not empty and TBVendorNumber.Value.Length is not 10 then
+			set value MESSAGES.ERRVendorNumeber10 in MESSAGE_POPUP
+			set value true in  HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and DDLVDCountry is empty then
+			add value MESSAGES.ERRfieldVCountry in MESSAGE_POPUP
+			set value true in  HF_FlagSearchCriteriaIncomplete
+
+        
+		HF_FlagUserCanSearch.Value is true and TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty then
+			add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
+			set value true in  HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and TBVendorName is empty and TBVendorCity is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+			add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
+			set value true in  HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and TBVendorName is empty and TBVendorCity is not empty and TBVendorName is empty and TBVendorIFA is empty and DDLVDCountry is empty and TBVendorVAT is empty then
+			add value MESSAGES.ERRKeyTaxField in MESSAGE_POPUP
+			set value true in  HF_FlagSearchCriteriaIncomplete
+
+		HF_FlagUserCanSearch.Value is true and DDLCDCountry is empty or DDLCDCompany is empty or DDLCDPurchOrg is empty then
+			add value MESSAGES.ERRfieldCCPO in MESSAGE_POPUP
+			set value true in  HF_FlagSearchCriteriaIncomplete
+                                       
+		HF_FlagUserCanSearch.Value is true and HF_FlagSearchCriteriaIncomplete.Value is false then
+			load data from WEBSERVICE.VENDOR_SEARCH_SERVICE with arguments {VendorName:TBVendorName.Value, VendorCity:TBVendorCity, VendorNumber:TBVendorNumber.Value, VendorCountry:DDLVDCountry.Value,TaxCode1:TBVendorVAT.Value,TaxCode4:TBVendorIFA.Value, Country:DDLVDCountry.Value, CompanyCode:DDLCDCompany.Value, SalesOrganization:DDLCDSalesOrg.Value, Division:DDLCDivision } in vendorSearchResultGrid
+                
+		HF_FlagUserCanSearch.Value is true and HF_FlagSearchCriteriaIncomplete.Value is false and vendorSearchResultGrid.Items.Count = 0 then
+			set value MESSAGES.MSGNoValuesFound in MESSAGE_POPUP
+			btnCreateVendor visible true
+			VendorSearchResultGrid_sec visible false
+
+		HF_FlagUserCanSearch.Value is true and HF_FlagSearchCriteriaIncomplete.Value is false and vendorSearchResultGrid.Items.Count > 0 then
+			btnCreateVendor visible false
+			VendorSearchResultGrid_sec visible true
+
+
+	with triggers
+		this on click
+
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=3, ACTIONS=7, RULES=0, TRIGGERS=1
+Entity btnCreateVendor is Button in frmSearch
+	with defaults
+		visible false
+		label LABELS.btnCreateVendor
+
+	with actions
+		
+		set value DDLCDCountry.Value in HF_RegionalCountry
+		set value DDLCDCompany.Value in HF_CompanyCode
+		set value DDLCDSalesOrg.Value in HF_SalesOrg
+		set value DDLVDCountry.Value in HF_VendorCountry
+		set value TBCustomerName.Value in GD_Adr_Name
+
+		frmMain visible true
+		frmSearch visible false
+
+	with triggers
+		this on click
+
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=3
+Entity VendorSearchResultGrid_sec is Div in frmSearch
+	with defaults
+		visible false
+		label LABELS.lblResult
+
+; ----------------------------------------------------------------------------	
+
+; TESTGEN : DEFAULTS=27, RULES=0, TRIGGERS=0
+Entity vendorSearchResultGrid is Grid in frmSearch
+	with defaults
+		visible false
+		define column Country with arguments {  DataField: Country, Header : LABELS.lblCountry, Visible : true }
+		define column Vat with arguments {  DataField: VAT, Header : LABELS.lblVatRegNo, Visible : true }
+		define column Customer with arguments {  DataField: CustomerNumber, Header : LABELS.lblCustomer, Visible : true }
+		define column Vendor with arguments {  DataField: VendorNumber, Header : LABELS.lblVendor, Visible : true }  
+		define column NaturalPerson with arguments {  DataField: IsNaturalPerson, Header : LABELS.labGD_Ctr_IsNaturalPerson, Visible : true }
+		define column name1 with arguments {  DataField: Name1, Header : LABELS.lblName, Visible : true }  
+		define column name3 with arguments {  DataField: Name3, Header : LABELS.lblComment, Visible : true }  
+		define column Street with arguments {  DataField: Street, Header : LABELS.lblStreet, Visible : true }  
+		define column City with arguments {  DataField: City, Header : LABELS.lblCity, Visible : true }  
+		define column Taxcode with arguments {  DataField: Taxcode, Header : LABELS.lblLocal_Tax_Code, Visible : true }  
+		define column Risk with arguments {  DataField: RiskClassification, Header : LABELS.lblRiskClass, Visible : true }
+		define column LFA1_SPERR with arguments {  DataField: HasCentralPostingBlock, Header : LABELS.lblCentralPostingBlock , Visible : true }
+		define column LFA1_SPERM with arguments {  DataField: HasCentralPurchasingBlock, Header : LABELS.lblCentralPurchBlock , Visible : true }
+		define column LFB1_LOEVM with arguments {  DataField: HasDeletionFlagForCompanyCode, Header : LABELS.lblCentralDelFlag   , Visible : true }
+		define column LFM1_LOEVM with arguments {  DataField: HasCentralDeletionBlock, Header : LABELS.lblCentralDelBlock, Visible : true }  
+		define column Company with arguments {  DataField: Company, Header : LABELS.lblCompany   , Visible : true }
+		define column KNB1_FRGRP with arguments {  DataField: ReleaseGroup, Header : LABELS.lblBusinessPartnerClass  , Visible : true }
+		define column KNB1_ZTERM with arguments {  DataField: TermsOfPaymentKeyAtCompanyCodeLevel, Header : LABELS.labPTPaymentTerms  , Visible : true }
+		define column KNB1_SPERR with arguments {  DataField: HasCompanyCodePostingBlock, Header : LABELS.lblPostingBlock1  	, Visible : true }
+		define column LFB1_LOEVM2 with arguments {  DataField: HasDeletionFlagForCompanyCode, Header : LABELS.lblDeletionFlag   , Visible : true }
+		define column PO with arguments {  DataField: PO, Header : LABELS.lblPurchOrganiz, Visible : true }
+		define column LFM1_LOEVM2 with arguments {  DataField: HasPurchOrgDeletionBlock, Header : LABELS.lblDelBlock, Visible : true }  
+		define column LFM1_SPERM with arguments {  DataField: HasPurchasingBlockAtPurchasingOrganizationLevel, Header : LABELS.lblPurcOBlock , Visible : true }
+		define column LFM1_NODEL with arguments {  DataField: HasPurchOrgDeletionBlock, Header : LABELS.lblPurchODelFlag, Visible : true }
+		; button columns
+		define column CreateButton with arguments { DisplayAs : Button,  Header : LABELS.lblAction, Text: LABELS.lblCreate, Visible: false}
+		define column ModifyButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblModify, Visible: false}
+		define column BlockButton with arguments { DisplayAs : Button, Header : LABELS.lblAction, Text: LABELS.lblBlock, Visible: false}
+
+	with rules
+		
+	
+		; these rules have to be applied row by row of course
+		; Company.Value is empty then
+		; 	CreateButton visible true
+		; 	set value LABELS.lblToBeCreated in Company
+		; 
+		; PO.Value is empty then
+		; 	CreateButton visible true
+		; 	set value LABELS.lblToBeCreated in PO
+		; 	
+		; Company.Value is not empty and PO.Value is not empty then
+		; 	ModifyButton visible true
+		; 	BlockButton visible true
+
+	; with triggers
+	; 	; TODO: ASK SEB is this form.load but then what about grid load?
+	; 	this loads
+
 ; ----------------------------------------------------------------------------	
 ;     END OF SEARCH FORM DEFINITION
 ; ----------------------------------------------------------------------------	
+
+
 
 
 ; ----------------------------------------------------------------------------	
@@ -549,6 +568,34 @@ Entity HF_VATMandatory is CheckBox in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; -- RULES FOR VENDOR MAIN FORM (MDM.ASPX)
+
+; TESTGEN : DEFAULTS=2, ACTIONS=1, RULES=1, TRIGGERS=1
+Entity frmMain is Form
+	with defaults
+		; TODO: when application starts, this is hidden, except when coming from choosing an existing request in BP HOme page
+		visible false
+
+	with actions
+		; TODO: this property has to be populated by framework, it is an ambient property that precedes the form
+		; if the property is present and has a value it means the user opened an existing request from the BP HOME
+		; then it remais to determine the final syntax for accessing this property from the rules
+		; or either, hardcode the rule in xtml
+		load data from DATASOURCE.W4E_GetUserInfo with arguments {UserAccount : REQUEST.USER_ACCOUNT} with output {HF_UserCostLocationUnit.Value : CostLocationUnit, HF_UserCountry: UserCountry}
+
+	with rules
+		; TODO: this property has to be populated by framework, it is an ambient property that precedes the form
+		; if the property is present and has a value it means the user opened an existing request from the BP HOME
+		; then it remais to determine the final syntax for accessing this property from the rules
+		; or either, hardcode the rule in xtml
+		REQUEST.REQUEST_ID is not empty then
+			load data from DATASOURCE.MDMV3_GetBasicRequestData with arguments {RequestID : REQUEST.REQUEST_ID} with output {HF_CurrentRole.Value : CurrentRole, HF_RequestState.Value : RequestState, HF_RequestType.Value : RequestType, HF_RegionalCountry.Value : RegionalCountry, HF_CompanyCode.Value : CompanyCode, HF_PurchaseOrg.Value : PurchaseOrg, HF_VendorCountry.Value : VendorCountry}
+			load data from DATASOURCE.MDMV3_GetCountryData with arguments {} in {}
+		else
+			load data from DATASOURCE.MDMV3_GetCountryData with arguments {} in {}
+
+	with triggers
+		this loads
+; ----------------------------------------------------------------------------	
 
 
 ; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=1, TRIGGERS=2
@@ -558,7 +605,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		; only two values, 00 and 09
-		load data from DATASOURCE.MDM_RiskClassifications
+		load data from DATASOURCE.MDMV3_RiskClassifications
 		value '00'
 		label LABELS.labGD_Ctr_RiskClassification
 		mandatory true
@@ -596,7 +643,7 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		enabled false					; this control is always disabled
-		load data from DATASOURCE.MDM_Countries
+		load data from DATASOURCE.MDMV3_Countries
 		value HF_UserCountry.Value				; -- depends on country selected in search form, so this data has to be passed
 		mandatory true
 		label LABELS.labGD_GD_Adr_Country
@@ -619,7 +666,7 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 		value field Code
 		visible true
 		enabled true
-		load data from DATASOURCE.MDM_PartnerClassification
+		load data from DATASOURCE.MDMV3_PartnerClassification
 		value 'NG'
 		mandatory true
 		label LABELS.labGD_Ctr_VendorClassification
@@ -655,7 +702,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_ReleaseGroups
+		load data from DATASOURCE.MDMV3_ReleaseGroups
 		value 'NORM'
 		mandatory true
 		label LABELS.labCC_AM_BPClassification
@@ -687,7 +734,7 @@ Entity GD_Damex is DropDownList in frmMain
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_YES_NO
+		load data from DATASOURCE.MDMV3_YES_NO
 		value ''
 		mandatory true
 		label LABELS.labGD_Damex
@@ -891,7 +938,7 @@ Entity GD_Procur_Supplier_OnContractBasis is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		label LABELS.labGD_Procur_Supplier_OnContractBasis
-		load data from DATASOURCE.MDM_YES_NO
+		load data from DATASOURCE.MDMV3_YES_NO
 		value ''
 		
 	with rules
@@ -909,7 +956,7 @@ Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		label LABELS.labGD_Procur_Supplier_IsOneTimeVendor
-		load data from DATASOURCE.MDM_YES_NO
+		load data from DATASOURCE.MDMV3_YES_NO
 		value ''
 
 	with rules
@@ -1152,7 +1199,7 @@ Entity GD_PVO_Question1 is DropDownList in frmMain
 		visible false
 		label LABELS.labGD_PVO_Question1
 		mandatory false
-		load data from DATASOURCE.MDM_YES_NO
+		load data from DATASOURCE.MDMV3_YES_NO
 		value ''
 
 	with rules
@@ -1178,7 +1225,7 @@ Entity GD_PVO_Question2 is DropDownList in frmMain
 		; high risk country or low risk country
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.PVO_Question2_Options
+		load data from DATASOURCE.MDMV3_PVO_Question2_Options
 		value ''
 
 
@@ -1207,7 +1254,7 @@ Entity GD_PVO_Question3 is DropDownList in frmMain
 		label LABELS.labGD_PVO_Question3
 		mandatory false
 		; high risk country or low risk country
-		load data from DATASOURCE.MDM_YES_NO
+		load data from DATASOURCE.MDMV3_YES_NO
 		value ''
 		
 	with rules
@@ -1232,7 +1279,7 @@ Entity GD_PVO_Question4 is DropDownList in frmMain
 		label LABELS.labGD_PVO_Question4
 		mandatory false
 		; values: low, average, high
-		load data from DATASOURCE.PVO_Question4_Options
+		load data from DATASOURCE.MDMV3_PVO_Question4_Options
 		value ''
 		
 
@@ -1259,7 +1306,7 @@ Entity GD_PVO_Question5 is DropDownList in frmMain
 		visible false
 		label LABELS.labGD_PVO_Question5
 		mandatory false
-		load data from DATASOURCE.MDM_YES_NO
+		load data from DATASOURCE.MDMV3_YES_NO
 		value ''
 
 	with rules
@@ -1543,7 +1590,8 @@ Entity GD_Adr_Search is TextBox in frmMain
 
 	with actions
 		ATTACHMENT mandatory true
-		set value toupper(GD_Adr_Name4.Value) in GD_Adr_Name4
+		; set value toupper(GD_Adr_Name4.Value) in GD_Adr_Name4
+		set value GD_Adr_Name4.Value in GD_Adr_Name4
 
 	with rules
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'VM_BLK' or HF_CurrentRole.Value in {'MDMV3_CPM', 'MDMV3_UPM', 'MDMV3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -1657,7 +1705,7 @@ Entity GD_Adr_Region is DropDownList in frmMain
 	with defaults
 		enabled true
 		visible true
-		load data from DATASOURCE.MDM_Regions with arguments {FlagActive : true, CountryCode : HF_VendorCountry.Value }
+		load data from DATASOURCE.MDMV3_Regions with arguments {FlagActive : true, CountryCode : HF_VendorCountry.Value }
 		data field DisplayName
 		value field Code
 
@@ -1696,7 +1744,7 @@ Entity GD_Adr_CountryGD is DropDownList in frmMain
 		enabled false		; always disabled
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Countries
+		load data from DATASOURCE.MDMV3_Countries
 		value HF_VendorCountry.Value
 
 ; ----------------------------------------------------------------------------	
@@ -1942,7 +1990,7 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Languages	with arguments {FlagActive : true}	
+		load data from DATASOURCE.MDMV3_Languages	with arguments {FlagActive : true}	
 		value EN		; default is English
 		label LABELS.labLanguages
 
@@ -1957,7 +2005,7 @@ Entity GD_Com_LanguageCode is DropDownList in frmMain
 		HF_AccountGroup.Value is 'YVT1' and GD_Adr_Region in {'02', '03'} then
 			set value 'FR' in GD_Com_LanguageCode
 
-		; this should come from the MODEL (from the MDM_Countries table) where "country configuration" is set
+		; this should come from the MODEL (from the MDMV3_Countries table) where "country configuration" is set
 		HF_Language.Value is not empty then
 			set value HF_Language.Value in GD_Com_LanguageCode
 
@@ -1975,7 +2023,7 @@ Entity GD_Com_Telebox is DropDownList in frmMain
 		mandatory true
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Telebox with arguments {FlagActive : true, AccountGroup : HF_AccountGroup.Value}
+		load data from DATASOURCE.MDMV3_Telebox with arguments {FlagActive : true, AccountGroup : HF_AccountGroup.Value}
 		value 'PRT'
 	with rules
 		HF_RequestType.Value is 'VC' then
@@ -2016,12 +2064,12 @@ Entity GD_VT_Country is DropDownList in GD_VT_Grid
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Countries
+		load data from DATASOURCE.MDMV3_Countries
 		value HF_VendorCountry.Value
 		mandatory true
 	with actions
 		; select the specific country code and put it on the next field
-		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Code : GD_VT_Country.Value } in GD_VT_CountryCode
+		load data from DATASOURCE.MDMV3_CountryTelephonePrefixes with arguments {Code : GD_VT_Country.Value } in GD_VT_CountryCode
 	with triggers
 		this changes
 
@@ -2108,10 +2156,10 @@ Entity GD_VF_Country is DropDownList in GD_VF_Grid
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Countries
+		load data from DATASOURCE.MDMV3_Countries
 		value HF_VendorCountry.Value
 	with actions
-		load data from DATASOURCE.MDM_CountryTelephonePrefixes with arguments {Code : GD_VF_Country.Value } in GD_VF_CountryCode
+		load data from DATASOURCE.MDMV3_CountryTelephonePrefixes with arguments {Code : GD_VF_Country.Value } in GD_VF_CountryCode
 	with triggers
 		this changes
 
@@ -2298,7 +2346,7 @@ Entity GD_NatP_Sex is DropDownList in frmMain
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Sex
+		load data from DATASOURCE.MDMV3_Sex
 		value ''
 		label LABELS.labSex
 		visible false
@@ -2348,12 +2396,12 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 		; if there are no specific data for this specific country, data for EN should be loaded
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : HF_VendorCountry.Value}
+		load data from DATASOURCE.MDMV3_Industries with arguments {FlagActive: true, Country : HF_VendorCountry.Value}
 		value ''
 	with rules
 			
 		HF_AccountGroup.Value in {'YCT6', 'YVT6'} then
-			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : FR}
+			load data from DATASOURCE.MDMV3_Industries with arguments {FlagActive: true, Country : FR}
 			; this equals to this line in original code
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 
@@ -2361,7 +2409,7 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 			this mandatory true
 
 		HF_AccountGroup.Value in {'YCT9', 'YVT9'} then
-			load data from DATASOURCE.MDM_Industries with arguments {FlagActive: true, Country : EN}
+			load data from DATASOURCE.MDMV3_Industries with arguments {FlagActive: true, Country : EN}
 			; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
 			this mandatory false
 
@@ -2381,7 +2429,7 @@ Entity GD_Ctr_GFORM is DropDownList in frmMain
 		; data source is same for vendors and customers
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_LegalForms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value }
+		load data from DATASOURCE.MDMV3_LegalForms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value }
 		
 	with rules
 
@@ -2467,7 +2515,7 @@ Entity GD_Ctr_PIVA is TextBox in frmMain
 			validation regex ^[0-9]{1,14}$
 			GD_Ctr_TaxCode2 enabled false
 			; do padding via sql server ugh
-			load data from DATASOURCE.MDM_StringPadLeft with arguments {String : GD_Ctr_PIVA.Value, Length : 14, Char : 0} in GD_Ctr_PIVA
+			load data from DATASOURCE.MDMV3_StringPadLeft with arguments {String : GD_Ctr_PIVA.Value, Length : 14, Char : 0} in GD_Ctr_PIVA
 			set value GD_Ctr_PIVA.Value in GD_Ctr_TaxCode1
 			set value 'BE' in GD_Ctr_VATRegistrationNumber
 			add value GD_Ctr_PIVA.Value in GD_Ctr_VATRegistrationNumber
@@ -2917,7 +2965,7 @@ Entity GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 		label LABELS.labUnsubscribeCMD
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.UnsubscribeOptions
+		load data from DATASOURCE.MDMV3_UnsubscribeOptions
 		value ''
 	with actions
 		set value GD_Ctr_UnsubscribeCMD.Value in BLK_GD_Ctr_UnsubscribeCMD
@@ -2940,7 +2988,7 @@ Entity V_Country is DropDownList in V_Grid
 		data field DisplayName
 		value field Code
 		label LABELS.labCountry
-		load data from DATASOURCE.MDM_Countries
+		load data from DATASOURCE.MDMV3_Countries
 		
 	with actions
 		ATTACHMENT mandatory  true  
@@ -2991,14 +3039,14 @@ Entity GD_VB_Country is DropDownList in GD_VB_Grid
 		label LABELS.labCountry
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Countries
+		load data from DATASOURCE.MDMV3_Countries
 		mandatory true
 	with actions
 		ATTACHMENT mandatory  true  
 		; _COMMENT_ mandatory  false 
 	with rules
 		; call SP to find out if selected value is Tax Haven
-		DATASOURCE.MDM_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true then
+		DATASOURCE.MDMV3_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true then
 			set value '09' in GD_Ctr_RiskClassification
 	with triggers 
 		this changes
@@ -3280,7 +3328,7 @@ Entity CC_AM_SortKey is DropDownList in frmMain
 		label LABELS.labAMSortKeys
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_SortKeys with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMV3_SortKeys with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 		mandatory
 		visible false
 
@@ -3361,7 +3409,7 @@ Entity CC_AM_WithholdingTaxCode	is DropDownList in frmMain
 		label LABELS.labAMWithholdingTaxCode
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_WithholdingTaxCodes with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMV3_WithholdingTaxCodes with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 	with rules
 
@@ -3419,7 +3467,7 @@ Entity GD_NatP_Exemption is DropDownList in frmMain
 		visible false
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.NaturalPersonExemption
+		load data from DATASOURCE.MDMV3_NaturalPersonExemption
 		value ''
 
 	with rules
@@ -3456,7 +3504,7 @@ Entity CC_AM_CashManagementGroup is DropDownList in frmMain
 		label LABELS.labAMCashManagementGroup
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_CashManagementGroups with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMV3_CashManagementGroups with arguments {FlagActive : true}
 		visible false
 	with rules
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'VM_BLK' or HF_CurrentRole.Value in {'MDMV3_CPM', 'MDMV3_UPM', 'MDMV3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -3494,7 +3542,7 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 	with defaults
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMV3_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 		label LABELS.labPTPaymentTerms
 		mandatory
 		
@@ -3551,7 +3599,7 @@ Entity CC_PT_PaymentBlock is DropDownList in frmMain
 		data field DisplayName
 		value field Code
 		label LABELS.labPTPaymentBlock
-		load data from DATASOURCE.MDM_PaymentBlocks with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMV3_PaymentBlocks with arguments {FlagActive : true}
 	with rules
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'VM_BLK' or HF_CurrentRole.Value in {'MDMV3_CPM', 'MDMV3_UPM', 'MDMV3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3579,7 +3627,7 @@ Entity CC_PT_PaymentMethods	is DropDownList in frmMain
 		mandatory
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_PaymentMethods with arguments {FlagActive : true, ClusterCountryCode: HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMV3_PaymentMethods with arguments {FlagActive : true, ClusterCountryCode: HF_RegionalCountry.Value}
 
 
 	with rules
@@ -3660,7 +3708,7 @@ Entity CC_PT_HouseBank is DropDownList in frmMain
 		label LABELS.labPTHouseBank
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_HouseBanks with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMV3_HouseBanks with arguments {FlagActive : true}
 	with rules
 		; need to apply this one?
 		GD_Adr_Country.Value is not 'ES' then
@@ -3691,7 +3739,7 @@ Entity CC_DD_DunningProcedure is DropDownList in frmMain
 		label LABELS.labDDDunningprocedure
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_DunningProcedure with arguments {FlagActive : true, ClusterCountryCode: HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMV3_DunningProcedure with arguments {FlagActive : true, ClusterCountryCode: HF_RegionalCountry.Value}
 
 	with rules
 		HF_RegionalCountry.Value is 'BE' then
@@ -3774,7 +3822,7 @@ Entity CC_DD_DunningBlock is DropDownList in frmMain
 		label LABELS.labDDDunningBlock
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_DunningBlocks with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMV3_DunningBlocks with arguments {FlagActive : true}
 	with rules
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'VM_BLK' or HF_CurrentRole.Value in {'MDMV3_CPM', 'MDMV3_UPM', 'MDMV3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -3804,7 +3852,7 @@ Entity CC_DD_DunningClerk is DropDownList in frmMain
 		label LABELS.labDDDunningClerk
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_AccountingClerks with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
+		load data from DATASOURCE.MDMV3_AccountingClerks with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
 
 	with rules
 	
@@ -3831,7 +3879,7 @@ Entity CC_CO_AccountingClerk is DropDownList in frmMain
 		label LABELS.labCOAccountingClerk
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_AccountingClerks with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
+		load data from DATASOURCE.MDMV3_AccountingClerks with arguments {FlagActive : true, CompanyCode : HF_CompanyCode.Value}
 
 	with rules
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'VM_BLK' or HF_CurrentRole.Value in {'MDMV3_CPM', 'MDMV3_UPM', 'MDMV3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -3993,7 +4041,7 @@ Entity PO_PurchaseOrderCurrency	is DropDownList in frmMain
 		label LABELS.labPurchaseOrderCurrency
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Currencies with arguments {FlagActive : true }
+		load data from DATASOURCE.MDMV3_Currencies with arguments {FlagActive : true }
 		value EUR
 	with rules
 		HF_RequestType.Value is 'VC' then
@@ -4015,7 +4063,7 @@ Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 		label LABELS.labPO_TermsOfPaymentKey
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
+		load data from DATASOURCE.MDMV3_PaymentTerms with arguments {FlagActive : true, ClusterCountryCode : HF_RegionalCountry.Value}
 
 	with rules
 
@@ -4078,7 +4126,7 @@ Entity PO_Incoterms	is DropDownList in frmMain
 		label LABELS.labIncoterms	
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_Incoterms with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMV3_Incoterms with arguments {FlagActive : true}
 		mandatory true
 
 	with actions
@@ -4163,7 +4211,7 @@ Entity PO_ConfirmationControl is DropDownList in frmMain
 		visible false
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_ConfirmationControl with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMV3_ConfirmationControl with arguments {FlagActive : true}
 
 	with rules
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'VM_BLK' or HF_CurrentRole.Value in {'MDMV3_CPM', 'MDMV3_UPM', 'MDMV3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -4257,7 +4305,7 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 		label LABELS.labUnsubscribeCMD
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.UnsubscribeOptions
+		load data from DATASOURCE.MDMV3_UnsubscribeOptions
 
 	with actions
 		set value BLK_GD_Ctr_UnsubscribeCMD.Value in GD_Ctr_UnsubscribeCMD
@@ -4279,7 +4327,7 @@ Entity BLK_CC_PT_PaymentBlock is DropDownList in frmMain
 		label LABELS.labPTPaymentBlock
 		data field DisplayName
 		value field Code
-		load data from DATASOURCE.MDM_PaymentBlocks with arguments {FlagActive : true}
+		load data from DATASOURCE.MDMV3_PaymentBlocks with arguments {FlagActive : true}
 	with rules
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is not 'VM_BLK' or HF_CurrentRole.Value in {'MDMV3_CPM', 'MDMV3_UPM', 'MDMV3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4487,17 +4535,17 @@ Entity btnSubmit is Button in frmMain
 		label LABELS.btnSubmit
 
 	with actions
-		set value toupper(GD_Adr_Name.Value) in GD_Adr_Name
-		set value toupper(GD_Adr_Name.Value) in    GD_Adr_Name
-		set value toupper(GD_Adr_Name2.Value) in   GD_Adr_Name2
-		set value toupper(GD_Adr_Name3.Value) in   GD_Adr_Name3
-		set value toupper(GD_Adr_Name4.Value) in   GD_Adr_Name4
-		set value toupper(GD_Adr_Street.Value) in  GD_Adr_Street
-		set value toupper(GD_Adr_Street2.Value) in GD_Adr_Street2
-		set value toupper(GD_Adr_Street3.Value) in GD_Adr_Street3
-		set value toupper(GD_Adr_Street4.Value) in GD_Adr_Street4
-		set value toupper(GD_Adr_Street5.Value) in GD_Adr_Street5
-		set value toupper(GD_Adr_City.Value) 	in   GD_Adr_City
+		; set value toupper(GD_Adr_Name.Value) in GD_Adr_Name
+		; set value toupper(GD_Adr_Name.Value) in    GD_Adr_Name
+		; set value toupper(GD_Adr_Name2.Value) in   GD_Adr_Name2
+		; set value toupper(GD_Adr_Name3.Value) in   GD_Adr_Name3
+		; set value toupper(GD_Adr_Name4.Value) in   GD_Adr_Name4
+		; set value toupper(GD_Adr_Street.Value) in  GD_Adr_Street
+		; set value toupper(GD_Adr_Street2.Value) in GD_Adr_Street2
+		; set value toupper(GD_Adr_Street3.Value) in GD_Adr_Street3
+		; set value toupper(GD_Adr_Street4.Value) in GD_Adr_Street4
+		; set value toupper(GD_Adr_Street5.Value) in GD_Adr_Street5
+		; set value toupper(GD_Adr_City.Value) 	in   GD_Adr_City
 
 	with rules
 
@@ -4749,13 +4797,13 @@ Entity btnSubmit is Button in frmMain
 		ATTACHMENT.IsMandatory is true and ATTACHMENT.Items.Count is 0 then
 			set value MESSAGES.ERRsubmitRequestAttachment in MESSAGE_POPUP
 
-		GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value not in {'75','2A','2B'} and GD_Adr_Region.Value is not SUBSTRING(GD_Adr_PostalCode.Value,0,2) then
+		GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value not in {'75','2A','2B'} and GD_Adr_PostalCode.Value not starts with GD_Adr_Region.Value then
 			set value MESSAGES.ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
 
-		GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value is '75' and SUBSTRING(GD_Adr_PostalCode.Value,0,2) is not 00 then
+		GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value is '75' and GD_Adr_PostalCode.Value not starts with '00' then
 			set value MESSAGES.ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
 
-		GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value in {'2A', '2B'} and SUBSTRING(GD_Adr_PostalCode.Value,0,2) is not 20 then
+		GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value in {'2A', '2B'} and GD_Adr_PostalCode.Value not starts with '20' then
 			set value MESSAGES.ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
 
 		GD_Adr_CountryGD.Value is 'ES' and GD_Adr_PostalCode.Value.Length is not 5 and GD_Adr_PostalCode.Value >= 53000 then

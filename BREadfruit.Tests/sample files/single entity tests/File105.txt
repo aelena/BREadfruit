@@ -1,0 +1,8 @@
+﻿Entity AAA is TextBox in frmMain
+	with rules
+		GD_Adr_PostalCode.Value not starts with GD_Adr_Region.Value then
+			set value 'A' in FIELD_A
+		GD_Adr_PostalCode.Value not starts with '00' then
+			set value 'B' in FIELD_B
+		GD_Adr_CountryGD.Value is 'ES' and GD_Adr_PostalCode.Value.Length is not 5 and GD_Adr_PostalCode.Value >= 53000 then
+			set value MESSAGES.ERRspanishPostalCode in MESSAGE_POPUP
