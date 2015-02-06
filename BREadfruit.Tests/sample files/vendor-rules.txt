@@ -3,6 +3,22 @@
 ; -- TODO: MANY THINGS MISSING SUCH AS THE COMPOSITE CONTROLS, TEH ATTCHMENTS, buttons iN COMPOSITE CONTROLS....
 ; 
 
+; TESTGEN : DEFAULTS=2, ACTIONS=1, RULES=1, TRIGGERS=1
+Entity frmSearch is Form
+	with defaults
+		visible true
+
+	with actions
+		; TODO: this property has to be populated by framework, it is an ambient property that precedes the form
+		; if the property is present and has a value it means the user opened an existing request from the BP HOME
+		; then it remais to determine the final syntax for accessing this property from the rules
+		; or either, hardcode the rule in xtml
+		load data from DATASOURCE.W4E_GetUserInfo with arguments {UserAccount : REQUEST.USER_ACCOUNT} with output {HF_UserCostLocationUnit.Value : CostLocationUnit, HF_UserCountry: UserCountry}
+
+	with triggers
+		this loads
+; ----------------------------------------------------------------------------	
+
 
 ; ----------------------------------------------------------------------------	
 ; BEGIN HIDDEN FIELDS DEFINITION
@@ -154,10 +170,46 @@ Entity HF_FlagSearchCriteriaIncomplete is CheckBox in frmMain
 		visible false
 		hiddenfield
 ; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_RiskClassification is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
 ; ----------------------------------------------------------------------------	
 ;     END OF HIDDEN FIELDS DEFINITION
 ; ----------------------------------------------------------------------------	
 
+; TESTGEN : DEFAULTS=2, ACTIONS=1, RULES=1, TRIGGERS=1
+Entity frmMain is Form
+	with defaults
+		; TODO: when application starts, this is hidden, except when coming from choosing an existing request in BP HOme page
+		visible false
+
+	with actions
+		; TODO: this property has to be populated by framework, it is an ambient property that precedes the form
+		; if the property is present and has a value it means the user opened an existing request from the BP HOME
+		; then it remais to determine the final syntax for accessing this property from the rules
+		; or either, hardcode the rule in xtml
+		load data from DATASOURCE.W4E_GetUserInfo with arguments {UserAccount : REQUEST.USER_ACCOUNT} with output {HF_UserCostLocationUnit.Value : CostLocationUnit, HF_UserCountry: UserCountry}
+
+	with rules
+		; TODO: this property has to be populated by framework, it is an ambient property that precedes the form
+		; if the property is present and has a value it means the user opened an existing request from the BP HOME
+		; then it remais to determine the final syntax for accessing this property from the rules
+		; or either, hardcode the rule in xtml
+		REQUEST.REQUEST_ID is not empty then
+			load data from DATASOURCE.MDMV3_GetBasicRequestData with arguments {RequestID : REQUEST.REQUEST_ID} with output {HF_CurrentRole.Value : CurrentRole, HF_RequestState.Value : RequestState, HF_RequestType.Value : RequestType, HF_RegionalCountry.Value : RegionalCountry, HF_CompanyCode.Value : CompanyCode, HF_PurchaseOrg.Value : PurchaseOrg, HF_VendorCountry.Value : VendorCountry}
+			; TODO: This must come from REQUEST loaded from DB
+			load data from DATASOURCE.MDMV3_GetCountryData with arguments {CountryCode : REQUEST.REGIONAL_COUNTRY } with output {HF_RiskClassification.Value : RiskClassification, HF_AccountGroup.Value : AccountGroup, HF_Language.Value : DefaultLanguage, HF_MandatoryIBAN.Value : MandatoryIBAN, HF_IsTaxHeaven.Value : TaxHeavenBlackList_Source, HF_RegionIsMandatory.Value : Region_IsMandatory, HF_TaxCode1Mandatory.Value : TaxCode1IsMandatory, HF_TaxCode2Mandatory.Value : TaxCode2IsMandatory, HF_VATMandatory.Value : VATIsMandatory, HF_IsEU.Value : IsEU }
+		else
+			load data from DATASOURCE.MDMV3_GetCountryData with arguments {CountryCode : DDLCDCountry.Value } with output {HF_RiskClassification.Value : RiskClassification, HF_AccountGroup.Value : AccountGroup, HF_Language.Value : DefaultLanguage, HF_MandatoryIBAN.Value : MandatoryIBAN, HF_IsTaxHeaven.Value : TaxHeavenBlackList_Source, HF_RegionIsMandatory.Value : Region_IsMandatory, HF_TaxCode1Mandatory.Value : TaxCode1IsMandatory, HF_TaxCode2Mandatory.Value : TaxCode2IsMandatory, HF_VATMandatory.Value : VATIsMandatory, HF_IsEU.Value : IsEU }
+
+	with triggers
+		this loads
+
+; ----------------------------------------------------------------------------	
 
 
 ; -- AccountGroup	DisplayName
@@ -569,32 +621,6 @@ Entity vendorSearchResultGrid is Grid in frmSearch
 
 ; -- RULES FOR VENDOR MAIN FORM (MDM.ASPX)
 
-; TESTGEN : DEFAULTS=2, ACTIONS=1, RULES=1, TRIGGERS=1
-Entity frmMain is Form
-	with defaults
-		; TODO: when application starts, this is hidden, except when coming from choosing an existing request in BP HOme page
-		visible false
-
-	with actions
-		; TODO: this property has to be populated by framework, it is an ambient property that precedes the form
-		; if the property is present and has a value it means the user opened an existing request from the BP HOME
-		; then it remais to determine the final syntax for accessing this property from the rules
-		; or either, hardcode the rule in xtml
-		load data from DATASOURCE.W4E_GetUserInfo with arguments {UserAccount : REQUEST.USER_ACCOUNT} with output {HF_UserCostLocationUnit.Value : CostLocationUnit, HF_UserCountry: UserCountry}
-
-	with rules
-		; TODO: this property has to be populated by framework, it is an ambient property that precedes the form
-		; if the property is present and has a value it means the user opened an existing request from the BP HOME
-		; then it remais to determine the final syntax for accessing this property from the rules
-		; or either, hardcode the rule in xtml
-		REQUEST.REQUEST_ID is not empty then
-			load data from DATASOURCE.MDMV3_GetBasicRequestData with arguments {RequestID : REQUEST.REQUEST_ID} with output {HF_CurrentRole.Value : CurrentRole, HF_RequestState.Value : RequestState, HF_RequestType.Value : RequestType, HF_RegionalCountry.Value : RegionalCountry, HF_CompanyCode.Value : CompanyCode, HF_PurchaseOrg.Value : PurchaseOrg, HF_VendorCountry.Value : VendorCountry}
-			load data from DATASOURCE.MDMV3_GetCountryData with arguments {} in {}
-		else
-			load data from DATASOURCE.MDMV3_GetCountryData with arguments {} in {}
-
-	with triggers
-		this loads
 ; ----------------------------------------------------------------------------	
 
 
