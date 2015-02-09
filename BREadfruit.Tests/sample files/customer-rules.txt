@@ -192,6 +192,20 @@ Entity HF_RiskClassification is TextBox in frmMain
 		visible false
 		hiddenfield
 ; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_MandatoryAttachment is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_MandatoryComment is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
 ;     END OF HIDDEN FIELDS DEFINITION
 ; ----------------------------------------------------------------------------	
 
@@ -876,7 +890,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDMC3_RiskClassifications
 		label LABELS.labGD_Ctr_RiskClassification
-		value '00''
+		value '00'
 		mandatory true
 	with rules
 		
@@ -925,7 +939,7 @@ Entity GD_Adr_Country is DropDownList in frmMain
 		GD_Ctr_TaxCode1 changes
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=2, TRIGGERS=2
 Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 
 	with defaults
@@ -955,7 +969,8 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
@@ -997,14 +1012,14 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 			this enable false	
 	with actions
 		; ATTACHMENT mandatory  false
-		; _COMMENT_ mandatory  false
+		; DDLDCComment mandatory  false
 	
 	with triggers 
 		this changes
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=4, ACTIONS=3, TRIGGERS=2
+; TESTGEN : DEFAULTS=5, RULES=4, ACTIONS=4, TRIGGERS=2
 Entity GD_Adr_Name is TextBox in frmMain
 
 	with defaults
@@ -1022,7 +1037,8 @@ Entity GD_Adr_Name is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 		set value SUBSTRING(GD_Adr_Name.Value,20) in GD_Adr_Search
 		set value GD_Adr_Name.Value in B_GD_VB_AccountHolder
 	with triggers 
@@ -1030,7 +1046,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=3, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=3, RULES=3, ACTIONS=2, TRIGGERS=2
 Entity GD_Adr_Name2 is TextBox in frmMain
 
 	with defaults
@@ -1044,8 +1060,9 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
+		set value true in HF_MandatoryAttachment
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
@@ -1121,7 +1138,7 @@ Entity GD_Com_Comment is TextBox in frmMain
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=3, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=5, RULES=3, ACTIONS=2, TRIGGERS=2
 Entity GD_Adr_Street is TextBox in frmMain
 
 	with defaults
@@ -1140,13 +1157,14 @@ Entity GD_Adr_Street is TextBox in frmMain
 
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=2, TRIGGERS=2
 Entity GD_Adr_Street2 is TextBox in frmMain
 
 	with defaults
@@ -1163,13 +1181,14 @@ Entity GD_Adr_Street2 is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=2, TRIGGERS=2
 Entity GD_Adr_Street3 is TextBox in frmMain
 
 	with defaults
@@ -1185,14 +1204,15 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 	with actions
+		set value true in HF_MandatoryAttachment
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=3, RULES=4, ACTIONS=2, TRIGGERS=2
 Entity GD_Adr_Street4 is TextBox in frmMain
 
 	with defaults
@@ -1209,13 +1229,14 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=2, TRIGGERS=2
 Entity GD_Adr_Street5 is TextBox in frmMain
 
 	with defaults
@@ -1228,7 +1249,8 @@ Entity GD_Adr_Street5 is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
@@ -1298,7 +1320,7 @@ Entity GD_Adr_Region is DropDownList in frmMain
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=5, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=5, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity GD_Adr_City is TextBox in frmMain
 
 	with defaults
@@ -1315,7 +1337,8 @@ Entity GD_Adr_City is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
@@ -2002,7 +2025,7 @@ Entity V_Grid is Grid in frmMain
 ; ----------------------------------------------------------------------------	
 
 
-; TESTGEN : DEFAULTS=7, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=7, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity GD_VB_Country is DropDownList in GD_VB_Grid
 
 	with defaults
@@ -2018,13 +2041,14 @@ Entity GD_VB_Country is DropDownList in GD_VB_Grid
 
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		this changes
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=1, TRIGGERS=3
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=2, TRIGGERS=3
 Entity GD_VB_BankKey is TextBox in GD_VB_Grid
 	with defaults
 		label LABELS.labGD_VD_BankKey
@@ -2035,7 +2059,8 @@ Entity GD_VB_BankKey is TextBox in GD_VB_Grid
 			max length 15
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		this changes
 		GD_VB_Country changes
@@ -2043,7 +2068,7 @@ Entity GD_VB_BankKey is TextBox in GD_VB_Grid
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=2, ACTIONS=1, TRIGGERS=3
+; TESTGEN : DEFAULTS=4, RULES=2, ACTIONS=2, TRIGGERS=3
 Entity GD_VB_BankAccount is TextBox in GD_VB_Grid
 
 	with defaults
@@ -2057,14 +2082,15 @@ Entity GD_VB_BankAccount is TextBox in GD_VB_Grid
 			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		B_GD_VB_Country changes
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, ACTIONS=2, TRIGGERS=1
 Entity GD_VB_BankControlKey is TextBox in GD_VB_Grid
 
 	with defaults
@@ -2072,12 +2098,13 @@ Entity GD_VB_BankControlKey is TextBox in GD_VB_Grid
 		label LABELS.labGD_VD_BankControlKey
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change	
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=3
+; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=3
 Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 	with defaults
 		label LABELS.labGD_VD_IBAN
@@ -2091,7 +2118,8 @@ Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 			max length 35
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		this changes
 		B_GD_VB_Country changes
@@ -2126,14 +2154,15 @@ Entity GD_VB_SWIFT is TextBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, ACTIONS=2, TRIGGERS=1
 Entity GD_VB_AccountHolder is TextBox in GD_VB_Grid
 	with defaults
 		label LABELS.labGD_VD_AccountHolder
 		value GD_Adr_Name.Value
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		this changes
 ; ---------------------------------------------------------------------------- 
@@ -2190,7 +2219,7 @@ Entity GD_VB_btnInsert is Button in GD_VB_Grid
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=14, RULES=1, ACTIONS=1, TRIGGERS=1
+; TESTGEN : DEFAULTS=14, RULES=1, ACTIONS=2, TRIGGERS=1
 Entity GD_VB_Grid is Grid in frmMain
 	with defaults
 		define column GRID_GD_VB_Country		with arguments {ControlID : GD_VB_Country,   DataField : GD_VB_Country, Header : LABELS.labCountry,  Visible : true}
@@ -2212,7 +2241,8 @@ Entity GD_VB_Grid is Grid in frmMain
 		
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 
 	with triggers
 		; on row inserted
@@ -2932,7 +2962,7 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=6, RULES=5, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=6, RULES=5, ACTIONS=2, TRIGGERS=2
 Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 
 	with defaults
@@ -2963,7 +2993,8 @@ Entity CC_AR_PledgeIndicator is DropDownList in frmMain
 				
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 
 	with triggers 
 		on change
@@ -3970,7 +4001,7 @@ Entity KNKK_CTLPC is TextBox in frmMain
 
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
@@ -4135,7 +4166,7 @@ Entity btnUnblockAll is Button in frmMain
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 
 	with defaults
@@ -4150,13 +4181,14 @@ Entity BLK_GD_Ctr_UnsubscribeCMD is DropDownList in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
 	with triggers 
 		this changes
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_CentralPostingBlock is CheckBox in frmMain
 
 	with defaults
@@ -4166,13 +4198,14 @@ Entity BLK_CentralPostingBlock is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_PostingBlockForCC is CheckBox in frmMain
 
 	with defaults
@@ -4182,14 +4215,15 @@ Entity BLK_PostingBlockForCC is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
 
 	with defaults
@@ -4202,13 +4236,14 @@ Entity BLK_CentralSalesOrderBlock is DropDownList in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
@@ -4221,13 +4256,14 @@ Entity BLK_OrdersBlockAtSalesArea is DropDownList in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
 
 	with defaults
@@ -4240,13 +4276,14 @@ Entity BLK_CentralDeliveriesBlock is DropDownList in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
@@ -4259,7 +4296,8 @@ Entity BLK_DeliveriesBlockAtSalesArea is DropDownList in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
@@ -4281,7 +4319,7 @@ Entity BLK_CentralBillingBlock is DropDownList in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=6, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_BillingBlockAtSalesArea is DropDownList in frmMain
 
 	with defaults
@@ -4291,7 +4329,8 @@ Entity BLK_BillingBlockAtSalesArea is DropDownList in frmMain
 		load data from DATASOURCE.MDMC3_BLK_BillingBlockAtSalesArea with arguments {FlagActive : true}
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with rules
 		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4326,7 +4365,7 @@ Entity BLK_CentralSalesSupportBlockAtSalesArea is CheckBox in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_CentralDeletionFlagMasterRecord is CheckBox in frmMain
 
 	with defaults
@@ -4336,13 +4375,14 @@ Entity BLK_CentralDeletionFlagMasterRecord is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_DeletionFlagMasterRecordCC is CheckBox in frmMain
 
 	with defaults
@@ -4352,7 +4392,8 @@ Entity BLK_DeletionFlagMasterRecordCC is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
@@ -4378,7 +4419,7 @@ Entity BLK_CentralDeletionBlockMasterRecord is CheckBox in frmMain
 		label LABELS.labCentralDelBlockMaster
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true
+		DDLDCComment mandatory  true
 	with rules
 		HF_RequestState.Value in {STATES.CLOSED, STATES.LOCKED} or HF_RequestType.Value is not 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -4387,7 +4428,7 @@ Entity BLK_CentralDeletionBlockMasterRecord is CheckBox in frmMain
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=1, TRIGGERS=2
+; TESTGEN ; DEFAULTS=3, RULES=1, ACTIONS=2, TRIGGERS=2
 Entity BLK_DeletionBlockMasterRecordCC is CheckBox in frmMain
 
 	with defaults
@@ -4397,7 +4438,8 @@ Entity BLK_DeletionBlockMasterRecordCC is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false
-		_COMMENT_ mandatory  true  
+		set value true in HF_MandatoryComment
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
@@ -4512,21 +4554,233 @@ Entity btnSubmit is Button in frmMain
 			set value MESSAGES.ERRsubmitRequestGDFieldTelephone in MESSAGE_POPUP
 
 		; TODO: DEFINE SOMEHOW THE CHECKIN OF DEFAULT ROW IN GRID...
-		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_VT_Grid.Items.Count is not '0' and REQUEST.PHONE_DETAILS.NO_DEFAULT_ENTRY is true and HF_RegionalCountry.Value not in {'BE','LU','PT','WF'} then
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_VT_Grid.Items.Count is not 0 and REQUEST.PHONE_DETAILS.NO_DEFAULT_ENTRY is true and HF_RegionalCountry.Value not in {'BE','LU','PT','WF'} then
 			set value MESSAGES.ERRsubmitRequestGDDefTel in MESSAGE_POPUP
 
 		; TODO: DEFINE SOMEHOW THE CHECKIN OF DEFAULT ROW IN GRID...
-		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_VF_Grid.Items.Count is not '0' and REQUEST.FAX_DETAILS.NO_DEFAULT_ENTRY is true then
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_VF_Grid.Items.Count is not 0 and REQUEST.FAX_DETAILS.NO_DEFAULT_ENTRY is true then
 			set value MESSAGES.ERRsubmitRequestGDDefFax in MESSAGE_POPUP
 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_VE_Grid.Items.Count is not 0 and REQUEST.EMAIL_DETAILS.NO_DEFAULT_ENTRY is true then
+			set value MESSAGES.ERRsubmitRequesGDDefSmtp in MESSAGE_POPUP
 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Name.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldVName in MESSAGE_POPUP	
 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Street.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldVStreet in MESSAGE_POPUP
 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Region.Value is empty and GD_Adr_Region.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestGDFieldVRegion in MESSAGE_POPUP		
 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_City.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldVCity in MESSAGE_POPUP	
 
-		HF_CurrentRole.Value is 'MDMC3_ENQ' and HF_RequestType.Value is not 'CC' and DDLDCComment.Value is empty then
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Com_LanguageCode.Value is empty then
+			set value MESSAGES.ERRsubmitRequestGDFieldLanguage in MESSAGE_POPUP	
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Name3 is empty and GD_Adr_Name3.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestGDFieldName3 in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and  GD_Adr_Name3 is empty and GD_Adr_Name3.IsMandatory is true and HF_RegionalCountry.Value is not 'FR' then
+			set value MESSAGES.ERRsubmitRequestGDFieldName4 in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Com_Telebox is empty and HF_VendorCountry.Value is not WF then
+			set value MESSAGES.ERRFieldTelebox in MESSAGE_POPUP		
+			
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Ctr_Industry is empty and GD_Ctr_Industry.IsMandatory is true then
+			set value MESSAGES.ERRFieldIndustry in MESSAGE_POPUP		
+			
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Country.Value is not 'IT' and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsMandatory is true then 
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1 in MESSAGE_POPUP			   
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Country.Value is 'PT' and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode1.Value.Length < 9 then
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1Inv in MESSAGE_POPUP	 
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and  GD_Adr_Country.Value is 'IT' and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_TaxCode2 is empty and GD_Ctr_TaxCode2.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode2Empty in MESSAGE_POPUP
+	
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and  GD_Adr_Country.Value is 'IT' and GD_Ctr_IsNaturalPerson.Value is true and GD_Ctr_VATRegistrationNumber is empty and GD_Ctr_VATRegistrationNumber.IsMandatory is true then
+			set value MESSAGES.GD_Ctr_VATRegistrationNumber in MESSAGE_POPUP
+	
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Country.Value is not 'IT' and GD_Ctr_TaxCode1.Value is empty then 
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1 in MESSAGE_POPUP		
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and CC_AM_BPClassification is empty and CC_AM_BPClassification is visible and CC_AM_BPClassification.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestRHFieldBPC in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and CC_PT_PaymentTerms is visible and CC_PT_PaymentTerms is empty then
+			set value MESSAGES.ERRsubmitRequestCCFieldPaymentTerm in MESSAGE_POPUP
+			
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and SO_TermsOfPaymentKey is empty and HF_CompanyCode.Value is not '563M' then
+			set value MESSAGES.ERRSubmitRequestPOTermsPaymentEmpty in MESSAGE_POPUP
+	
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and SO_Incoterms is empty and HF_CompanyCode.Value is not '563M' then
+			set value MESSAGES.ERRsubmitRequestPOFieldIncoterms in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and SO_IncotermsPart2 is empty and HF_CompanyCode.Value is not '563M' then
+			set value MESSAGES.ERRsubmitRequestPOFieldIncoterms2 in MESSAGE_POPUP
+				
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and KNVV_KVGR5 is empty and KNVV_KVGR5.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestSOfieldCGRP5 in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RequestType.Value is 'CC_CC' and CC_AM_BPClassification is empty then
+			set value MESSAGES.ERRsubmitRequestRiskClassValue in MESSAGE_POPUP
+			
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_SAPNumber is visible and DDLDCReqAction.Value is 'SUBMITTED' and HF_RequestType.Value is 'CC' and GD_SAPNumber is empty then
+			set value ERRsubmitRequestRHFieldSAP in MESSAGE_POPUP
+		
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_SAPNumber.Visible is true and DDLDCReqAction.Value is STATES.SUBMITTED and HF_RegionalCountry.Value is 'BE' and GD_SAPNumber.Value is not empty and GD_SAPNumber.Value < 1000000000 or GD_SAPNumber.Value > 1999999999 then
+			set value MESSAGES.ERRsubmitRequestRHFieldSAPInv in MESSAGE_POPUP 
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_SAPNumber.Visible is true and DDLDCReqAction.Value is STATES.SUBMITTED and HF_RegionalCountry.Value is 'LU' and GD_SAPNumber.Value is not empty and GD_SAPNumber.Value < 2000000000 or GD_SAPNumber.Value > 2999999999 then
+			set value MESSAGES.ERRsubmitRequestRHFieldSAPInv2 in MESSAGE_POPUP 
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestState.Value is 'DRAFT' and ATTACHMENT.Items.Count is 0 then
+			set value ERRsubmitRequestAttachment in MESSAGE_POPUP 
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and  HF_RequestType.Value is not 'CM_BLK' and GD_Adr_PostalCode is empty then
+			set value ERRsubmitRequestGDPostalCode in MESSAGE_POPUP 
+
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value not in {'75','2A','2B'} and GD_Adr_PostalCode.Value not starts with GD_Adr_Region.Value then
+			set value MESSAGES.ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
+
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value is '75' and GD_Adr_PostalCode.Value not starts with '00' then
+			set value MESSAGES.ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
+
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_PostalCode.Value is empty and HF_AccountGroup.Value in {'YVT6','YVT9','YCT6','YCT9'} and GD_Adr_Region.Value in {'2A', '2B'} and GD_Adr_PostalCode.Value not starts with '20' then
+			set value MESSAGES.ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
+
+		GHF_RequestType.Value is not 'CM_BLK' and D_Adr_CountryGD.Value is 'ES' and GD_Adr_PostalCode.Value.Length is not 5 and GD_Adr_PostalCode.Value >= 53000 then
+			set value MESSAGES.ERRspanishPostalCode in MESSAGE_POPUP
+
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_CountryGD.Value is 'GR' and GD_Adr_PostalCode.Value.Length is not 5  then
+			set value MESSAGES.ERRsubmitRequestGDPostalCode in MESSAGE_POPUP
+		
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_CountryGD.Value is 'IT' and GD_Adr_PostalCode.Value.Length is not 5 then 
+			set value MESSAGES.ERRitalianPostalCode in MESSAGE_POPUP
+
+		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_CountryGD.Value is 'PT' and GD_Adr_PostalCode.Value.Length is not 8 then
+			set value MESSAGES.ERRportughesePostalCode in MESSAGE_POPUP
+
+		; TODO: CHECK THIS WITH SEB?
+		ATTACHMENT.IsMandatory is true or HF_MandatoryAttachment is true and ATTACHMENT.Items.Count is 0 then
+			set value MESSAGES.ERRsubmitRequestAttachment in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and SO_CustomerGroup is empty and HF_CompanyCode.Value is not '563M' then
+			set value MESSAGES.ERRsubmitRequestSAFieldCGroup in MESSAGE_POPUP
+		
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and SO_CustPricingProc is empty and HF_CompanyCode.Value is not '563M' then
+			set value MESSAGES.ERRsubmitRequestCustPricProcEmpty in MESSAGE_POPUP
+		
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and SO_CustomerStatsGroup is empty and HF_CompanyCode.Value is not '563M' then
+			set value MESSAGES.ERRSubmitRequestCustStatsGroup in MESSAGE_POPUP
+		
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is not 'FR' and  and SO_CustomerStatsGroup is empty and HF_CompanyCode.Value is not '563M' then is empty and HF_CompanyCode.Value is not '563M' then
+			set value MESSAGES.ERRsubmitRequestSAFieldCShipping in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and SO_TaxClassification is empty and HF_CompanyCode.Value is not '563M' then is empty and HF_CompanyCode.Value is not '563M' then
+			set value MESSAGES.ERRSubmitRequestTaxClassfic in MESSAGE_POPUP
+		
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value is YCT6 and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestFieldTaxCode1_14 in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value is YCT6 and GD_Ctr_TaxCode1.Value.Length < 14 and GD_Ctr_TaxCode1.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestFieldTaxCode1_14 in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value is YCT6 and GD_Ctr_TaxCode2.Value is empty and GD_Ctr_TaxCode1.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode2_9  in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value is YCT6 and GD_Ctr_TaxCode2.Value.Length < 9 and GD_Ctr_TaxCode1.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode2_9  in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value is YCT6 and GD_Ctr_VATRegistrationNumber.Value is empty and GD_Ctr_TaxCode1.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestFieldVAT in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value is YCT6 and GD_Ctr_VATRegistrationNumber.Value.Length < 13 and GD_Ctr_TaxCode1.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestFieldVAT in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value is YCT6 and GD_Ctr_PIVA.Value is empty and GD_Ctr_TaxCode1.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestFieldSIRET_14 in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value is YCT6 and GD_Ctr_PIVA.Value.Length < 13 and GD_Ctr_TaxCode1.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestFieldSIRET_14 in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and CC_DD_DunningProcedure is empty and CC_DD_DunningProcedure.IsMandatory and CC_DD_DunningProcedure.Visible is true then
+			set value MESSAGES.ERRsubmitRequestCCFieldDunnigProc in MESSAGE_POPUP
+
+		; TODO: REPLACE FOR ACCOUNT GROUP FOR CUSTOMER COUNTYR, NOT FOR REGIONAL COUNTRY - NEED AN EXTRA FIELD
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value in {YCT6,YCT9} and GD_Adr_POBoxLoc.IsMandatory is true and GD_Adr_POBoxLoc is empty then
+			set value MESSAGES.ERRsubmitRequestPOBOCInformed in MESSAGE_POPUP
+			
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value in {YCT6,YCT9} and GD_Adr_POBoxPostalCode.IsMandatory is true and GD_Adr_POBoxPostalCode is empty then
+			set value MESSAGES.ERRsubmitRequestGDPOBox in MESSAGE_POPUP
+		
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value in {YCT6,YCT9} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_POBoxPostalCode.Length < 5 then
+			set value MESSAGES.ERRsubmitRequestGDPOBoxValid in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value in {YCT6,YCT9} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_Region.Value not in {'75','2A','2B'} and GD_Adr_POBoxPostalCode.Value not starts with GD_Adr_Region.Value then
+			set value MESSAGES.ERRsubmitRequestGDPOBoxValid in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value in {YCT6,YCT9} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_Region.Value is '75' and GD_Adr_POBoxPostalCode.Value is not '00' then
+			set value MESSAGES.ERRsubmitRequestGDPOBoxValid in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value in {YCT6,YCT9} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_Region.Value is '2A' and GD_Adr_POBoxPostalCode.Value is not '20' then
+			set value MESSAGES.ERRsubmitRequestGDPOBoxValid in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_AccountGroup.Value in {YCT6,YCT9} and GD_Adr_POBoxPostalCode is not empty and GD_Adr_Region.Value is '2B' and GD_Adr_POBoxPostalCode.Value is not '20' then
+			set value MESSAGES.ERRsubmitRequestGDPOBoxValid in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'FR' and KNVV_AUTLF.Value is true and KNVV_AUTLF is visible and KNVV_KZTLF is visible and KNVV_KZTLF.Value is not empty then
+			set value MESSAGES.ERRsubmitRequestSAFieldPart in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'FR' and KNVV_AUTLF.Value is true and KNVV_AUTLF is visible and KNVV_KZTLF is visible and KNVV_KZTLF.Value is 'D' then
+			set value MESSAGES.ERRsubmitRequestSAFieldPart in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'FR' and KNVV_AUTLF.Value is true and KNVV_AUTLF is visible and KNVV_KZTLF is visible and KNVV_KZTLF.Value in {'A','B','C'} and KNVV_ANTLF.Value > 1 then
+			set value MESSAGES.ERRsubmitRequestSAFieldNumber in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'FR' and KNVV_AUTLF.Value is false and KNVV_AUTLF is visible and KNVV_KZTLF.Value in {'A','B'} and KNVV_ANTLF.Value > 1 then
+			set value MESSAGES.ERRsubmitRequestSAFieldNumber in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'FR' and KNVV_VWERK.Value is empty and KNVV_VWERK.IsMandatory is true and KNVV_VWERK.Visible is true then
+			set value MESSAGES.ERRsubmitRequestSAFieldDeliver in MESSAGE_POPUP
+		
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'FR' and KNVV_KTGRD.Value is empty and KNVV_KTGRD.IsMandatory is true and KNVV_KTGRD.Visible is true then
+			set value MESSAGES.ERRSubmitRequestAccountAssigmnt in MESSAGE_POPUP
+		
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'FR' and SO_CustomerShippingConditions.Value is empty and SO_CustomerShippingConditions.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestSAFieldCShipping in MESSAGE_POPUP
+					
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and CC_CO_AccountingClerk.IsMandatory is true CC_CO_AccountingClerk is empty and CC_CO_AccountingClerk is visible then
+			set value MESSAGES.ERRsubmitRequestCCFieldAccountingClerk in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and CC_PT_PaymentMethods.IsMandatory is true CC_PT_PaymentMethods is empty and CC_PT_PaymentMethods is visible then
+			set value MESSAGES.ERRsubmitRequestCCViewFieldPaymentMethod in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry.Value is 'GR' and GD_Ctr_TaxCode2 is empty and GD_Ctr_TaxCode2.Value.Length < 9 and GD_Ctr_TaxCode2.IsMandatory is true then
+			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode2_9 in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and SO_SalesOrderCurrency.IsMandatory is true SO_SalesOrderCurrency is empty and SO_SalesOrderCurrency is visible then
+			set value MESSAGES.ERRsubmitRequestSAFieldSOC in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and CC_CO_ReconAccount.IsMandatory is true CC_CO_ReconAccount is empty and CC_CO_ReconAccount is visible then
+			set value MESSAGES.ERRsubmitRequestSelectRecon in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry is 'GR' and GD_Ctr_CustomerClassification.Value is 'G' and DDLDCComment is empty and CC_CO_ReconAccount is visible then
 			set value MESSAGES.ERRsubmitRequestComment in MESSAGE_POPUP
 
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry is 'GR' and SO_SalesOffice.Value is empty and SO_SalesOffice is visible then
+			set value MESSAGES.ERRsubmitRequestSAFieldOffice in MESSAGE_POPUP
+
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and HF_RegionalCountry is 'GR' and GD_Adr_City2 is empty and GD_Adr_City2.IsMandatory is true and GD_Adr_City2 is visible then
+			set value MESSAGES.ERRsubmitRequestGDFieldDistrict in MESSAGE_POPUP
+	
+		HF_CurrentRole.Value in {'MDMC3_ENQ', 'MDMC3_CLERK'} and HF_RequestType.Value is not 'CM_BLK' and GD_Adr_Country.Value is 'GR' and GD_Adr_City2 is empty and GD_Adr_City2.IsMandatory is true and GD_Adr_City2 is visible then
+			set value MESSAGES.ERRsubmitRequestGDFieldDistrict in MESSAGE_POPUP
+	
+		HF_CurrentRole.Value is 'MDMC3_ENQ' and HF_RequestType.Value is not 'CC' and DDLDCComment.Value is empty then
+			set value MESSAGES.ERRsubmitRequestComment in MESSAGE_POPUP
 
 		DDLDCComment.Value is not empty and DDLDCComment.Value.Length > 2000 then 
 			set value MESSAGES.ERRcommentLenght in MESSAGE_POPUP
@@ -4601,7 +4855,7 @@ Entity btnClose is Button in frmMain
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=5, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=4, RULES=5, ACTIONS=2, TRIGGERS=2
 Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 
 	with defaults
@@ -4632,7 +4886,9 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false
+		set value true in HF_MandatoryAttachment
+
+		; DDLDCComment mandatory  false
 	with triggers 
 		on change
 		this loads
@@ -4919,7 +5175,7 @@ Entity CP_btnInsert is Button in CP_Grid
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=10, RULES=2, ACTIONS=0, TRIGGERS=4
+; TESTGEN : DEFAULTS=10, RULES=2, ACTIONS=0, TRIGGERS=1
 Entity CP_Grid is Grid in frmMain
 	with defaults
 		define column GRID_CP_Name				with arguments { ControlID : CP_Name ,DataField : Name, Header : LABELS.labName, MaxLength : 100, Visible : true}
@@ -4938,9 +5194,9 @@ Entity CP_Grid is Grid in frmMain
 			this enable false		
 				
 	with triggers
-		on row inserted
-		on row deleted
-		on row updated
+		; on row inserted
+		; on row deleted
+		; on row updated
 		this loads
 
 ; ----------------------------------------------------------------------------	

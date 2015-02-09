@@ -1,9 +1,4 @@
-﻿; -- RULES FOR VENDOR SEARCH FORM 
-; -- TODO: PENDING PORTING UNEXPLICIT RULES SUCH AS THOSE IN METHOD ApplyAccountGroupRules
-; -- TODO: MANY THINGS MISSING SUCH AS THE COMPOSITE CONTROLS, TEH ATTCHMENTS, buttons iN COMPOSITE CONTROLS....
-; 
-
-; TESTGEN : DEFAULTS=2, ACTIONS=1, RULES=1, TRIGGERS=1
+﻿; TESTGEN : DEFAULTS=2, ACTIONS=1, RULES=1, TRIGGERS=1
 Entity frmSearch is Form
 	with defaults
 		visible true
@@ -177,6 +172,19 @@ Entity HF_RiskClassification is TextBox in frmMain
 		visible false
 		hiddenfield
 ; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_MandatoryAttachment is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
+Entity HF_MandatoryComment is CheckBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
 ; ----------------------------------------------------------------------------	
 ;     END OF HIDDEN FIELDS DEFINITION
 ; ----------------------------------------------------------------------------	
@@ -184,7 +192,6 @@ Entity HF_RiskClassification is TextBox in frmMain
 ; TESTGEN : DEFAULTS=2, ACTIONS=1, RULES=1, TRIGGERS=1
 Entity frmMain is Form
 	with defaults
-		; TODO: when application starts, this is hidden, except when coming from choosing an existing request in BP HOme page
 		visible false
 
 	with actions
@@ -246,7 +253,7 @@ Entity rbEPass is RadioButton in frmSearch
 		value false				; means unchecked
 
 ; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, ACTIONS=4, TRIGGERS=1
 Entity TBVendorName is TextBox in frmSearch
 	with defaults
 		enabled true
@@ -258,14 +265,13 @@ Entity TBVendorName is TextBox in frmSearch
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
 		clear vendorSearchResultGrid
-		; TODO: CHECK WITH SEB IF THIS IS NEEDED
-		; set value '' in MESSAGE_POPUP
+		set value '' in MESSAGE_POPUP
 
 	with triggers
 		this changes
 
 ; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=4, ACTIONS=3, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, ACTIONS=4, TRIGGERS=1
 
 Entity TBVendorCity is TextBox in frmSearch
 	with defaults
@@ -276,12 +282,13 @@ Entity TBVendorCity is TextBox in frmSearch
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
 		clear vendorSearchResultGrid
+		set value '' in MESSAGE_POPUP
 
 	with triggers
 		this changes
 
 ; ----------------------------------------------------------------------------	
-; TESTGEN : DEFAULTS=7, ACTIONS=3, RULES=2, CONSTRAINTS=0,TRIGGERS=1
+; TESTGEN : DEFAULTS=7, ACTIONS=4, RULES=1, CONSTRAINTS=0,TRIGGERS=1
 Entity TBVendorNumber is TextBox in frmSearch
 	with defaults
 		visible true
@@ -296,6 +303,7 @@ Entity TBVendorNumber is TextBox in frmSearch
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
 		clear vendorSearchResultGrid
+		set value '' in MESSAGE_POPUP
 
 	with rules
 		; show this message "This partner is not managed by Madam. Please contact GSS master data team." if starting with 0
@@ -306,7 +314,7 @@ Entity TBVendorNumber is TextBox in frmSearch
 			
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=3, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, RULES=1, ACTIONS=4, TRIGGERS=1
 Entity TBVendorIFA is TextBox in frmSearch
 	with defaults
 		visible true
@@ -317,6 +325,7 @@ Entity TBVendorIFA is TextBox in frmSearch
 		hide btnCreateVendor
 		hide vendorSearchResultGrid
 		clear vendorSearchResultGrid
+		set value '' in MESSAGE_POPUP
 	
 	with rules
 		TBVendorIFA.value is empty then 
@@ -355,7 +364,7 @@ Entity DDLVDCountry is DropDownList in frmSearch
 
 ; ----------------------------------------------------------------------------	
 
-; TESTGEN : DEFAULTS=4, ACTIONS=3, RULES=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=4, ACTIONS=4, RULES=0, TRIGGERS=1
 Entity TBVendorVAT is TextBox in frmSearch
 	with defaults
 		visible true
@@ -366,6 +375,7 @@ Entity TBVendorVAT is TextBox in frmSearch
 		hide btnCreateVendor
 		set hidden vendorSearchResultGrid
 		clear vendorSearchResultGrid
+		set value '' in MESSAGE_POPUP
 
 	with triggers
 		this changes
@@ -373,7 +383,7 @@ Entity TBVendorVAT is TextBox in frmSearch
 ; ----------------------------------------------------------------------------	
 
 
-; TESTGEN : DEFAULTS=8, ACTIONS=5, RULES=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=8, ACTIONS=6, RULES=0, TRIGGERS=1
 Entity DDLCDCountry is DropDownList in frmSearch
 	with defaults
 		data field DisplayName
@@ -384,12 +394,12 @@ Entity DDLCDCountry is DropDownList in frmSearch
 		mandatory true
 	
 	with actions
-		; load active companies for this country
 		load data from DATASOURCE.MDMV3_ClusterCompanies with arguments {FlagActive : true, CountryCode : DDLCDCountry.Value} in DDLCDCompany
 		clear vendorSearchResultGrid
 		set hidden vendorSearchResultGrid
 		hide btnCreateVendor
 		clear DDLCDPurchOrg
+		set value '' in MESSAGE_POPUP
 
 	with triggers
 		this changes
@@ -397,7 +407,7 @@ Entity DDLCDCountry is DropDownList in frmSearch
 ; ----------------------------------------------------------------------------	
 
 
-; TESTGEN : DEFAULTS=6,ACTIONS=5, RULES=0, TRIGGERS=1
+; TESTGEN : DEFAULTS=6,ACTIONS=6, RULES=0, TRIGGERS=1
 Entity DDLCDCompany is DropDownList in frmSearch
 	with defaults
 		label LABELS.labCompany
@@ -406,12 +416,12 @@ Entity DDLCDCompany is DropDownList in frmSearch
 		value field Code
 
 	with actions
-		; load active companies for this country
 		load data from DATASOURCE.MDMV3_ClusterPurchaseOrganizations with arguments {FlagActive : true, ClusterCompanyCode: DDLCDCompany.Value} in DDLCDPurchOrg 
-		set value HF_UserCostLocationUnit.Value in DDLCDCompany			; another data constant
+		set value HF_UserCostLocationUnit.Value in DDLCDCompany			
 		clear vendorSearchResultGrid
 		set hidden vendorSearchResultGrid
 		hide btnCreateVendor
+		set value '' in MESSAGE_POPUP
 
 	with triggers
 		this changes
@@ -431,27 +441,13 @@ Entity DDLCDPurchOrg is DropDownList in frmSearch
 		clear vendorSearchResultGrid
 		hide vendorSearchResultGrid
 		hide btnCreateVendor
+		set value '' in MESSAGE_POPUP
 
 	with triggers
 		this changes	
 
 ; ----------------------------------------------------------------------------	
 
-; replacing HF_RequestState.Value 
-; TODO: Pending on SEB and FD input?
-; Entity HF_RequestState is TextBox in frmMain
-; 	with defaults
-; 		visible false
-; 
-; Entity HF_SearchOKFlag is CheckBox in frmMain
-; 	with defaults
-; 		visible false
-; Entity AAA is TextBox in frmMain
-;	with defaults
-;		visible false
-;		hiddenfield true
-;  TODO: also declare lilke this conceptual model replacements
-; ----------------------------------------------------------------------------	
 
 
 
@@ -604,9 +600,6 @@ Entity vendorSearchResultGrid is Grid in frmSearch
 		; 	ModifyButton visible true
 		; 	BlockButton visible true
 
-	; with triggers
-	; 	; TODO: ASK SEB is this form.load but then what about grid load?
-	; 	this loads
 
 ; ----------------------------------------------------------------------------	
 ;     END OF SEARCH FORM DEFINITION
@@ -654,7 +647,7 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
@@ -716,7 +709,7 @@ Entity GD_Ctr_VendorClassification is DropDownList in frmMain
 
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
@@ -749,7 +742,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
@@ -918,7 +911,7 @@ Entity GD_Ctr_IsNaturalPerson is CheckBox in frmMain
 
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
@@ -994,7 +987,7 @@ Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TODO: TELL SEB THIS FIELD IS TO 'BE' DELETED FROM PROCUREMENT DATA
+; TELL SEB THIS FIELD IS TO 'BE' DELETED FROM PROCUREMENT DATA
 ; Entity GD_Procur_Supplier_ContactPhone is TextBox in frmMain
 ; 	with defaults
 ; 		label LABELS.labGD_Procur_Supplier_ContactPhone
@@ -1011,12 +1004,8 @@ Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 ; 			this enable false
 ; 		HF_RequestType.Value in {'VM', 'VC_PO', 'VM_BLK', 'VM_UBLK'} then 
 ; 			this visible false
-
-; TODO: ALSO TELL SEB PROCUREMENT DATA IS TO 'BE' HIDDEN ENTIRELY OR NOT DEPENDING ON FLOWTYPE
-
 ; ----------------------------------------------------------------------------	
-
-; TODO: TELL SEB THIS FIELD IS TO 'BE' DELETED FROM PROCUREMENT DATA
+; TELL SEB THIS FIELD IS TO 'BE' DELETED FROM PROCUREMENT DATA
 ; Entity GD_Procur_Supplier_ContactPerson is TextBox in frmMain
 ; 	with defaults
 ; 		label LABELS.labGD_Procur_Supplier_ContactPerson
@@ -1029,8 +1018,7 @@ Entity GD_Procur_Supplier_IsOneTimeVendor is DropDownList in frmMain
 ; 			this visible false
 ; 
 ; ----------------------------------------------------------------------------	
-
-; TODO: TELL SEB THIS FIELD IS TO 'BE' DELETED FROM PROCUREMENT DATA
+; TELL SEB THIS FIELD IS TO 'BE' DELETED FROM PROCUREMENT DATA
 ; Entity GD_Procur_Supplier_ContactEmail is TextBox in frmMain
 ; 	with defaults
 ; 		label LABELS.labGD_Procur_Supplier_ContactEmail
@@ -1532,7 +1520,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true 
-		; _COMMENT_ mandatory  false
+		; DDLDCComment mandatory  false
 		set value SUBSTRING(GD_Adr_Name.Value,20) in GD_Adr_Search
 		set value GD_Adr_Name.Value in B_GD_VB_AccountHolder
 		set value GD_Adr_Name.Value in GD_Procur_SuppliersName
@@ -1552,7 +1540,7 @@ Entity GD_Adr_Name2 is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true 
-		; _COMMENT_ mandatory  false  
+		; DDLDCComment mandatory  false  
 
 	with triggers 
 		this changes
@@ -1690,7 +1678,7 @@ Entity GD_Adr_Street3 is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		on change
 		this loads
@@ -1707,13 +1695,13 @@ Entity GD_Adr_Street4 is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		on change
 		this loads
 ; ----------------------------------------------------------------------------	
 
-; TODO: TELL SEB THIS FIELD IS TO 'BE' DELETED
+; TELL SEB THIS FIELD IS TO 'BE' DELETED
 ; Entity GD_Adr_Street5 is TextBox in frmMain
 ; 	with defaults
 ; 		max length 35
@@ -1790,7 +1778,7 @@ Entity GD_Adr_City is TextBox in frmMain
 		
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		on change
 		this loads
@@ -3018,7 +3006,7 @@ Entity V_Country is DropDownList in V_Grid
 		
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		this changes
 ; ---------------------------------------------------------------------------- 
@@ -3029,7 +3017,7 @@ Entity V_VATNumber is TextBox in V_Grid
 		label LABELS.labNumber
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		this changes
 ; ---------------------------------------------------------------------------- 
@@ -3069,7 +3057,7 @@ Entity GD_VB_Country is DropDownList in GD_VB_Grid
 		mandatory true
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with rules
 		; call SP to find out if selected value is Tax Haven
 		DATASOURCE.MDMV3_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true then
@@ -3091,7 +3079,7 @@ Entity GD_VB_BankKey is TextBox in GD_VB_Grid
 			max length 15
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		this changes
 		GD_VB_Country changes
@@ -3113,7 +3101,7 @@ Entity GD_VB_BankAccount is TextBox in GD_VB_Grid
 			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		this changes
 		this loads
@@ -3128,7 +3116,7 @@ Entity GD_VB_BankControlKey is TextBox in GD_VB_Grid
 		max length 2
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		this changes
 ; ---------------------------------------------------------------------------- 
@@ -3140,6 +3128,7 @@ Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VD_IBAN
+
 	with actions
 		; TODO: POPULATION FOR THE UNDERLYING TABLE HAS TO BE FINISHED
 		load data from DATASOURCE.MDMC_GetIBANConfigurationForCountry with arguments {CountryCode:B_GD_VB_Country.Value, IBAN:B_GD_VB_IBAN.Value} with output {B_GD_VB_BankKey:BankKey,B_GD_VB_BankAccount:BankAccount,B_GD_VB_BankControlKey:BankControlKey}
@@ -3149,9 +3138,10 @@ Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 			max length 27
 		else
 			max length 35
+
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		this changes
 		GD_VB_Country changes
@@ -3179,7 +3169,7 @@ Entity GD_VB_AccountHolder is TextBox in GD_VB_Grid
 		label LABELS.labGD_VD_AccountHolder
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		this changes
 
@@ -3575,7 +3565,7 @@ Entity CC_PT_PaymentTerms is DropDownList in frmMain
 	with actions
 		set value CC_PT_PaymentTerms.Value in PO_TermsOfPaymentKey.Value
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 
 	with rules
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'VM_BLK' or HF_CurrentRole.Value in {'MDMV3_CPM', 'MDMV3_UPM', 'MDMV3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -3631,7 +3621,7 @@ Entity CC_PT_PaymentBlock is DropDownList in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -3706,7 +3696,7 @@ Entity CC_PT_AlternativePayee is TextBox in frmMain
 			this enable false
 	with actions
 		ATTACHMENT mandatory  true  
-		; _COMMENT_ mandatory  false 
+		; DDLDCComment mandatory  false 
 	with triggers 
 		this loads
 		on change
@@ -4076,7 +4066,7 @@ Entity PO_PurchaseOrderCurrency	is DropDownList in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4138,7 +4128,7 @@ Entity PO_TermsOfPaymentKey is DropDownList in frmMain
 
 	with actions
 		; ; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4160,7 +4150,7 @@ Entity PO_Incoterms	is DropDownList in frmMain
 		set value PO_Incoterms.Text in PO_IncotermsPart2
 		set value PO_Incoterms.SelectedText in PO_IncotermsPart2.OldDisplayValue
 		; ; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 
 	with rules
 
@@ -4359,7 +4349,7 @@ Entity BLK_CC_PT_PaymentBlock is DropDownList in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4378,7 +4368,7 @@ Entity BLK_CentralPO is CheckBox in frmMain
 
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		on change
 		this loads
@@ -4414,7 +4404,7 @@ Entity BLK_CompanyCode is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4430,7 +4420,7 @@ Entity BLK_Central is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4446,7 +4436,7 @@ Entity BLK_PO is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4464,7 +4454,7 @@ Entity BLK_MFD_Central is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4483,7 +4473,7 @@ Entity BLK_MFD_CompanyCode is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4503,7 +4493,7 @@ Entity BLK_MFD_PO is CheckBox in frmMain
 
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4521,7 +4511,7 @@ Entity BLK_MFD_DeletionBlockCentral	is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this loads
 		this changes
@@ -4538,7 +4528,7 @@ Entity BLK_MFD_DeletionBlockCompanyCode	is CheckBox in frmMain
 			this enable false
 	with actions
 		; ATTACHMENT mandatory  false 
-		_COMMENT_ mandatory  true  
+		DDLDCComment mandatory  true  
 	with triggers 
 		this changes
 		this loads
@@ -4681,7 +4671,8 @@ Entity btnSubmit is Button in frmMain
 			set value MESSAGES.ERRsubmitRequestGDFieldLanguage in MESSAGE_POPUP			   
 		
 		HF_RequestType.Value not in {'VM_BLK', 'VM_UBLK'} and GD_Com_Telebox.Value is empty and HF_VendorCountry.Value is not WF then
-			set value 'To submit the request fill all the mandatory fields: in General Data view the field Telebox is empty' in MESSAGE_POPUP			   
+			set value MESSAGES.ERRFieldTelebox in MESSAGE_POPUP		
+	   
 		
 		HF_RequestType.Value is not 'VM_BLK' and GD_Adr_Country.Value is not 'IT' and HF_AccountGroup.Value not in {'YCT6', 'YVT6'} and GD_Ctr_TaxCode1.Value is empty and GD_Ctr_TaxCode1.IsMandatory is true then
 			set value MESSAGES.ERRsubmitRequestGDFieldTaxCode1 in MESSAGE_POPUP			   
@@ -4807,10 +4798,10 @@ Entity btnSubmit is Button in frmMain
 		HF_RegionalCountry.Value not in {'IT', 'PT'} and HF_CurrentRole.Value in {'MDMV3_ENQ','MDMV3_CLERK'} and CC_PT_PaymentMethods.IsMandatory is true and CC_PT_PaymentMethods.Value is empty then
 			set value MESSAGES.ERRsubmitRequestCCViewFieldPaymentMethod in MESSAGE_POPUP
 	 
-		PO_PurchaseOrderCurrency.Value is empty and HF_CompanyCode.Value is 563M then
+		PO_PurchaseOrderCurrency.Value is empty and HF_CompanyCode.Value is '563M' then
 			set value MESSAGES.ERRSubmitRequestPOPurchaseOrderEmpty in MESSAGE_POPUP
 
-		PO_TermsOfPaymentKey.Value is empty and HF_CompanyCode.Value is 563M then
+		PO_TermsOfPaymentKey.Value is empty and HF_CompanyCode.Value is '563M' then
 			set value MESSAGES.ERRSubmitRequestPOTermsPaymentEmpty in MESSAGE_POPUP
 
 		HF_RequestType.Value not in {'VM_BLK', 'VM_UBLK'} and CC_AM_BPClassification.Value is empty then
