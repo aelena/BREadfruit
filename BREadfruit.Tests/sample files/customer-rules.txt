@@ -116,6 +116,13 @@ Entity HF_AccountGroup is TextBox in frmMain
 		hiddenfield
 ; ----------------------------------------------------------------------------	
 ; TESTGEN : DEFAULTS=3
+Entity HF_AccountGroupCustomer is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
 Entity HF_RegionIsMandatory is CheckBox in frmMain
 	with defaults
 		enabled false
@@ -871,27 +878,23 @@ Entity CustomerSearchResultGrid is Grid in frmSearch
 ;	btnCloseFinal
 ;	SummaryMESSAGE_POPUP
 
-
-
-; TODO: SOME HIDDEN FIELDS - CC_AM_CashManagementGroup <-- HAS TO BE INCLUDED IN WEB SERVICES PROBABLY - REVIEW RULES THERE
-; CC_CO_AuthorizationGroup same for this one
-
-
 ; ----------------------------------------------------------------------------
-
 
 ; TESTGEN : DEFAULTS=8, RULES=4, ACTIONS=0, TRIGGERS=2
 Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 
 	with defaults
+
 		enabled true
 		visible true
 		data field DisplayName
 		value field Code
+
 		load data from DATASOURCE.MDMC3_RiskClassifications
 		label LABELS.labGD_Ctr_RiskClassification
 		value '00'
 		mandatory true
+
 	with rules
 		
 		GD_Ctr_RiskClassification.Value is empty then
@@ -917,10 +920,12 @@ Entity GD_Ctr_RiskClassification is DropDownList in frmMain
 ; TESTGEN : DEFAULTS=8, RULES=2, ACTIONS=0, TRIGGERS=3
 Entity GD_Adr_Country is DropDownList in frmMain
 	with defaults
+
 		data field DisplayName
 		value field Code
 		visible true
 		enabled false					; this control is always disabled
+
 		load data from DATASOURCE.MDMC3_Countries
 		value HF_CustomerCountry.Value
 		mandatory true
@@ -947,6 +952,7 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 		value field Code
 		label LABELS.labGD_Ctr_CustomerClassification
 		mandatory true
+
 		visible true
 		enabled true
 		load data from DATASOURCE.MDMC3_PartnerClassification
@@ -956,6 +962,7 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 
 		HF_CustomerCountry.Value is 'ES' and GD_Ctr_TaxCode1.Text starts with {'P','Q','S'} then 
 			set value 'G' in GD_Ctr_CustomerClassification
+
 		HF_CustomerCountry.Value is 'ES' and GD_Ctr_TaxCode1.Text starts with 'G' then 
 			set value 'NG' in GD_Ctr_CustomerClassification
 
@@ -971,12 +978,14 @@ Entity GD_Ctr_CustomerClassification is DropDownList in frmMain
 		ATTACHMENT mandatory  true  
 		set value true in HF_MandatoryAttachment
 		; DDLDCComment mandatory  false
+
 	with triggers 
-		on change
+		this changes
 		this loads
+
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=8, RULES=5, ACTIONS=1, TRIGGERS=2
+; TESTGEN : DEFAULTS=8, RULES=5, ACTIONS=0, TRIGGERS=2
 Entity CC_AM_BPClassification is DropDownList in frmMain
 
 	with defaults
@@ -984,6 +993,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 		value field Code
 		load data from DATASOURCE.MDMC3_ReleaseGroups
 		visible true
+
 		enabled true
 		value 'NORM'
 		mandatory true
@@ -1010,6 +1020,7 @@ Entity CC_AM_BPClassification is DropDownList in frmMain
 
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
+
 	with actions
 		; ATTACHMENT mandatory  false
 		; DDLDCComment mandatory  false
@@ -1040,7 +1051,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 		set value true in HF_MandatoryAttachment
 		; DDLDCComment mandatory  false
 		set value SUBSTRING(GD_Adr_Name.Value,20) in GD_Adr_Search
-		set value GD_Adr_Name.Value in B_GD_VB_AccountHolder
+		set value GD_Adr_Name.Value in GD_VB_AccountHolder
 	with triggers 
 		this changes
 		this loads
@@ -1430,10 +1441,6 @@ Entity GD_Adr_PostalCode is TextBox in frmMain
 
 		HF_CustomerCountry.Value in {'ES','AD'} and HF_RequestType.Value in {'CC','CC_CC'} and GD_Adr_PostalCode.Value.Length >= 2 then
 			load data from DATASOURCES.SelectAccountingClerkByPostCodeAndSalesArea in CC_CO_AccountingClerk
-
-		; TODO: PUT THIS VALIDATION IN BTNSAVE 
-		; HF_AccountGroup.Value in {'YCT6', 'YCT9'} then
-		; make sure then that first two digits are same as value in Region combo	
 
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
@@ -1854,7 +1861,6 @@ Entity GD_VE_btnInsert is Button in GD_VE_Grid
 ; TESTGEN : DEFAULTS=6, RULES=1, ACTIONS=0, TRIGGERS=1
 Entity GD_VE_Grid is Grid in frmMain
 	with defaults
-		; TODO: how to define or set the controls inside? the row definition?
 		define column GRID_GD_VE_SmtpAddr		with arguments {ControlID : GD_VE_SmtpAddr,		DataField : GD_VE_SmtpAddr, Header : LABELS.labNumber, Visible : true}
 		define column GRID_GD_VE_Notes		with arguments {	ControlID : GD_VE_Notes,	DataField : GD_VE_Notes, Header : LABELS.labNotes, Visible : true}
 		define column GRID_GD_VE_Default		with arguments {ControlID : GD_VE_Default,		DataField : GD_VE_Default, Header : LABELS.labDefault, Visible : true}
@@ -1916,28 +1922,9 @@ Entity GD_Ctr_Industry is DropDownList in frmMain
 
 	with rules
 		
-		; HF_AccountGroup.Value in {'YCT6', 'YVT6'} then
-		; 	load data from DATASOURCE.MDMC3_Industries with arguments {FlagActive: true, Country : 'FR'}
-		; 	; this equals to this line in original code
-		; 	; TODO: WHY? this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
-		; 	; most likely unneeded?
-		; 	; set value 'FR' in REQUEST.INDUSTRY_COUNTRY
-
 		HF_AccountGroup.Value in {'YCT6', 'YVT6'} and HF_CurrentRole.Value is 'MDMC3_RCO' then
 			this mandatory true
 
-		; HF_AccountGroup.Value in {'YCT9', 'YVT9'} then
-		; 	load data from DATASOURCE.MDMC3_Industries with arguments {FlagActive: true, Country : 'EN'}
-		; 	; this.m_mdmSessionInfo.IndustryCountry = Business.Constants.Countries.France;
-		; 	; set value 'EN' in REQUEST.INDUSTRY_COUNTRY
-		; 	mandatory false
-		
-		; DONE with a updating of the table MDMC3_INdustries - NO NEED TO DO THIS FOR BRSCH, ONLY FOR BRAN1
-		; HF_RegionalCountry.Value is 'IT' and GD_Ctr_Industry is not empty then
-		; 	;	3) for account group 'YCT5', use DDL the excel file attached called ''ISIC italian convertion''. 
-		; 	;		the DDL shown to the 'MDMC3_ENQ' is the collumn C and should then insert specific data in field KNA1-BRSCH and KNA1-BRAN1
-		; 	load data from DATASOURCE.MDMC3_ItalyIndustries with arguments {FlagActive: true, Code:GD_Ctr_Industry.Value} with output {GD_Ctr_IndustryCode.Value : KNA1_BRAN1} 
-		
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value is 'MDMC3_SUS' or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 
@@ -2036,7 +2023,7 @@ Entity GD_VB_Country is DropDownList in GD_VB_Grid
 		mandatory true
 	with rules
 		; call SP to find out if selected value is Tax Haven
-		DATASOURCE.MDMC3_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true then
+		DATASOURCE.MDMC3_IsCountryATaxHaven with arguments {CountryCode: GD_VB_Country.Value} is true then
 			set value '09' in GD_Ctr_RiskClassification
 
 	with actions
@@ -2068,25 +2055,33 @@ Entity GD_VB_BankKey is TextBox in GD_VB_Grid
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=4, RULES=2, ACTIONS=2, TRIGGERS=3
+; TESTGEN : DEFAULTS=4, RULES=3, ACTIONS=2, TRIGGERS=3
 Entity GD_VB_BankAccount is TextBox in GD_VB_Grid
 
 	with defaults
 		label LABELS.labGD_VD_BankAccount
+
 	with rules
+
+		GD_VB_Country.Value is 'BE' then
+			validation ^[0-9]{3}-[0-9]{7}-[0-9]{2}$
+		
 		HF_AccountGroup.Value in {'YCT6','YCT9','YVT6','YVT9'} then
 			max length 11
 		else
 			max length 18
-		B_GD_VB_Country.Value is 'BE' and GD_VB_BankAccount.Value.Length >= 3 then
+
+		GD_VB_Country.Value is 'BE' and GD_VB_BankAccount.Value.Length >= 3 then
 			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
+
 	with actions
 		ATTACHMENT mandatory  true  
 		set value true in HF_MandatoryAttachment
 		; DDLDCComment mandatory  false
+
 	with triggers 
 		on change
-		B_GD_VB_Country changes
+		GD_VB_Country changes
 		this loads
 ; ---------------------------------------------------------------------------- 
 
@@ -2104,25 +2099,26 @@ Entity GD_VB_BankControlKey is TextBox in GD_VB_Grid
 		on change	
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=2, ACTIONS=1, TRIGGERS=3
+; TESTGEN : DEFAULTS=3, RULES=1, ACTIONS=3, TRIGGERS=3
 Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 	with defaults
 		label LABELS.labGD_VD_IBAN
+
 	with actions
-		; TODO: POPULATION FOR THE UNDERLYING TABLE HAS TO 'BE' FINISHED
-		load data from DATASOURCE.MDMC3_GetIBANConfigurationForCountry with arguments {CountryCode:B_GD_VB_Country.Value, IBAN:B_GD_VB_IBAN.Value} with output {B_GD_VB_BankKey:BankKey,B_GD_VB_BankAccount:BankAccount,B_GD_VB_BankControlKey:BankControlKey}
+		load data from DATASOURCE.MDMC3_GetIBANConfigurationForCountry with arguments {CountryCode:GD_VB_Country.Value, IBAN:GD_VB_IBAN.Value} with output {GD_VB_BankKey:BankKey,GD_VB_BankAccount:BankAccount,GD_VB_BankControlKey:BankControlKey}
+		ATTACHMENT mandatory  true  
+		set value true in HF_MandatoryAttachment
+		; DDLDCComment mandatory  false
+
 	with rules
 		HF_AccountGroup.Value in {'YCT6','YCT9','YVT6','YVT9'} then
 			max length 27
 		else
 			max length 35
-	with actions
-		ATTACHMENT mandatory  true  
-		set value true in HF_MandatoryAttachment
-		; DDLDCComment mandatory  false
+	
 	with triggers 
 		this changes
-		B_GD_VB_Country changes
+		GD_VB_Country changes
 		this loads
 ; ---------------------------------------------------------------------------- 
 
@@ -2146,7 +2142,6 @@ Entity GD_VB_BankReferDetails is TextBox in GD_VB_Grid
 
 ; ---------------------------------------------------------------------------- 
 
-; TODO: TO 'BE' CONNECTED IN THE WEB SERVICES TO AND FROM SAP
 ; TESTGEN : DEFAULTS=3
 Entity GD_VB_SWIFT is TextBox in frmMain
 	with defaults
@@ -2188,33 +2183,39 @@ Entity GD_VB_BankCity is TextBox in GD_VB_Grid
 
 ; ---------------------------------------------------------------------------- 
 
-; TESTGEN : DEFAULTS=3, RULES=6, TRIGGERS=1
+; TESTGEN : DEFAULTS=3, RULES=7, TRIGGERS=1
 Entity GD_VB_btnInsert is Button in GD_VB_Grid
+
 	with defaults
 		label LABELS.labInsert
+
 	with rules
 
-		; TODO: -bank country Belgium: validate format 111-1111111-11 and position of bank key in bank account
-	
-		; TODO: CHECK WITH SEB, how to distinguish between warnings (continue processing) and errors (Stop processing) in messaging
 		HF_RegionalCountry.Value is 'ES' then
 			set value MESSAGES.MSGCustomerBankSpain in MESSAGE_POPUP
-		
+
 		HF_RegionalCountry.Value is 'IT' or GD_VB_Country.Value is 'IT' then and GD_VB_BankKey is empty then
 			set value MESSAGES.ERRBankItaly in MESSAGE_POPUP
 		
 		HF_RegionalCountry.Value is 'IT' or GD_VB_Country.Value is 'IT' then and GD_VB_BankKey.Value.Length != 10 then
 			set value MESSAGES.ERRBankItaly in MESSAGE_POPUP
 		
-		HF_RegionalCountry.Value is 'IT' and B_GD_VB_Country.Value is 'IT' and B_GD_VB_SWIFT.Value.Length is not 11 then
+		HF_RegionalCountry.Value is 'IT' and GD_VB_Country.Value is 'IT' and GD_VB_SWIFT.Value.Length is not 11 then
 			set value MESSAGES.ERRfieldSWIFT in MESSAGE_POPUP
 		
-		B_GD_VB_IBAN is empty and B_GD_VB_BankAccount is empty then
+		GD_VB_IBAN is empty and GD_VB_BankAccount is empty then
 			set value MESSAGES.ERRfieldIban in MESSAGE_POPUP
+
+		GD_VB_Country.Value is 'BE' and GD_VB_BankKey.Value not starts with GD_VB_BankAccount.Value then
+			set value MESSAGES.ERRsubmitRequestGDBankBelgiumKey in MESSAGE_POPUP
 		
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false	
 			this visible false
+
+		; TODO: GD_VB_IBAN is not empty then
+		; TODO: CREATE CheckIban WEB SERVICE
+
 	with triggers 
 		this loads
 ; ----------------------------------------------------------------------------	
@@ -2767,13 +2768,13 @@ Entity CC_PT_PaymentMethods is DropDownList in frmMain
 			this mandatory false
 
 		HF_RegionalCountry.Value is 'IT' and CC_PT_PaymentMethods.Value is 'L' then
-			B_GD_VB_BankKey mandatory true
+			GD_VB_BankKey mandatory true
 
 		HF_RegionalCountry.Value is 'PT' and CC_PT_PaymentMethods.Value in {'P', 'M'} then
-			B_GD_VB_BankKey mandatory true
+			GD_VB_BankKey mandatory true
 			
 		HF_RegionalCountry.Value is 'FR' and CC_PT_PaymentMethods.Value in {'M', 'A'} then
-			B_GD_VB_BankKey mandatory true
+			GD_VB_BankKey mandatory true
 
 		HF_CurrentRole.Value is ENQ and HF_RequestType.Value not in {'CM', 'CM_BLK'} and HF_RegionalCountry.Value is 'ES' and HF_CustomerCountry.Value is 'ES' then
 			set value 'G' in CC_PT_PaymentMethods
@@ -2957,7 +2958,6 @@ Entity CC_DD_DunningArea is DropDownList in frmMain
 		this loads
 ; ---------------------------------------------------------------------------- 
 
-; TODO: INJECT ABOUT KNB1_XAUSZ in WEB SERVICE?  -- CHECK WITH SEB ABOUT HIDDEN FIELDS, CAN WE INCLUDE HERE?
 ; TODO: ALSO ABOUT CC_DD_DunningClerk
 
 ; ---------------------------------------------------------------------------- 
@@ -3144,7 +3144,6 @@ Entity SO_SalesOffice is DropDownList in frmMain
 
 	with rules
 		; only show the control if there are data loaded from the 'load data from' instruction
-		; TODO: CHECK WITH SEB about this
 		this.Items.Count > '0' then
 			SO_SalesOffice visible true
 		HF_RequestState.Value in {'Locked', 'Closed'} or HF_RequestType.Value is 'CM_BLK' or HF_CurrentRole.Value in {'MDMC3_SUS', 'MDMC3_RCO'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
@@ -4663,7 +4662,6 @@ Entity btnSubmit is Button in frmMain
 		HF_RequestType.Value is not 'CM_BLK' and GD_Adr_CountryGD.Value is 'PT' and GD_Adr_PostalCode.Value.Length is not 8 then
 			set value MESSAGES.ERRportughesePostalCode in MESSAGE_POPUP
 
-		; TODO: CHECK THIS WITH SEB?
 		ATTACHMENT.IsMandatory is true or HF_MandatoryAttachment is true and ATTACHMENT.Items.Count is 0 then
 			set value MESSAGES.ERRsubmitRequestAttachment in MESSAGE_POPUP
 
@@ -4846,12 +4844,17 @@ Entity btnSubmit is Button in frmMain
 ; ---------------------------------------------------------------------------- 
 
 ; TODO: SEB probably we do not need this?		
-; TESTGEN : DEFAULTS=3
+; TESTGEN : DEFAULTS=3, TRIGGERS=1, ACTIONS=1
 Entity btnClose is Button in frmMain
 
 	with defaults
 		label LABELS.btnClose
 
+	with actions
+		close frmMain 
+
+	with triggers
+		this clicks
 
 ; ---------------------------------------------------------------------------- 
 

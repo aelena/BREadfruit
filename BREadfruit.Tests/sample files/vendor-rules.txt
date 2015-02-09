@@ -96,6 +96,13 @@ Entity HF_AccountGroup is TextBox in frmMain
 		hiddenfield
 ; ----------------------------------------------------------------------------	
 ; TESTGEN : DEFAULTS=3
+Entity HF_AccountGroupVendor is TextBox in frmMain
+	with defaults
+		enabled false
+		visible false
+		hiddenfield
+; ----------------------------------------------------------------------------	
+; TESTGEN : DEFAULTS=3
 Entity HF_RegionIsMandatory is CheckBox in frmMain
 	with defaults
 		enabled false
@@ -1522,7 +1529,7 @@ Entity GD_Adr_Name is TextBox in frmMain
 		ATTACHMENT mandatory  true 
 		; DDLDCComment mandatory  false
 		set value SUBSTRING(GD_Adr_Name.Value,20) in GD_Adr_Search
-		set value GD_Adr_Name.Value in B_GD_VB_AccountHolder
+		set value GD_Adr_Name.Value in GD_VB_AccountHolder
 		set value GD_Adr_Name.Value in GD_Procur_SuppliersName
 
 	with triggers 
@@ -3060,7 +3067,7 @@ Entity GD_VB_Country is DropDownList in GD_VB_Grid
 		; DDLDCComment mandatory  false 
 	with rules
 		; call SP to find out if selected value is Tax Haven
-		DATASOURCE.MDMV3_IsCountryATaxHaven with arguments {CountryCode: B_GD_VB_Country.Value} is true then
+		DATASOURCE.MDMV3_IsCountryATaxHaven with arguments {CountryCode: GD_VB_Country.Value} is true then
 			set value '09' in GD_Ctr_RiskClassification
 	with triggers 
 		this changes
@@ -3097,7 +3104,7 @@ Entity GD_VB_BankAccount is TextBox in GD_VB_Grid
 			max length 11
 		else
 			max length 18
-		B_GD_VB_Country.Value is 'BE' and GD_VB_BankAccount.Value.Length >= 3 then
+		GD_VB_Country.Value is 'BE' and GD_VB_BankAccount.Value.Length >= 3 then
 			set value SUBSTRING(GD_VB_BankKey,0,3) in GD_VB_BankKey
 	with actions
 		ATTACHMENT mandatory  true  
@@ -3105,7 +3112,7 @@ Entity GD_VB_BankAccount is TextBox in GD_VB_Grid
 	with triggers 
 		this changes
 		this loads
-		B_GD_VB_Country changes
+		GD_VB_Country changes
 ; ---------------------------------------------------------------------------- 
 
 ; TESTGEN : DEFAULTS=4, RULES=0, ACTIONS=1, TRIGGERS=1
@@ -3131,7 +3138,7 @@ Entity GD_VB_IBAN is TextBox in GD_VB_Grid
 
 	with actions
 		; TODO: POPULATION FOR THE UNDERLYING TABLE HAS TO BE FINISHED
-		load data from DATASOURCE.MDMC_GetIBANConfigurationForCountry with arguments {CountryCode:B_GD_VB_Country.Value, IBAN:B_GD_VB_IBAN.Value} with output {B_GD_VB_BankKey:BankKey,B_GD_VB_BankAccount:BankAccount,B_GD_VB_BankControlKey:BankControlKey}
+		load data from DATASOURCE.MDMC_GetIBANConfigurationForCountry with arguments {CountryCode:GD_VB_Country.Value, IBAN:GD_VB_IBAN.Value} with output {GD_VB_BankKey:BankKey,GD_VB_BankAccount:BankAccount,GD_VB_BankControlKey:BankControlKey}
 
 	with rules
 		HF_AccountGroup.Value in {'YCT6','YCT9','YVT6','YVT9'} then
@@ -3217,9 +3224,9 @@ Entity GD_VB_btnInsert is Button in GD_VB_Grid
 		label LABELS.btnInsert
 	with rules
 
-		HF_RegionalCountry.Value is 'IT' and B_GD_VB_Country.Value is 'IT' and B_GD_VB_SWIFT.Value.Length is not 11 then
+		HF_RegionalCountry.Value is 'IT' and GD_VB_Country.Value is 'IT' and GD_VB_SWIFT.Value.Length is not 11 then
 			set value MESSAGES.ERRfieldSWIFT in MESSAGE_POPUP
-		B_GD_VB_IBAN is empty and B_GD_VB_BankAccount is empty then
+		GD_VB_IBAN is empty and GD_VB_BankAccount is empty then
 			set value MESSAGES.ERRfieldIban in MESSAGE_POPUP
 
 		; --- validations on bank insert
@@ -4916,7 +4923,6 @@ Entity btnClose	is Button in frmMain
 	with defaults
 		label LABELS.btnClose
 
-	; TODO: ADD CLOSE SUPPORT IN PARSER - NEED TO CHANGE PARSER
 	with actions
 		close frmMain
 
@@ -4927,11 +4933,12 @@ Entity btnClose	is Button in frmMain
 ; ----------------------------------------------------------------------------	
 
 ; TODO: SEB probably we do not need this?	
-; TESTGEN : DEFAULTS=3,	RULES=3
+; TESTGEN : DEFAULTS=3,	RULES=3, ACTIONS=1, TRIGGERS=1
 Entity btnSCClose is Button in frmMain
 	with defaults
 		label LABELS.btnClose
-
+	with actions
+		close frmMain
 	with rules
 		HF_RequestState.Value is not CLOSED and btnSubmit.Visible is true then
 			this visible true
@@ -4944,7 +4951,8 @@ Entity btnSCClose is Button in frmMain
 		HF_RequestState.Value in {'Locked', 'Closed'} or REQUEST.USER_PERMISSION is ACCESSRIGHTS.READER then
 			this enable false
 			this visible false	
-
+	with triggers
+		this on click
 ; ----------------------------------------------------------------------------	
 
 ; TESTGEN : DEFAULTS=3, ACTIONS=1, TRIGGERS=1, RULES=1
